@@ -1,5 +1,5 @@
 REM ******************************************************************
-REM  File: create_student_db.sql
+REM  File: create_db.sql
 REM  Description: used for droping student schema objects. Note that
 REM   this script only drops the objects created for the STUDENT 
 REM   related tables not the supplemental tables.
