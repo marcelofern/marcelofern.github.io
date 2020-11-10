@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/academia/big-data/monte-carlo", {data:[{}],fetch:[],mutations:void 0});
