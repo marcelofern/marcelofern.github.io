@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/academia/big-data/burrows-wheeler-transform", {data:[{}],fetch:[],mutations:void 0});
