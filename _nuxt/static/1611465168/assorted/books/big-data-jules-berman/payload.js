@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/assorted/books/big-data-jules-berman", {data:[{}],fetch:[],mutations:void 0});
