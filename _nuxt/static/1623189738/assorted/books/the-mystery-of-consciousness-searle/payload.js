@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/assorted/books/the-mystery-of-consciousness-searle", {data:[{}],fetch:{},mutations:void 0});

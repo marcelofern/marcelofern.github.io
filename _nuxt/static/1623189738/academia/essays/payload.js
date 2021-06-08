@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/academia/essays", {data:[{}],fetch:{},mutations:void 0});

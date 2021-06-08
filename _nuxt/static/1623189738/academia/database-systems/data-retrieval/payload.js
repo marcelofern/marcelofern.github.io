@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/academia/database-systems/data-retrieval", {data:[{}],fetch:{},mutations:void 0});
