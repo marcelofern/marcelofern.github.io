@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/assorted/books", {data:[{}],fetch:[],mutations:void 0});

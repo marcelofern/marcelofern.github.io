@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/academia/data-visualisation/isolines-from-scratch", {data:[{}],fetch:[],mutations:void 0});
