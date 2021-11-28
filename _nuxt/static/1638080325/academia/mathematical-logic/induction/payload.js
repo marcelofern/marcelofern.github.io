@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/academia/mathematical-logic/induction", {data:[{}],fetch:{},mutations:void 0});
