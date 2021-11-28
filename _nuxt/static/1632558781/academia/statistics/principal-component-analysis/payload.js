@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/academia/statistics/principal-component-analysis", {data:[{}],fetch:{},mutations:void 0});

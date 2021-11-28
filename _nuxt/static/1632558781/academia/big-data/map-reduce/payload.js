@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/academia/big-data/map-reduce", {data:[{}],fetch:{},mutations:void 0});

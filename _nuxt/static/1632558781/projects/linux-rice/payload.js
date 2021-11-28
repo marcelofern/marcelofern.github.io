@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/projects/linux-rice", {data:[{}],fetch:{},mutations:void 0});
