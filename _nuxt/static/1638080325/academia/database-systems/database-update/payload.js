@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/academia/database-systems/database-update", {data:[{}],fetch:{},mutations:void 0});

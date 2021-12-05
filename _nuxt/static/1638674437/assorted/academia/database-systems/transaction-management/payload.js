@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/assorted/academia/database-systems/transaction-management", {data:[{}],fetch:{},mutations:void 0});

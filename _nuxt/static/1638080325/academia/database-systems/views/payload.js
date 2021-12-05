@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/academia/database-systems/views", {data:[{}],fetch:{},mutations:void 0});

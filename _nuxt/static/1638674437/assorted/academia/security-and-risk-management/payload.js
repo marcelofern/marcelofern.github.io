@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/assorted/academia/security-and-risk-management", {data:[{}],fetch:{},mutations:void 0});

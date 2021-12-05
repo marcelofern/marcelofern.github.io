@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/academia/mathematical-logic", {data:[{}],fetch:{},mutations:void 0});

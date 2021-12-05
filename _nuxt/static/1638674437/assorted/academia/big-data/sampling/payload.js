@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/assorted/academia/big-data/sampling", {data:[{}],fetch:{},mutations:void 0});
