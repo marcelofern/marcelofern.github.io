@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/assorted/gallery/2021-12-11-zealandia", {data:[{}],fetch:{},mutations:void 0});
