@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/assorted/chess/4-move-check-mate", {data:[{}],fetch:{},mutations:void 0});
