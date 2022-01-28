@@ -1,1 +1,0 @@
-window.__NUXT__=(function(a){return {staticAssetsBase:"\u002F_nuxt\u002Fstatic\u002F1642749407",layout:"default",error:a,serverRendered:true,routePath:"\u002Fassorted\u002Fgallery\u002F2022-01-02-ben-lomond",config:{_app:{basePath:"\u002F",assetsPath:"\u002F_nuxt\u002F",cdnURL:a}}}}(null));
