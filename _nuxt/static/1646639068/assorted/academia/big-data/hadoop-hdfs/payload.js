@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/assorted/academia/big-data/hadoop-hdfs", {data:[{}],fetch:{},mutations:void 0});

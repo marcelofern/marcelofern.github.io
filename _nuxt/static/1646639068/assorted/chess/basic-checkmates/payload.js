@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/assorted/chess/basic-checkmates", {data:[{}],fetch:{},mutations:void 0});

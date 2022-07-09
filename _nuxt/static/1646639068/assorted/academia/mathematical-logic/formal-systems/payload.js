@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/assorted/academia/mathematical-logic/formal-systems", {data:[{}],fetch:{},mutations:void 0});

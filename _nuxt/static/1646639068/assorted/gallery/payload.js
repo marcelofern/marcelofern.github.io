@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/assorted/gallery", {data:[{}],fetch:{},mutations:void 0});

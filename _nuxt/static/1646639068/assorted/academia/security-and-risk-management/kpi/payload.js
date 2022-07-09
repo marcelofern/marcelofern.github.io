@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/assorted/academia/security-and-risk-management/kpi", {data:[{}],fetch:{},mutations:void 0});

@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/assorted/gallery/2021-12-05-mount-vic", {data:[{}],fetch:{},mutations:void 0});

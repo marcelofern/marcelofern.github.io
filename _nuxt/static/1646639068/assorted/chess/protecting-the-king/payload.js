@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/assorted/chess/protecting-the-king", {data:[{}],fetch:{},mutations:void 0});

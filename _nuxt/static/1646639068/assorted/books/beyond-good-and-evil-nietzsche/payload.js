@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/assorted/books/beyond-good-and-evil-nietzsche", {data:[{}],fetch:{},mutations:void 0});

@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/assorted/academia/database-systems/exercises", {data:[{}],fetch:{},mutations:void 0});

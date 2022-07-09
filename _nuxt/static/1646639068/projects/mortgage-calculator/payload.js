@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/projects/mortgage-calculator", {data:[{}],fetch:{},mutations:void 0});

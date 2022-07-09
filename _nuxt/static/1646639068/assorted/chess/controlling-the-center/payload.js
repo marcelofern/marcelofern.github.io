@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/assorted/chess/controlling-the-center", {data:[{}],fetch:{},mutations:void 0});

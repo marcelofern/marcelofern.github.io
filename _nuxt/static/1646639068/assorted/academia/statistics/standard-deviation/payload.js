@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/assorted/academia/statistics/standard-deviation", {data:[{}],fetch:{},mutations:void 0});

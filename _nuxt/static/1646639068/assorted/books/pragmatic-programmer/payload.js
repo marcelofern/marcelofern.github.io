@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/assorted/books/pragmatic-programmer", {data:[{}],fetch:{},mutations:void 0});
