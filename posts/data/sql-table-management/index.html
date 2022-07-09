@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Marcelo Fernandes" />
+  <meta name="dcterms.date" content="2020-10-02" />
+  <title>SQL Table Management</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+<style rel="stylesheet">
+  html {
+    font-size: 16px;
+  }
+  body {
+    hyphens: auto;
+    text-align: justify;
+    line-height: 1.7;
+  }
+  a {
+    color: #1976d2;
+    text-decoration: none;
+    border-bottom: 1px solid;
+  }
+  a:visited {
+    color: #1976d2;
+  }
+  pre.sourceCode {
+    border-left: 3px solid #000;
+    padding-left: 1.5rem;
+    margin: 1em 0;
+  }
+  figcaption {
+    display: none;
+  }
+</style>
+<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">SQL Table Management</h1>
+<p class="author">Marcelo Fernandes</p>
+<p class="date">October 2, 2020</p>
+</header>
+<h2 id="creating-tables">Creating Tables</h2>
+<p>Tables can be created using the CREATE TABLE command. Examples using
+an Oracle database:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> TEAM</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  TEAM_ID <span class="dt">CHAR</span>(<span class="dv">5</span>) <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  NAME <span class="dt">VARCHAR2</span>(<span class="dv">30</span>) <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="kw">UNIQUE</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  LOCATION <span class="dt">VARCHAR2</span>(<span class="dv">50</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  EMAIL <span class="dt">VARCHAR</span>(<span class="dv">70</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> PLAYER</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  PLAYER_ID <span class="dt">CHAR</span>(<span class="dv">5</span>) <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  FIRST_NAME <span class="dt">VARCHAR2</span>(<span class="dv">30</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  LAST_NAME <span class="dt">VARCHAR2</span>(<span class="dv">30</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  TEAM_ID <span class="dt">CHAR</span>(<span class="dv">5</span>) <span class="kw">REFERENCES</span> TEAM(TEAM_ID),</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div>
+<p>Note: When using a database such as Oracle, Postgres, MySQL, etc,
+make sure to be aware of naming conventions.</p>
+<h2 id="defining-constraints">Defining Constraints</h2>
+<p>Constraints are created to preserve the data integrity in the
+database. They are imposed on one or more columns, and can be used to
+check the acceptability and accuracy of the data.</p>
+<p>There are two types of constraints:</p>
+<ul>
+<li>Column Constraints: Defined along with the column definition in a
+CREATE TABLE statement.</li>
+<li>Table Constraints: Defined at the end of the table definition after
+listing all the columns. Tables with multiple primary keys should be
+defined at the of the table definition as a table constraint.</li>
+</ul>
+<p>Some commonly used constraints are:</p>
+<ul>
+<li>PRIMARY KEY</li>
+<li>UNIQUE</li>
+<li>NOT NULL</li>
+<li>REFERENCES table(column)</li>
+<li>ON DELETE CASCADE</li>
+<li>ON DELETE SET NULL</li>
+<li>DEFAULT value</li>
+<li>CHECK (condition)</li>
+</ul>
+<p>This is how it would look in a CREATE TABLE statement:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>     <span class="kw">CREATE</span> <span class="kw">TABLE</span> MOCK_TABLE</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    (</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      COL1 <span class="dt">CHAR</span>(<span class="dv">5</span>) <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      COL2 <span class="dt">NUMBER</span>(<span class="dv">10</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      COL3 <span class="dt">VARCHAR2</span>(<span class="dv">5</span>) <span class="kw">REFERENCES</span> TEST(COL3) <span class="kw">ON</span> <span class="kw">DELETE</span> <span class="kw">CASCADE</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      COL4 <span class="dt">DATE</span> <span class="kw">DEFAULT</span> <span class="fu">SYSDATE</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      COL5 <span class="kw">UNIQUE</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      COL6 <span class="dt">NUMBER</span>(<span class="dv">4</span>) <span class="kw">CHECK</span> (COL6 <span class="op">&gt;</span> <span class="dv">100</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    );</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a> <span class="kw">CREATE</span> <span class="kw">TABLE</span> MOCK_TABLE</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  COL1 <span class="dt">CHAR</span>(<span class="dv">5</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  COL2 <span class="dt">NUMBER</span>(<span class="dv">10</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  COL3 <span class="dt">VARCHAR2</span>(<span class="dv">5</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  COL4 <span class="dt">DATE</span> <span class="kw">DEFAULT</span> <span class="fu">SYSDATE</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  COL5 <span class="kw">UNIQUE</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  COL6 <span class="dt">NUMBER</span>(<span class="dv">4</span>) <span class="kw">CHECK</span> (COL6 <span class="op">&gt;</span> <span class="dv">100</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">CONSTRAINT</span> MOCK_TABLE_PK <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (COL1),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">CONSTRAINT</span> MOCK_TABLE_FK <span class="kw">FOREIGN</span> <span class="kw">KEY</span> (COL3) <span class="kw">REFERENCES</span> TEST(COL3),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">CONSTRAINT</span> COL5_UPPERCASE <span class="kw">CHECK</span> (COl5 <span class="op">=</span> <span class="fu">UPPER</span>(COL5))</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div>
+<p>As a tip to organise your database, you might want to define all your
+tables without any foreign keys and then create them at the end using
+the ALTER command:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> PLAYER</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">ADD</span> <span class="kw">FOREIGN</span> <span class="kw">KEY</span> (TEAM_ID) <span class="kw">REFERENCES</span> TEAM(TEAM_ID)</span></code></pre></div>
+<h2 id="modifying-tables">Modifying Tables</h2>
+<p>Table attributes can be added, modified, or deleted. The same is
+valid for table constraints.</p>
+<p>A few examples using the ALTER TABLE command:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> tableName <span class="op">+</span> (one <span class="kw">of</span> <span class="kw">the</span> below)</span></code></pre></div>
+<ol type="1">
+<li><div class="sourceCode" id="cb6"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ADD</span> columnName <span class="dt">VARCHAR2</span>(<span class="dv">30</span>) <span class="kw">NOT</span> <span class="kw">NULL</span></span></code></pre></div></li>
+<li><div class="sourceCode" id="cb7"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>   <span class="kw">DROP</span> columnName [<span class="kw">RESTRICT</span> | <span class="kw">CASCADE</span>]</span></code></pre></div></li>
+<li><div class="sourceCode" id="cb8"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ALTER</span> columnName <span class="kw">SET</span> <span class="kw">DEFAULT</span> defaultOption</span></code></pre></div></li>
+<li><div class="sourceCode" id="cb9"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ALTER</span> columnName <span class="kw">DROP</span> <span class="kw">DEFAULT</span></span></code></pre></div></li>
+<li><div class="sourceCode" id="cb10"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ADD</span> <span class="kw">CONSTRAINT</span> constraintName tableConstraintDefinition</span></code></pre></div></li>
+<li><div class="sourceCode" id="cb11"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">DROP</span> <span class="kw">CONSTRAINT</span> constraintName [<span class="kw">RESTRICT</span> | <span class="kw">CASCADE</span>]</span></code></pre></div></li>
+<li><div class="sourceCode" id="cb12"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">DISABLE</span> <span class="kw">CONSTRAINT</span> constraintName</span></code></pre></div></li>
+<li><div class="sourceCode" id="cb13"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">ENABLE</span> constraintName</span></code></pre></div></li>
+<li><div class="sourceCode" id="cb14"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">RENAME</span> constraintName <span class="kw">TO</span> newConstraintName</span></code></pre></div></li>
+</ol>
+<p>A few “real world” examples:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> PLAYER <span class="kw">ADD</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (<span class="kw">ID</span>);</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> PLAYER <span class="kw">ADD</span> <span class="kw">CHECK</span>(SALARY <span class="op">&gt;</span> <span class="dv">0</span>);</span></code></pre></div>
+<p>Ultimately, tables can also be completely deleted with the DROP TABLE
+command. Be aware that tables with child tables might require a CASCADE
+operation.</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">DROP</span> <span class="kw">TABLE</span> TEAM <span class="kw">CASCADE</span> <span class="kw">CONSTRAINTS</span>;</span></code></pre></div>
+<h2 id="indexes">Indexes</h2>
+<p>Indexes are used to increase the performance of database queries.
+Some advantages and disadvantages are listed below:</p>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li>Speeds up SELECT queries</li>
+<li>They can be used for sorting</li>
+<li>Unique indexes guarantee uniquely identifiable records in the
+database</li>
+</ul>
+<p><strong>Disadvantages</strong>:</p>
+<ul>
+<li>Take additional disk space</li>
+<li>Slow down INSERT, UPDATE, and DELETE operations. But it can speed up
+an UPDATE query if the WHERE condition has an indexed field.</li>
+</ul>
+<p>Indexes can be created using the CREATE INDEX statement:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> PNAME <span class="kw">ON</span> PLAYER(NAME);</span></code></pre></div>
+<p>Or dropped using DROP INDEX</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">DROP</span> <span class="kw">INDEX</span> PNAME;</span></code></pre></div>
+<p>Unique indexes can also be added to ensure uniqueness of non-primary
+data. The benefit of using unique indexes versus UNIQUE constraint is
+that the index not only will guarantee data uniqueness but will also
+speed up queries</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">UNIQUE</span> <span class="kw">INDEX</span> PNICKNAME <span class="kw">ON</span> PLAYER(NICKNAME);</span></code></pre></div>
+<p>Only create an index if:</p>
+<ul>
+<li>A table is large</li>
+<li>A column is likely to appear in the WHERE clause or ORDER BY
+clause.</li>
+<li>A column has values which each occur in fewer than 20% of the
+rows</li>
+<li>Multiple columns are continually referenced together (concatenated
+index on multiple columns)</li>
+<li>All the column values are distinct (unique index)</li>
+<li>The table is to be used primarily for queries (data retrieval)</li>
+</ul>
+<h2 id="sequences">Sequences</h2>
+<p>Sequences are particularly useful to help data entry, especially in
+the primary key column. The primary key must have a unique value, and
+more often than not, to be sequential. Manually ensuring uniqueness on a
+PK is very time-consuming and may lead to future flaws.</p>
+<p>Sequences can be created using the CREATE SEQUENCE command:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">SEQUENCE</span> testseq;</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">SEQUENCE</span> testseq</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">START</span> <span class="kw">WITH</span> <span class="dv">777</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="kw">INCREMENT</span> <span class="kw">BY</span> <span class="dv">22</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="kw">MAXVALUE</span> <span class="dv">100000</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="kw">CYCLE</span></span></code></pre></div>
+<p>Once created, an index can be used in an INSERT statement</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> PLAYER <span class="kw">VALUES</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>(testseq.NEXTVAL, <span class="st">&#39;Ronaldo&#39;</span>, <span class="st">&#39;Real Madrid&#39;</span>, <span class="dv">7</span>);</span></code></pre></div>
+<p>Note: NEXTVAL initialises the sequence or generate the next value.
+CURRVAL returns the current sequence value, but it only works if you
+already called NEXTVAL during the current user session.</p>
+<h2 id="copying-a-table">Copying A Table</h2>
+<p>There are 3 ways to create a new table from an existing table:</p>
+<ol type="1">
+<li><p>Create a new structure and only copy the data. In this case,
+define the structure using the CREATE TABLE clause and then add the data
+from the previous table using a SELECT query in an INSERT statement.
+Make sure that the new table has the same data types from the columns
+you are fetching data from.</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> TOP_SCORERS</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> FIRST_NAME, LAST_NAME, TEAM_ID, GOALS</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> PLAYER</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> GOALS <span class="op">&gt;</span> <span class="dv">100</span>;</span></code></pre></div></li>
+<li><p>Copy the structure and the data. In this case, omit the column
+definitions in the CREATE TABLE STATEMENT and then use a SELECT
+statement to fill in the data.</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> PLAYER_COPY <span class="kw">AS</span> (<span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> INSTRUCTOR);</span></code></pre></div></li>
+<li><p>Copy only the structure. In this case, omit the column
+definitions in the CREATE TABLE statement and then use use a SELECT
+statement with a WHERE clause that is never going to be true, like
+1=2.</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> PLAYER_STRUCT <span class="kw">AS</span> (<span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> PLAYER <span class="kw">WHERE</span> <span class="dv">1</span><span class="op">=</span><span class="dv">2</span>);</span></code></pre></div></li>
+</ol>
+<h2 id="transactions">Transactions</h2>
+<p>A transaction is the representation of a logical unit of work for the
+database. Transactions can be initiated by any SQL statement, and for a
+transaction to be successful, all the tasks within the transaction need
+to be completed successfully.</p>
+<p>The default transaction mode is “auto-commit”. It will commit each
+transaction as soon as possible after the user executes each query.
+Multi-user database applications will require more control over
+transactions to make sure that data in the database isn’t duplicated or
+to prevent data inconsistencies.</p>
+<p>COMMIT statements can be used to save changes immediately during the
+active session.</p>
+<p>ROLLBACK statements can be used to reverse the changes made since the
+last COMMIT statement, or in the active session.</p>
+<p>Rules of thumb:</p>
+<ul>
+<li>Before starting updates for a transaction, COMMIT any previous
+updates</li>
+<li>Complete the updates for the transaction, if the transaction can’t
+be completed use ROLLBACK, otherwise use COMMIT</li>
+</ul>
+<p>Note that COMMIT makes the data changes in a transaction permanent.
+Running a ROLLBACK straight after a COMMIT cannot reverse that
+update</p>
+<p>Also keep in mind that ROLLBACK will only reverse data changes but
+won’t reverse (delete) any database objects created/altered using
+CREATE, ALTER, and DROP.</p>
+</body>
+</html>
