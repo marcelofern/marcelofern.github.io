@@ -19,9 +19,6 @@
   <title>The Mystery of Consciousness, John R. Searle</title>
   <style>
     html {
-      line-height: 1.5;
-      font-family: Georgia, serif;
-      font-size: 20px;
       color: #1a1a1a;
       background-color: #fdfdfd;
     }
@@ -40,13 +37,16 @@
     @media (max-width: 600px) {
       body {
         font-size: 0.9em;
-        padding: 1em;
+        padding: 12px;
       }
       h1 {
         font-size: 1.8em;
       }
     }
     @media print {
+      html {
+        background-color: white;
+      }
       body {
         background-color: transparent;
         color: black;
@@ -96,9 +96,10 @@
       color: #606060;
     }
     code {
-      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
+      hyphens: manual;
     }
     pre {
       margin: 1em 0;
