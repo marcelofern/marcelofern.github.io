@@ -275,21 +275,20 @@
 <p class="date">March 06, 2023</p>
 </header>
 <h2 id="the-introduction">The introduction</h2>
-<p>There’re a lot of misconceptions about how <code>if</code> and
-<code>case</code> statements are compiled, and how they perform. Often
-as those statements grow large (20+ lines) code-reviewers will say “can
-you refactor these if/else or case chains into a mapper so that the code
-is more clean?”</p>
+<p>There’re a many misconceptions about how <code>if</code> and
+<code>case</code> statements are compiled, and how they perform. As
+those statements grow large (20+ lines) code-reviewers commonly recomend
+refactoring the conditional chains into a mapper to improve code
+clarity.</p>
 <p>So the idea here is to check whether or not the code is cleaner, and
-how much we pay in performance in order to get it.</p>
+how much we pay in performance in order to have “cleaner” code.</p>
 <h2 id="the-example">The example</h2>
 <p>Let’s start with a simple example. Say you’re developing a game of
-chess and you need to return a char representation of the chess piece at
-hand. Easy.</p>
-<p>Your enum of pieces is something like this:</p>
+chess and you need to return a <code>char</code> representation of the
+chess piece at hand. Easy:</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> Pieces <span class="op">{</span>PAWN<span class="op">,</span> KNIGHT<span class="op">,</span> BISHOP<span class="op">,</span> ROOK<span class="op">,</span> QUEEN<span class="op">,</span> KING<span class="op">};</span></span></code></pre></div>
-<p>Let’s start with an approach using if statements:</p>
+<p>Our first function will use <code>if</code> statements:</p>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> if_func<span class="op">(</span>PieceType piece<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>piece <span class="op">==</span> PAWN<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="ch">&#39;p&#39;</span><span class="op">;</span> <span class="op">}</span></span>
@@ -312,7 +311,7 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#c
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
 <p>Before going any further, let’s compare the assembly code generated
-from these functions.</p>
+from these two functions.</p>
 <h2 id="assembly-code">Assembly code</h2>
 <p>Firstly, let’s start with the assembly code for the <code>if</code>
 statement version:</p>
@@ -321,18 +320,19 @@ statement version:</p>
 <figcaption aria-hidden="true">if_assembly</figcaption>
 </figure>
 <p>Very straightforward. Store the input value in a register, compare
-with the integers corresponding to the enum (0, 1, 2, 3, 4, 5) and spits
-out the equivalent char (as an int).</p>
+with the integers corresponding to the enum (0, 1, 2, 3, 4, 5) in a
+sequence and spit out the equivalent <code>char</code> (as an int).</p>
 <p>How does this compare to the <code>case</code> statement?</p>
 <figure>
 <img src="case_assembly.png" alt="case_assembly" />
 <figcaption aria-hidden="true">case_assembly</figcaption>
 </figure>
-<p>The <code>case</code> statement seems more complicated as it needs to
-use a lookup table, but this is expected.</p>
+<p>The <code>case</code> statement seems more complicated for the
+programmer unfamiliar with Assembly language. However, the code is just
+a producing a lookup table.</p>
 <h2 id="benchmarking">Benchmarking</h2>
 <p>Before proceeding to the “clean” code approach, let’s run some
-benchmarking to see how the if statement compares to the switch one.</p>
+benchmarking to see how the if statement compares to the case one.</p>
 <p>Our test bench will look like this:</p>
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;catch2/catch.hpp&gt;</span></span>
@@ -358,27 +358,29 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#c
 <span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  BENCHMARK<span class="op">(</span><span class="st">&quot;test case&quot;</span><span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> test_case<span class="op">();</span> <span class="op">};</span></span>
 <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  BENCHMARK<span class="op">(</span><span class="st">&quot;test if&quot;</span><span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> test_if<span class="op">();</span> <span class="op">};</span></span>
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>We will run through the vector one million times, and see how this
-compares.</p>
+<p>We will run through the vector one million times for each sample, and
+then we’ll analyse how they compare.</p>
 <figure>
 <img src="case_vs_if.png" alt="case_vs_if" />
 <figcaption aria-hidden="true">case_vs_if</figcaption>
 </figure>
 <p>This is an unfortunate scenario for our <code>case</code> statement.
 Lookup tables get better as the number of different <code>case</code>s
-raises. But in this case, we only have a few cases and their occurrence
-is evenly distributed due to the way the benchmark code was set. That’s
-why our <code>if</code> statement with many <code>cmp</code>s and
-<code>jmp</code>s in assembly managed to perform better.</p>
-<p>In other words, the worst case scenario for our if statement (when it
-receives a ‘king’ and it needs to jump all the way down the assembly
-code) only happens 1 out of 6 times. Whereas the <code>case</code>
-function needs to always use the lookup table no matter what.</p>
+raises. But in this function we only have a few <code>case</code>s and
+their occurrence is evenly distributed due to the way the benchmark code
+was set. That’s why our <code>if</code> statement with many
+<code>cmp</code>s and <code>jmp</code>s somehow managed to perform
+better.</p>
+<p>In other words, the worst case scenario for our <code>if</code>
+statement (when it receives a ‘king’ and it needs to jump all the way
+down the assembly instruction chain) only happens 1 out of 6 times.
+Whereas the <code>case</code> function needs to always use the lookup
+table no matter what.</p>
 <p>I used this example on purpose, because generally speaking developers
 say that <code>case</code> statements are faster than <code>if</code>
 statements. While this is true for many scenarios, this isn’t
 <strong>always</strong> true.</p>
-<p>If we had cherry picked our vector of pieces to only contain kings,
+<p>If we had cherry picked our vector of pieces to only contain Kings,
 the result would be different. Consider substituting this line:</p>
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// std::vector&lt;PieceType&gt; pieces = {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING};</span></span>
@@ -411,14 +413,13 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#c
 </figure>
 <p>With 6 different variables to switch from, our <code>if</code>
 statement is comparable to a <code>case</code> statement. For anything
-less than that, it will usually be faster, and for anything more than
-that, it will usually be slower.</p>
+less than that, <code>if</code> statements will usually be faster, and
+for anything more than that, they will usually be slower.</p>
 <p>I’m being really picky here, in real-life situations this difference
-might not mean anything. But the reason why I’m comparing both will
-become clear next.</p>
+probably doesn’t matter, but now you know.</p>
 <h2 id="the-clean-code-alternative">The clean code alternative</h2>
-<p>I haven’t worked with C++ in a while, so let’s have a brief pause
-here to talk about something that happens in my daily Python</p>
+<p>Let’s have a brief pause on benchmarking here to talk about something
+that happens in my daily at my job.</p>
 <p>A code reviewer will look at our <code>if</code> or <code>case</code>
 function and will block the Pull Request saying:</p>
 <blockquote>
@@ -439,10 +440,22 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#c
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> mapper_func<span class="op">(</span>PieceType piece<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> mapper<span class="op">[</span>piece<span class="op">];</span></span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>So much cleaner, right?! Well, arguably. But the central question is:
-why use a full on hash table just for looking up 6 different values?
-Isn’t this too overkill? Does the clean code excuse really matters here?
-Is the alternative if or case statement even “dirty”?</p>
+<p>So much cleaner, right?! The reviewer will be happy that you reduced
+a monstruous chain of <code>if</code> (or <code>case</code>) statements
+into a single, clean, 1 line function.</p>
+<p>More over, a common argument is that “it’s easier to test, and
+therefore to obtain high coverage”. And indeed, it’s easy to obtain
+coverage if all you’re doing is making sure that the return line is hit,
+but if you want to have real coverage that branches out to all paths,
+your test will actually look identical for either case.</p>
+<p>In reality I haven’t seen any substantial evidence to actually
+convince me that this is indeed cleaner or more useful - and it will
+most likely come down to personal preference, which is unfortunate for
+the reviewer and for the person who created the PR.</p>
+<p>But the central question still is: why use a full on hash table just
+for looking up 6 different values? Isn’t this too overkill? Does the
+clean code excuse really matters here? Is the alternative if or case
+statement even “dirty”?</p>
 <p>Let’s see how this performs. We’ll add another benchmarking using
 this new mapper function and rerun the code.</p>
 <div class="sourceCode" id="cb8"><pre
@@ -463,7 +476,7 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb8-1"><a href="#c
 </figure>
 <p>This is too slow! We are running almost 10x slower now on our “clean”
 code approach. This is obvious, we don’t need a hash table here, we’re
-just switching returns based on a enum of 6 different types.</p>
+just returning based on a enum of 6 different types.</p>
 <h2 id="conclusion">Conclusion</h2>
 <ul>
 <li>Beware of “clean code” conventions without reason. If some of they
@@ -473,5 +486,88 @@ code.</li>
 <code>switch</code>/<code>case</code> statements, otherwise
 <code>if</code> is fine.</li>
 </ul>
+<h2 id="benchmark-code">Benchmark code</h2>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define CATCH_CONFIG_MAIN</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define CATCH_CONFIG_ENABLE_BENCHMARKING</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;catch2/catch.hpp&gt;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;vector&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unordered_map&gt;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> PieceType <span class="op">{</span>PAWN<span class="op">,</span> KNIGHT<span class="op">,</span> BISHOP<span class="op">,</span> ROOK<span class="op">,</span> QUEEN<span class="op">,</span> KING<span class="op">};</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>unordered_map<span class="op">&lt;</span>PieceType<span class="op">,</span> <span class="dt">char</span><span class="op">&gt;</span> mapper <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span>PAWN<span class="op">,</span> <span class="ch">&#39;p&#39;</span><span class="op">},</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span>KNIGHT<span class="op">,</span> <span class="ch">&#39;k&#39;</span><span class="op">},</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span>BISHOP<span class="op">,</span> <span class="ch">&#39;b&#39;</span><span class="op">},</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span>ROOK<span class="op">,</span> <span class="ch">&#39;r&#39;</span><span class="op">},</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span>QUEEN<span class="op">,</span> <span class="ch">&#39;q&#39;</span><span class="op">},</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span>KING<span class="op">,</span> <span class="ch">&#39;k&#39;</span><span class="op">},</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> mapper_func<span class="op">(</span>PieceType piece<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> mapper<span class="op">[</span>piece<span class="op">];</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> if_func<span class="op">(</span>PieceType piece<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>piece <span class="op">==</span> PAWN<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="ch">&#39;p&#39;</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>piece <span class="op">==</span> KNIGHT<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="ch">&#39;k&#39;</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>piece <span class="op">==</span> BISHOP<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="ch">&#39;b&#39;</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>piece <span class="op">==</span> ROOK<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="ch">&#39;r&#39;</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>piece <span class="op">==</span> QUEEN<span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> <span class="ch">&#39;q&#39;</span><span class="op">;</span> <span class="op">}</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="ch">&#39;k&#39;</span><span class="op">;</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> case_func<span class="op">(</span>PieceType piece<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">switch</span><span class="op">(</span>piece<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> PAWN<span class="op">:</span> <span class="cf">return</span> <span class="ch">&#39;p&#39;</span><span class="op">;</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> KNIGHT<span class="op">:</span> <span class="cf">return</span> <span class="ch">&#39;k&#39;</span><span class="op">;</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> BISHOP<span class="op">:</span> <span class="cf">return</span> <span class="ch">&#39;b&#39;</span><span class="op">;</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> ROOK<span class="op">:</span> <span class="cf">return</span> <span class="ch">&#39;r&#39;</span><span class="op">;</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> QUEEN<span class="op">:</span> <span class="cf">return</span> <span class="ch">&#39;q&#39;</span><span class="op">;</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">default</span><span class="op">:</span> <span class="cf">return</span> <span class="ch">&#39;k&#39;</span><span class="op">;</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;catch2/catch.hpp&gt;</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="co">/* std::vector&lt;PieceType&gt; pieces = {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING}; */</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="bu">std::</span>vector<span class="op">&lt;</span>PieceType<span class="op">&gt;</span> pieces <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>  PAWN<span class="op">,</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>  KNIGHT<span class="op">,</span> KNIGHT<span class="op">,</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>  BISHOP<span class="op">,</span> BISHOP<span class="op">,</span> BISHOP<span class="op">,</span> BISHOP<span class="op">,</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>  ROOK<span class="op">,</span> ROOK<span class="op">,</span> ROOK<span class="op">,</span> ROOK<span class="op">,</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>  QUEEN<span class="op">,</span> QUEEN<span class="op">,</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>  KING<span class="op">,</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> test_if<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">1000000</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="kw">auto</span> <span class="op">&amp;</span>piece <span class="op">:</span> pieces<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>      if_func<span class="op">(</span>piece<span class="op">);</span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> test_case<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">1000000</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="kw">auto</span> <span class="op">&amp;</span>piece <span class="op">:</span> pieces<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>      case_func<span class="op">(</span>piece<span class="op">);</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> test_mapper<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">1000000</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="at">const</span> <span class="kw">auto</span> <span class="op">&amp;</span>piece <span class="op">:</span> pieces<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>      mapper_func<span class="op">(</span>piece<span class="op">);</span></span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>TEST_CASE<span class="op">(</span><span class="st">&quot;IF vs CASE vs MAP&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a>  BENCHMARK<span class="op">(</span><span class="st">&quot;test case&quot;</span><span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> test_case<span class="op">();</span> <span class="op">};</span></span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a>  BENCHMARK<span class="op">(</span><span class="st">&quot;test if&quot;</span><span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> test_if<span class="op">();</span> <span class="op">};</span></span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a>  BENCHMARK<span class="op">(</span><span class="st">&quot;test mapper&quot;</span><span class="op">)</span> <span class="op">{</span> <span class="cf">return</span> test_mapper<span class="op">();</span> <span class="op">};</span></span>
+<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 </body>
 </html>
