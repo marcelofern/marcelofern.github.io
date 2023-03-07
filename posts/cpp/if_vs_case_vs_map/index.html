@@ -277,9 +277,9 @@
 <h2 id="the-introduction">The introduction</h2>
 <p>There’re a many misconceptions about how <code>if</code> and
 <code>case</code> statements are compiled, and how they perform. As
-those statements grow large (20+ lines) code-reviewers commonly recomend
-refactoring the conditional chains into a mapper to improve code
-clarity.</p>
+those statements grow large (20+ lines) code-reviewers commonly
+recommend refactoring the conditional chains into a mapper to improve
+code clarity.</p>
 <p>So the idea here is to check whether or not the code is cleaner, and
 how much we pay in performance in order to have “cleaner” code.</p>
 <h2 id="the-example">The example</h2>
@@ -441,7 +441,7 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#c
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> mapper<span class="op">[</span>piece<span class="op">];</span></span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>So much cleaner, right?! The reviewer will be happy that you reduced
-a monstruous chain of <code>if</code> (or <code>case</code>) statements
+a monstrous chain of <code>if</code> (or <code>case</code>) statements
 into a single, clean, 1 line function.</p>
 <p>More over, a common argument is that “it’s easier to test, and
 therefore to obtain high coverage”. And indeed, it’s easy to obtain
