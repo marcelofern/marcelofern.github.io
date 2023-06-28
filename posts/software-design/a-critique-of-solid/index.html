@@ -275,9 +275,9 @@
 <p class="date">April 15, 2023</p>
 </header>
 <h2 id="introduction">Introduction</h2>
-<p>SOLID is an acronym coined by Robert C. Martin (famously known as
-uncle Bob), particularly focused at making Object Oriented Programming
-designs easier to understand, maintain, and adapt.</p>
+<p>SOLID is an acronym coined by Robert C. Martin (also known as uncle
+Bob), particularly focused at making Object Oriented Programming designs
+easier to understand, maintain, and adapt.</p>
 <p>The <a
 href="https://web.archive.org/web/20150906155800/http://www.objectmentor.com/resources/articles/Principles_and_Patterns.pdf">original
 paper (archived)</a> introducing the term in 2000 is a quick read worth
@@ -316,8 +316,8 @@ called by the paper), are:</p>
 weaknesses and providing evidence to counter their adoption.</p>
 <h3 id="the-open-closed-principle-opc">The Open Closed Principle
 (OPC)</h3>
-<p>This is the most import SOLID principle according to Martin. Its
-definition goes as follow:</p>
+<p>According to Martin this is the most important principle, and we will
+start with it. Here is its definition:</p>
 <blockquote>
 <p>A module should be open for extension but closed for
 modification.</p>
@@ -326,14 +326,14 @@ modification.</p>
 particular problem is only needed to be written once. To address further
 problems, this perfect code doesn’t need to change, but only be
 <em>extended</em>.</p>
-<p>By keeping this in mind, the developer will always try to lay out the
-perfect code that can be extended whilst keeping its original elegance
-and efficiency. This means that the developer is successfully applying
-good OPC.</p>
-<p>You probably can see where this is going by my wording (“perfect”
-code, whatever that means). But let’s not diverge from the theme just
+<p>When developers keep this in mind, they try to produce perfect code
+that can be extended whilst keeping its original elegance and
+efficiency. If that’s materialised, the developer can be said to be
+following the OPC principle.</p>
+<p>You probably can see where this is going by my wording (“perfect
+code”, whatever that means). But let’s not diverge from the theme just
 yet, we will go through an example of code provided by Martin that
-violates OPC:</p>
+violates the OPC principle:</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Modem <span class="op">{</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">enum</span> Type <span class="op">{</span>hayes<span class="op">,</span> courrier<span class="op">,</span> ernie<span class="op">)</span> type<span class="op">;</span></span>
@@ -380,13 +380,13 @@ Polymorphism</strong>.</p>
 <p>First of all, poly means <em>many</em> and morphism means
 <em>forms</em>. Many forms. In Object Oriented Programming this means we
 will have an abstract class with abstract methods (virtual functions),
-and concrete class implementations of the abstract class, along with
-their concrete methods.</p>
+and concrete child classes implementing the actual code for each
+method.</p>
 <p>Now we add the word “Dynamic” in the bake, thus <strong>Dynamic
 Polymorphism</strong>. Here dynamic means that the form (concrete class
-implementation) will be figured out during run time. Putting it all
-together and rewriting the code above, we end up with something like the
-example provided in Martin’s paper:</p>
+implementation) is found during run time. Putting it all together and
+rewriting the code above, we end up with something like the example
+provided in Martin’s paper:</p>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Modem <span class="op">{</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span><span class="op">:</span></span>
@@ -411,7 +411,7 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#c
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    Hayes hayes <span class="op">=</span> Hayes<span class="op">();</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>string<span class="op"> </span>pno <span class="op">=</span> <span class="st">&quot;1&quot;</span><span class="op">;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    string pno <span class="op">=</span> <span class="st">&quot;1&quot;</span><span class="op">;</span></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    LogOn<span class="op">(</span>hayes<span class="op">,</span> pno<span class="op">);</span></span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>Now that we see the whole picture we can tell that the function
@@ -422,32 +422,31 @@ does not discuss the downsides of this approach. However, I don’t think
 we should toss it away too quickly. Let’s critique the example a little
 bit before moving on.</p>
 <p>We know for a fact that when types are only resolved at runtime our
-code will be slower. But why? For each class that contains virtual
+code becomes slower. But why? For each class that inherits virtual
 functions the compiler creates a <code>vtable</code>. A
 <code>vtable</code> is essentially a table of function pointers. When an
-object is created at run time, a pointer to its vtable is added to its
+object is created at runtime, a pointer to its vtable is added to its
 memory layout, and when a virtual function is called on this object, the
 code looks at the appropriate function pointer on the object vtable and
 then calls the function through that pointer.</p>
 <p>This all means that by using <strong>Dynamic polymorphism</strong>
-our code will require an additional level of indirection for
-<em>each</em> virtual function call, and the memory footprint of objects
-will increase program memory usage.</p>
-<p>More over, this example is rather simple. When dynamic polymorphism
-gets out of control you may see code that has complex inheritance
-hierarchies. This makes compiler optimisation very difficult and often
-times impossible as the code needs to infer at run time which function
-pointer to use.</p>
+our code requires an additional level of indirection for <em>each</em>
+virtual function call, and the memory footprint of objects will increase
+program memory usage.</p>
+<p>Furthermore, the given example is a simplistic one. In cases where
+dynamic polymorphism is overused, the code may have convoluted
+inheritance hierarchies. Such complexity impairs compiler optimization
+as virtual function calls aren’t assignable until runtime.</p>
 <p>You might be thinking that the code above looks clean and that
 there’s no reason to not do it. After all, reduced performance and more
-memory usage is a fair price to pay for a cleaner code, right? Well.
-What if we didn’t have to pay this price and still have “clean code”
+memory usage is a fair price to pay for cleaner code, right? Well. What
+if we didn’t have to pay this price and still have “clean code”
 (whatever that means)?</p>
 <p>We will get there, but to keep things fair we need to go through
 another abstraction example given by Martin.</p>
 <h4 id="static-polymorphism">Static Polymorphism</h4>
 <p>What if there was a way to have something similar to Dynamic
-Polymorphism but without the run time overhead, with more compiler
+Polymorphism but without the runtime overhead, with more compiler
 optimisation, and more control over object types? Here is where static
 polymorphism comes handy.</p>
 <p><strong>Static</strong> here means that the child type will be
@@ -458,19 +457,19 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#c
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> LogOn<span class="op">(</span>MODEM<span class="op">&amp;</span> m<span class="op">,</span> string<span class="op">&amp;</span> pno<span class="op">,</span> string<span class="op">&amp;</span> user<span class="op">,</span> string<span class="op">&amp;</span> pw<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    m<span class="op">.</span>Dial<span class="op">(</span>pno<span class="op">);</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// you get the idea.</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span></code></pre></div>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>This looks alright, but is this a real improvement? What is the trade
 off?</p>
 <p>Each time a template is instantiated a new copy of the code is
 created. This is how compilers make generic programming type safe at
 compiling time. The more instantiations your code has, the larger your
-executable becomes, and the longer compilation will take.</p>
-<p>This all means that we are trading runtime performance for compiling
-performance. It might be OK to do so in certain applications, but what
-if we didn’t have to?</p>
-<h4 id="final-thoughts-on-the-open-closed-principle">Final thoughts on
-the open-closed principle</h4>
-<p>Martin’s original argument has mainly two points:</p>
+executable becomes, and the longer compilation takes.</p>
+<p>This all means that we are trading runtime performance for compile
+time performance. It might be OK to do so in certain applications, but
+what if we didn’t have to?</p>
+<h4 id="addressing-the-open-closed-principle">Addressing the open-closed
+principle</h4>
+<p>Martin’s original argument stressed the following:</p>
 <ol type="1">
 <li>The dependency between the Modem struct and its implementation
 structs is bad.</li>
@@ -489,18 +488,19 @@ class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#c
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> LogOn<span class="op">(</span>Modem<span class="op">&amp;</span> m<span class="op">,</span> string<span class="op">&amp;</span> pno<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">switch</span> <span class="op">(</span>m<span class="op">.</span>type<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> ModemType<span class="op">.</span>HAYES<span class="op">:</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> LogOnHayes<span class="op">(</span>m<span class="op">);</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>            <span class="co">// do something with hayes</span></span>
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> ModemType<span class="op">.</span>COURRIER<span class="op">:</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> LogOnCourrier<span class="op">(</span>m<span class="op">);</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>            <span class="co">// do something with courrier</span></span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">// ...you get the idea</span></span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
 <span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <ol type="1">
 <li>Now the compiler knows all the code paths the code goes through at
 compiling time. Code can easily be optimised.</li>
+<li>No layers of indirection and thus no performance costs at
+runtime.</li>
 <li>No memory overhead.</li>
 <li>No executable size overhead.</li>
-<li>No layers of indirection and thus no performance costs.</li>
 <li>Less lines of code.</li>
 </ol>
 <p>Is the code above objectively bad? Is it difficult to read? I could
@@ -510,9 +510,146 @@ amount of time.</p>
 easier to read. However, the flexibility of using virtual functions can
 be costly as we have seen. If you don’t know whether you need that
 flexibility yet, you will be imagining future use cases that
-<em>may</em> use your code. If this flexibility ends up never been
+<em>may</em> use your code. If this flexibility ends up not being
 needed, the programmer has fundamentally over-scoped their own code and
-cause memory and CPU degradation to their program with not added
-benefit.</p>
+caused unnecessary memory and CPU degradation to their program with no
+added benefit.</p>
+<p>Here is where the trade-off lies. Imagine that you need to add a new
+type of modem. Using the <code>switch</code> above you’d have to change
+the LogOn function and recompile it. You will also need to recompile
+everything that depends on the LogOn function, and that can be a lot. If
+you were using polymorphism, you just needed to add a new type
+(potentially in a new file), and you would need to only compile one
+single file. Looks good, right?</p>
+<p>But what if you need to add a new functionality in the abstract
+class? In the polymorphism case you’d need to add a new function for
+every single type, and that could be a lot. Differently, in the
+<code>switch</code> case, you could add a new function (potentially in a
+new file) and you only need to compile that one single file.</p>
+<p>In conclusion, this design choice will determine what will be easier
+and what will be harder for your program. Ask yourself the question: “Do
+I want it to be easier to add more functionality to my program, or do I
+prioritise adding more types?”. The answer will dictate what is best on
+your situation. Polymorphism isn’t a silver bullet that will always make
+your code OPC compliant. In fact, the more functional your code looks
+like, the greater the penalty of using polymorphism.</p>
+<h3 id="the-liskov-substitution-principle-lsp">The Liskov Substitution
+Principle (LSP)</h3>
+<p>This principle states that an object (such as an abstract class), may
+be replaced by a sub-object (such as a child class) without breaking the
+program.</p>
+<p>This means that if we have a function <code>foo(Parent bar)</code>,
+we should also be able to call foo as <code>foo(Child bar)</code>
+without altering the correctness of the program.</p>
+<p>Martin uses an example of a parent class called <code>Ellipse</code>
+and a child class called <code>Circle</code>. As every circle is an
+ellipse with a very particular configuration, this sounds about right.
+However, Martin only uses this example to stress that it is an
+inheritance <em>bad</em> practice.</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> f<span class="op">(</span>Ellipse<span class="op">&amp;</span> e<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    Point a<span class="op">(-</span><span class="dv">1</span><span class="op">,</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    Point b<span class="op">(</span><span class="dv">1</span><span class="op">,</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    e<span class="op">.</span>SetFoci<span class="op">(</span>a<span class="op">,</span>b<span class="op">);</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    e<span class="op">.</span>SetMajorAxis<span class="op">(</span><span class="dv">3</span><span class="op">);</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="ot">assert</span><span class="op">(</span>e<span class="op">.</span>GetFocusA<span class="op">()</span> <span class="op">==</span> a<span class="op">);</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">assert</span><span class="op">(</span>e<span class="op">.</span>GetFocusB<span class="op">()</span> <span class="op">==</span> b<span class="op">);</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="ot">assert</span><span class="op">(</span>e<span class="op">.</span>GetMajorAxis<span class="op">()</span> <span class="op">==</span> <span class="dv">3</span><span class="op">);</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>The function <code>f</code> above, for example, can’t receive a
+<code>Circle</code> instead of an <code>Ellipse</code>. Reason being
+that the method <code>setFoci</code> will alter the circle and turn it
+into an ellipse. This can become a subtle bug in the application
+code.</p>
+<p>A safe option is for the <code>Circle::SetFoci</code> method to add
+an extra validation, asserting that <code>a == b</code>. This violates
+LSP. The child object now has an extra restriction that the parent
+object doesn’t. Martin concludes that:</p>
+<blockquote>
+<p>derived methods should expect no more and provide no less.</p>
+</blockquote>
+<p>I don’t have much to critique about this principle itself. To be
+honest it sounds alright to me. However, this is only <strong>one more
+thing</strong> to remember when you’re using polymorphism, which
+contributes as a <strong>negative</strong> to the OPC principle through
+abstraction that we discussed above.</p>
+<p>Apart from performance and memory degradation, the programmer also
+has to worry about loose/tight contracts between the parent and the
+child. This means that the functionality may not work that well if the
+type implementation is faulty.</p>
+<p>Martin himself comments that LSP violation can be costly. If the
+interface is being used in many different places, the cost of repairing
+this violation might be too much to take. A possible solution, as stated
+by Martin, is to provide an <code>if/else</code> statement to make sure
+the Ellipse is indeed an Ellipse.</p>
+<p>Another problem of this type of polymorphism is that the Circle
+object is way simpler than an Ellipse. This means that the Circle class
+will inherit many methods that it doesn’t need to use, generating
+<strong>method spam</strong>. This violates another principle of SOLID,
+the Interface Segregation Principle that we will look into later on.</p>
+<h2 id="the-dependency-inversion-principle-dip">The Dependency Inversion
+Principle (DIP)</h2>
+<blockquote>
+<p>Depend upon Abstractions. Do not depend upon concretions.</p>
+</blockquote>
+<p>In essence, this principle means that code in high level modules
+should not depend on code in low level modules. High level modules are
+usually top abstractions that express the policies of the application,
+whereas low level modules contain the implementation details. In other
+words, the abstraction should not worry about the implementation.</p>
+<p>By inverting the dependency, i.e., making the low level modules
+depend on the high ones and not the opposite, a developer will be DIP
+complaint.</p>
+<p>You might be noticing a trend now. Most of these SOLID rules are
+greatly related to polymorphism. After all, they were created for OOP.
+As I feel like I have addressed the main trade-off in that approach, I
+could easily end up repeating myself here. Let’s proceed nonetheless
+:’)</p>
+<p>Inverting dependencies in a codebase must be seen as a trade-off. As
+now your abstraction can be changed without having to worry about the
+implementation details, you can’t change the implementation details
+without having to worry about the abstraction. This means that if the
+interface changes often, it will be harder to manage the concrete
+implementations.</p>
+<p>More over, classes that could simply be a concrete implementation
+alone, with no dependency on a high-level interface, now may have an
+artificial interface so that this principle isn’t violated. This usually
+happens because “you never know whether another concrete implementation
+that needs to use the interface might come about”. One regular example
+is an interface <code>ShipmentPolicy</code> which has <strong>only
+one</strong> concrete implementation, often called
+<code>ShipmentPolicyImpl</code>. One could say that this is a code
+redundancy.</p>
+<h2 id="the-interface-segregation-principle-isp">The Interface
+Segregation Principle (ISP)</h2>
+<p>ISP states that no code should depend on methods it does not use.
+This implies having smaller interfaces so that clients that depend on
+them only need to know a few relevant methods.</p>
+<p>This idea sounds reasonable, and it’s a way of controlling
+inheritance method spam when inheriting from bloated interfaces. But I
+think this technique is more of a refactoring tool rather than a
+principle itself.</p>
+<p>Treating ISP as a principle can add unnecessary complexity. You
+should design your code to solve the problem at hand rather than
+worrying about whether your interface will become too bloated in future
+when more use cases are added. As you don’t know how your codebase will
+progress in future, you shouldn’t make compromises from early on. If an
+interface grew too much, and <strong>now</strong> you have legitimate
+reason to split it into smaller ones, then go and refactor it.</p>
+<p>As all the other principles we have discussed so far, take ISP as a
+trade-off instead of a principle.</p>
+<p>Here are a few quotes from the Code Complete book that are relevant
+for the matter:</p>
+<blockquote>
+<p>If the derived class isn’t going to adhere completely to the same
+interface contract defined by the base class, inheritance is not the
+right implementation.</p>
+</blockquote>
+<blockquote>
+<p>Be suspicious of base classes of which there is only one derived
+class.</p>
+</blockquote>
+<h2 id="single-responsibility-principle-srp">Single Responsibility
+Principle (SRP)</h2>
 </body>
 </html>
