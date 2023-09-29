@@ -363,14 +363,14 @@ time the actual CPU spent running the script. Now the C code:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">time</span> ./a.out</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> 4.04s <span class="ex">user</span> 2.96s system 99% cpu 7.042 total</span></code></pre></div>
 <p>To be honest, this doesn’t look like a huge difference for an array
-of a billion element. However, if we’re thinking about scale, this can
-make a huge difference.</p>
+of a billion elements in a test like this. But we think about economy of
+scale, this compounds a lot.</p>
 <h2 id="what-about-an-array-of-user-defined-types">What about an array
 of user-defined types?</h2>
 <p>We were using <code>int</code> objects. This can be a bit of a cheat,
 specially because Python can have many optimisations in place for pure
 int objects.</p>
-<p>Let’s create a class and see how it performs:</p>
+<p>Let’s create a class and see how it performs instead:</p>
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MySweetClass:</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    field_a: <span class="bu">int</span></span>
@@ -409,13 +409,46 @@ than that blew up my laptop.</p>
 <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>We’ve got:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">a.out</span>  0.18s user 0.11s system 99% cpu 0.292 total</span></code></pre></div>
-<p>In fact, I can still run 1 billion entries for as quick as Python can
-run just 10 million:</p>
+<p>In fact, I can still run 1 billion entries for about the same time
+penalty Python would’ve ran only 10 million.</p>
 <div class="sourceCode" id="cb10"><pre
 class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">a.out</span>  6.19s user 3.37s system 98% cpu 9.744 total</span></code></pre></div>
+<h2 id="bonus-how-about-c-vectors">Bonus: How about C++ vectors?</h2>
+<p>Here’s the C++ code:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;vector&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;memory&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MySweetClass <span class="op">{</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> field_a<span class="op">;</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> field_b<span class="op">;</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> field_c<span class="op">;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  MySweetClass<span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">,</span> <span class="dt">int</span> c<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    field_a <span class="op">=</span> a<span class="op">;</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    field_b <span class="op">=</span> b<span class="op">;</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    field_c <span class="op">=</span> c<span class="op">;</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>vector<span class="op">&lt;</span><span class="bu">std::</span>unique_ptr<span class="op">&lt;</span>MySweetClass<span class="op">&gt;&gt;</span> array<span class="op">;</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">100000000</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>unique_ptr<span class="op">&lt;</span>MySweetClass<span class="op">&gt;</span> my_class <span class="op">=</span> <span class="bu">std::</span>make_unique<span class="op">&lt;</span>MySweetClass<span class="op">&gt;(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    array<span class="op">.</span>push_back<span class="op">(</span><span class="bu">std::</span>move<span class="op">(</span>my_class<span class="op">));</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Yields these results for a billion entries:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode sh"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/tmp/a.out</span>  4.97s user 3.30s system 97% cpu 8.510 total</span></code></pre></div>
+<p>This is faster than the C code. At this point I’m not exactly sure
+why. My guess is that the <vector> and the <unique_ptr> are highly
+optimised for this kind of use case.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>Don’t use Python (joking). But the truth is, as soon as you need an
-array of something that is not an int in Python, the performance will go
+array of something that is not an int in Python, the performance does go
 downhill.</p>
 </body>
 </html>
