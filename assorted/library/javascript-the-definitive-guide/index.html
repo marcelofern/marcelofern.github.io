@@ -165,8 +165,11 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
@@ -1909,7 +1912,7 @@ class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb78
 <div class="sourceCode" id="cb79"><pre
 class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="bu">Buffer</span> {</span>
 <span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>  #size <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">get</span> <span class="fu">size</span>() { <span class="cf">return</span> <span class="kw">this</span><span class="op">.</span>#size }<span class="op">;</span></span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">get</span> <span class="fu">size</span>() { <span class="cf">return</span> <span class="kw">this</span><span class="op">.</span>#<span class="at">size</span> }<span class="op">;</span></span>
 <span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <h2 id="chapter-10">Chapter 10</h2>
 <h3 id="modules">Modules</h3>

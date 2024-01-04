@@ -163,8 +163,11 @@
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
     ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
@@ -226,7 +229,7 @@ href="the-mystery-of-consciousness-searle/index.html">review</a>)</li>
 </ul>
 <h2 id="computing">Computing</h2>
 <ul>
-<li>Berman, Jules - Big Data, preparing, sharing, and analyzing complex
+<li>Berman, Jules - Big Data, preparing, sharing, and analysing complex
 information. (<a href="big-data-jules-berman/index.html">review</a>)</li>
 <li>Bier, Jonathan - The Blocksize War</li>
 <li>Burkov, Andriy - The Hundred Page Machine Learning Book</li>
@@ -239,10 +242,11 @@ href="programming-in-lua/index.html">review</a>)</li>
 <li>Martin, C. Robert - Clean Architecture.</li>
 <li>Martin, C. Robert - Clean Code.</li>
 <li>Martin, C. Robert - Clean Coder.</li>
+<li>Neil, Drew - Practical Vim</li>
 <li>Percival, Harry and Gregory Bob - Architecture Patterns with
 Python</li>
 <li>Petzold, Charles - Code. (<a href="code/index.html">review</a>)</li>
-<li>Pope, Time - Practical Vim</li>
+<li>Plauger, P. J. - The Standard C Library</li>
 <li>Porcello, Eve - Learning GraphQL</li>
 <li>Poulton, Nigel - Docker Deep Dive</li>
 <li>Ritchie, Dennis and Kernighan, Brian - The C Programming
@@ -286,6 +290,8 @@ href="dune-messiah/index.html">review</a>)</li>
 <li>Herbert, Frank - Children of Dune.</li>
 <li>Herbert, Frank - God Emperor of Dune. (<a
 href="god-emperor-of-dune/index.html">review</a>)</li>
+<li>Shusterman, Neal - Arc of a Scythe Series (<a
+href="arc-of-a-scythe/index.html">review</a>)</li>
 <li>Tolkien, J. R. R. - The Hobbit.</li>
 <li>Tolkien, J. R. R. - The Lord of The Rings Trilogy.</li>
 </ul>
