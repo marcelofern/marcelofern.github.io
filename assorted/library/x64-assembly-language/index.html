@@ -1,17 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
-
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-176835131-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-176835131-1');
-  </script>
-
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -1076,7 +1065,7 @@ TF: Trap flag
 ZF: Zero flag</code></pre>
 <h2 id="sections">Sections</h2>
 <h3 id="data">.data</h3>
-<p>Contains data definitions o finitialised data items. Those have a
+<p>Contains data definitions of initialised data items. Those have a
 value before the program begins:</p>
 <div class="sourceCode" id="cb48"><pre
 class="sourceCode asm"><code class="sourceCode fasm"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="bu">SECTION</span> <span class="op">.</span>data</span>
@@ -1089,7 +1078,7 @@ class="sourceCode asm"><code class="sourceCode fasm"><span id="cb48-1"><a href="
 <span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">; Strings are interesting as their value points to the first byte</span></span>
 <span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">; in memory where the string lives. Also, strings can be concatenated by</span></span>
 <span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">; using a comma &quot;,&quot;. Thus, the number 10 is being concatenated to the</span></span>
-<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">; string below. 10 == EOL in Linux (a.k.a 0xA).</span></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">; string below. 10 == EOL (or new line) in Linux (a.k.a 0xA).</span></span>
 <span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">EatMsg:</span> <span class="dt">db</span> <span class="st">&quot;Eat at Joe&#39;s!&quot;</span><span class="op">,</span> <span class="dv">10</span></span>
 <span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">; equ = equate. Use to associate a value with a label. Every time the</span></span>
 <span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">; assembler finds this label, it swaps by the result of the equation.</span></span>
@@ -1110,7 +1099,7 @@ the <code>.bss</code> section when fetching the executable from
 disk.</p>
 <div class="sourceCode" id="cb49"><pre
 class="sourceCode asm"><code class="sourceCode fasm"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co">; somewhere in the code</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">lea</span> <span class="kw">rcx</span><span class="op">,</span> <span class="op">[</span>some_memory<span class="op">]</span> <span class="co">; Load effective address of memory location</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="bu">lea</span> <span class="kw">rcx</span><span class="op">,</span> <span class="op">[</span>some_memory<span class="op">]</span> <span class="co">; Load effective address of memory location</span></span>
 <span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co">; then</span></span>
 <span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="bu">section</span> <span class="op">.</span>bss</span>

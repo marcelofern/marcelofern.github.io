@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Marcelo Fernandes" />
+  <title>Intel x64 Registers</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+<style rel="stylesheet">
+  html {
+    font-size: 16px;
+  }
+  body {
+    hyphens: auto;
+    text-align: justify;
+    line-height: 1.7;
+  }
+  a {
+    color: #1976d2;
+    text-decoration: none;
+    border-bottom: 1px solid;
+  }
+  a:visited {
+    color: #1976d2;
+  }
+  pre.sourceCode {
+    border-left: 3px solid #000;
+    padding-left: 1.5rem;
+    margin: 1em 0;
+  }
+  figcaption {
+    display: none;
+  }
+</style>
+<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Intel x64 Registers</h1>
+<p class="author">Marcelo Fernandes</p>
+<p class="date">February 18th, 2024</p>
+</header>
+<h2 id="cheatsheet">Cheatsheet</h2>
+<pre><code>| 64 bits | 32 bits | 16 bits | 8 bits |
+| rax     |  eax    | ax      | al     |
+| rbx     |  ebx    | bx      | bl     |
+| rcx     |  ecx    | cx      | cl     |
+| rdx     |  edx    | dx      | dl     |
+| rsi     |  esi    | si      | sil    |
+| rdi     |  edi    | di      | dil    |
+| rbp     |  ebp    | bp      | bpl    |
+| rsp     |  esp    | sp      | spl    |
+| r8      |  r8d    | r8w     | r8b    |
+| r9      |  r9d    | r9w     | r9b    |
+| r10     |  r10d   | r10w    | r10b   |
+| r11     |  r11d   | r11w    | r11b   |
+| r12     |  r12d   | r12w    | r12b   |
+| r13     |  r13d   | r13w    | r13b   |
+| r14     |  r14d   | r14w    | r14b   |
+| r15     |  r15d   | r15w    | r15b   |</code></pre>
+<h2 id="flags-register-eflags">FLAGS register (eflags)</h2>
+<ul>
+<li><p><code>Bit: 0, Label: CF, Description</code>: Carry Flag: Set by
+arithmetic instructions which generate either a carry or borrow. Set
+when an operation generates a carry to or a borrow from a destination
+operand.</p></li>
+<li><p><code>Bit: 2, Label: PF, Description</code>: Parity flag: Set by
+most CPU instructions if the least significant (aka the low-order bits)
+of the destination operand contain an even number of 1’s.</p></li>
+<li><p><code>Bit: 4, Label: AF, Description</code>: Auxiliary Carry
+Flag: Set if there is a carry or borrow involving bit 4 of EAX. Set when
+a CPU instruction generates a carry to or a borrow from the low-order 4
+bits of an operand. This flag is used for binary coded decimal (BCD)
+arithmetic.</p></li>
+<li><p><code>Bit: 6, Label: ZF, Description</code>: Zero Flag: Set by
+most instructions if the result an operation is binary zero.</p></li>
+<li><p><code>Bit: 7, Label: SF, Description</code>: Sign Flag: Most
+operations set this bit the same as the most significant bit (aka
+high-order bit) of the result. 0 is positive, 1 is negative.</p></li>
+<li><p><code>Bit: 8, Label: TF, Description</code>: Trap Flag:
+(sometimes named a Trace Flag.) Permits single stepping of programs.
+After executing a single instruction, the processor generates an
+internal exception 1. When Trap Flag is set by a program, the processor
+generates a single-step interrupt after each instruction. A debugging
+program can use this feature to execute a program one instruction at a
+time.</p></li>
+<li><p><code>Bit: 9, Label: IF, Description</code>: Interrupt Enable
+Flag: when set, the processor recognizes external interrupts on the INTR
+pin. When set, interrupts are recognized and acted on as they are
+received. The bit can be cleared to turn off interrupt processing
+temporarily.</p></li>
+<li><p><code>Bit:10, Label: DF, Description</code>: Direction Flag: Set
+and cleared using the STD and CLD instructions. It is used in string
+processing. When set to 1, string operations process down from high
+addresses to low addresses. If cleared, string operations process up
+from low addresses to high addresses.</p></li>
+<li><p><code>Bit:11, Label: OF, Description</code>: Overflow Flag: Most
+arithmetic instructions set this bit, indicating that the result was too
+large to fit in the destination. When set, it indicates that the result
+of an operation is too large or too small to fit in the destination
+operand.</p></li>
+<li><p><code>Bit:12-13, Label: IOPL , Description</code>: Input/Output
+privilege level flags: Used in protected mode to generate four levels of
+security.</p></li>
+<li><p><code>Bit:14, Label: NT, Description</code>: Nested Task Flag:
+Used in protected mode. When set, it indicates that one system task has
+invoked another via a CALL Instruction, rather than a JMP.</p></li>
+<li><p><code>Bit:16, Label: RF, Description</code>: Resume Flag: Used by
+the debug registers DR6 and DR7. It enables you to turn off certain
+exceptions while debugging code.</p></li>
+<li><p><code>Bit:17, Label: VM, Description</code>: Virtual 8086 Mode
+flag: Permits 80386 to behave like a high speed 8086.</p></li>
+</ul>
+<h3 id="relevant-flags">Relevant flags</h3>
+<ul>
+<li><code>SF</code>: Sign Flag. Set when the result of an operation
+forces the operand to become negative.</li>
+<li><code>ZF</code>: Zero Flag. Set when the result of an operation
+become zero (conditional jumps).</li>
+<li><code>OF</code>: Overflow Flag. Set when the result of an arithmetic
+operation on a signed integer is too large to fit.</li>
+<li><code>CF</code>: Carry Flag. Used in unsigned arithmetic
+expressions.</li>
+<li><code>IF</code>: Interrupt flag: Usually active when debugging (step
+through code).</li>
+</ul>
+</body>
+</html>
