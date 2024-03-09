@@ -5,8 +5,8 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Marcelo Fernandes" />
-  <meta name="dcterms.date" content="2021-12-18" />
-  <title>Wellington Botanic Gardens</title>
+  <meta name="dcterms.date" content="2024-02-29" />
+  <title>Database - SET CONSTRAINTS</title>
   <style>
     html {
       color: #1a1a1a;
@@ -202,42 +202,48 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Wellington Botanic Gardens</h1>
+<h1 class="title">Database - SET CONSTRAINTS</h1>
 <p class="author">Marcelo Fernandes</p>
-<p class="date">December 18, 2021</p>
+<p class="date">February 29, 2024</p>
 </header>
-<p><img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/oriental_bay_thirds_rule.jpg"
-alt="oriental_bay_thirds_rule.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/wellington_landscape_with_boats_2.jpg"
-alt="wellington_landscape_with_boats_2.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/wellington_landscape_with_boats.jpg"
-alt="wellington_landscape_with_boats.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/oriental_bay_through_buildings.jpg"
-alt="oriental_bay_through_buildings.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/oriental_bay_through_bushes.jpg"
-alt="oriental_bay_through_bushes.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/piled_stones.jpg"
-alt="piled_stones.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/black_bird.jpg"
-alt="black_bird.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/cactus.jpg"
-alt="cactus.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/evie_taking_picture_of_me.jpg"
-alt="evie_taking_picture_of_me.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/garden_signs.jpg"
-alt="garden_signs.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/orange_plant.jpg"
-alt="orange_plant.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/purple_flower.jpg"
-alt="purple_flower.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/red_finger_flower.jpg"
-alt="red_finger_flower.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/sheep_decoration_xmas_tree.jpg"
-alt="sheep_decoration_xmas_tree.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/tui_decoration_xmas_tree.jpg"
-alt="tui_decoration_xmas_tree.jpg" /> <img
-src="https://marcelofern.s3.eu-west-1.amazonaws.com/gallery/2021-12-18-wellington-botanic-gardens/tui_shadow.jpg"
-alt="tui_shadow.jpg" /></p>
+<p>SET CONSTRAINTS — set constraint check timing for the current
+transaction</p>
+<p><a
+href="http://web.archive.org/web/20240127151138/https://www.postgresql.org/docs/current/sql-set-constraints.html">Source</a></p>
+<h2 id="what-it-does">What it does</h2>
+<blockquote>
+<p>SET CONSTRAINTS sets the behavior of constraint checking within the
+current transaction. IMMEDIATE constraints are checked at the end of
+each statement. DEFERRED constraints are not checked until transaction
+commit. Each constraint has its own IMMEDIATE or DEFERRED mode.</p>
+</blockquote>
+<blockquote>
+<p>Upon creation, a constraint is given one of three characteristics:
+DEFERRABLE INITIALLY DEFERRED, DEFERRABLE INITIALLY IMMEDIATE, or NOT
+DEFERRABLE. The third class is always IMMEDIATE and is not affected by
+the SET CONSTRAINTS command. The first two classes start every
+transaction in the indicated mode, but their behavior can be changed
+within a transaction by SET CONSTRAINTS.</p>
+</blockquote>
+<h2 id="surprise">Surprise!</h2>
+<blockquote>
+<p>When SET CONSTRAINTS changes the mode of a constraint from DEFERRED
+to IMMEDIATE, the new mode takes effect retroactively: any outstanding
+data modifications that would have been checked at the end of the
+transaction are instead checked during the execution of the SET
+CONSTRAINTS command. If any such constraint is violated, the SET
+CONSTRAINTS fails (and does not change the constraint mode). Thus, SET
+CONSTRAINTS can be used to force checking of constraints to occur at a
+specific point in a transaction.</p>
+</blockquote>
+<h2 id="but">But…</h2>
+<blockquote>
+<p>Currently, only UNIQUE, PRIMARY KEY, REFERENCES (foreign key), and
+EXCLUDE constraints are affected by this setting. NOT NULL and CHECK
+constraints are always checked immediately when a row is inserted or
+modified (not at the end of the statement). Uniqueness and exclusion
+constraints that have not been declared DEFERRABLE are also checked
+immediately.</p>
+</blockquote>
 </body>
 </html>

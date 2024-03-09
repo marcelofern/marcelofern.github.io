@@ -562,6 +562,13 @@ class="sourceCode asm"><code class="sourceCode fasm"><span id="cb21-1"><a href="
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="bu">lea</span> <span class="kw">rdx</span><span class="op">,</span> <span class="op">[</span><span class="kw">rdx</span><span class="op">*</span><span class="dv">2</span><span class="op">+</span><span class="kw">rdx</span><span class="op">]</span> <span class="co">; multiplies rdx by 3</span></span></code></pre></div>
 <p>This is often faster than using shifts + adds to multiply a
 value.</p>
+<h3 id="leave">LEAVE</h3>
+<p>Releases the stack frame set up by an earlier ENTER instruction.</p>
+<p>It is the equivalent of an epilogue.</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">; same as</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="bu">mov</span> <span class="kw">rsp</span><span class="op">,</span> <span class="kw">rbp</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="bu">pop</span> <span class="kw">rbp</span></span></code></pre></div>
 <h3 id="loop">LOOP</h3>
 <p>The LOOP instruction assumes that the RCX register contains the loop
 count. When the loop instruction is executed, the RCX register is
@@ -577,11 +584,11 @@ repeat count must be initially loaded into RCX. When the LOOP
 instruction is executed, it first decre- ments RCX. Then it tests to see
 if RCX = 0. If RCX is not 0, LOOP transfers control to the 8- bit
 displacement specified as its operand:</p>
-<div class="sourceCode" id="cb22"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="bu">mov</span> <span class="kw">ECX</span><span class="op">,</span><span class="dv">10</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">l1:</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>&lt;<span class="cf">loop</span> body<span class="op">&gt;</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="cf">loop</span> l1</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">mov</span> <span class="kw">ECX</span><span class="op">,</span><span class="dv">10</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">l1:</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>&lt;<span class="cf">loop</span> body<span class="op">&gt;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="cf">loop</span> l1</span></code></pre></div>
 <blockquote>
 <p>Looking at the “8086/8088 User’s Manual: Programmer’s and Hardware
 Reference” (Intel 1989) confirms that LOOP is marginally faster than the
@@ -605,8 +612,8 @@ SF: Sign flag
 TF: Trap flag
 ZF: Zero flag</code></pre>
 <p>Insteresting trick:</p>
-<div class="sourceCode" id="cb24"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="cf">loop</span> <span class="op">$</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="cf">loop</span> <span class="op">$</span></span></code></pre></div>
 <p>The above creates an infinite loop until RCX reaches zero. The mark
 <code>$</code> corresponds to the current location or address in the
 code. This means that <code>loop</code> will loop back to itself.</p>
@@ -700,8 +707,8 @@ TF: Trap flag
 ZF: Zero flag</code></pre>
 <h3 id="mul">MUL</h3>
 <p>Warning: contains implicit operand.</p>
-<div class="sourceCode" id="cb29"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="bu">mul</span> <span class="kw">rbx</span></span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="bu">mul</span> <span class="kw">rbx</span></span></code></pre></div>
 <p>MUL multiplies its single operand by AL, AX, EAX, or RAX, and the
 result is placed in AX, in DX:AX, in EDX:EAX, or in RDX:RAX. If MUL is
 given an 8-bit operand (either an 8- bit register or an 8-bit memory
@@ -748,10 +755,10 @@ and every 1 to 0;</li>
 overflow. Accounting for overflow will produce the wrong value for the
 result.</li>
 </ul>
-<div class="sourceCode" id="cb31"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>  <span class="bu">mov</span> <span class="kw">rax</span><span class="op">,</span> <span class="bn">0x42</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">neg</span> <span class="kw">rax</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">add</span> <span class="kw">rax</span><span class="op">,</span> <span class="bn">0x42</span></span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>  <span class="bu">mov</span> <span class="kw">rax</span><span class="op">,</span> <span class="bn">0x42</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">neg</span> <span class="kw">rax</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">add</span> <span class="kw">rax</span><span class="op">,</span> <span class="bn">0x42</span></span></code></pre></div>
 <p>Flags affected:</p>
 <pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
@@ -768,8 +775,8 @@ TF: Trap flag
 ZF: Zero flag</code></pre>
 <h3 id="or">OR</h3>
 <p>Bit-by-bit OR binary operation</p>
-<div class="sourceCode" id="cb33"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>  <span class="bu">or</span> <span class="kw">rax</span><span class="op">,</span> <span class="kw">rbx</span></span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>  <span class="bu">or</span> <span class="kw">rax</span><span class="op">,</span> <span class="kw">rbx</span></span></code></pre></div>
 <p>Note that the OR instruction makes the Auxiliary Carry flag
 undefined. CF and OF are cleared to 0, and the other affected flags are
 set according to the operation’s result.</p>
@@ -789,9 +796,9 @@ TF: Trap flag
 ZF: Zero flag</code></pre>
 <h3 id="pop">POP</h3>
 <p>Pops an item of data off the stack.</p>
-<div class="sourceCode" id="cb35"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pop</span> <span class="kw">rax</span> <span class="co">; pops 64bits from the stack</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="bu">pop</span> <span class="op">[</span><span class="kw">ebx</span><span class="op">]</span><span class="co">; pops 32bits from the stack onto the memory pointed by ebx</span></span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="bu">pop</span> <span class="kw">rax</span> <span class="co">; pops 64bits from the stack</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="bu">pop</span> <span class="op">[</span><span class="kw">ebx</span><span class="op">]</span><span class="co">; pops 32bits from the stack onto the memory pointed by ebx</span></span></code></pre></div>
 <p>As with <code>PUSH</code>, it only works with 16bits or 64bits at the
 time.</p>
 <p>No flags are affected.</p>
@@ -800,9 +807,9 @@ time.</p>
 <h3 id="push">PUSH</h3>
 <p>Pushes a 16bit or 64bit register or memory value onto the stack. It
 doesn’t work for 8bit or 32bit registers.</p>
-<div class="sourceCode" id="cb36"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="bu">push</span> <span class="kw">rax</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="bu">push</span> <span class="op">[</span><span class="kw">rbx</span><span class="op">]</span></span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="bu">push</span> <span class="kw">rax</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="bu">push</span> <span class="op">[</span><span class="kw">rbx</span><span class="op">]</span></span></code></pre></div>
 <p>In Intel x64, where the stack grows downwards, if we push a 64bit
 register to the stack, the RSP (register stack pointer) will be
 decremented by 64bits and whatever that needs to be stored is saved at
@@ -826,8 +833,8 @@ immediate number. For a single rotate, where the first operand is one,
 the overflow flag (OF) is defined. For all other cases, OF is undefined.
 After the shift, the carry flag bit is XORed with the two most
 significant result bits.</p>
-<div class="sourceCode" id="cb37"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="bu">rcr</span> <span class="kw">rax</span><span class="op">,</span> <span class="dv">1</span></span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="bu">rcr</span> <span class="kw">rax</span><span class="op">,</span> <span class="dv">1</span></span></code></pre></div>
 <h3 id="rep">REP</h3>
 <p>Repeat string-operation until tested-condition</p>
 <p>Use the rep (repeat while equal), repnz (repeat while nonzero) or
@@ -840,8 +847,8 @@ condition.</p>
 moved down to the right-most bit instead of going to the carry flag.</p>
 <p>ROR: Similar to a shift right instruction, but the right-most bit is
 moved down to the left-most bit instead of going to the carry flag.</p>
-<div class="sourceCode" id="cb38"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>  <span class="bu">rol</span> <span class="op">&lt;</span>register<span class="op">/</span>memory<span class="op">&gt;,</span> <span class="op">&lt;</span>count<span class="op">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>  <span class="bu">rol</span> <span class="op">&lt;</span>register<span class="op">/</span>memory<span class="op">&gt;,</span> <span class="op">&lt;</span>count<span class="op">&gt;</span></span></code></pre></div>
 <p>Flags affected:</p>
 <pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
@@ -862,10 +869,10 @@ subtracts the result from the destination operand (first operand). The
 result of the subtraction is stored in the destination operand. The
 destination operand can be a register or a memory location; the source
 operand can be an immediate, a register, or a memory location.</p>
-<div class="sourceCode" id="cb40"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="bu">not</span> <span class="kw">rdx</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="bu">neg</span> <span class="kw">rax</span></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="bu">sbb</span> <span class="kw">rdx</span><span class="op">,</span> <span class="op">-</span><span class="dv">1</span></span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="bu">not</span> <span class="kw">rdx</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="bu">neg</span> <span class="kw">rax</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="bu">sbb</span> <span class="kw">rdx</span><span class="op">,</span> <span class="op">-</span><span class="dv">1</span></span></code></pre></div>
 <p>Flags affected:</p>
 <pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
@@ -882,9 +889,9 @@ TF: Trap flag
 ZF: Zero flag</code></pre>
 <h3 id="shl-shr">SHL / SHR</h3>
 <p>“Shift left” and “shift right”</p>
-<div class="sourceCode" id="cb42"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>  <span class="bu">shl</span> <span class="op">&lt;</span>register<span class="op">/</span>memory<span class="op">&gt;,</span> <span class="op">&lt;</span>count<span class="op">&gt;</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">shr</span> <span class="op">&lt;</span>register<span class="op">/</span>memory<span class="op">&gt;,</span> <span class="op">&lt;</span>count<span class="op">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>  <span class="bu">shl</span> <span class="op">&lt;</span>register<span class="op">/</span>memory<span class="op">&gt;,</span> <span class="op">&lt;</span>count<span class="op">&gt;</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">shr</span> <span class="op">&lt;</span>register<span class="op">/</span>memory<span class="op">&gt;,</span> <span class="op">&lt;</span>count<span class="op">&gt;</span></span></code></pre></div>
 <p>The number of bit positions shifted may be specified either as an
 8-bit immediate value or by the value in CL—not CX/ECX/RCX. (The 8086
 and 8088 are limited to the immediate value 1.)</p>
@@ -924,23 +931,23 @@ you want the search to be up-memory (cleared; use CLD) or down memory
 </ul>
 <p>You must decrement RCX unless you use <code>rep stosb</code>
 instead.</p>
-<div class="sourceCode" id="cb44"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cld</span> <span class="co">; clear DF so we&#39;re counting up-memory.</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="bu">mov</span> <span class="kw">al</span><span class="op">,</span> FILLCHR <span class="co">; put the buffer filler char in AL.</span></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="bu">mov</span> <span class="kw">rdi</span><span class="op">,</span>VidBuff <span class="co">; point the destination index at buffer.</span></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="bu">mov</span> <span class="kw">rcx</span><span class="op">,</span> COLS<span class="op">*</span>ROWS <span class="co">; put the count of chars stored into RCX.</span></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="bu">rep</span> <span class="bu">stosb</span> <span class="co">; blast chars at the buffer.</span></span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cld</span> <span class="co">; clear DF so we&#39;re counting up-memory.</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="bu">mov</span> <span class="kw">al</span><span class="op">,</span> FILLCHR <span class="co">; put the buffer filler char in AL.</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="bu">mov</span> <span class="kw">rdi</span><span class="op">,</span>VidBuff <span class="co">; point the destination index at buffer.</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="bu">mov</span> <span class="kw">rcx</span><span class="op">,</span> COLS<span class="op">*</span>ROWS <span class="co">; put the count of chars stored into RCX.</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="bu">rep</span> <span class="bu">stosb</span> <span class="co">; blast chars at the buffer.</span></span></code></pre></div>
 <p>Does not affect flags.</p>
 <h3 id="sub">SUB</h3>
 <p>SUB performs a subtraction without borrow, where the source operand
 is subtracted from the destination operand, and the result replaces the
 destination operand. If the result is negative, the Carry flag CF is
 set.</p>
-<div class="sourceCode" id="cb45"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="bu">SUB</span> <span class="kw">AX</span><span class="op">,</span><span class="kw">DX</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="bu">SUB</span> <span class="kw">AL</span><span class="op">,</span><span class="kw">DL</span></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="bu">SUB</span> <span class="kw">EBP</span><span class="op">,</span><span class="dv">17</span></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="bu">SUB</span> <span class="kw">RAX</span><span class="op">,</span><span class="dv">0</span><span class="er">FFFBH</span></span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="bu">SUB</span> <span class="kw">AX</span><span class="op">,</span><span class="kw">DX</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="bu">SUB</span> <span class="kw">AL</span><span class="op">,</span><span class="kw">DL</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="bu">SUB</span> <span class="kw">EBP</span><span class="op">,</span><span class="dv">17</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="bu">SUB</span> <span class="kw">RAX</span><span class="op">,</span><span class="dv">0</span><span class="er">FFFBH</span></span></code></pre></div>
 <p>Flags affected:</p>
 <pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
@@ -991,14 +998,14 @@ counter-intuitive.</p>
 bits, you need to flip each bit with the NOT instruction first.</p>
 <p>Caveat 2: TEST only works with a single bit. If you need to check if
 more than one bit is set to 1, it won’t work.</p>
-<div class="sourceCode" id="cb48"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="bu">test</span> <span class="op">&lt;</span>operand<span class="op">&gt;,</span> <span class="op">&lt;</span>bit mask<span class="op">&gt;</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="bu">test</span> <span class="kw">rax</span><span class="op">,</span><span class="bn">0x8</span> <span class="co">; checks if bit 3 is up.</span></span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="bu">test</span> <span class="op">&lt;</span>operand<span class="op">&gt;,</span> <span class="op">&lt;</span>bit mask<span class="op">&gt;</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="bu">test</span> <span class="kw">rax</span><span class="op">,</span><span class="bn">0x8</span> <span class="co">; checks if bit 3 is up.</span></span></code></pre></div>
 <h3 id="xchg">XCHG</h3>
 <p>Exchange the value of two variables (swap them)</p>
-<div class="sourceCode" id="cb49"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="bu">xchg</span> <span class="kw">cl</span><span class="op">,</span><span class="kw">ch</span></span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="bu">xchg</span> <span class="kw">cl</span><span class="op">,</span><span class="kw">ch</span></span></code></pre></div>
 <p>No flags are affected.</p>
 <h3 id="xlat">XLAT</h3>
 <p>The xlat instruction in x86 assembly language stands for “translate
@@ -1014,26 +1021,26 @@ fetched.</li>
 <p>This instruction is often used in conjunction with string operations
 or table lookups, where EBX holds an offset or index into a data table,
 and xlat is used to retrieve a byte from that table.</p>
-<div class="sourceCode" id="cb50"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="bu">section</span> <span class="op">.</span>data</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    str_table <span class="dt">db</span> <span class="st">&#39;0123456789ABCDEF&#39;</span>  <span class="co">; Hexadecimal digits lookup table</span></span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="bu">section</span> <span class="op">.</span>text</span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    global _start</span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="fu">_start:</span></span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">mov</span> <span class="kw">ebx</span><span class="op">,</span> <span class="dv">10</span><span class="co">; Index 10 in the table corresponds to the hexadecimal digit &#39;A&#39;</span></span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">xlat</span>       <span class="co">; AL now contains &#39;A&#39;</span></span>
-<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">; Continue with further instructions...</span></span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="bu">section</span> <span class="op">.</span>data</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>    str_table <span class="dt">db</span> <span class="st">&#39;0123456789ABCDEF&#39;</span>  <span class="co">; Hexadecimal digits lookup table</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="bu">section</span> <span class="op">.</span>text</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    global _start</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="fu">_start:</span></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">mov</span> <span class="kw">ebx</span><span class="op">,</span> <span class="dv">10</span><span class="co">; Index 10 in the table corresponds to the hexadecimal digit &#39;A&#39;</span></span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">xlat</span>       <span class="co">; AL now contains &#39;A&#39;</span></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">; Continue with further instructions...</span></span></code></pre></div>
 <p>No flags are affected.</p>
 <h3 id="xor">XOR</h3>
 <p>This is a nice trick, xor’ing something against itself yields zero.
 So if you want to zero a register, it’s faster to do:</p>
-<div class="sourceCode" id="cb51"><pre
-class="sourceCode asm"><code class="sourceCode fasm"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="bu">xor</span> <span class="kw">rax</span><span class="op">,</span> <span class="kw">rax</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="co">; instead of</span></span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="bu">mov</span> <span class="kw">rax</span><span class="op">,</span> <span class="dv">0</span></span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode asm"><code class="sourceCode fasm"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="bu">xor</span> <span class="kw">rax</span><span class="op">,</span> <span class="kw">rax</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="co">; instead of</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="bu">mov</span> <span class="kw">rax</span><span class="op">,</span> <span class="dv">0</span></span></code></pre></div>
 <p>Because we don’t have to go out to memory to load the immediate value
 0.</p>
 <p>The XOR operation yields a 1 if the operands are different and a 0 if
