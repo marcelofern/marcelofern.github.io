@@ -1,87 +1,39 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <meta name="author" content="Marcelo Fernandes" />
-  <meta name="dcterms.date" content="2022-07-10" />
-  <title>Programming in Lua</title>
-  <style>
-    html {
-      color: #1a1a1a;
-      background-color: #fdfdfd;
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:650px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
     }
-    body {
-      margin: 0 auto;
-      max-width: 36em;
-      padding-left: 50px;
-      padding-right: 50px;
-      padding-top: 50px;
-      padding-bottom: 50px;
-      hyphens: auto;
-      overflow-wrap: break-word;
-      text-rendering: optimizeLegibility;
-      font-kerning: normal;
-    }
-    @media (max-width: 600px) {
-      body {
-        font-size: 0.9em;
-        padding: 12px;
-      }
-      h1 {
-        font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        background-color: white;
-      }
-      body {
-        background-color: transparent;
-        color: black;
-        font-size: 12pt;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
-      }
-    }
-    p {
-      margin: 1em 0;
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
     }
     a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
     }
     img {
       max-width: 100%;
-    }
-    svg {
-      height: auto;
-      max-width: 100%;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      margin-top: 1.4em;
-    }
-    h5, h6 {
-      font-size: 1em;
-      font-style: italic;
-    }
-    h6 {
-      font-weight: normal;
-    }
-    ol, ul {
-      padding-left: 1.7em;
-      margin-top: 1em;
-    }
-    li > ol, li > ul {
-      margin-top: 0;
     }
     blockquote {
       margin: 1em 0 1em 1.7em;
@@ -89,231 +41,59 @@
       border-left: 2px solid #e6e6e6;
       color: #606060;
     }
-    code {
-      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
-      font-size: 85%;
-      margin: 0;
-      hyphens: manual;
-    }
-    pre {
-      margin: 1em 0;
-      overflow: auto;
-    }
-    pre code {
-      padding: 0;
-      overflow: visible;
-      overflow-wrap: normal;
-    }
-    .sourceCode {
-     background-color: transparent;
-     overflow: visible;
-    }
-    hr {
-      background-color: #1a1a1a;
-      border: none;
-      height: 1px;
-      margin: 1em 0;
-    }
-    table {
-      margin: 1em 0;
-      border-collapse: collapse;
-      width: 100%;
-      overflow-x: auto;
-      display: block;
-      font-variant-numeric: lining-nums tabular-nums;
-    }
-    table caption {
-      margin-bottom: 0.75em;
-    }
-    tbody {
-      margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
-    }
-    th {
-      border-top: 1px solid #1a1a1a;
-      padding: 0.25em 0.5em 0.25em 0.5em;
-    }
-    td {
-      padding: 0.125em 0.5em 0.25em 0.5em;
-    }
-    header {
-      margin-bottom: 4em;
-      text-align: center;
-    }
-    #TOC li {
-      list-style: none;
-    }
-    #TOC ul {
-      padding-left: 1.3em;
-    }
-    #TOC > ul {
-      padding-left: 0;
-    }
-    #TOC a:not(:hover) {
-      text-decoration: none;
-    }
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
-    /* CSS for syntax highlighting */
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { color: #008000; } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { color: #008000; font-weight: bold; } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-<style rel="stylesheet">
-  html {
-    font-size: 16px;
-  }
-  body {
-    hyphens: auto;
-    text-align: justify;
-    line-height: 1.7;
-  }
-  a {
-    color: #1976d2;
-    text-decoration: none;
-    border-bottom: 1px solid;
-  }
-  a:visited {
-    color: #1976d2;
-  }
-  pre.sourceCode {
-    border-left: 3px solid #000;
-    padding-left: 1.5rem;
-    margin: 1em 0;
-  }
-  figcaption {
-    display: none;
-  }
-</style>
-<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
 </head>
 <body>
-<header id="title-block-header">
-<h1 class="title">Programming in Lua</h1>
-<p class="author">Marcelo Fernandes</p>
-<p class="date">July 10, 2022</p>
-</header>
-<p>I’ve decided to start reading this book to get more insight into how
-to incorporate Lua into Neovim</p>
-<h2 id="contents">Contents</h2>
+<hr>
+<h2>title: Programming in Lua
+author: Marcelo Fernandes
+date: July 10, 2022</h2>
+<p>I've decided to start reading this book to get more insight into how to
+incorporate Lua into Neovim</p>
+<h2>Contents</h2>
 <ul>
 <li><a href="#chapter-1">Chapter 1. Getting started</a></li>
 <li><a href="#chapter-4">Chapter 4. Strings</a></li>
 <li><a href="#chapter-5">Chapter 5. Tables</a></li>
 <li><a href="#chapter-6">Chapter 6. Functions</a></li>
 <li><a href="#chapter-18">Chapter 18. Generic for</a></li>
-<li><a href="#chapter-20">Chapter 20. Metatables and
-Metamethods</a></li>
-<li><a href="#chapter-21">Chapter 21. Object-Oriented
-Programming</a></li>
+<li><a href="#chapter-20">Chapter 20. Metatables and Metamethods</a></li>
+<li><a href="#chapter-21">Chapter 21. Object-Oriented Programming</a></li>
 </ul>
-<h2 id="chapter-1">Chapter 1</h2>
-<h3 id="getting-started">Getting Started</h3>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- file test.lua</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="st">&quot;Hello World&quot;</span><span class="op">)</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- defines a factorial function</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> factorial<span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="va">n</span> <span class="op">==</span> <span class="dv">0</span> <span class="cf">then</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">n</span> <span class="op">*</span> factorial<span class="op">(</span><span class="va">n</span><span class="op">-</span><span class="dv">1</span><span class="op">)</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">end</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="st">&quot;enter a number:&quot;</span><span class="op">)</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="va">a</span> <span class="op">=</span> <span class="fu">io.read</span><span class="op">(</span><span class="st">&quot;*n&quot;</span><span class="op">)</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span>factorial<span class="op">(</span><span class="va">a</span><span class="op">))</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">-- types</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">type</span><span class="op">(</span><span class="kw">nil</span><span class="op">)</span> <span class="co">--&gt; nil</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">type</span><span class="op">(</span><span class="kw">true</span><span class="op">)</span> <span class="co">--&gt; boolean</span></span></code></pre></div>
-<p>You can run the code above by passing the <code>test.lua</code> file
-to the Lua interpreter of your choice.</p>
-<div class="sourceCode" id="cb2"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">luajit</span> test.lua</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># If you want to open an iterative session after running the code, use the</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># -i flag. This is usually helpful for debugging.</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">luajit</span> <span class="at">-i</span> test.lua</span></code></pre></div>
+<h2>Chapter 1</h2>
+<h3>Getting Started</h3>
+<pre><code class="language-lua">-- file test.lua
+print(&quot;Hello World&quot;)
+
+-- defines a factorial function
+function factorial(n)
+  if n == 0 then
+    return 1
+  else
+    return n * factorial(n-1)
+  end
+end
+
+print(&quot;enter a number:&quot;)
+a = io.read(&quot;*n&quot;)
+print(factorial(a))
+
+-- types
+type(nil) --&gt; nil
+type(true) --&gt; boolean
+</code></pre>
+<p>You can run the code above by passing the <code>test.lua</code> file to the Lua
+interpreter of your choice.</p>
+<pre><code class="language-bash">luajit test.lua
+
+# If you want to open an iterative session after running the code, use the
+# -i flag. This is usually helpful for debugging.
+luajit -i test.lua
+</code></pre>
 <p>List of reserved words:</p>
 <ul>
 <li>and</li>
@@ -339,406 +119,413 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="
 <li>until</li>
 <li>while</li>
 </ul>
-<p>List of basic types: - nil - boolean - number - string - userdata
-(type(io.stdin)) - function - table - thread</p>
-<div class="sourceCode" id="cb3"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">type</span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="co">--&gt; nil. It does not return an error.</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">a</span> <span class="op">=</span> <span class="dv">10</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">type</span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="co">--&gt; number</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="va">a</span> <span class="op">=</span> <span class="st">&quot;string&quot;</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">type</span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="co">--&gt; string</span></span></code></pre></div>
-<h3 id="exercises">Exercises</h3>
-<p>Run the factorial example. What happens to your program if you enter
-a negative number? Modify the example to avoid this problem.</p>
+<p>List of basic types:</p>
+<ul>
+<li>nil</li>
+<li>boolean</li>
+<li>number</li>
+<li>string</li>
+<li>userdata (type(io.stdin))</li>
+<li>function</li>
+<li>table</li>
+<li>thread</li>
+</ul>
+<pre><code class="language-lua">type(a) --&gt; nil. It does not return an error.
+a = 10
+type(a) --&gt; number
+a = &quot;string&quot;
+type(a) --&gt; string
+</code></pre>
+<h3>Exercises</h3>
+<p>Run the factorial example. What happens to your program if you enter a negative
+number? Modify the example to avoid this problem.</p>
 <p>A: The program raises a <code>stack overlow</code> error.</p>
 <p><code>factorial.lua</code></p>
-<div class="sourceCode" id="cb4"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/luajit</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> factorial<span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="va">n</span> <span class="op">&lt;</span> <span class="dv">0</span> <span class="cf">then</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="kw">nil</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">elseif</span> <span class="va">n</span> <span class="op">==</span> <span class="dv">0</span> <span class="cf">then</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">n</span> <span class="op">*</span> factorial<span class="op">(</span><span class="va">n</span><span class="op">-</span><span class="dv">1</span><span class="op">)</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">end</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="st">&quot;enter a number:&quot;</span><span class="op">)</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="va">a</span> <span class="op">=</span> <span class="fu">io.read</span><span class="op">(</span><span class="st">&quot;*n&quot;</span><span class="op">)</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span>factorial<span class="op">(</span><span class="va">a</span><span class="op">))</span></span></code></pre></div>
-<p>Write a simple script that prints its own name without knowing it in
-advance.</p>
-<div class="sourceCode" id="cb5"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/luajit</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> print_file_name<span class="op">()</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span><span class="op">(</span><span class="va">arg</span><span class="op">[</span><span class="dv">0</span><span class="op">])</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>print_file_name<span class="op">()</span></span></code></pre></div>
-<h2 id="chapter-4">Chapter 4</h2>
-<h3 id="strings">Strings</h3>
-<div class="sourceCode" id="cb6"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- The length operator is `#`</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="va">a</span> <span class="op">=</span> <span class="st">&quot;hello&quot;</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(#</span><span class="va">a</span><span class="op">)</span> <span class="co">--&gt; 5</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(#</span><span class="st">&quot;test&quot;</span><span class="op">)</span> <span class="co">--&gt; 4</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">-- the lib string also has a length function</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="fu">string.len</span><span class="op">(</span><span class="st">&quot;morning!&quot;</span><span class="op">))</span> <span class="co">--&gt; 8</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">-- String concatenation happens with `..`</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="st">&quot;hello &quot;</span> <span class="op">..</span> <span class="st">&quot;world&quot;</span><span class="op">)</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">-- long strings use [[ and ]]</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="va">body</span> <span class="op">=</span> <span class="vs">[[</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;body&gt;</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;a href=&quot;https://marcelofern.com&quot;&gt;Marcelo Fern&lt;/a&gt;</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/body&gt;</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="vs">]]</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- or [[= (followed by any number of = signs)</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- and =]]. This is useful when you need to</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">-- stringfy text that includes ]]</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="va">text</span> <span class="op">=</span> <span class="vs">[[===</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="vs">This text has ]]</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="op">===]]</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- coercions</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="dv">10</span> <span class="op">..</span> <span class="dv">20</span><span class="op">)</span> <span class="co">--&gt; 1020</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- string to number</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tonumber</span><span class="op">(</span><span class="st">&quot;   -3 &quot;</span><span class="op">)</span> <span class="co">--&gt; -3</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tonumber</span><span class="op">(</span><span class="st">&quot; i2 &quot;</span><span class="op">)</span> <span class="co">--&gt; nil</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">-- number to string</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tostring</span><span class="op">(</span><span class="dv">3</span><span class="op">)</span> <span class="co">--&gt; &quot;3&quot;</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">-- formatting a string</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">string.format</span><span class="op">(</span><span class="st">&quot;x = %d y = %d&quot;</span><span class="op">,</span> <span class="dv">10</span><span class="op">,</span> <span class="dv">20</span><span class="op">)</span> <span class="co">--&gt; x= 10 y = 20</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">-- search in string</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="va">x</span><span class="op">,</span> <span class="va">y</span> <span class="op">=</span> <span class="fu">string.find</span><span class="op">(</span><span class="st">&quot;hello world&quot;</span><span class="op">,</span> <span class="st">&quot;wor&quot;</span><span class="op">)</span> <span class="co">--&gt; 7 9</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="fu">string.find</span><span class="op">(</span><span class="st">&quot;hello world&quot;</span><span class="op">,</span> <span class="st">&quot;war&quot;</span><span class="op">)</span> <span class="co">--&gt; nil</span></span></code></pre></div>
-<h2 id="chapter-5">Chapter 5</h2>
-<h3 id="tables">Tables</h3>
+<pre><code class="language-lua">#!/usr/bin/luajit
+
+function factorial(n)
+  if n &lt; 0 then
+    return nil
+  elseif n == 0 then
+    return 1
+  else
+    return n * factorial(n-1)
+  end
+end
+
+print(&quot;enter a number:&quot;)
+a = io.read(&quot;*n&quot;)
+print(factorial(a))
+</code></pre>
+<p>Write a simple script that prints its own name without knowing it in advance.</p>
+<pre><code class="language-lua">#!/usr/bin/luajit
+
+function print_file_name()
+  print(arg[0])
+end
+
+print_file_name()
+</code></pre>
+<h2>Chapter 4</h2>
+<h3>Strings</h3>
+<pre><code class="language-lua">-- The length operator is `#`
+a = &quot;hello&quot;
+print(#a) --&gt; 5
+print(#&quot;test&quot;) --&gt; 4
+
+-- the lib string also has a length function
+print(string.len(&quot;morning!&quot;)) --&gt; 8
+
+-- String concatenation happens with `..`
+print(&quot;hello &quot; .. &quot;world&quot;)
+
+-- long strings use [[ and ]]
+body = [[
+&lt;body&gt;
+  &lt;a href=&quot;https://marcelofern.com&quot;&gt;Marcelo Fern&lt;/a&gt;
+&lt;/body&gt;
+]]
+</code></pre>
+<pre><code class="language-lua">-- or [[= (followed by any number of = signs)
+-- and =]]. This is useful when you need to
+-- stringfy text that includes ]]
+text = [[===
+This text has ]]
+===]]
+</code></pre>
+<pre><code class="language-lua">-- coercions
+print(10 .. 20) --&gt; 1020
+
+-- string to number
+tonumber(&quot;   -3 &quot;) --&gt; -3
+tonumber(&quot; i2 &quot;) --&gt; nil
+
+-- number to string
+tostring(3) --&gt; &quot;3&quot;
+
+-- formatting a string
+string.format(&quot;x = %d y = %d&quot;, 10, 20) --&gt; x= 10 y = 20
+
+-- search in string
+x, y = string.find(&quot;hello world&quot;, &quot;wor&quot;) --&gt; 7 9
+string.find(&quot;hello world&quot;, &quot;war&quot;) --&gt; nil
+</code></pre>
+<h2>Chapter 5</h2>
+<h3>Tables</h3>
 <p>Tables are the only data structuring mechanism in Lua.</p>
-<div class="sourceCode" id="cb9"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/luajit</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="va">a</span> <span class="op">=</span> <span class="op">{}</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="va">a</span><span class="op">[</span><span class="st">&quot;x&quot;</span><span class="op">]</span> <span class="op">=</span> <span class="dv">10</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="va">a</span><span class="op">[</span><span class="st">&quot;x&quot;</span><span class="op">])</span> <span class="co">--&gt; 10</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="va">b</span> <span class="op">=</span> <span class="op">{}</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="va">b</span><span class="op">.</span><span class="va">x</span> <span class="op">=</span> <span class="dv">20</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="va">b</span><span class="op">.</span><span class="va">x</span><span class="op">)</span> <span class="co">--&gt; 20</span></span></code></pre></div>
+<pre><code class="language-lua">#!/usr/bin/luajit
+
+a = {}
+a[&quot;x&quot;] = 10
+print(a[&quot;x&quot;]) --&gt; 10
+
+b = {}
+b.x = 20
+print(b.x) --&gt; 20
+</code></pre>
 <p>Implementing lists / arrays:</p>
-<div class="sourceCode" id="cb10"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="va">numbers</span> <span class="op">=</span> <span class="op">{</span><span class="dv">10</span><span class="op">,</span> <span class="dv">20</span><span class="op">,</span> <span class="dv">30</span><span class="op">,</span> <span class="dv">40</span><span class="op">,</span> <span class="dv">50</span><span class="op">}</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="va">numbers</span><span class="op">[</span><span class="dv">1</span><span class="op">])</span> <span class="co">--&gt; 10 Indexes in Lua start at 1.</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(#</span><span class="va">numbers</span><span class="op">)</span> <span class="co">--&gt; 5 The # calculates the length.</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- note that # is unreliable for lists with holes.</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- iterate over an array</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="va">i</span><span class="op">=</span><span class="dv">1</span><span class="op">,</span> <span class="op">#</span><span class="va">numbers</span> <span class="cf">do</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span><span class="op">(</span><span class="va">numbers</span><span class="op">[</span><span class="va">i</span><span class="op">])</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">-- or use ipairs</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="va">k</span><span class="op">,</span> <span class="va">v</span> <span class="kw">in</span> <span class="fu">ipairs</span><span class="op">(</span><span class="va">numbers</span><span class="op">)</span> <span class="cf">do</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span><span class="op">(</span><span class="va">k</span><span class="op">,</span> <span class="va">v</span><span class="op">)</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">--&gt; 1 10</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">--&gt; 2 20</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">--&gt; 3 30</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co">--&gt; 4 40</span></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">--&gt; 5 50</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">-- append an element at the end of an array</span></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="va">numbers</span><span class="op">[#</span><span class="va">numbers</span> <span class="op">+</span> <span class="dv">1</span><span class="op">]</span> <span class="op">=</span> <span class="dv">60</span></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="va">numbers</span><span class="op">[</span><span class="dv">6</span><span class="op">])</span> <span class="co">--&gt; 60</span></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">-- or use table.insert</span></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="fu">table.insert</span><span class="op">(</span><span class="va">numbers</span><span class="op">,</span> <span class="dv">70</span><span class="op">)</span></span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="va">numbers</span><span class="op">[</span><span class="dv">7</span><span class="op">])</span> <span class="co">--&gt; 70</span></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co">-- remove the last element of an array, returning it as a result</span></span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="fu">table.remove</span><span class="op">(</span><span class="va">numbers</span><span class="op">))</span> <span class="co">--&gt; 70</span></span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="va">numbers</span><span class="op">[#</span><span class="va">numbers</span><span class="op">])</span> <span class="co">--&gt; 60</span></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co">-- you can also call `table.remove` with</span></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="co">-- the number of the index you want to remove.</span></span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co">-- in that case, the holes will be filled up</span></span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="co">-- i.e., each element after the removed one</span></span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="co">-- will be brought one position down.</span></span></code></pre></div>
+<pre><code class="language-lua">numbers = {10, 20, 30, 40, 50}
+print(numbers[1]) --&gt; 10 Indexes in Lua start at 1.
+print(#numbers) --&gt; 5 The # calculates the length.
+
+-- note that # is unreliable for lists with holes.
+
+-- iterate over an array
+for i=1, #numbers do
+  print(numbers[i])
+end
+
+-- or use ipairs
+for k, v in ipairs(numbers) do
+  print(k, v)
+end
+--&gt; 1 10
+--&gt; 2 20
+--&gt; 3 30
+--&gt; 4 40
+--&gt; 5 50
+
+-- append an element at the end of an array
+numbers[#numbers + 1] = 60
+print(numbers[6]) --&gt; 60
+-- or use table.insert
+table.insert(numbers, 70)
+print(numbers[7]) --&gt; 70
+
+-- remove the last element of an array, returning it as a result
+print(table.remove(numbers)) --&gt; 70
+print(numbers[#numbers]) --&gt; 60
+-- you can also call `table.remove` with
+-- the number of the index you want to remove.
+-- in that case, the holes will be filled up
+-- i.e., each element after the removed one
+-- will be brought one position down.
+</code></pre>
 <p>Implementing a dictionary</p>
-<div class="sourceCode" id="cb11"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="va">name</span> <span class="op">=</span> <span class="op">{</span><span class="va">first</span><span class="op">=</span><span class="st">&quot;Marcelo&quot;</span><span class="op">,</span> <span class="va">last</span><span class="op">=</span><span class="st">&quot;Fernandes&quot;</span><span class="op">}</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="va">name</span><span class="op">.</span><span class="va">first</span> <span class="op">..</span> <span class="st">&quot; &quot;</span> <span class="op">..</span> <span class="va">name</span><span class="op">.</span><span class="va">last</span><span class="op">)</span> <span class="co">--&gt; Marcelo Fernandes</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- traverse all key-value pairs</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="va">k</span><span class="op">,</span> <span class="va">v</span> <span class="kw">in</span> <span class="fu">pairs</span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="cf">do</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span><span class="op">(</span><span class="va">k</span><span class="op">,</span> <span class="va">v</span><span class="op">)</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">--&gt; first Marcelo</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">--&gt; last Fernandes</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="va">name</span><span class="op">.</span><span class="va">first</span> <span class="op">=</span> <span class="kw">nil</span> <span class="co">--&gt; Remove the key from the table.</span></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">-- To use strings:</span></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="va">sum</span> <span class="op">=</span> <span class="op">{[</span><span class="st">&quot;+&quot;</span><span class="op">]</span> <span class="op">=</span> <span class="st">&quot;add&quot;</span><span class="op">}</span></span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="va">sum</span><span class="op">[</span><span class="st">&quot;+&quot;</span><span class="op">])</span> <span class="co">--&gt; &quot;add&quot;</span></span></code></pre></div>
-<h2 id="chapter-6">Chapter 6</h2>
-<h3 id="functions">Functions</h3>
-<div class="sourceCode" id="cb12"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> add<span class="op">(</span><span class="va">array</span><span class="op">)</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">local</span> <span class="va">sum</span> <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> <span class="va">i</span><span class="op">=</span><span class="dv">1</span><span class="op">,</span> <span class="op">#</span><span class="va">array</span> <span class="cf">do</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">sum</span> <span class="op">=</span> <span class="va">sum</span> <span class="op">+</span> <span class="va">array</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">end</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="va">sum</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span>add<span class="op">({</span><span class="dv">20</span><span class="op">,</span> <span class="dv">20</span><span class="op">}))</span> <span class="co">--&gt; 40</span></span></code></pre></div>
+<pre><code class="language-lua">name = {first=&quot;Marcelo&quot;, last=&quot;Fernandes&quot;}
+print(name.first .. &quot; &quot; .. name.last) --&gt; Marcelo Fernandes
+
+-- traverse all key-value pairs
+for k, v in pairs(name) do
+  print(k, v)
+end
+--&gt; first Marcelo
+--&gt; last Fernandes
+
+name.first = nil --&gt; Remove the key from the table.
+
+-- To use strings:
+sum = {[&quot;+&quot;] = &quot;add&quot;}
+print(sum[&quot;+&quot;]) --&gt; &quot;add&quot;
+</code></pre>
+<h2>Chapter 6</h2>
+<h3>Functions</h3>
+<pre><code class="language-lua">function add(array)
+  local sum = 0
+  for i=1, #array do
+    sum = sum + array[i]
+  end
+  return sum
+end
+
+print(add({20, 20})) --&gt; 40
+</code></pre>
 <p>Variadic functions (variable number of arguments)</p>
-<div class="sourceCode" id="cb13"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> add<span class="op">(...)</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">local</span> <span class="va">sum</span> <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> <span class="cn">_</span><span class="op">,</span> <span class="va">v</span> <span class="kw">in</span> <span class="fu">pairs</span><span class="op">({...})</span> <span class="cf">do</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">sum</span> <span class="op">=</span> <span class="va">sum</span> <span class="op">+</span> <span class="va">v</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">end</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="va">sum</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span>add<span class="op">(</span><span class="dv">3</span><span class="op">,</span> <span class="dv">4</span><span class="op">,</span> <span class="dv">5</span><span class="op">,</span> <span class="dv">6</span><span class="op">,</span> <span class="dv">7</span><span class="op">))</span> <span class="co">--&gt; 25</span></span></code></pre></div>
-<h3 id="exercices">Exercices</h3>
+<pre><code class="language-lua">function add(...)
+  local sum = 0
+  for _, v in pairs({...}) do
+    sum = sum + v
+  end
+  return sum
+end
+
+print(add(3, 4, 5, 6, 7)) --&gt; 25
+</code></pre>
+<h3>Exercices</h3>
 <p>Write a function that takes an array and prints all its elements</p>
-<div class="sourceCode" id="cb14"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/luajit</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> print_array<span class="op">(</span><span class="va">array</span><span class="op">)</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span><span class="op">(</span><span class="fu">unpack</span><span class="op">(</span><span class="va">array</span><span class="op">))</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span>print_array<span class="op">({</span><span class="dv">3</span><span class="op">,</span> <span class="dv">4</span><span class="op">,</span> <span class="dv">5</span><span class="op">,</span> <span class="dv">6</span><span class="op">,</span> <span class="dv">7</span><span class="op">}))</span></span></code></pre></div>
-<p>Write a function that takes an arbitrary number of values and returns
-all of them, with the exception of the first one.</p>
-<div class="sourceCode" id="cb15"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> all_but_first<span class="op">(</span><span class="va">first</span><span class="op">,</span> <span class="op">...)</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">...</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span>all_but_first<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">10</span><span class="op">))</span> <span class="co">--&gt; 2 10</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span>all_but_first<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="st">&quot;5&quot;</span><span class="op">,</span> <span class="st">&quot;word&quot;</span><span class="op">))</span> <span class="co">--&gt; &quot;5&quot; &quot;word&quot;</span></span></code></pre></div>
-<p>Write a function that takes an arbitrary number of values and returns
-all of them, with the exception of the last one.</p>
-<div class="sourceCode" id="cb16"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/luajit</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> all_but_last<span class="op">(...)</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="va">array</span> <span class="op">=</span> <span class="op">{...}</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">table.remove</span><span class="op">(</span><span class="va">array</span><span class="op">)</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">unpack</span><span class="op">(</span><span class="va">array</span><span class="op">)</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span>all_but_last<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">10</span><span class="op">))</span> <span class="co">--&gt; 1 2</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span>all_but_last<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="st">&quot;5&quot;</span><span class="op">,</span> <span class="st">&quot;word&quot;</span><span class="op">))</span> <span class="co">--&gt; 1 &quot;5&quot;</span></span></code></pre></div>
-<h2 id="chapter-18">Chapter 18</h2>
-<h3 id="generic-for">Generic for</h3>
-<div class="sourceCode" id="cb17"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- given a function to iterate</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- over an array using closures</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> array_iterator<span class="op">(</span><span class="va">array</span><span class="op">)</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">local</span> <span class="va">i</span> <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="kw">function</span><span class="op">()</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">i</span> <span class="op">=</span> <span class="va">i</span> <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">array</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">end</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">-- you can use a while loop</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="va">array</span> <span class="op">=</span> <span class="op">{</span><span class="dv">10</span><span class="op">,</span> <span class="dv">20</span><span class="op">,</span> <span class="dv">30</span><span class="op">}</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="va">iterator</span> <span class="op">=</span> array_iterator<span class="op">(</span><span class="va">array</span><span class="op">)</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="kw">true</span> <span class="cf">do</span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="va">element</span> <span class="op">=</span> iterator<span class="op">()</span></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="va">element</span> <span class="op">==</span> <span class="kw">nil</span> <span class="cf">then</span></span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">break</span></span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span><span class="op">(</span><span class="va">element</span><span class="op">)</span></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">end</span></span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="co">-- But you could use the generic for</span></span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="va">element</span> <span class="kw">in</span> array_iterator<span class="op">(</span><span class="va">array</span><span class="op">)</span> <span class="cf">do</span></span>
-<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span><span class="op">(</span><span class="va">element</span><span class="op">)</span></span>
-<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div>
+<pre><code class="language-lua">#!/usr/bin/luajit
+
+function print_array(array)
+  print(unpack(array))
+end
+
+print(print_array({3, 4, 5, 6, 7}))
+</code></pre>
+<p>Write a function that takes an arbitrary number of values and returns all of
+them, with the exception of the first one.</p>
+<pre><code class="language-lua">function all_but_first(first, ...)
+  return ...
+end
+
+print(all_but_first(1, 2, 10)) --&gt; 2 10
+print(all_but_first(1, &quot;5&quot;, &quot;word&quot;)) --&gt; &quot;5&quot; &quot;word&quot;
+</code></pre>
+<p>Write a function that takes an arbitrary number of values and returns all of
+them, with the exception of the last one.</p>
+<pre><code class="language-lua">#!/usr/bin/luajit
+
+function all_but_last(...)
+  array = {...}
+  table.remove(array)
+  return unpack(array)
+end
+
+print(all_but_last(1, 2, 10)) --&gt; 1 2
+print(all_but_last(1, &quot;5&quot;, &quot;word&quot;)) --&gt; 1 &quot;5&quot;
+</code></pre>
+<h2>Chapter 18</h2>
+<h3>Generic for</h3>
+<pre><code class="language-lua">-- given a function to iterate
+-- over an array using closures
+function array_iterator(array)
+  local i = 0
+  return function()
+    i = i + 1
+    return array[i]
+  end
+end
+
+-- you can use a while loop
+array = {10, 20, 30}
+iterator = array_iterator(array)
+while true do
+  element = iterator()
+  if element == nil then
+    break
+  print(element)
+  end
+end
+
+-- But you could use the generic for
+for element in array_iterator(array) do
+  print(element)
+end
+</code></pre>
 <p>Stateless iterators:</p>
-<div class="sourceCode" id="cb18"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/luajit</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> <span class="kw">function</span> array_iterator<span class="op">(</span><span class="va">array</span><span class="op">,</span> <span class="va">index</span><span class="op">)</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="va">index</span> <span class="op">=</span> <span class="va">index</span> <span class="op">+</span> <span class="dv">1</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">local</span> <span class="va">value</span> <span class="op">=</span> <span class="va">array</span><span class="op">[</span><span class="va">index</span><span class="op">]</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="va">value</span> <span class="cf">then</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">index</span><span class="op">,</span> <span class="va">value</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">end</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> <span class="kw">function</span> stateless_array_iterator<span class="op">(</span><span class="va">array</span><span class="op">)</span></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="va">array_iterator</span><span class="op">,</span> <span class="va">array</span><span class="op">,</span> <span class="dv">0</span></span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="va">array</span> <span class="op">=</span> <span class="op">{</span><span class="dv">10</span><span class="op">,</span> <span class="dv">20</span><span class="op">,</span> <span class="dv">30</span><span class="op">}</span></span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="va">index</span><span class="op">,</span> <span class="va">element</span> <span class="kw">in</span> stateless_array_iterator<span class="op">(</span><span class="va">array</span><span class="op">)</span> <span class="cf">do</span></span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span><span class="op">(</span><span class="va">index</span><span class="op">,</span> <span class="va">element</span><span class="op">)</span></span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div>
-<h2 id="chapter-20">Chapter 20</h2>
-<h3 id="metatables-and-metamethods">Metatables and metamethods</h3>
-<div class="sourceCode" id="cb19"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- setting and getting metatables</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="va">table</span> <span class="op">=</span> <span class="op">{}</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="va">second_table</span> <span class="op">=</span> <span class="op">{}</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">setmetatable</span><span class="op">(</span><span class="va">second_table</span><span class="op">,</span> <span class="va">table</span><span class="op">)</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="fu">getmetatable</span><span class="op">(</span><span class="va">second_table</span><span class="op">)</span> <span class="op">==</span> <span class="va">table</span><span class="op">)</span> <span class="co">--&gt; true</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">-- a table can be its own metatable</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="fu">setmetatable</span><span class="op">(</span><span class="va">table</span><span class="op">,</span> <span class="va">table</span><span class="op">)</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="fu">getmetatable</span><span class="op">(</span><span class="va">table</span><span class="op">)</span> <span class="op">==</span> <span class="va">table</span><span class="op">)</span> <span class="co">--&gt; true</span></span></code></pre></div>
-<h2 id="chapter-21">Chapter 21</h2>
-<h3 id="object-oriented-programming">Object-Oriented Programming</h3>
-<p>Whenever a <code>:</code> is present on a function name, Lua injects
-a <code>self</code> keyword in the body of the function:</p>
-<div class="sourceCode" id="cb20"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="cn">A</span><span class="va">ccount</span> <span class="op">=</span> <span class="op">{</span><span class="va">balance</span><span class="op">=</span><span class="dv">0</span><span class="op">}</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="cn">A</span><span class="va">ccount</span><span class="op">:</span>withdraw<span class="op">(</span><span class="va">amount</span><span class="op">)</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="va">self</span><span class="op">.</span><span class="va">balance</span> <span class="op">=</span> <span class="va">self</span><span class="op">.</span><span class="va">balance</span> <span class="op">-</span> <span class="va">amount</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="va">acc</span> <span class="op">=</span> <span class="cn">A</span><span class="va">ccount</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="va">acc</span><span class="op">:</span>withdraw<span class="op">(</span><span class="dv">10</span><span class="op">)</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="va">acc</span><span class="op">.</span><span class="va">balance</span><span class="op">)</span> <span class="co">--&gt; -10</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">-- the above is only syntax sugar.</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co">-- you can achieve the same as:</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="cn">A</span><span class="va">ccount</span> <span class="op">=</span> <span class="op">{</span><span class="va">balance</span><span class="op">=</span><span class="dv">0</span><span class="op">}</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="cn">A</span><span class="va">ccount</span><span class="op">.</span>withdraw<span class="op">(</span><span class="va">self</span><span class="op">,</span> <span class="va">amount</span><span class="op">)</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  <span class="va">self</span><span class="op">.</span><span class="va">balance</span> <span class="op">=</span> <span class="va">self</span><span class="op">.</span><span class="va">balance</span> <span class="op">-</span> <span class="va">amount</span></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="va">acc</span> <span class="op">=</span> <span class="cn">A</span><span class="va">ccount</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="co">-- pass the extra argument here.</span></span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="va">acc</span><span class="op">.</span>withdraw<span class="op">(</span><span class="va">acc</span><span class="op">,</span> <span class="dv">10</span><span class="op">)</span></span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="va">acc</span><span class="op">.</span><span class="va">balance</span><span class="op">)</span> <span class="co">--&gt; -10</span></span></code></pre></div>
+<pre><code class="language-lua">#!/usr/bin/luajit
+
+local function array_iterator(array, index)
+  index = index + 1
+  local value = array[index]
+  if value then
+    return index, value
+  end
+end
+
+local function stateless_array_iterator(array)
+  return array_iterator, array, 0
+end
+
+array = {10, 20, 30}
+
+for index, element in stateless_array_iterator(array) do
+  print(index, element)
+end
+</code></pre>
+<h2>Chapter 20</h2>
+<h3>Metatables and metamethods</h3>
+<pre><code class="language-lua">-- setting and getting metatables
+table = {}
+second_table = {}
+
+setmetatable(second_table, table)
+print(getmetatable(second_table) == table) --&gt; true
+
+-- a table can be its own metatable
+
+setmetatable(table, table)
+print(getmetatable(table) == table) --&gt; true
+</code></pre>
+<h2>Chapter 21</h2>
+<h3>Object-Oriented Programming</h3>
+<p>Whenever a <code>:</code> is present on a function name, Lua injects a <code>self</code> keyword
+in the body of the function:</p>
+<pre><code class="language-lua">Account = {balance=0}
+function Account:withdraw(amount)
+  self.balance = self.balance - amount
+end
+
+acc = Account
+acc:withdraw(10)
+print(acc.balance) --&gt; -10
+
+-- the above is only syntax sugar.
+-- you can achieve the same as:
+Account = {balance=0}
+function Account.withdraw(self, amount)
+  self.balance = self.balance - amount
+end
+
+acc = Account
+-- pass the extra argument here.
+acc.withdraw(acc, 10)
+print(acc.balance) --&gt; -10
+</code></pre>
 <p>Creating classes</p>
-<div class="sourceCode" id="cb21"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Lua uses the idea of prototypes like</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- JavaScript. To set the prototype of</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">-- an object, do this:</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">setmetatable</span><span class="op">(</span><span class="cn">A</span><span class="op">,</span> <span class="op">{</span><span class="bu">__index</span> <span class="op">=</span> <span class="cn">B</span><span class="op">})</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- now A looks up to B for</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">-- all operations that it does</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- not have.</span></span></code></pre></div>
+<pre><code class="language-lua">-- Lua uses the idea of prototypes like
+-- JavaScript. To set the prototype of
+-- an object, do this:
+setmetatable(A, {__index = B})
+-- now A looks up to B for
+-- all operations that it does
+-- not have.
+</code></pre>
 <p>Thus we can create account objects:</p>
-<div class="sourceCode" id="cb22"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- defaults</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="cn">A</span><span class="va">ccount</span> <span class="op">=</span> <span class="op">{</span><span class="va">balance</span><span class="op">=</span><span class="dv">0</span><span class="op">}</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- methods</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="cn">A</span><span class="va">ccount</span><span class="op">:</span>withdraw<span class="op">(</span><span class="va">amount</span><span class="op">)</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="va">self</span><span class="op">.</span><span class="va">balance</span> <span class="op">=</span> <span class="va">self</span><span class="op">.</span><span class="va">balance</span> <span class="op">-</span> <span class="va">amount</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">-- constructors</span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> <span class="va">mt</span> <span class="op">=</span> <span class="op">{</span><span class="bu">__index</span> <span class="op">=</span> <span class="cn">A</span><span class="va">ccount</span><span class="op">}</span></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="cn">A</span><span class="va">ccount</span><span class="op">.</span>new<span class="op">(</span><span class="va">o</span><span class="op">)</span></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="va">o</span> <span class="op">=</span> <span class="va">o</span> <span class="kw">or</span> <span class="op">{}</span></span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setmetatable</span><span class="op">(</span><span class="va">o</span><span class="op">,</span> <span class="va">mt</span><span class="op">)</span></span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="va">o</span></span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="va">acc</span> <span class="op">=</span> <span class="cn">A</span><span class="va">ccount</span><span class="op">.</span>new<span class="op">()</span></span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="va">acc</span><span class="op">:</span>withdraw<span class="op">(</span><span class="dv">50</span><span class="op">)</span></span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="va">acc</span><span class="op">.</span><span class="va">balance</span><span class="op">)</span> <span class="co">--&gt; -50</span></span></code></pre></div>
-<p>You can improve this by setting the prototype in the constructor
-directly</p>
-<div class="sourceCode" id="cb23"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- defaults</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="cn">A</span><span class="va">ccount</span> <span class="op">=</span> <span class="op">{</span><span class="va">balance</span><span class="op">=</span><span class="dv">0</span><span class="op">}</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- constructors</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="cn">A</span><span class="va">ccount</span><span class="op">:</span>new<span class="op">(</span><span class="va">o</span><span class="op">)</span></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="va">o</span> <span class="op">=</span> <span class="va">o</span> <span class="kw">or</span> <span class="op">{}</span></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- use the Account table</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- as the instance prototype</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="va">self</span><span class="op">.</span><span class="cn">__</span><span class="va">index</span> <span class="op">=</span> <span class="va">self</span></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setmetatable</span><span class="op">(</span><span class="va">o</span><span class="op">,</span> <span class="va">self</span><span class="op">)</span></span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="va">o</span></span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co">-- methods</span></span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="cn">A</span><span class="va">ccount</span><span class="op">:</span>withdraw<span class="op">(</span><span class="va">amount</span><span class="op">)</span></span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>  <span class="va">self</span><span class="op">.</span><span class="va">balance</span> <span class="op">=</span> <span class="va">self</span><span class="op">.</span><span class="va">balance</span> <span class="op">-</span> <span class="va">amount</span></span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="va">acc</span> <span class="op">=</span> <span class="cn">A</span><span class="va">ccount</span><span class="op">:</span>new<span class="op">()</span></span>
-<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="va">acc</span><span class="op">:</span>withdraw<span class="op">(</span><span class="dv">70</span><span class="op">)</span></span>
-<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="va">acc</span><span class="op">.</span><span class="va">balance</span><span class="op">)</span> <span class="co">--&gt; -70</span></span></code></pre></div>
+<pre><code class="language-lua">-- defaults
+Account = {balance=0}
+
+-- methods
+function Account:withdraw(amount)
+  self.balance = self.balance - amount
+end
+
+-- constructors
+local mt = {__index = Account}
+function Account.new(o)
+  o = o or {}
+  setmetatable(o, mt)
+  return o
+end
+
+acc = Account.new()
+acc:withdraw(50)
+print(acc.balance) --&gt; -50
+</code></pre>
+<p>You can improve this by setting the prototype in the constructor directly</p>
+<pre><code class="language-lua">-- defaults
+Account = {balance=0}
+
+-- constructors
+function Account:new(o)
+  o = o or {}
+  -- use the Account table
+  -- as the instance prototype
+  self.__index = self
+  setmetatable(o, self)
+  return o
+end
+
+-- methods
+function Account:withdraw(amount)
+  self.balance = self.balance - amount
+end
+
+
+acc = Account:new()
+acc:withdraw(70)
+print(acc.balance) --&gt; -70
+</code></pre>
 <p>Inheritance:</p>
-<div class="sourceCode" id="cb24"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/luajit</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">-- defaults</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="cn">A</span><span class="va">ccount</span> <span class="op">=</span> <span class="op">{</span><span class="va">balance</span><span class="op">=</span><span class="dv">0</span><span class="op">}</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">-- constructors</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="cn">A</span><span class="va">ccount</span><span class="op">:</span>new<span class="op">(</span><span class="va">o</span><span class="op">)</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="va">o</span> <span class="op">=</span> <span class="va">o</span> <span class="kw">or</span> <span class="op">{}</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- use the Account table</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- as the instance prototype</span></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="va">self</span><span class="op">.</span><span class="cn">__</span><span class="va">index</span> <span class="op">=</span> <span class="va">self</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setmetatable</span><span class="op">(</span><span class="va">o</span><span class="op">,</span> <span class="va">self</span><span class="op">)</span></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="va">o</span></span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="co">-- methods</span></span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="cn">A</span><span class="va">ccount</span><span class="op">:</span>withdraw<span class="op">(</span><span class="va">amount</span><span class="op">)</span></span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="va">amount</span> <span class="op">&gt;</span> <span class="va">self</span><span class="op">.</span><span class="va">balance</span> <span class="cf">then</span></span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">error</span><span class="op">(</span><span class="st">&quot;insufficient funds&quot;</span><span class="op">)</span></span>
-<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">end</span></span>
-<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>  <span class="va">self</span><span class="op">.</span><span class="va">balance</span> <span class="op">=</span> <span class="va">self</span><span class="op">.</span><span class="va">balance</span> <span class="op">-</span> <span class="va">amount</span></span>
-<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a><span class="co">-- The SpecialAccount allows users</span></span>
-<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="co">-- to withdraw more than they own</span></span>
-<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a><span class="co">-- defaults</span></span>
-<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a><span class="co">-- SpecialAccount = an account object with</span></span>
-<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a><span class="co">-- the Account prototype.</span></span>
-<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a><span class="cn">S</span><span class="va">pecialAccount</span> <span class="op">=</span> <span class="cn">A</span><span class="va">ccount</span><span class="op">:</span>new<span class="op">()</span></span>
-<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a><span class="co">-- methods</span></span>
-<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a><span class="co">-- override withdraw</span></span>
-<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="cn">S</span><span class="va">pecialAccount</span><span class="op">:</span>withdraw<span class="op">(</span><span class="va">amount</span><span class="op">)</span></span>
-<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span><span class="va">amount</span> <span class="op">-</span> <span class="va">self</span><span class="op">.</span><span class="va">balance</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="va">self</span><span class="op">:</span>get_limit<span class="op">()</span> <span class="cf">then</span></span>
-<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">error</span><span class="op">(</span><span class="st">&quot;insufficient funds&quot;</span><span class="op">)</span></span>
-<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a>  <span class="cf">end</span></span>
-<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a>  <span class="va">self</span><span class="op">.</span><span class="va">balance</span> <span class="op">=</span> <span class="va">self</span><span class="op">.</span><span class="va">balance</span> <span class="op">-</span> <span class="va">amount</span></span>
-<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb24-40"><a href="#cb24-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-41"><a href="#cb24-41" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="cn">S</span><span class="va">pecialAccount</span><span class="op">:</span>get_limit<span class="op">()</span></span>
-<span id="cb24-42"><a href="#cb24-42" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="va">self</span><span class="op">.</span><span class="va">limit</span> <span class="kw">or</span> <span class="dv">0</span></span>
-<span id="cb24-43"><a href="#cb24-43" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb24-44"><a href="#cb24-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-45"><a href="#cb24-45" aria-hidden="true" tabindex="-1"></a><span class="va">special_acc</span> <span class="op">=</span> <span class="cn">S</span><span class="va">pecialAccount</span><span class="op">:</span>new<span class="op">({</span><span class="va">limit</span><span class="op">=</span><span class="dv">1000</span><span class="op">})</span></span>
-<span id="cb24-46"><a href="#cb24-46" aria-hidden="true" tabindex="-1"></a><span class="va">special_acc</span><span class="op">:</span>withdraw<span class="op">(</span><span class="dv">999</span><span class="op">)</span></span>
-<span id="cb24-47"><a href="#cb24-47" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span><span class="op">(</span><span class="va">special_acc</span><span class="op">.</span><span class="va">balance</span><span class="op">)</span> <span class="co">--&gt; -999</span></span>
-<span id="cb24-48"><a href="#cb24-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-49"><a href="#cb24-49" aria-hidden="true" tabindex="-1"></a><span class="co">-- this line returns an error</span></span>
-<span id="cb24-50"><a href="#cb24-50" aria-hidden="true" tabindex="-1"></a><span class="va">special_acc</span><span class="op">:</span>withdraw<span class="op">(</span><span class="dv">1000</span><span class="op">)</span></span></code></pre></div>
+<pre><code class="language-lua">#!/usr/bin/luajit
+
+-- defaults
+Account = {balance=0}
+
+-- constructors
+function Account:new(o)
+  o = o or {}
+  -- use the Account table
+  -- as the instance prototype
+  self.__index = self
+  setmetatable(o, self)
+  return o
+end
+
+-- methods
+function Account:withdraw(amount)
+  if amount &gt; self.balance then
+    error(&quot;insufficient funds&quot;)
+  end
+  self.balance = self.balance - amount
+end
+
+-- The SpecialAccount allows users
+-- to withdraw more than they own
+
+-- defaults
+-- SpecialAccount = an account object with
+-- the Account prototype.
+SpecialAccount = Account:new()
+
+-- methods
+-- override withdraw
+function SpecialAccount:withdraw(amount)
+  if (amount - self.balance) &gt;= self:get_limit() then
+    error(&quot;insufficient funds&quot;)
+  end
+  self.balance = self.balance - amount
+end
+
+function SpecialAccount:get_limit()
+  return self.limit or 0
+end
+
+special_acc = SpecialAccount:new({limit=1000})
+special_acc:withdraw(999)
+print(special_acc.balance) --&gt; -999
+
+-- this line returns an error
+special_acc:withdraw(1000)
+</code></pre>
 </body>
 </html>

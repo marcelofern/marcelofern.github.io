@@ -1,85 +1,39 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Library</title>
-  <style>
-    html {
-      color: #1a1a1a;
-      background-color: #fdfdfd;
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:650px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
     }
-    body {
-      margin: 0 auto;
-      max-width: 36em;
-      padding-left: 50px;
-      padding-right: 50px;
-      padding-top: 50px;
-      padding-bottom: 50px;
-      hyphens: auto;
-      overflow-wrap: break-word;
-      text-rendering: optimizeLegibility;
-      font-kerning: normal;
-    }
-    @media (max-width: 600px) {
-      body {
-        font-size: 0.9em;
-        padding: 12px;
-      }
-      h1 {
-        font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        background-color: white;
-      }
-      body {
-        background-color: transparent;
-        color: black;
-        font-size: 12pt;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
-      }
-    }
-    p {
-      margin: 1em 0;
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
     }
     a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
     }
     img {
       max-width: 100%;
-    }
-    svg {
-      height: auto;
-      max-width: 100%;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      margin-top: 1.4em;
-    }
-    h5, h6 {
-      font-size: 1em;
-      font-style: italic;
-    }
-    h6 {
-      font-weight: normal;
-    }
-    ol, ul {
-      padding-left: 1.7em;
-      margin-top: 1em;
-    }
-    li > ol, li > ul {
-      margin-top: 0;
     }
     blockquote {
       margin: 1em 0 1em 1.7em;
@@ -87,217 +41,93 @@
       border-left: 2px solid #e6e6e6;
       color: #606060;
     }
-    code {
-      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
-      font-size: 85%;
-      margin: 0;
-      hyphens: manual;
-    }
-    pre {
-      margin: 1em 0;
-      overflow: auto;
-    }
-    pre code {
-      padding: 0;
-      overflow: visible;
-      overflow-wrap: normal;
-    }
-    .sourceCode {
-     background-color: transparent;
-     overflow: visible;
-    }
-    hr {
-      background-color: #1a1a1a;
-      border: none;
-      height: 1px;
-      margin: 1em 0;
-    }
-    table {
-      margin: 1em 0;
-      border-collapse: collapse;
-      width: 100%;
-      overflow-x: auto;
-      display: block;
-      font-variant-numeric: lining-nums tabular-nums;
-    }
-    table caption {
-      margin-bottom: 0.75em;
-    }
-    tbody {
-      margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
-    }
-    th {
-      border-top: 1px solid #1a1a1a;
-      padding: 0.25em 0.5em 0.25em 0.5em;
-    }
-    td {
-      padding: 0.125em 0.5em 0.25em 0.5em;
-    }
-    header {
-      margin-bottom: 4em;
-      text-align: center;
-    }
-    #TOC li {
-      list-style: none;
-    }
-    #TOC ul {
-      padding-left: 1.3em;
-    }
-    #TOC > ul {
-      padding-left: 0;
-    }
-    #TOC a:not(:hover) {
-      text-decoration: none;
-    }
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-<style rel="stylesheet">
-  html {
-    font-size: 16px;
-  }
-  body {
-    hyphens: auto;
-    text-align: justify;
-    line-height: 1.7;
-  }
-  a {
-    color: #1976d2;
-    text-decoration: none;
-    border-bottom: 1px solid;
-  }
-  a:visited {
-    color: #1976d2;
-  }
-  pre.sourceCode {
-    border-left: 3px solid #000;
-    padding-left: 1.5rem;
-    margin: 1em 0;
-  }
-  figcaption {
-    display: none;
-  }
-</style>
-<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
 </head>
 <body>
-<h1 id="personal-library">Personal Library</h1>
-<p>I don’t necessarily like all the books that I have read. But I
-consider the ones in this list to be good enough to be shared with the
-public.</p>
-<h2 id="computing">Computing</h2>
+<hr>
+<h2>pagetitle: Library</h2>
+<h1>Personal Library</h1>
+<p>I don't necessarily like all the books that I have read. But I consider the
+ones in this list to be good enough to be shared with the public.</p>
+<h2>Computing</h2>
 <ul>
 <li>Bier, Jonathan - The Blocksize War</li>
 <li>Burkov, Andriy - The Hundred Page Machine Learning Book</li>
-<li>Duntemann, Jeff - x64 Assembly Language Step-by-step. (<a
-href="x64-assembly-language/index.html">review</a>)</li>
-<li>Flanagan, David - JavaScript, the definitive guide. (<a
-href="javascript-the-definitive-guide/index.html">review</a>)</li>
-<li>Hunt, Andrew and Thomas, David - Pragmatic Programmer. (<a
-href="pragmatic-programmer/index.html">review</a>)</li>
-<li>Ierusalimschy Roberto - Programming in Lua. (<a
-href="programming-in-lua/index.html">review</a>)</li>
+<li>Duntemann, Jeff - x64 Assembly Language Step-by-step. (<a href="x64-assembly-language/index.html">review</a>)</li>
+<li>Flanagan, David - JavaScript, the definitive guide. (<a href="javascript-the-definitive-guide/index.html">review</a>)</li>
+<li>Hunt, Andrew and Thomas, David - Pragmatic Programmer. (<a href="pragmatic-programmer/index.html">review</a>)</li>
+<li>Ierusalimschy Roberto - Programming in Lua. (<a href="programming-in-lua/index.html">review</a>)</li>
 <li>Martin, C. Robert - Clean Architecture.</li>
 <li>Martin, C. Robert - Clean Code.</li>
 <li>Martin, C. Robert - Clean Coder.</li>
 <li>Neil, Drew - Practical Vim</li>
-<li>Percival, Harry and Gregory Bob - Architecture Patterns with
-Python</li>
-<li>Petzold, Charles - Code. (<a
-href="code/index.html">review</a>)</li>
+<li>Percival, Harry and Gregory Bob - Architecture Patterns with Python</li>
+<li>Petzold, Charles - Code. (<a href="code/index.html">review</a>)</li>
 <li>Plauger, P. J. - The Standard C Library</li>
 <li>Porcello, Eve - Learning GraphQL</li>
 <li>Poulton, Nigel - Docker Deep Dive</li>
-<li>Ritchie, Dennis and Kernighan, Brian - The C Programming
-Language</li>
+<li>Ritchie, Dennis and Kernighan, Brian - The C Programming Language</li>
 <li>Seacord, Robert - Effective C</li>
-<li>Stallman, Richard - Free as in freedom (<a
-href="free-as-in-freedom/index.html">review</a>)</li>
-<li>Torvalds, Linus - Just for Fun (<a
-href="just-for-fun/index.html">review</a>)</li>
+<li>Stallman, Richard - Free as in freedom (<a href="free-as-in-freedom/index.html">review</a>)</li>
+<li>Torvalds, Linus - Just for Fun (<a href="just-for-fun/index.html">review</a>)</li>
 </ul>
-<h2 id="mathematics">Mathematics</h2>
+<h2>Mathematics</h2>
 <ul>
 <li>Hodel, Richard - An Introduction to Mathematical Logic</li>
 </ul>
-<h2 id="philosophy">Philosophy</h2>
+<h2>Philosophy</h2>
 <ul>
-<li>Aurelius, Marcus - Meditations. (<a
-href="meditations-marcus-aurelius/index.html">review</a>)</li>
-<li>Grayling, Anthony - The History of Philosophy. (<a
-href="history-of-philosophy-grayling/index.html">review</a>)</li>
+<li>Aurelius, Marcus - Meditations. (<a href="meditations-marcus-aurelius/index.html">review</a>)</li>
+<li>Grayling, Anthony - The History of Philosophy. (<a href="history-of-philosophy-grayling/index.html">review</a>)</li>
 <li>Kant, Immanuel - Critique of Pure Reason</li>
 <li>Machiavelli, Niccolo - The Prince</li>
 <li>Montaigne, Michel - The Complete Essays</li>
 <li>More, Thomas - Utopia</li>
-<li>Nietzsche, Friedrich - Beyond Good and Evil (<a
-href="beyond-good-and-evil-nietzsche/index.html">review</a>)</li>
+<li>Nietzsche, Friedrich - Beyond Good and Evil (<a href="beyond-good-and-evil-nietzsche/index.html">review</a>)</li>
 <li>Plato - Republic.</li>
-<li>Searle, John R. - The Mystery of Consciousness (<a
-href="the-mystery-of-consciousness-searle/index.html">review</a>)</li>
+<li>Searle, John R. - The Mystery of Consciousness (<a href="the-mystery-of-consciousness-searle/index.html">review</a>)</li>
 <li>Warburton, Nigel - A Little History of Philosophy.</li>
 </ul>
-<h2 id="history">History</h2>
+<h2>History</h2>
 <ul>
-<li>Collins, Michael and Price, Matthew - The Story of
-Christianity.</li>
-<li>Reader’s Digest - Jesus and His Times.</li>
+<li>Collins, Michael and Price, Matthew - The Story of Christianity.</li>
+<li>Reader's Digest - Jesus and His Times.</li>
 </ul>
-<h2 id="finances">Finances</h2>
+<h2>Finances</h2>
 <ul>
 <li>Graham, Benjamin - The Intelligent Investor</li>
 </ul>
-<h2 id="psychology">Psychology</h2>
+<h2>Psychology</h2>
 <ul>
 <li>Freud, Sigmund - Civilization and Its Discontents</li>
 <li>Freud, Sigmund - The Interpretation of Dreams</li>
 </ul>
-<h2 id="fiction">Fiction</h2>
+<h2>Fiction</h2>
 <ul>
 <li>Asimov, Isaac - The End of Eternity.</li>
 <li>Asimov, Isaac - The Foundation Series.</li>
 <li>Asimov, Isaac - The Robot Series.</li>
-<li>Coelho, Paulo - The Alchemist (<a
-href="the-alchemist/index.html">review</a>)</li>
+<li>Coelho, Paulo - The Alchemist (<a href="the-alchemist/index.html">review</a>)</li>
 <li>Egan, Greg - Permutation City.</li>
 <li>Herbert, Frank - Dune.</li>
-<li>Herbert, Frank - Dune Messiah. (<a
-href="dune-messiah/index.html">review</a>)</li>
+<li>Herbert, Frank - Dune Messiah. (<a href="dune-messiah/index.html">review</a>)</li>
 <li>Herbert, Frank - Children of Dune.</li>
-<li>Herbert, Frank - God Emperor of Dune. (<a
-href="god-emperor-of-dune/index.html">review</a>)</li>
+<li>Herbert, Frank - God Emperor of Dune. (<a href="god-emperor-of-dune/index.html">review</a>)</li>
 <li>Herbert, Frank - Herectics of Dune.</li>
 <li>Herbert, Frank - Chapterhouse: Dune.</li>
 <li>Herbert, Brian - Hunters of Dune.</li>
-<li>Herbert, Brian - Sandworms of Dune (<a
-href="sandworms-of-dune/index.html">review</a>).</li>
-<li>Shusterman, Neal - Arc of a Scythe Series (<a
-href="arc-of-a-scythe/index.html">review</a>)</li>
+<li>Herbert, Brian - Sandworms of Dune (<a href="assorted/library/sandworms-of-dune/index.html">review</a>).</li>
+<li>Shusterman, Neal - Arc of a Scythe Series (<a href="arc-of-a-scythe/index.html">review</a>)</li>
 <li>Tolkien, J. R. R. - The Hobbit.</li>
 <li>Tolkien, J. R. R. - The Lord of The Rings Trilogy.</li>
 </ul>
-<h2 id="health">Health</h2>
+<h2>Health</h2>
 <ul>
-<li>Walker, Matthew - Why We Sleep. (<a
-href="why-we-sleep/index.html">review</a>)</li>
+<li>Walker, Matthew - Why We Sleep. (<a href="why-we-sleep/index.html">review</a>)</li>
 </ul>
 </body>
 </html>

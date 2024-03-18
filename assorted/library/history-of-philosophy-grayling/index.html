@@ -1,87 +1,39 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <meta name="author" content="Marcelo Fernandes" />
-  <meta name="dcterms.date" content="2021-01-23" />
-  <title>The History of Philosophy</title>
-  <style>
-    html {
-      color: #1a1a1a;
-      background-color: #fdfdfd;
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:650px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
     }
-    body {
-      margin: 0 auto;
-      max-width: 36em;
-      padding-left: 50px;
-      padding-right: 50px;
-      padding-top: 50px;
-      padding-bottom: 50px;
-      hyphens: auto;
-      overflow-wrap: break-word;
-      text-rendering: optimizeLegibility;
-      font-kerning: normal;
-    }
-    @media (max-width: 600px) {
-      body {
-        font-size: 0.9em;
-        padding: 12px;
-      }
-      h1 {
-        font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        background-color: white;
-      }
-      body {
-        background-color: transparent;
-        color: black;
-        font-size: 12pt;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
-      }
-    }
-    p {
-      margin: 1em 0;
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
     }
     a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
     }
     img {
       max-width: 100%;
-    }
-    svg {
-      height: auto;
-      max-width: 100%;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      margin-top: 1.4em;
-    }
-    h5, h6 {
-      font-size: 1em;
-      font-style: italic;
-    }
-    h6 {
-      font-weight: normal;
-    }
-    ol, ul {
-      padding-left: 1.7em;
-      margin-top: 1em;
-    }
-    li > ol, li > ul {
-      margin-top: 0;
     }
     blockquote {
       margin: 1em 0 1em 1.7em;
@@ -89,167 +41,52 @@
       border-left: 2px solid #e6e6e6;
       color: #606060;
     }
-    code {
-      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
-      font-size: 85%;
-      margin: 0;
-      hyphens: manual;
-    }
-    pre {
-      margin: 1em 0;
-      overflow: auto;
-    }
-    pre code {
-      padding: 0;
-      overflow: visible;
-      overflow-wrap: normal;
-    }
-    .sourceCode {
-     background-color: transparent;
-     overflow: visible;
-    }
-    hr {
-      background-color: #1a1a1a;
-      border: none;
-      height: 1px;
-      margin: 1em 0;
-    }
-    table {
-      margin: 1em 0;
-      border-collapse: collapse;
-      width: 100%;
-      overflow-x: auto;
-      display: block;
-      font-variant-numeric: lining-nums tabular-nums;
-    }
-    table caption {
-      margin-bottom: 0.75em;
-    }
-    tbody {
-      margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
-    }
-    th {
-      border-top: 1px solid #1a1a1a;
-      padding: 0.25em 0.5em 0.25em 0.5em;
-    }
-    td {
-      padding: 0.125em 0.5em 0.25em 0.5em;
-    }
-    header {
-      margin-bottom: 4em;
-      text-align: center;
-    }
-    #TOC li {
-      list-style: none;
-    }
-    #TOC ul {
-      padding-left: 1.3em;
-    }
-    #TOC > ul {
-      padding-left: 0;
-    }
-    #TOC a:not(:hover) {
-      text-decoration: none;
-    }
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-<style rel="stylesheet">
-  html {
-    font-size: 16px;
-  }
-  body {
-    hyphens: auto;
-    text-align: justify;
-    line-height: 1.7;
-  }
-  a {
-    color: #1976d2;
-    text-decoration: none;
-    border-bottom: 1px solid;
-  }
-  a:visited {
-    color: #1976d2;
-  }
-  pre.sourceCode {
-    border-left: 3px solid #000;
-    padding-left: 1.5rem;
-    margin: 1em 0;
-  }
-  figcaption {
-    display: none;
-  }
-</style>
-<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
 </head>
 <body>
-<header id="title-block-header">
-<h1 class="title">The History of Philosophy</h1>
-<p class="author">Marcelo Fernandes</p>
-<p class="date">January 23, 2021</p>
-</header>
-<h1 id="review">Review</h1>
-<figure>
-<img src="history-of-philosophy-grayling.jpg"
-alt="history-of-philosophy-grayling" />
-<figcaption
-aria-hidden="true">history-of-philosophy-grayling</figcaption>
-</figure>
-<h2 id="the-whole-history-of-philosophy">The whole history of
-philosophy?!</h2>
-<p>A. C. Grayling has put considerable effort into summarising a complex
-and extensive subject. He manages to answer the eminent questions that
-emerge from someone starting their philosophy studies: “Where to begin?
-Who should I include in my studies? How much depth of content can I
-afford without being either too superficial or too detailed?”</p>
-<p>The list of names studied in this book isn’t brief. It starts from
-the pre-socratics, goes through Plato, the medievals, the renascence,
-and finally arrives at modern philosophy. But the book doesn’t end
-before giving a short overview of asian, indian, arabic, and african
-philosophy. It is worth noting that a short appendix about logic is also
-included.</p>
-<h2 id="why">Why?</h2>
-<p>I decided to read this book after doing some research on books that
-best accommodate an overview of thinkers, their ideas, and their times.
-I ended up between Grayling, and Bertrand Russell’s “A History of
-Western Philosophy”. It isn’t easy to not choose Russell. The man who
-wrote the incomparable “Principia Mathematica” couldn’t have done a poor
-job at analysing history itself. So why didn’t I decide to go for
-Russell’s instead? Well, maybe I am going to read Russell’s book at some
-point in the future anyway, but for now I was actually interested in
-western philosophy as well as non-western philosophy, therefore I had no
-choice but to go for Grayling.</p>
-<p>After reading all the 600+ pages of this book, I finished it with no
-regrets. The book isn’t perfect, though. The style of writing is not the
-one that I prefer the most. There is a lack of active voice in the text
-that makes philosophical concepts - that are already hard to grasp -
-even more distant. The author uses some philosophic jargon here and
-there without prior introduction. Perhaps some very important concepts
-that evolved through the course of history, such as “soul”, “mind”, and
-“consciousness”, should be covered in such a book, but maybe that is an
-unfair request, since there are exclusively dedicated books for these
-subjects.</p>
-<p>Nonetheless, the book is a great reading for the one interested in
-“how things came to be” in the realm of philosophy. It also serves as a
-good catalogue that comes in handy if one wants to have a high-level
-view of certain philosopher’s ideas, or school of thoughts.</p>
+<hr>
+<h2>title: The History of Philosophy
+author: Marcelo Fernandes
+date: January 23, 2021</h2>
+<h1>Review</h1>
+<p><img src="history-of-philosophy-grayling.jpg" alt="history-of-philosophy-grayling"></p>
+<h2>The whole history of philosophy?!</h2>
+<p>A. C. Grayling has put considerable effort into summarising a complex and
+extensive subject. He manages to answer the eminent questions that emerge from
+someone starting their philosophy studies: &quot;Where to begin? Who should I
+include in my studies? How much depth of content can I afford without being
+either too superficial or too detailed?&quot;</p>
+<p>The list of names studied in this book isn't brief. It starts from the
+pre-socratics, goes through Plato, the medievals, the renascence, and finally
+arrives at modern philosophy. But the book doesn't end before giving a short
+overview of asian, indian, arabic, and african philosophy. It is worth noting
+that a short appendix about logic is also included.</p>
+<h2>Why?</h2>
+<p>I decided to read this book after doing some research on books that best
+accommodate an overview of thinkers, their ideas, and their times. I ended up
+between Grayling, and Bertrand Russell's &quot;A History of Western Philosophy&quot;. It
+isn't easy to not choose Russell. The man who wrote the incomparable
+&quot;Principia Mathematica&quot; couldn't have done a poor job at analysing history
+itself. So why didn't I decide to go for Russell's instead? Well, maybe I am
+going to read Russell's book at some point in the future anyway, but for now
+I was actually interested in western philosophy as well as non-western
+philosophy, therefore I had no choice but to go for Grayling.</p>
+<p>After reading all the 600+ pages of this book, I finished it with no regrets.
+The book isn't perfect, though. The style of writing is not the one that I
+prefer the most. There is a lack of active voice in the text that makes
+philosophical concepts - that are already hard to grasp - even more distant.
+The author uses some philosophic jargon here and there without prior
+introduction. Perhaps some very important concepts that evolved through the
+course of history, such as &quot;soul&quot;, &quot;mind&quot;, and &quot;consciousness&quot;, should be
+covered in such a book, but maybe that is an unfair request, since there are
+exclusively dedicated books for these subjects.</p>
+<p>Nonetheless, the book is a great reading for the one interested in &quot;how things
+came to be&quot; in the realm of philosophy. It also serves as a good catalogue that
+comes in handy if one wants to have a high-level view of certain philosopher's
+ideas, or school of thoughts.</p>
 </body>
 </html>

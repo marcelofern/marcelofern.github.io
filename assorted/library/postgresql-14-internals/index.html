@@ -1,87 +1,39 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <meta name="author" content="Marcelo Fernandes" />
-  <meta name="dcterms.date" content="2024-01-05" />
-  <title>PostgreSQL 14 Internals</title>
-  <style>
-    html {
-      color: #1a1a1a;
-      background-color: #fdfdfd;
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:650px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
     }
-    body {
-      margin: 0 auto;
-      max-width: 36em;
-      padding-left: 50px;
-      padding-right: 50px;
-      padding-top: 50px;
-      padding-bottom: 50px;
-      hyphens: auto;
-      overflow-wrap: break-word;
-      text-rendering: optimizeLegibility;
-      font-kerning: normal;
-    }
-    @media (max-width: 600px) {
-      body {
-        font-size: 0.9em;
-        padding: 12px;
-      }
-      h1 {
-        font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        background-color: white;
-      }
-      body {
-        background-color: transparent;
-        color: black;
-        font-size: 12pt;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
-      }
-    }
-    p {
-      margin: 1em 0;
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
     }
     a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
     }
     img {
       max-width: 100%;
-    }
-    svg {
-      height: auto;
-      max-width: 100%;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      margin-top: 1.4em;
-    }
-    h5, h6 {
-      font-size: 1em;
-      font-style: italic;
-    }
-    h6 {
-      font-weight: normal;
-    }
-    ol, ul {
-      padding-left: 1.7em;
-      margin-top: 1em;
-    }
-    li > ol, li > ul {
-      margin-top: 0;
     }
     blockquote {
       margin: 1em 0 1em 1.7em;
@@ -89,420 +41,238 @@
       border-left: 2px solid #e6e6e6;
       color: #606060;
     }
-    code {
-      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
-      font-size: 85%;
-      margin: 0;
-      hyphens: manual;
-    }
-    pre {
-      margin: 1em 0;
-      overflow: auto;
-    }
-    pre code {
-      padding: 0;
-      overflow: visible;
-      overflow-wrap: normal;
-    }
-    .sourceCode {
-     background-color: transparent;
-     overflow: visible;
-    }
-    hr {
-      background-color: #1a1a1a;
-      border: none;
-      height: 1px;
-      margin: 1em 0;
-    }
-    table {
-      margin: 1em 0;
-      border-collapse: collapse;
-      width: 100%;
-      overflow-x: auto;
-      display: block;
-      font-variant-numeric: lining-nums tabular-nums;
-    }
-    table caption {
-      margin-bottom: 0.75em;
-    }
-    tbody {
-      margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
-    }
-    th {
-      border-top: 1px solid #1a1a1a;
-      padding: 0.25em 0.5em 0.25em 0.5em;
-    }
-    td {
-      padding: 0.125em 0.5em 0.25em 0.5em;
-    }
-    header {
-      margin-bottom: 4em;
-      text-align: center;
-    }
-    #TOC li {
-      list-style: none;
-    }
-    #TOC ul {
-      padding-left: 1.3em;
-    }
-    #TOC > ul {
-      padding-left: 0;
-    }
-    #TOC a:not(:hover) {
-      text-decoration: none;
-    }
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
-    /* CSS for syntax highlighting */
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { color: #008000; } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { color: #008000; font-weight: bold; } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-<style rel="stylesheet">
-  html {
-    font-size: 16px;
-  }
-  body {
-    hyphens: auto;
-    text-align: justify;
-    line-height: 1.7;
-  }
-  a {
-    color: #1976d2;
-    text-decoration: none;
-    border-bottom: 1px solid;
-  }
-  a:visited {
-    color: #1976d2;
-  }
-  pre.sourceCode {
-    border-left: 3px solid #000;
-    padding-left: 1.5rem;
-    margin: 1em 0;
-  }
-  figcaption {
-    display: none;
-  }
-</style>
-<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
 </head>
 <body>
-<header id="title-block-header">
-<h1 class="title">PostgreSQL 14 Internals</h1>
-<p class="author">Marcelo Fernandes</p>
-<p class="date">January 5, 2024</p>
-</header>
-<h2 id="introduction">Introduction</h2>
-<h3 id="catalog">Catalog</h3>
-<p>Metadata for cluster objects such as tables, indexes, data types, or
-functions, is stored in tables that live in the system catalog. These
-tables are regular tables, they can be dropped, inserted in, and messed
-up in general ways.</p>
-<p>The command <code>CREATE DATABASE</code> inserts a row into the
-<code>pg_database</code> catalog, and actually creates the database on
-disk.</p>
+<hr>
+<h2>title: PostgreSQL 14 Internals
+author: Marcelo Fernandes
+date: January 5, 2024</h2>
+<h2>Introduction</h2>
+<h3>Catalog</h3>
+<p>Metadata for cluster objects such as tables, indexes, data types, or functions,
+is stored in tables that live in the system catalog. These tables are regular
+tables, they can be dropped, inserted in, and messed up in general ways.</p>
+<p>The command <code>CREATE DATABASE</code> inserts a row into the <code>pg_database</code> catalog,
+and actually creates the database on disk.</p>
 <ul>
 <li>https://www.postgresql.org/docs/current/catalogs.html</li>
 <li>https://www.postgresql.org/docs/current/catalog-pg-database.html</li>
 </ul>
-<p>All system catalog tables begin with the <code>pg_</code> prefix,
-like we saw above.</p>
+<p>All system catalog tables begin with the <code>pg_</code> prefix, like we saw above.</p>
 <p>Trivia: In all system catalog tables, PK column is called oid (object
 identifier).</p>
-<h3 id="schemas">Schemas</h3>
+<h3>Schemas</h3>
 <p>Schemas are namespaces for storing all objects of a db.</p>
 <ul>
-<li><p><strong>public</strong>: default schema for user objects (unless
-overwritten)</p></li>
-<li><p><strong>pg_catalog</strong>: system catalog tables</p></li>
-<li><p><strong>information_schema</strong>: alternative view of the
-system catalog (SQL standard)</p></li>
-<li><p>https://www.postgresql.org/docs/current/ddl-schemas.html</p></li>
+<li><p><strong>public</strong>: default schema for user objects (unless overwritten)</p>
+</li>
+<li><p><strong>pg_catalog</strong>: system catalog tables</p>
+</li>
+<li><p><strong>information_schema</strong>: alternative view of the system catalog (SQL standard)</p>
+</li>
+<li><p>https://www.postgresql.org/docs/current/ddl-schemas.html</p>
+</li>
 </ul>
-<h3 id="tablespaces">Tablespaces</h3>
-<p>Tablespaces define physical data layout. It is a directory in a file
-system. Data can be distributed in such a way so that archive data is
-stored on slow disks whilst data actively updated goes to fast
-disks.</p>
-<h3 id="relations">Relations</h3>
-<p>Tables and indexes both consist of rows. This is true for B-tree
-nodes as well. Sequences and materialised views also follow this
-structure.</p>
-<p>In PostgreSQL all those objects are referred by the generic term
-<em>relation</em>, which can be a bit confusing due to relational theory
-terminology.</p>
-<h3 id="files-and-forks">Files and Forks</h3>
-<p>All information relating to a table is stored in several different
-forks:</p>
+<h3>Tablespaces</h3>
+<p>Tablespaces define physical data layout. It is a directory in a file system.
+Data can be distributed in such a way so that archive data is stored on slow
+disks whilst data actively updated goes to fast disks.</p>
+<h3>Relations</h3>
+<p>Tables and indexes both consist of rows. This is true for B-tree nodes as well.
+Sequences and materialised views also follow this structure.</p>
+<p>In PostgreSQL all those objects are referred by the generic term <em>relation</em>,
+which can be a bit confusing due to relational theory terminology.</p>
+<h3>Files and Forks</h3>
+<p>All information relating to a table is stored in several different forks:</p>
 <ul>
 <li>https://www.postgresql.org/docs/current/storage-file-layout.html</li>
 </ul>
-<p>Once a file (fork) grows over 1GB, another file of this fork is
-created ( sometimes these are called segments). The sequence number of
-the segment is added to the end of its filename.</p>
-<p>The limit of 1GB is historically established to support file systems
-that couldn’t handle large files. This can be changed when building
-Postgres via <code>./configure --with-segsize</code></p>
+<p>Once a file (fork) grows over 1GB, another file of this fork is created (
+sometimes these are called segments). The sequence number of the segment is
+added to the end of its filename.</p>
+<p>The limit of 1GB is historically established to support file systems that
+couldn't handle large files. This can be changed when building Postgres via
+<code>./configure --with-segsize</code></p>
 <p>Checking the file path where a table is stored:</p>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> pg_relation_filepath(<span class="st">&#39;accounts_account&#39;</span>);</span></code></pre></div>
+<pre><code class="language-sql">SELECT pg_relation_filepath('accounts_account');
+</code></pre>
 <pre><code> pg_relation_filepath
 ----------------------
- base/16384/19623</code></pre>
+ base/16384/19623
+</code></pre>
 <p>And check the size of the file</p>
-<div class="sourceCode" id="cb3"><pre
-class="sourceCode sql"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="kw">size</span> <span class="kw">FROM</span> pg_stat_file(<span class="st">&#39;base/16384/19623&#39;</span>);</span></code></pre></div>
+<pre><code class="language-sql">SELECT size FROM pg_stat_file('base/16384/19623');
+</code></pre>
 <pre><code> size
 ------
- 8192</code></pre>
-<p>There are 3 categories of forks: - Main fork: Where the data for the
-table and indexes live - Free Space Map: Keeps track of free space
-within pages. Used to quickly find a page that can accommodate new
-inserted data. - Visibility map: For showing whether the page needs to
-be vacuumed or frozen.</p>
-<h3 id="pages">Pages</h3>
-<p>Files are split into pages (also known as blocks). These are the
-minimum amount of data that can be read or written. The size of a page
-is usually 8kb. This can be changed during build time, but no many
-people do this.</p>
-<h3 id="toast-the-oversized-attributes-storage-technique">TOAST (The
-Oversized Attributes Storage Technique)</h3>
-<p>Each row of a table must fit a single page. No row can continue in
-the next page. To store long rows, TOAST is used.</p>
-<p>There’re many techniques involved in this. You can slice long
-attribute values into a separate service table, or compress a long value
-so that it fits the page, or you can do both.</p>
-<p>For index, TOAST only uses compression. This limits the size of the
-key that can be indexed.</p>
-<p>To check the TOAST strategy for a table, you can perform this
-query:</p>
-<div class="sourceCode" id="cb5"><pre
-class="sourceCode sql"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    attname,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    atttypid:<span class="ch">:regtype</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">CASE</span> attstorage</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="st">&#39;p&#39;</span> <span class="cf">THEN</span> <span class="st">&#39;plain&#39;</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="st">&#39;e&#39;</span> <span class="cf">THEN</span> <span class="st">&#39;external&#39;</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="st">&#39;m&#39;</span> <span class="cf">THEN</span> <span class="st">&#39;main&#39;</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">WHEN</span> <span class="st">&#39;x&#39;</span> <span class="cf">THEN</span> <span class="st">&#39;extended&#39;</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">END</span> <span class="kw">AS</span> <span class="kw">storage</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> pg_attribute</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> attrelid <span class="op">=</span> <span class="st">&#39;accounts_account&#39;</span>:<span class="ch">:regclass</span> <span class="kw">AND</span> attnum <span class="op">&gt;</span> <span class="dv">0</span>;</span></code></pre></div>
+ 8192
+</code></pre>
+<p>There are 3 categories of forks:</p>
+<ul>
+<li>Main fork: Where the data for the table and indexes live</li>
+<li>Free Space Map: Keeps track of free space within pages. Used to quickly find
+a page that can accommodate new inserted data.</li>
+<li>Visibility map: For showing whether the page needs to be vacuumed or frozen.</li>
+</ul>
+<h3>Pages</h3>
+<p>Files are split into pages (also known as blocks). These are the minimum
+amount of data that can be read or written. The size of a page is usually 8kb.
+This can be changed during build time, but no many people do this.</p>
+<h3>TOAST (The Oversized Attributes Storage Technique)</h3>
+<p>Each row of a table must fit a single page. No row can continue in the next
+page. To store long rows, TOAST is used.</p>
+<p>There're many techniques involved in this. You can slice long attribute values
+into a separate service table, or compress a long value so that it fits the
+page, or you can do both.</p>
+<p>For index, TOAST only uses compression. This limits the size of the key that
+can be indexed.</p>
+<p>To check the TOAST strategy for a table, you can perform this query:</p>
+<pre><code class="language-sql">SELECT
+    attname,
+    atttypid::regtype,
+    CASE attstorage
+        WHEN 'p' THEN 'plain'
+        WHEN 'e' THEN 'external'
+        WHEN 'm' THEN 'main'
+        WHEN 'x' THEN 'extended'
+    END AS storage
+FROM pg_attribute
+WHERE attrelid = 'accounts_account'::regclass AND attnum &gt; 0;
+</code></pre>
 <ul>
 <li>plain: TOAST is not used.</li>
-<li>main: Attributes are compressed first, and moved to the TOAST table
-if compression didn’t help.</li>
+<li>main: Attributes are compressed first, and moved to the TOAST table if
+compression didn't help.</li>
 <li>external: Stored in the TOAST table without compression.</li>
 <li>extended: Compressed and stored in the TOAST table.</li>
 </ul>
-<p>Sometimes it’s useful to change the default strategy for some
-columns. If the column stores a JPEG image, for example, you can set the
-external strategy for this column to avoid unnecessarily compression to
-the data. You can change it like this:</p>
-<div class="sourceCode" id="cb6"><pre
-class="sourceCode sql"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> t <span class="kw">ALTER</span> <span class="kw">COLUMN</span> d <span class="kw">SET</span> <span class="kw">STORAGE</span> external;</span></code></pre></div>
+<p>Sometimes it's useful to change the default strategy for some columns. If the
+column stores a JPEG image, for example, you can set the external strategy
+for this column to avoid unnecessarily compression to the data. You can change
+it like this:</p>
+<pre><code class="language-sql">ALTER TABLE t ALTER COLUMN d SET STORAGE external;
+</code></pre>
 <p>To find the TOAST table you can perform:</p>
-<div class="sourceCode" id="cb7"><pre
-class="sourceCode sql"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> relnamespace:<span class="ch">:regnamespace</span>, relname</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> pg_class</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> <span class="kw">oid</span> <span class="op">=</span> (</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">SELECT</span> reltoastrelid</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">FROM</span> pg_class <span class="kw">WHERE</span> relname <span class="op">=</span> <span class="st">&#39;accounts_account&#39;</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div>
+<pre><code class="language-sql">SELECT relnamespace::regnamespace, relname
+FROM pg_class
+WHERE oid = (
+    SELECT reltoastrelid
+    FROM pg_class WHERE relname = 'accounts_account'
+);
+</code></pre>
 <pre><code> relnamespace |    relname
 --------------+----------------
- pg_toast     | pg_toast_16453</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">\d+</span> pg_toast.pg_toast_16453</span></code></pre></div>
+ pg_toast     | pg_toast_16453
+</code></pre>
+<pre><code class="language-sh">\d+ pg_toast.pg_toast_16453
+</code></pre>
 <pre><code>   Column   |  Type   | Storage
 ------------+---------+---------
  chunk_id   | oid     | plain
  chunk_seq  | integer | plain
- chunk_data | bytea   | plain</code></pre>
+ chunk_data | bytea   | plain
+</code></pre>
 <p>You can also check the index associated with the TOAST table</p>
-<div class="sourceCode" id="cb11"><pre
-class="sourceCode sql"><code class="sourceCode sql"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> indexrelid:<span class="ch">:regclass</span> <span class="kw">FROM</span> pg_index</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> indrelid <span class="op">=</span> (</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">SELECT</span> <span class="kw">oid</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">FROM</span> pg_class <span class="kw">WHERE</span> relname <span class="op">=</span> <span class="st">&#39;pg_toast_16453&#39;</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div>
-<p>A TOAST table increases the min number of fork files used by the
-table up to eight: three for the main table, three for the TOAST table,
-and two for the TOAST index.</p>
-<p><strong>TIP</strong>: If long attributes do not participate in the
-query, the TOAST table will not be read at all. It is one of the reasons
-why you should avoid using the asterisk <code>(SELECT *)</code> in
-production solutions.</p>
-<p><strong>TIP</strong>: It’s not a good idea to keep bulky data in
-Postgres, specially if the data is being actively used and does not
-require transactional logic (like pdfs). This is because compression and
-slicing require a lot of resources.</p>
-<h3 id="processes-and-memory">Processes and Memory</h3>
-<p>Upon initialisation, postgres launches the postgres process, also
-known as postmaster. It creates all the other processes via
-<code>fork</code>, and monitors them, restarting these children
-processes if they fail.</p>
-<p>The postmaster allocates shared memory that is available to all
-processes. Buffer cache takes the greater part of the shared memory,
-which is often stored in RAM for speed.</p>
-<p>In the event of a power outage or OS crash, postgres keeps a
-write-ahead log (WAL), which makes it possible to repeat lost operations
-when necessary.</p>
-<p>The postmaster also listen for incoming connections, creating a
-separate backend process. This poses a few problems:</p>
+<pre><code class="language-sql">SELECT indexrelid::regclass FROM pg_index
+WHERE indrelid = (
+    SELECT oid
+    FROM pg_class WHERE relname = 'pg_toast_16453'
+);
+</code></pre>
+<p>A TOAST table increases the min number of fork files used by the table up to
+eight: three for the main table, three for the TOAST table, and two for the
+TOAST index.</p>
+<p><strong>TIP</strong>: If long attributes do not participate in the query, the TOAST table
+will not be read at all. It is one of the reasons why you should avoid using
+the asterisk <code>(SELECT *)</code> in production solutions.</p>
+<p><strong>TIP</strong>: It's not a good idea to keep bulky data in Postgres, specially if
+the data is being actively used and does not require transactional logic
+(like pdfs). This is because compression and slicing require a lot of
+resources.</p>
+<h3>Processes and Memory</h3>
+<p>Upon initialisation, postgres launches the postgres process, also known as
+postmaster. It creates all the other processes via <code>fork</code>, and monitors them,
+restarting these children processes if they fail.</p>
+<p>The postmaster allocates shared memory that is available to all processes.
+Buffer cache takes the greater part of the shared memory, which is often stored
+in RAM for speed.</p>
+<p>In the event of a power outage or OS crash, postgres keeps a write-ahead log
+(WAL), which makes it possible to repeat lost operations when necessary.</p>
+<p>The postmaster also listen for incoming connections, creating a separate
+backend process. This poses a few problems:</p>
 <ul>
 <li>Each process needs RAM for caching.</li>
-<li>If connections are frequent (and short), their cost is unreasonably
-high.</li>
+<li>If connections are frequent (and short), their cost is unreasonably high.</li>
 <li>Performance declines as the number of clients grows.</li>
 </ul>
-<h2 id="isolation">Isolation</h2>
-<h3 id="isolation-levels-and-anomalies">Isolation Levels and
-Anomalies</h3>
-<p>The SQL standard has four isolation levels. These are defined by the
-anomalies that may or may not occur in concurrent transaction
-execution.</p>
-<h4 id="lost-update">Lost Update</h4>
+<h2>Isolation</h2>
+<h3>Isolation Levels and Anomalies</h3>
+<p>The SQL standard has four isolation levels. These are defined by the anomalies
+that may or may not occur in concurrent transaction execution.</p>
+<h4>Lost Update</h4>
 <p>Occurs when two transactions read the same table row, then one of the
-transactions updates the row, and then, the second transaction also
-updates the same row without considering any changes made by the first
-transaction. Thus, the first transaction update is lost. This anomaly is
-forbidden from the standard.</p>
-<p>Example: Transaction one wants to add $100 to the account balance of
-$1000, and transaction B wants to add $200. The total after the
-transactions kick in should be $1300, but somehow the first transaction
-update is ignored and the balance ends up as $1200.</p>
-<h4 id="dirty-read-and-read-uncommitted">Dirty Read and Read
-Uncommitted</h4>
-<p>Dirty read happens when one transaction reads the uncommitted reads
-from another transaction. The standard allows dirty reads at the Read
-Uncommitted level. These are forbidden in Postgres by design.</p>
-<h4 id="non-repeatable-reads-and-read-committed">Non-Repeatable Reads
-and Read Committed</h4>
-<p>Non-repeatable read anomaly happens when a transaction needs to read
-from the same row twice, and another transaction has updated or deleted
-the data in the meanwhile. The standard allows this anomaly at the Read
-Uncommitted and Read Committed levels. Note that the Read Commited
-isolation level is the default.</p>
-<h4 id="phantom-reads-and-repeatable-read">Phantom Reads and Repeatable
-Read</h4>
-<p>Occurs when the same transaction executes two identical queries,
-while another transaction adds more rows (or removes) from that would
-satisfy the query.</p>
-<p>The standard allows phantom reads at the Read Uncommitted, Read
-Committed, and Repeatable Read isolation levels.</p>
-<h2 id="pages-and-tuples">Pages and Tuples</h2>
-<h3 id="page-structure">Page structure</h3>
-<h4 id="page-header">Page Header</h4>
+transactions updates the row, and then, the second transaction also updates
+the same row without considering any changes made by the first transaction.
+Thus, the first transaction update is lost. This anomaly is forbidden from the
+standard.</p>
+<p>Example: Transaction one wants to add $100 to the account balance of $1000,
+and transaction B wants to add $200. The total after the transactions kick in
+should be $1300, but somehow the first transaction update is ignored and the
+balance ends up as $1200.</p>
+<h4>Dirty Read and Read Uncommitted</h4>
+<p>Dirty read happens when one transaction reads the uncommitted reads from
+another transaction. The standard allows dirty reads at the Read Uncommitted
+level. These are forbidden in Postgres by design.</p>
+<h4>Non-Repeatable Reads and Read Committed</h4>
+<p>Non-repeatable read anomaly happens when a transaction needs to read from the
+same row twice, and another transaction has updated or deleted the data in the
+meanwhile. The standard allows this anomaly at the Read Uncommitted and Read
+Committed levels. Note that the Read Commited isolation level is the default.</p>
+<h4>Phantom Reads and Repeatable Read</h4>
+<p>Occurs when the same transaction executes two identical queries, while another
+transaction adds more rows (or removes) from that would satisfy the query.</p>
+<p>The standard allows phantom reads at the Read Uncommitted, Read Committed, and
+Repeatable Read isolation levels.</p>
+<h2>Pages and Tuples</h2>
+<h3>Page structure</h3>
+<h4>Page Header</h4>
 <p>Located at the lowest addresses of a page, and has a fixed size.</p>
-<div class="sourceCode" id="cb12"><pre
-class="sourceCode sql"><code class="sourceCode sql"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> EXTENSION pageinspect;</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="fu">lower</span>, <span class="fu">upper</span>, special, pagesize</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> page_header(get_raw_page(<span class="st">&#39;accounts_account&#39;</span>, <span class="dv">0</span>));</span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre
-class="sourceCode txt"><code class="sourceCode default"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>| lower | upper | special | pagesize |</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>|-------|-------|---------|----------|</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>| 152   | 6904  | 8192    | 8192     |</span></code></pre></div>
-<h4 id="special-space">Special Space</h4>
-<p>Located at the highest addresses of a page. It is used by some
-indexes to store auxiliary info.</p>
-<h4 id="tuples">Tuples</h4>
-<p>Rows that contain the actual data stored in the db and some metadata.
-Located just before the special space.</p>
-<h4 id="item-pointers">Item Pointers</h4>
+<pre><code class="language-sql">CREATE EXTENSION pageinspect;
+
+select lower, upper, special, pagesize
+from page_header(get_raw_page('accounts_account', 0));
+</code></pre>
+<pre><code class="language-txt">| lower | upper | special | pagesize |
+|-------|-------|---------|----------|
+| 152   | 6904  | 8192    | 8192     |
+</code></pre>
+<h4>Special Space</h4>
+<p>Located at the highest addresses of a page. It is used by some indexes to store
+auxiliary info.</p>
+<h4>Tuples</h4>
+<p>Rows that contain the actual data stored in the db and some metadata. Located
+just before the special space.</p>
+<h4>Item Pointers</h4>
 <p>An array of pointers to tuples. Located after the header.</p>
-<h3 id="savepoints">Savepoints</h3>
-<p>SQL supports canceling operations within a transaction without
-aborting the transaction as a whole.</p>
-<div class="sourceCode" id="cb14"><pre
-class="sourceCode sql"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SAVEPOINT</span> my_save_point;</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="op">//</span> Do stuff that will be rolled back.</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">ROLLBACK</span> <span class="kw">TO</span> my_save_point;</span></code></pre></div>
-<h2 id="snapshots">Snapshots</h2>
-<h3 id="definition">Definition</h3>
-<p>A data page can contain several versions of the same row. Each
-transaction must see at most 1 of such versions. Visible versions of all
-different rows constitute a Snapshot.</p>
-<h2 id="locks">Locks</h2>
-<h3 id="relation-level-locks">Relation-level locks</h3>
+<h3>Savepoints</h3>
+<p>SQL supports canceling operations within a transaction without aborting
+the transaction as a whole.</p>
+<pre><code class="language-sql">SAVEPOINT my_save_point;
+// Do stuff that will be rolled back.
+ROLLBACK TO my_save_point;
+</code></pre>
+<h2>Snapshots</h2>
+<h3>Definition</h3>
+<p>A data page can contain several versions of the same row. Each transaction must
+see at most 1 of such versions. Visible versions of all different rows
+constitute a Snapshot.</p>
+<h2>Locks</h2>
+<h3>Relation-level locks</h3>
 <p>What types of locks can work together:</p>
 <pre><code>| LOCK                   | AS  | RS  | RE  | SUE | S   | SRE | E   | AE | QUERY                                                  |
 |------------------------|-----|-----|-----|-----|-----|-----|-----|-----|-------------------------------------------------------|
@@ -512,8 +282,8 @@ different rows constitute a Snapshot.</p>
 | Share Update Exclusive |     |     |     |  X  |  X  |  X  |  X  |  X  | VACUUM/CREATE INDEX CONCURRENTLY                      |
 | Share                  |     |     |  X  |  X  |     |  X  |  X  |  X  | CREATE INDEX                                          |
 | Exclusive              |     |  X  |  X  |  X  |  X  |  X  |  X  |  X  | REFRESH MAT.VIEW CONCURRENTLY                         |
-| Access Exclusive       |  X  |  X  |  X  |  X  |  X  |  X  |  X  |  X  | DROP/TRUNCATE/VACUUM FULL/LOCK TABLE/REFRESH MAT.VIEW |</code></pre>
-<p>The first 4 modes allow concurrent modifications, the other four do
-not.</p>
+| Access Exclusive       |  X  |  X  |  X  |  X  |  X  |  X  |  X  |  X  | DROP/TRUNCATE/VACUUM FULL/LOCK TABLE/REFRESH MAT.VIEW |
+</code></pre>
+<p>The first 4 modes allow concurrent modifications, the other four do not.</p>
 </body>
 </html>

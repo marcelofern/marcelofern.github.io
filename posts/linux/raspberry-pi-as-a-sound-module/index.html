@@ -1,87 +1,39 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <meta name="author" content="Marcelo Fernandes" />
-  <meta name="dcterms.date" content="2023-07-04" />
-  <title>Raspberry Pi as a sound module</title>
-  <style>
-    html {
-      color: #1a1a1a;
-      background-color: #fdfdfd;
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:650px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
     }
-    body {
-      margin: 0 auto;
-      max-width: 36em;
-      padding-left: 50px;
-      padding-right: 50px;
-      padding-top: 50px;
-      padding-bottom: 50px;
-      hyphens: auto;
-      overflow-wrap: break-word;
-      text-rendering: optimizeLegibility;
-      font-kerning: normal;
-    }
-    @media (max-width: 600px) {
-      body {
-        font-size: 0.9em;
-        padding: 12px;
-      }
-      h1 {
-        font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        background-color: white;
-      }
-      body {
-        background-color: transparent;
-        color: black;
-        font-size: 12pt;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
-      }
-    }
-    p {
-      margin: 1em 0;
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
     }
     a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
     }
     img {
       max-width: 100%;
-    }
-    svg {
-      height: auto;
-      max-width: 100%;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      margin-top: 1.4em;
-    }
-    h5, h6 {
-      font-size: 1em;
-      font-style: italic;
-    }
-    h6 {
-      font-weight: normal;
-    }
-    ol, ul {
-      padding-left: 1.7em;
-      margin-top: 1em;
-    }
-    li > ol, li > ul {
-      margin-top: 0;
     }
     blockquote {
       margin: 1em 0 1em 1.7em;
@@ -89,324 +41,147 @@
       border-left: 2px solid #e6e6e6;
       color: #606060;
     }
-    code {
-      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
-      font-size: 85%;
-      margin: 0;
-      hyphens: manual;
-    }
-    pre {
-      margin: 1em 0;
-      overflow: auto;
-    }
-    pre code {
-      padding: 0;
-      overflow: visible;
-      overflow-wrap: normal;
-    }
-    .sourceCode {
-     background-color: transparent;
-     overflow: visible;
-    }
-    hr {
-      background-color: #1a1a1a;
-      border: none;
-      height: 1px;
-      margin: 1em 0;
-    }
-    table {
-      margin: 1em 0;
-      border-collapse: collapse;
-      width: 100%;
-      overflow-x: auto;
-      display: block;
-      font-variant-numeric: lining-nums tabular-nums;
-    }
-    table caption {
-      margin-bottom: 0.75em;
-    }
-    tbody {
-      margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
-    }
-    th {
-      border-top: 1px solid #1a1a1a;
-      padding: 0.25em 0.5em 0.25em 0.5em;
-    }
-    td {
-      padding: 0.125em 0.5em 0.25em 0.5em;
-    }
-    header {
-      margin-bottom: 4em;
-      text-align: center;
-    }
-    #TOC li {
-      list-style: none;
-    }
-    #TOC ul {
-      padding-left: 1.3em;
-    }
-    #TOC > ul {
-      padding-left: 0;
-    }
-    #TOC a:not(:hover) {
-      text-decoration: none;
-    }
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
-    /* CSS for syntax highlighting */
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { color: #008000; } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { color: #008000; font-weight: bold; } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-<style rel="stylesheet">
-  html {
-    font-size: 16px;
-  }
-  body {
-    hyphens: auto;
-    text-align: justify;
-    line-height: 1.7;
-  }
-  a {
-    color: #1976d2;
-    text-decoration: none;
-    border-bottom: 1px solid;
-  }
-  a:visited {
-    color: #1976d2;
-  }
-  pre.sourceCode {
-    border-left: 3px solid #000;
-    padding-left: 1.5rem;
-    margin: 1em 0;
-  }
-  figcaption {
-    display: none;
-  }
-</style>
-<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
 </head>
 <body>
-<header id="title-block-header">
-<h1 class="title">Raspberry Pi as a sound module</h1>
-<p class="author">Marcelo Fernandes</p>
-<p class="date">July 04, 2023</p>
-</header>
-<h2 id="electricdigital-pianos">Electric/Digital Pianos</h2>
+<hr>
+<h2>title: Raspberry Pi as a sound module
+author: Marcelo Fernandes
+date: July 04, 2023</h2>
+<h2>Electric/Digital Pianos</h2>
 <p>In the past week I have been thinking about buying a digital piano.
-I’ve watched a lot of Youtube videos to find the perfect one. The
-problem is that anything half decent costs about $1,500 NZD.</p>
-<p>No way I’m going to pay that much.</p>
-<p>This is when I remembered I have an Alesis MIDI keyboard and a couple
-of Raspberry Pi’s lying around. After some Googling, I’ve figured I
-could transform a Raspeberry Pi into a sound module, connect it to my
-speaker, and play it away.</p>
-<p>The below is a step-by-step manual of how I managed to get this setup
-working.</p>
-<h2 id="raspberry-pi-os">Raspberry Pi OS</h2>
-<p>We will use the <code>rpi-imager</code> package to build our OS
-image. You can find official support for Ubuntu, Mac, or Windows. The
-package is also ported to other OS by users (Arch linux, for
-example).</p>
-<p>The app gives you a feel options to build your OS. Here is what you
-have to input:</p>
-<ol type="1">
-<li><p>Make sure you select the <code>Raspberry Pi OS Lite</code>
-version. This version does not include the desktop environment, which we
-don’t need. We want as less things running in our OS as possible since
-audio processing is really sensitive to lags. The
-<code>Raspberry Pi OS Lite</code> comes in two flavours: 32-bit or
-64-bit. We will prefer the <strong>64-bit</strong> as it runs faster (at
-the expense of more memory use). You have to check whether your
-Raspberry Pi device supports 64-bit first. If not, it is still fine to
-go with a 32-bit OS. If you end up finding any performance issues, come
-back to this instruction and try running a 64-bit Pi instead
-(realistically, you should be fine with 32-bit).</p></li>
-<li><p>Enable ssh. This option is behind the cog icon. We will use ssh
-as our main interface to connect to our Raspberry Pi. Make sure to set a
-user and a password. For this tutorial I will be using the user
-<code>admin</code>.</p></li>
-<li><p>Configure wireless LAN. This option is also behind the cog
-icon.</p></li>
+I've watched a lot of Youtube videos to find the perfect one. The problem is
+that anything half decent costs about $1,500 NZD.</p>
+<p>No way I'm going to pay that much.</p>
+<p>This is when I remembered I have an Alesis MIDI keyboard and a couple of
+Raspberry Pi's lying around. After some Googling, I've figured I could
+transform a Raspeberry Pi into a sound module, connect it to my speaker, and
+play it away.</p>
+<p>The below is a step-by-step manual of how I managed to get this setup working.</p>
+<h2>Raspberry Pi OS</h2>
+<p>We will use the <code>rpi-imager</code> package to build our OS image. You can find
+official support for Ubuntu, Mac, or Windows. The package is also ported to
+other OS by users (Arch linux, for example).</p>
+<p>The app gives you a feel options to build your OS. Here is what you have to
+input:</p>
+<ol>
+<li><p>Make sure you select the <code>Raspberry Pi OS Lite</code> version. This version
+does not include the desktop environment, which we don't need. We want as less
+things running in our OS as possible since audio processing is really sensitive
+to lags. The <code>Raspberry Pi OS Lite</code> comes in two flavours: 32-bit or 64-bit. We
+will prefer the <strong>64-bit</strong> as it runs faster (at the expense of more memory
+use). You have to check whether your Raspberry Pi device supports 64-bit first.
+If not, it is still fine to go with a 32-bit OS. If you end up finding any
+performance issues, come back to this instruction and try running a 64-bit Pi
+instead (realistically, you should be fine with 32-bit).</p>
+</li>
+<li><p>Enable ssh. This option is behind the cog icon. We will use ssh as our main
+interface to connect to our Raspberry Pi. Make sure to set a user and a
+password. For this tutorial I will be using the user <code>admin</code>.</p>
+</li>
+<li><p>Configure wireless LAN. This option is also behind the cog icon.</p>
+</li>
 <li><p>Set the hostname to something sensible like
-“<code>raspberrypisoundmodule.local</code>”. This is particularly useful
-if you have other Raspberries in your network and you don’t want
-hostnames to mingle.</p></li>
+&quot;<code>raspberrypisoundmodule.local</code>&quot;. This is particularly useful if you have
+other Raspberries in your network and you don't want hostnames to mingle.</p>
+</li>
 </ol>
-<h2 id="ssh-connection">SSH connection</h2>
-<p>To connect to your Raspberry Pi, invoke the ssh command with the
-argument <code>&lt;user&gt;@&lt;hostname&gt;</code>. In my case this
-will be:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> admin@raspberrypisoundmodule.local</span></code></pre></div>
-<h2 id="audio-configuration">Audio configuration</h2>
-<p>Make sure your Raspberry Pi is set to work with high quality analogue
-audio. Edit your <code>/boot/config.txt</code> file to include the
-following line at the top:</p>
-<pre><code>audio_pwm_mode=2</code></pre>
-<p>Note that a modern Raspberry Pi will have this option enabled by
-default.</p>
-<h2 id="user-configuration">User configuration</h2>
-<p>We will add the user <code>admin</code> to the <code>audio</code>
-group so that this user is allowed to access and interact with
-audio-related resources. This user should already be linked to this
-group, but we will do so anyway in case you are using a version of Pi OS
-that doesn’t do so.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> usermod <span class="at">-a</span> <span class="at">-G</span> audio admin</span></code></pre></div>
-<p>You should now see the link between the user and the group when you
-run:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getent</span> group</span></code></pre></div>
-<h2 id="setting-audio-resource-limits">Setting audio resource
-limits</h2>
-<p>Now we are going to edit
-<code>/etc/security/limits.d/audio.conf</code>. This file is used to set
-resource limits for processes related to audio. By doing this, we will
-be able to control and allocate system resources for audio applications
-like CPU usage, memory, and more.</p>
+<h2>SSH connection</h2>
+<p>To connect to your Raspberry Pi, invoke the ssh command with the argument
+<code>&lt;user&gt;@&lt;hostname&gt;</code>. In my case this will be:</p>
+<pre><code class="language-sh">ssh admin@raspberrypisoundmodule.local
+</code></pre>
+<h2>Audio configuration</h2>
+<p>Make sure your Raspberry Pi is set to work with high quality analogue audio.
+Edit your <code>/boot/config.txt</code> file to include the following line at the top:</p>
+<pre><code>audio_pwm_mode=2
+</code></pre>
+<p>Note that a modern Raspberry Pi will have this option enabled by default.</p>
+<h2>User configuration</h2>
+<p>We will add the user <code>admin</code> to the <code>audio</code> group so that this user is allowed
+to access and interact with audio-related resources. This user should already
+be linked to this group, but we will do so anyway in case you are using a
+version of Pi OS that doesn't do so.</p>
+<pre><code class="language-sh">sudo usermod -a -G audio admin
+</code></pre>
+<p>You should now see the link between the user and the group when you run:</p>
+<pre><code class="language-sh">getent group
+</code></pre>
+<h2>Setting audio resource limits</h2>
+<p>Now we are going to edit <code>/etc/security/limits.d/audio.conf</code>.
+This file is used to set resource limits for processes related to audio. By
+doing this, we will be able to control and allocate system resources for
+audio applications like CPU usage, memory, and more.</p>
 <p>We will add the following two lines to the top of the file:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">@audio</span> <span class="at">-</span> rtprio 80</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">@audio</span> <span class="at">-</span> memlock unlimited</span></code></pre></div>
-<p>The first line will set the real-time priority (rtprio) for audio
-applications to 80. This will help the OS to prioritise our audio.
-Values here range from 1 to 99 (the value of 100 is reserved for the
-highest priority processes like the kernel itself and essential system
-components). We won’t be setting max priority here because it could
-impact the system’s stability and responsiveness, 80 should be
-plenty.</p>
-<p>The second line sets the memory lock (memlock) limit for audio
-processes. This memory lock will prevent specific memory regions from
-being swapped out to disk, making sure the OS has fast access to
-critical data. In this case, audio processes will be able to set
-<code>unlimited</code> amount of memory lock.</p>
-<p>These two lines together will make sure we have sufficient resources
-(and priority) for a smooth audio operation on our Pi.</p>
-<h2 id="identifying-the-sound-card">Identifying the sound card</h2>
-<p>To verify what sound card you will be using, type the following
-command:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aplay</span> <span class="at">-l</span></span></code></pre></div>
-<p>Analyse the output, and find what the proper card id is. In my case,
-I will use card 0.</p>
+<pre><code class="language-sh">@audio - rtprio 80
+@audio - memlock unlimited
+</code></pre>
+<p>The first line will set the real-time priority (rtprio) for audio applications
+to 80. This will help the OS to prioritise our audio. Values here range from
+1 to 99 (the value of 100 is reserved for the highest priority processes like
+the kernel itself and essential system components). We won't be setting max
+priority here because it could impact the system's stability and
+responsiveness, 80 should be plenty.</p>
+<p>The second line sets the memory lock (memlock) limit for audio processes.
+This memory lock will prevent specific memory regions from being swapped out
+to disk, making sure the OS has fast access to critical data. In this case,
+audio processes will be able to set <code>unlimited</code> amount of memory lock.</p>
+<p>These two lines together will make sure we have sufficient resources (and
+priority) for a smooth audio operation on our Pi.</p>
+<h2>Identifying the sound card</h2>
+<p>To verify what sound card you will be using, type the following command:</p>
+<pre><code class="language-sh">aplay -l
+</code></pre>
+<p>Analyse the output, and find what the proper card id is. In my case, I will
+use card 0.</p>
 <pre><code>**** List of PLAYBACK Hardware Devices ****
 card 0: Headphones [bcm2835 Headphones], device 0: bcm2835 Headphones [bcm2835 Headphones]
   Subdevices: 8/8
-...</code></pre>
-<h2 id="update-the-alsa-config-file">Update the alsa config file</h2>
-<p>Open the file <code>/usr/share/alsa/alsa.conf</code> and search for
-the following lines</p>
+...
+</code></pre>
+<h2>Update the alsa config file</h2>
+<p>Open the file <code>/usr/share/alsa/alsa.conf</code> and search for the following lines</p>
 <pre><code>defaults.ctl.card 0
-defaults.pcm.card 0</code></pre>
-<p>Again, my card id is <strong>0</strong>. If you have a different card
-id, make sure change the number 0 by whatever card id you have.</p>
-<p>Once you have done that, run the <code>alsamixer</code> command to
-check if you can play with the playback output volume.</p>
-<h2 id="testing-that-the-speaker-works">Testing that the speaker
-works</h2>
-<p>Once you’ve connected your speaker (or headphones), you can run the
-following command to output whitenoise to your device:</p>
-<pre><code>speaker-test -c2</code></pre>
-<p>You can also test with a wav file, which should have been included in
-your OS installation:</p>
-<pre><code>speaker-test -c2 --test=wav -w /usr/share/sounds/alsa/Front_Center.wav</code></pre>
-<p>If this doesn’t work immediately, it might have been because you’ve
-changed the default configurations in the previous steps. Try performing
-a <code>sudo reboot</code> to restart the raspberry pi.</p>
-<h2 id="install-fluidsynth">Install FluidSynth</h2>
-<p>FluidSynth is going to be the application that will convert our MIDI
-into a synthesiser.</p>
-<pre><code>sudo apt-get update &amp;&amp; sudo apt-get install fluidsynth</code></pre>
-<h2 id="download-sound-fonts-optional">Download sound fonts
-[optional]</h2>
-<p>If you don’t want to download fonts, you can use the default that
-comes with fluidsynth which is a very basic piano located at:
+defaults.pcm.card 0
+</code></pre>
+<p>Again, my card id is <strong>0</strong>. If you have a different card id, make sure change
+the number 0 by whatever card id you have.</p>
+<p>Once you have done that, run the <code>alsamixer</code> command to check if you can play
+with the playback output volume.</p>
+<h2>Testing that the speaker works</h2>
+<p>Once you've connected your speaker (or headphones), you can run the following
+command to output whitenoise to your device:</p>
+<pre><code>speaker-test -c2
+</code></pre>
+<p>You can also test with a wav file, which should have been included in your OS
+installation:</p>
+<pre><code>speaker-test -c2 --test=wav -w /usr/share/sounds/alsa/Front_Center.wav
+</code></pre>
+<p>If this doesn't work immediately, it might have been because you've changed
+the default configurations in the previous steps. Try performing a
+<code>sudo reboot</code> to restart the raspberry pi.</p>
+<h2>Install FluidSynth</h2>
+<p>FluidSynth is going to be the application that will convert our MIDI into a
+synthesiser.</p>
+<pre><code>sudo apt-get update &amp;&amp; sudo apt-get install fluidsynth
+</code></pre>
+<h2>Download sound fonts [optional]</h2>
+<p>If you don't want to download fonts, you can use the default that comes with
+fluidsynth which is a very basic piano located at:
 <code>/usr/share/sounds/sf2/FluidR3_GM.sf2</code></p>
-<p>Otherwise, there are many free sound fonts in the internet. I will
-give no guarantee that the link below will still be working when you
-read this article, but you can download some fonts using this
-command.</p>
-<div class="sourceCode" id="cb12"><pre
-class="sourceCode sh"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-o</span> fonts.sf2 https://musical-artifacts.com/artifacts/1390/alex_gm.sf2</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mv fonts.sf2 /usr/share/sounds/sf2</span></code></pre></div>
-<h2 id="create-the-sound-configuration-file">Create the sound
-configuration file</h2>
-<p>In your home directory, create a folder <code>inst</code> and add a
-file named <code>keyboard</code> with the following content:</p>
+<p>Otherwise, there are many free sound fonts in the internet. I will give no
+guarantee that the link below will still be working when you read this article,
+but you can download some fonts using this command.</p>
+<pre><code class="language-sh">curl -o fonts.sf2 https://musical-artifacts.com/artifacts/1390/alex_gm.sf2
+sudo mv fonts.sf2 /usr/share/sounds/sf2
+</code></pre>
+<h2>Create the sound configuration file</h2>
+<p>In your home directory, create a folder <code>inst</code> and add a file named <code>keyboard</code>
+with the following content:</p>
 <pre><code>echo &quot;loading soundfont&quot;
 
 gain 3
@@ -415,90 +190,89 @@ load &quot;/usr/share/sounds/sf2/FluidR3_GM.sf2&quot;
 
 select 0 1 0 0
 
-echo &quot;loaded&quot;</code></pre>
-<p>Change the <code>load</code> command to point to the location of the
-file you have downloaded.</p>
-<h2 id="script-for-configuring-fluidsynth">Script for configuring
-FluidSynth</h2>
-<p>Create a script called <code>synth.sh</code> in your home directory
-with this content:</p>
-<div class="sourceCode" id="cb14"><pre
-class="sourceCode sh"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Deactivate stuff for performance gains</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> service ntp stop</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> service triggerhappy stop</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> service dbus stop</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Kill all instances of fluidsynth before starting it again.</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">killall</span> fluidsynth</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="va">INSTRUMENT_FILE</span><span class="op">=</span>~/inst/keyboard</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Find this by running `acconnect -o` and swapping the string variables.</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="va">KEYBOARD_NAME</span><span class="op">=</span><span class="st">&quot;V61&quot;</span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co"># -si: Enables the software MIDI interface. This option allows FluidSynth to</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="co"># receive MIDI messages from external sources.</span></span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co"># -p &quot;fluid&quot;: Specifies the name of the MIDI port or client. In this case, it</span></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co"># is set to &quot;fluid&quot;.</span></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co"># -C0: Sets the MIDI channel offset to 0. This means that the MIDI channel</span></span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co"># numbers will start from 0 instead of the default 1.</span></span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co"># -R0: Disables reverb. The value 0 indicates that no reverb effect will be</span></span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co"># applied.</span></span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co"># -r48000: Sets the sample rate to 48000 Hz. This determines the number of</span></span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="co"># audio samples processed per second.</span></span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="co"># -c2: Sets the number of audio channels to 2. This means stereo output will</span></span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a><span class="co"># be produced.</span></span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a><span class="co"># -z1024: Sets the audio buffer size to 1024 samples. This affects the</span></span>
-<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="co"># latency and performance of the audio output.</span></span>
-<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a><span class="co"># -f inst/$CONFIG: Specifies the SoundFont file to be used by FluidSynth. The</span></span>
-<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a><span class="co"># variable $CONFIG should be replaced with the actual name of the SoundFont</span></span>
-<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a><span class="co"># file.</span></span>
-<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a><span class="co"># -a alsa: Sets the audio driver to ALSA (Advanced Linux Sound Architecture).</span></span>
-<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a><span class="co"># ALSA will be used for audio output.</span></span>
-<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a><span class="co"># -m alsa_seq: Sets the MIDI driver to ALSA sequencer. This allows FluidSynth</span></span>
-<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a><span class="co"># to connect to MIDI devices and software via the ALSA sequencer interface.</span></span>
-<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a><span class="ex">fluidsynth</span> <span class="at">-si</span> <span class="at">-p</span> <span class="st">&quot;fluid&quot;</span> <span class="at">-C0</span> <span class="at">-R0</span> <span class="at">-r48000</span> <span class="at">-c2</span> <span class="at">-z1024</span> <span class="at">-f</span> <span class="va">$INSTRUMENT_FILE</span> <span class="at">-a</span> alsa <span class="at">-m</span> alsa_seq <span class="kw">&amp;</span></span>
-<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a><span class="fu">sleep</span> 3</span>
-<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a><span class="va">IS_MIDI_CONNECTED</span><span class="op">=</span><span class="va">$(</span><span class="fu">aconnect</span> <span class="at">-o</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="st">&quot;</span><span class="va">$KEYBOARD_NAME</span><span class="st">&quot;</span><span class="va">)</span></span>
-<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">[[</span> <span class="va">$IS_MIDI_CONNECTED</span> <span class="kw">]]</span></span>
-<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a><span class="cf">then</span></span>
-<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aconnect</span> <span class="va">$KEYBOARD_NAME</span>:0 fluid:0</span>
-<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="va">$KEYBOARD_NAME</span> connected</span>
-<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
-<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span> 0</span></code></pre></div>
+echo &quot;loaded&quot;
+</code></pre>
+<p>Change the <code>load</code> command to point to the location of the file you have
+downloaded.</p>
+<h2>Script for configuring FluidSynth</h2>
+<p>Create a script called <code>synth.sh</code> in your home directory with this content:</p>
+<pre><code class="language-sh">#!/bin/bash
+
+# Deactivate stuff for performance gains
+sudo service ntp stop
+sudo service triggerhappy stop
+sudo service dbus stop
+
+# Kill all instances of fluidsynth before starting it again.
+killall fluidsynth
+
+
+INSTRUMENT_FILE=~/inst/keyboard
+
+# Find this by running `acconnect -o` and swapping the string variables.
+KEYBOARD_NAME=&quot;V61&quot;
+
+# -si: Enables the software MIDI interface. This option allows FluidSynth to
+# receive MIDI messages from external sources.
+#
+# -p &quot;fluid&quot;: Specifies the name of the MIDI port or client. In this case, it
+# is set to &quot;fluid&quot;.
+#
+# -C0: Sets the MIDI channel offset to 0. This means that the MIDI channel
+# numbers will start from 0 instead of the default 1.
+#
+# -R0: Disables reverb. The value 0 indicates that no reverb effect will be
+# applied.
+#
+# -r48000: Sets the sample rate to 48000 Hz. This determines the number of
+# audio samples processed per second.
+#
+# -c2: Sets the number of audio channels to 2. This means stereo output will
+# be produced.
+#
+# -z1024: Sets the audio buffer size to 1024 samples. This affects the
+# latency and performance of the audio output.
+#
+# -f inst/$CONFIG: Specifies the SoundFont file to be used by FluidSynth. The
+# variable $CONFIG should be replaced with the actual name of the SoundFont
+# file.
+#
+# -a alsa: Sets the audio driver to ALSA (Advanced Linux Sound Architecture).
+# ALSA will be used for audio output.
+#
+# -m alsa_seq: Sets the MIDI driver to ALSA sequencer. This allows FluidSynth
+# to connect to MIDI devices and software via the ALSA sequencer interface.
+
+fluidsynth -si -p &quot;fluid&quot; -C0 -R0 -r48000 -c2 -z1024 -f $INSTRUMENT_FILE -a alsa -m alsa_seq &amp;
+
+sleep 3
+
+
+IS_MIDI_CONNECTED=$(aconnect -o | grep &quot;$KEYBOARD_NAME&quot;)
+
+if [[ $IS_MIDI_CONNECTED ]]
+then
+    aconnect $KEYBOARD_NAME:0 fluid:0
+    echo $KEYBOARD_NAME connected
+fi
+
+exit 0
+</code></pre>
 <p>Make sure the file is executable:</p>
-<pre><code>chmod +x synth.sh</code></pre>
-<h2 id="edit-your-bashrc-to-initialise-the-script-automatically">Edit
-your bashrc to initialise the script automatically</h2>
-<p>Put this line at the end of your <code>.bashrc</code> file (don’t
-forget to <code>cd ~</code> first):</p>
-<pre><code>./synth.sh</code></pre>
-<h2 id="auto-login">Auto login</h2>
+<pre><code>chmod +x synth.sh
+</code></pre>
+<h2>Edit your bashrc to initialise the script automatically</h2>
+<p>Put this line at the end of your <code>.bashrc</code> file (don't forget to <code>cd ~</code> first):</p>
+<pre><code>./synth.sh
+</code></pre>
+<h2>Auto login</h2>
 <p>Run <code>sudo raspi-config</code></p>
-<ol type="1">
-<li>Go to “System Options”</li>
-<li>Go to “Boot / Auto Login”</li>
-<li>Select “Console auto login”</li>
+<ol>
+<li>Go to &quot;System Options&quot;</li>
+<li>Go to &quot;Boot / Auto Login&quot;</li>
+<li>Select &quot;Console auto login&quot;</li>
 </ol>
-<p>Now once your raspberry pi boots, it will automatically run the
-script to activate the midi keyboard.</p>
+<p>Now once your raspberry pi boots, it will automatically run the script to
+activate the midi keyboard.</p>
 </body>
 </html>

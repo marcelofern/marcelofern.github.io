@@ -1,87 +1,39 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <meta name="author" content="Marcelo Fernandes" />
-  <meta name="dcterms.date" content="2023-01-05" />
-  <title>Verilog and Verilator</title>
-  <style>
-    html {
-      color: #1a1a1a;
-      background-color: #fdfdfd;
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:650px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
     }
-    body {
-      margin: 0 auto;
-      max-width: 36em;
-      padding-left: 50px;
-      padding-right: 50px;
-      padding-top: 50px;
-      padding-bottom: 50px;
-      hyphens: auto;
-      overflow-wrap: break-word;
-      text-rendering: optimizeLegibility;
-      font-kerning: normal;
-    }
-    @media (max-width: 600px) {
-      body {
-        font-size: 0.9em;
-        padding: 12px;
-      }
-      h1 {
-        font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        background-color: white;
-      }
-      body {
-        background-color: transparent;
-        color: black;
-        font-size: 12pt;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
-      }
-    }
-    p {
-      margin: 1em 0;
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
     }
     a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
     }
     img {
       max-width: 100%;
-    }
-    svg {
-      height: auto;
-      max-width: 100%;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      margin-top: 1.4em;
-    }
-    h5, h6 {
-      font-size: 1em;
-      font-style: italic;
-    }
-    h6 {
-      font-weight: normal;
-    }
-    ol, ul {
-      padding-left: 1.7em;
-      margin-top: 1em;
-    }
-    li > ol, li > ul {
-      margin-top: 0;
     }
     blockquote {
       margin: 1em 0 1em 1.7em;
@@ -89,216 +41,43 @@
       border-left: 2px solid #e6e6e6;
       color: #606060;
     }
-    code {
-      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
-      font-size: 85%;
-      margin: 0;
-      hyphens: manual;
-    }
-    pre {
-      margin: 1em 0;
-      overflow: auto;
-    }
-    pre code {
-      padding: 0;
-      overflow: visible;
-      overflow-wrap: normal;
-    }
-    .sourceCode {
-     background-color: transparent;
-     overflow: visible;
-    }
-    hr {
-      background-color: #1a1a1a;
-      border: none;
-      height: 1px;
-      margin: 1em 0;
-    }
-    table {
-      margin: 1em 0;
-      border-collapse: collapse;
-      width: 100%;
-      overflow-x: auto;
-      display: block;
-      font-variant-numeric: lining-nums tabular-nums;
-    }
-    table caption {
-      margin-bottom: 0.75em;
-    }
-    tbody {
-      margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
-    }
-    th {
-      border-top: 1px solid #1a1a1a;
-      padding: 0.25em 0.5em 0.25em 0.5em;
-    }
-    td {
-      padding: 0.125em 0.5em 0.25em 0.5em;
-    }
-    header {
-      margin-bottom: 4em;
-      text-align: center;
-    }
-    #TOC li {
-      list-style: none;
-    }
-    #TOC ul {
-      padding-left: 1.3em;
-    }
-    #TOC > ul {
-      padding-left: 0;
-    }
-    #TOC a:not(:hover) {
-      text-decoration: none;
-    }
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
-    /* CSS for syntax highlighting */
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { color: #008000; } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { color: #008000; font-weight: bold; } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-<style rel="stylesheet">
-  html {
-    font-size: 16px;
-  }
-  body {
-    hyphens: auto;
-    text-align: justify;
-    line-height: 1.7;
-  }
-  a {
-    color: #1976d2;
-    text-decoration: none;
-    border-bottom: 1px solid;
-  }
-  a:visited {
-    color: #1976d2;
-  }
-  pre.sourceCode {
-    border-left: 3px solid #000;
-    padding-left: 1.5rem;
-    margin: 1em 0;
-  }
-  figcaption {
-    display: none;
-  }
-</style>
-<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
 </head>
 <body>
-<header id="title-block-header">
-<h1 class="title">Verilog and Verilator</h1>
-<p class="author">Marcelo Fernandes</p>
-<p class="date">January 5, 2023</p>
-</header>
-<h2 id="verilog">Verilog</h2>
-<p>Verilog is a hardware description language (HDL) used in the design
-and verification of digital circuits. Verilog has been merged into the
-SystemVerilog standard in 2009, and is now part of the SystemVerilog
-language.</p>
-<h2 id="systemverilog">SystemVerilog</h2>
-<p>This is the actual language we’ll be using. A source points out the
-following benefits of SystemVerilog:</p>
+<hr>
+<h2>title: Verilog and Verilator
+author: Marcelo Fernandes
+date: January 5, 2023</h2>
+<h2>Verilog</h2>
+<p>Verilog is a hardware description language (HDL) used in the design and
+verification of digital circuits. Verilog has been merged into the
+SystemVerilog standard in 2009, and is now part of the SystemVerilog language.</p>
+<h2>SystemVerilog</h2>
+<p>This is the actual language we'll be using. A source points out the following
+benefits of SystemVerilog:</p>
 <blockquote>
-<p>SystemVerilog is better than Verilog because of its ability to
-perform constrained random stimuli, use OOP features in testbench
-construction, functional coverage, assertions, etc.</p>
+<p>SystemVerilog is better than Verilog because of its ability to perform
+constrained random stimuli, use OOP features in testbench construction,
+functional coverage, assertions, etc.</p>
 </blockquote>
-<h3 id="data-types">Data Types</h3>
+<h3>Data Types</h3>
 <p>SystemVerilog has the following data types:</p>
 <ul>
-<li><strong>reg</strong>: Represent data storage elements (not
-necessarily physical registers). They retain their value until the next
-value is sent to them. Can only be driven in procedural blocks like
-<code>always</code> and <code>initial</code>.</li>
-<li><strong>wire</strong>: Used for connecting different elements. They
-can be treated as physical wires. Can only be driven in
-<code>assign</code> statements.</li>
+<li><strong>reg</strong>: Represent data storage elements (not necessarily physical
+registers). They retain their value until the next value is sent to them. Can
+only be driven in procedural blocks like <code>always</code> and <code>initial</code>.</li>
+<li><strong>wire</strong>: Used for connecting different elements. They can be treated as
+physical wires. Can only be driven in <code>assign</code> statements.</li>
 <li><strong>integer</strong></li>
 <li><strong>real</strong>: Like a <code>double</code> in C.</li>
 <li><strong>time</strong></li>
 <li><strong>realtime</strong>: Also a <code>double</code>.</li>
-<li><strong>logic</strong>: A 4-state data type. Can be driven by both
-procedural blocks and continuous <code>assign</code> statements.</li>
+<li><strong>logic</strong>: A 4-state data type. Can be driven by both procedural blocks and
+continuous <code>assign</code> statements.</li>
 <li><strong>bit</strong></li>
 <li><strong>byte</strong></li>
 <li><strong>shortint</strong> (16 bits)</li>
@@ -306,104 +85,101 @@ procedural blocks and continuous <code>assign</code> statements.</li>
 <li><strong>longint</strong> (64 bits)</li>
 <li><strong>shortreal</strong> (float)</li>
 </ul>
-<p>Types that can hold UNKNOWN (X) and high-impedance (Z) values in
-addition to 0 and 1 are called <strong>4-state data types</strong>.</p>
-<h4 id="logic">logic</h4>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> tb<span class="op">;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  logic <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span>  my_data<span class="op">;</span> <span class="co">// Declare a 4-bit logic type variable</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  logic        en<span class="op">;</span> <span class="co">// Declare a 1-bit logic type variable</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">initial</span> <span class="kw">begin</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Default value of logic type is X</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">$display</span> <span class="op">(</span><span class="st">&quot;my_data=0x%0h en=%0b&quot;</span><span class="op">,</span> my_data<span class="op">,</span> en<span class="op">);</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// logic data type can be driven in initial/always blocks</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    my_data <span class="op">=</span> <span class="bn">4&#39;hB</span><span class="op">;</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">$display</span> <span class="op">(</span><span class="st">&quot;my_data=0x%0h en=%0b&quot;</span><span class="op">,</span> my_data<span class="op">,</span> en<span class="op">);</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="bn">#1</span><span class="op">;</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">$display</span> <span class="op">(</span><span class="st">&quot;my_data=0x%0h en=%0b&quot;</span><span class="op">,</span> my_data<span class="op">,</span> en<span class="op">);</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">end</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">// logic data type can also be driven via assign statements</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">assign</span> en <span class="op">=</span> my_data<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="kw">endmodule</span></span></code></pre></div>
+<p>Types that can hold UNKNOWN (X) and high-impedance (Z) values in addition to
+0 and 1 are called <strong>4-state data types</strong>.</p>
+<h4>logic</h4>
+<pre><code class="language-verilog">module tb;
+  logic [3:0]  my_data; // Declare a 4-bit logic type variable
+  logic        en; // Declare a 1-bit logic type variable
+
+  initial begin
+    // Default value of logic type is X
+    $display (&quot;my_data=0x%0h en=%0b&quot;, my_data, en);
+    // logic data type can be driven in initial/always blocks
+    my_data = 4'hB;
+    $display (&quot;my_data=0x%0h en=%0b&quot;, my_data, en);
+    #1;
+    $display (&quot;my_data=0x%0h en=%0b&quot;, my_data, en);
+  end
+  // logic data type can also be driven via assign statements
+  assign en = my_data[0];
+endmodule
+</code></pre>
 <p>Simulation log:</p>
 <pre><code>my_data=0xx en=x
 my_data=0xb en=x
-my_data=0xb en=1</code></pre>
-<h4 id="bit">bit</h4>
-<div class="sourceCode" id="cb3"><pre
-class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> tb<span class="op">;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  bit       var_a<span class="op">;</span> <span class="co">// Declare a 1 bit variable of type &quot;bit&quot;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  bit <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> var_b<span class="op">;</span> <span class="co">// Declare a 4 bit variable of type &quot;bit&quot;</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  logic <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> x_val<span class="op">;</span> <span class="co">// Declare a 4 bit variable of type &quot;logic&quot;</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">initial</span> <span class="kw">begin</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Initial value of &quot;bit&quot; data type is 0</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">$display</span> <span class="op">(</span><span class="st">&quot;Initial value var_a=%0b var_b=0x%0h&quot;</span><span class="op">,</span> var_a<span class="op">,</span> var_b<span class="op">);</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Assign new values and display the variable to see that it gets the new values</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    var_a <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    var_b <span class="op">=</span> <span class="bn">4&#39;hF</span><span class="op">;</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">$display</span> <span class="op">(</span><span class="st">&quot;New values var_a=%0b var_b=0x%0h&quot;</span><span class="op">,</span> var_a<span class="op">,</span> var_b<span class="op">);</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// If a &quot;bit&quot; type variable is assigned with a value greater than it can hold</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// the left most bits are truncated. In this case, var_b can hold only 4 bits</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// and hence &#39;h481 gets truncated leaving var_b with only &#39;ha;</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    var_b <span class="op">=</span> <span class="bn">16&#39;h481a</span><span class="op">;</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">$display</span> <span class="op">(</span><span class="st">&quot;Truncated value: var_b=0x%0h&quot;</span><span class="op">,</span> var_b<span class="op">);</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// If a logic type or any 4-state variable assigns its value to a &quot;bit&quot;</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// type variable, then X and Z get converted to zero</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    var_b <span class="op">=</span> <span class="bn">4&#39;b01zx</span><span class="op">;</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="dt">$display</span> <span class="op">(</span><span class="st">&quot;var_b = %b&quot;</span><span class="op">,</span> var_b<span class="op">);</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="kw">end</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="kw">endmodule</span></span></code></pre></div>
+my_data=0xb en=1
+</code></pre>
+<h4>bit</h4>
+<pre><code class="language-verilog">module tb;
+  bit       var_a; // Declare a 1 bit variable of type &quot;bit&quot;
+  bit [3:0] var_b; // Declare a 4 bit variable of type &quot;bit&quot;
+
+  logic [3:0] x_val; // Declare a 4 bit variable of type &quot;logic&quot;
+
+  initial begin
+    // Initial value of &quot;bit&quot; data type is 0
+    $display (&quot;Initial value var_a=%0b var_b=0x%0h&quot;, var_a, var_b);
+    // Assign new values and display the variable to see that it gets the new values
+    var_a = 1;
+    var_b = 4'hF;
+    $display (&quot;New values var_a=%0b var_b=0x%0h&quot;, var_a, var_b);
+    // If a &quot;bit&quot; type variable is assigned with a value greater than it can hold
+    // the left most bits are truncated. In this case, var_b can hold only 4 bits
+    // and hence 'h481 gets truncated leaving var_b with only 'ha;
+    var_b = 16'h481a;
+    $display (&quot;Truncated value: var_b=0x%0h&quot;, var_b);
+    // If a logic type or any 4-state variable assigns its value to a &quot;bit&quot;
+    // type variable, then X and Z get converted to zero
+    var_b = 4'b01zx;
+    $display (&quot;var_b = %b&quot;, var_b);
+  end
+endmodule
+</code></pre>
 <p>Simulation log:</p>
 <pre><code>Initial value var_a=0 var_b=0x0
 New values var_a=1 var_b=0xf
 Truncated value: var_b=0xa
-var_b = 0100</code></pre>
-<h3 id="arrays">Arrays</h3>
+var_b = 0100
+</code></pre>
+<h3>Arrays</h3>
 <p>Arrays can be: static, dynamic, associative, queues</p>
-<h4 id="static-arrays">Static arrays</h4>
-<div class="sourceCode" id="cb5"><pre
-class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> tb<span class="op">;</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// an 8 bit-wide vector</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    bit <span class="op">[</span><span class="dv">7</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span>   m_data<span class="op">;</span>     <span class="co">// A vector or 1D packed array</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">initial</span> <span class="kw">begin</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 1. Assign a value to the vector</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        m_data <span class="op">=</span> <span class="bn">8&#39;hA2</span><span class="op">;</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// 2. Iterate through each bit of the vector and print value</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">for</span> <span class="op">(</span>int i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dt">$size</span><span class="op">(</span>m_data<span class="op">);</span> i<span class="op">++)</span> <span class="kw">begin</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            <span class="dt">$display</span> <span class="op">(</span><span class="st">&quot;m_data[%0d] = %b&quot;</span><span class="op">,</span> i<span class="op">,</span> m_data<span class="op">[</span>i<span class="op">]);</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">end</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">end</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="kw">endmodule</span></span></code></pre></div>
-<h4 id="dynamic-arrays">Dynamic arrays</h4>
-<div class="sourceCode" id="cb6"><pre
-class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Dynamic array, size unknown but it holds integer values</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>int         m_mem <span class="op">[];</span></span></code></pre></div>
-<h4 id="associative-arrays-like-a-dictionary">Associative arrays (like a
-dictionary)</h4>
-<div class="sourceCode" id="cb7"><pre
-class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>int m_data <span class="op">[</span>int<span class="op">];</span> <span class="co">// Key is of type int, and data is also of type int</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>int m_name <span class="op">[</span>string<span class="op">];</span> <span class="co">// Key is of type string, and data is of type int</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>m_name <span class="op">[</span><span class="st">&quot;Rachel&quot;</span><span class="op">]</span> <span class="op">=</span> <span class="dv">30</span><span class="op">;</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>m_name <span class="op">[</span><span class="st">&quot;Orange&quot;</span><span class="op">]</span> <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>m_data <span class="op">[</span><span class="bn">32&#39;h123</span><span class="op">]</span> <span class="op">=</span> <span class="dv">3333</span><span class="op">;</span></span></code></pre></div>
-<h3 id="queues">Queues</h3>
-<div class="sourceCode" id="cb8"><pre
-class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>int     m_queue <span class="op">[</span>$<span class="op">];</span>        <span class="co">// Unbound queue, no size</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>m_queue.push_back<span class="op">(</span><span class="dv">23</span><span class="op">);</span>      <span class="co">// Push into the queue</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>int data <span class="op">=</span> m_queue.pop_front<span class="op">();</span> <span class="co">// Pop from the queue</span></span></code></pre></div>
+<h4>Static arrays</h4>
+<pre><code class="language-verilog">module tb;
+  // an 8 bit-wide vector
+    bit [7:0] 	m_data; 	// A vector or 1D packed array
+    initial begin
+        // 1. Assign a value to the vector
+        m_data = 8'hA2;
+        // 2. Iterate through each bit of the vector and print value
+        for (int i = 0; i &lt; $size(m_data); i++) begin
+            $display (&quot;m_data[%0d] = %b&quot;, i, m_data[i]);
+        end
+    end
+endmodule
+</code></pre>
+<h4>Dynamic arrays</h4>
+<pre><code class="language-verilog">// Dynamic array, size unknown but it holds integer values
+int 		m_mem [];
+</code></pre>
+<h4>Associative arrays (like a dictionary)</h4>
+<pre><code class="language-verilog">int m_data [int]; // Key is of type int, and data is also of type int
+int m_name [string]; // Key is of type string, and data is of type int
+
+m_name [&quot;Rachel&quot;] = 30;
+m_name [&quot;Orange&quot;] = 2;
+
+m_data [32'h123] = 3333;
+</code></pre>
+<h3>Queues</h3>
+<pre><code class="language-verilog">int 	m_queue [$]; 		// Unbound queue, no size
+
+m_queue.push_back(23); 		// Push into the queue
+
+int data = m_queue.pop_front(); // Pop from the queue
+</code></pre>
 <p><strong>More information:</strong></p>
-<p><a
-href="https://www.chipverify.com/systemverilog/systemverilog-data-types-integer-byte">TUTORIAL
-1</a></p>
-<p><a
-href="https://verilogguide.readthedocs.io/en/latest/verilog/overview.html">TUTORIAL
-2</a></p>
+<p><a href="https://www.chipverify.com/systemverilog/systemverilog-data-types-integer-byte">TUTORIAL 1</a></p>
+<p><a href="https://verilogguide.readthedocs.io/en/latest/verilog/overview.html">TUTORIAL 2</a></p>
 </body>
 </html>

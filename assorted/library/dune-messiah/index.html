@@ -1,87 +1,39 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <meta name="author" content="Marcelo Fernandes" />
-  <meta name="dcterms.date" content="2023-05-11" />
-  <title>Dune Messiah, Frank Herbert</title>
-  <style>
-    html {
-      color: #1a1a1a;
-      background-color: #fdfdfd;
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:650px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
     }
-    body {
-      margin: 0 auto;
-      max-width: 36em;
-      padding-left: 50px;
-      padding-right: 50px;
-      padding-top: 50px;
-      padding-bottom: 50px;
-      hyphens: auto;
-      overflow-wrap: break-word;
-      text-rendering: optimizeLegibility;
-      font-kerning: normal;
-    }
-    @media (max-width: 600px) {
-      body {
-        font-size: 0.9em;
-        padding: 12px;
-      }
-      h1 {
-        font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        background-color: white;
-      }
-      body {
-        background-color: transparent;
-        color: black;
-        font-size: 12pt;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
-      }
-    }
-    p {
-      margin: 1em 0;
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
     }
     a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
     }
     img {
       max-width: 100%;
-    }
-    svg {
-      height: auto;
-      max-width: 100%;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      margin-top: 1.4em;
-    }
-    h5, h6 {
-      font-size: 1em;
-      font-style: italic;
-    }
-    h6 {
-      font-weight: normal;
-    }
-    ol, ul {
-      padding-left: 1.7em;
-      margin-top: 1em;
-    }
-    li > ol, li > ul {
-      margin-top: 0;
     }
     blockquote {
       margin: 1em 0 1em 1.7em;
@@ -89,165 +41,54 @@
       border-left: 2px solid #e6e6e6;
       color: #606060;
     }
-    code {
-      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
-      font-size: 85%;
-      margin: 0;
-      hyphens: manual;
-    }
-    pre {
-      margin: 1em 0;
-      overflow: auto;
-    }
-    pre code {
-      padding: 0;
-      overflow: visible;
-      overflow-wrap: normal;
-    }
-    .sourceCode {
-     background-color: transparent;
-     overflow: visible;
-    }
-    hr {
-      background-color: #1a1a1a;
-      border: none;
-      height: 1px;
-      margin: 1em 0;
-    }
-    table {
-      margin: 1em 0;
-      border-collapse: collapse;
-      width: 100%;
-      overflow-x: auto;
-      display: block;
-      font-variant-numeric: lining-nums tabular-nums;
-    }
-    table caption {
-      margin-bottom: 0.75em;
-    }
-    tbody {
-      margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
-    }
-    th {
-      border-top: 1px solid #1a1a1a;
-      padding: 0.25em 0.5em 0.25em 0.5em;
-    }
-    td {
-      padding: 0.125em 0.5em 0.25em 0.5em;
-    }
-    header {
-      margin-bottom: 4em;
-      text-align: center;
-    }
-    #TOC li {
-      list-style: none;
-    }
-    #TOC ul {
-      padding-left: 1.3em;
-    }
-    #TOC > ul {
-      padding-left: 0;
-    }
-    #TOC a:not(:hover) {
-      text-decoration: none;
-    }
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-<style rel="stylesheet">
-  html {
-    font-size: 16px;
-  }
-  body {
-    hyphens: auto;
-    text-align: justify;
-    line-height: 1.7;
-  }
-  a {
-    color: #1976d2;
-    text-decoration: none;
-    border-bottom: 1px solid;
-  }
-  a:visited {
-    color: #1976d2;
-  }
-  pre.sourceCode {
-    border-left: 3px solid #000;
-    padding-left: 1.5rem;
-    margin: 1em 0;
-  }
-  figcaption {
-    display: none;
-  }
-</style>
-<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
 </head>
 <body>
-<header id="title-block-header">
-<h1 class="title">Dune Messiah, Frank Herbert</h1>
-<p class="author">Marcelo Fernandes</p>
-<p class="date">May 11, 2023</p>
-</header>
-<h1 id="review">Review</h1>
-<p>After reading the first Dune series book around 6 months ago, I went
-on the web to check some reviews of the second book. I can’t say that
-they were very great. Dune Messiah had an average rating of 3.89/5 on
-GoodReads whereas the first book in the series had a rating of
-4.26/5.</p>
-<p>After reading through some reviews I was slightly disappointed and
-thought the second book wasn’t worth a read. I probably had other things
-I’d rather read at the time and just decided to read something else.</p>
-<p>Fast forward 6 months I wanted to pick this book up. I thought it was
-going to be an easy read I could try to relax a bit. Besides, I had
-loved the first book and I thought that even if this one wasn’t as good,
-it was still worth checking. I wasn’t wrong. The book isn’t as great as
-the first one, that is for sure. The first one was epic, long,
-inspiring, and all the characters were willing to give up their lives to
-stop the Harkonnens. In contrast, Dune Messiah happens 12 years after
-Paul (Muad’Dib) becomes the emperor. The book is half as long as the
-first one, and it’s more focused on conspiracies, political turmoil,
-betrayals, and the hardship and contradictions between government and
+<hr>
+<h2>title: Dune Messiah, Frank Herbert
+author: Marcelo Fernandes
+date: May 11, 2023</h2>
+<h1>Review</h1>
+<p>After reading the first Dune series book around 6 months ago, I went on
+the web to check some reviews of the second book. I can't say that they were
+very great. Dune Messiah had an average rating of 3.89/5 on GoodReads whereas
+the first book in the series had a rating of 4.26/5.</p>
+<p>After reading through some reviews I was slightly disappointed and thought the
+second book wasn't worth a read. I probably had other things I'd rather read at
+the time and just decided to read something else.</p>
+<p>Fast forward 6 months I wanted to pick this book up. I thought it was going to
+be an easy read I could try to relax a bit. Besides, I had loved the first book
+and I thought that even if this one wasn't as good, it was still worth
+checking. I wasn't wrong. The book isn't as great as the first one, that is for
+sure. The first one was epic, long, inspiring, and all the characters were
+willing to give up their lives to stop the Harkonnens. In contrast, Dune
+Messiah happens 12 years after Paul (Muad'Dib) becomes the emperor. The book is
+half as long as the first one, and it's more focused on conspiracies, political
+turmoil, betrayals, and the hardship and contradictions between government and
 religion.</p>
-<p>The book is fascinating in its own way. Paul, in the first book,
-ended up as a real hero. But in the second book, many of his weaknesses
-were revealed. He’s still a hero, but in a different way. He’s more
-humane, and can’t escape his own destiny, beginning to feel trapped
-within himself.</p>
-<p>I don’t agree with most reviews saying he has become some sort of
-“anti-hero”. It’s more like he has drifted towards utilitarianism. He’s
-more concerned with the best outcome for humanity than anything else.
-Even if it costs 60 billion lives across the universe, so be it. Maybe
-this isn’t everyone’s cup of tea, but it’s what most governments this
-day do anyway.</p>
-<p>Another important aspect in the book is the dialogue quality. The
-dialogues were great. Heated, philosophical, and challenging. The
-characters are clever and deep within their morale and motives. There
-were some things that were a bit icky; Alia Atreides got very “girlish”,
-which is a bit disappointing. Specially as female characters in the
-first book were really well worked out, but in the second book you have
-Alia, completely out of the blue, succumbing to a feeling of love by
-Duncan Idaho. That felt very artificial to me, but not enough to set a
-bad taste to the work.</p>
-<p>All in all I can say that I’ll be finishing up the series. This book
-seems to be acting more like a “setting up” for the next books to come,
-and thus needed to be what it needed to be.</p>
+<p>The book is fascinating in its own way. Paul, in the first book, ended up as
+a real hero. But in the second book, many of his weaknesses were revealed. He's
+still a hero, but in a different way. He's more humane, and can't escape his
+own destiny, beginning to feel trapped within himself.</p>
+<p>I don't agree with most reviews saying he has become some sort of &quot;anti-hero&quot;.
+It's more like he has drifted towards utilitarianism. He's more concerned
+with the best outcome for humanity than anything else. Even if it costs 60
+billion lives across the universe, so be it. Maybe this isn't everyone's cup
+of tea, but it's what most governments this day do anyway.</p>
+<p>Another important aspect in the book is the dialogue quality. The dialogues
+were great. Heated, philosophical, and challenging. The characters are clever
+and deep within their morale and motives. There were some things that were a
+bit icky; Alia Atreides got very &quot;girlish&quot;, which is a bit disappointing.
+Specially as female characters in the first book were really well worked out,
+but in the second book you have Alia, completely out of the blue, succumbing to
+a feeling of love by Duncan Idaho. That felt very artificial to me, but not
+enough to set a bad taste to the work.</p>
+<p>All in all I can say that I'll be finishing up the series. This book seems to
+be acting more like a &quot;setting up&quot; for the next books to come, and thus needed
+to be what it needed to be.</p>
 </body>
 </html>

@@ -1,0 +1,62 @@
+---
+title: Pragmatic Programmer
+author: Marcelo Fernandes
+date: January 21, 2022
+---
+
+# Review
+
+TLDR: This is the kind of book I wish I had read before taking my first job as
+a developer.
+
+The Pragmatic Programmer was originally written in 1999. Fast forward to 2022
+and the book feels like it was written just yesterday.
+
+I read through this book smiling and nodding all the time, thinking about all
+the people in my life that were perfectly tailored to suit the examples (good
+and bad) provided by this book.
+
+"How come this feels like history repeating itself? How come the patterns
+talked about in this book back in 1999 were propagating all the way towards the
+mid 2010's, in all the companies and cultures that I had worked with: Brazil,
+Argentina, U.S, New Zealand?" These were just a few questions resonating in the
+back of my mind.
+
+---
+
+All in all, what I loved the most about this process was how the book helped me
+to become a better professional. Here is a quote that shook me up:
+
+> "I wrote this, and I stand behind my work." Your signature should come to be
+> recognized as an indicator of quality. People should see your name on a piece
+> of code and expect it to be solid, well written, tested, and documented. A
+> really professional job. Written by a real professional.
+
+And should we expect anything less? This is what professionalism in the
+context of software development is all about. Taking responsibility. Knowing
+that testing is not only important, but fundamental. Leaving code better than
+it was when you interacted with it for the first time. Understanding the
+importance of refactoring. Taking the time to make things good, and to making
+them rigt.
+
+The last one on that list has been a stone in my shoe for a very long time. I
+am guilty of enjoying delivering things quickly, and in vast amounts. I mean,
+who doesn't? I also put myself under the false pretences that if I don't
+maintain a decent throughput I am going to be fired, or scrutinised somehow.
+That is self-sabotage at its finest, and I am pretty sure a lot of other
+programmers feel the same way.
+
+The problem is, every little issue that we leave behind in order to deliver
+things quickly, be it a test that you can't bare to write, be it a little
+refactoring that you are going to leave until tomorrow (never), means that
+someone else will have to get to it later. Reasons may vary, but someone will
+have to deal with it and at that point chances are the problem has become
+bigger. By ignoring problems and allowing ourselves to go faster individually,
+we made everyone else go slow. This doesn't sound very professional, does it?
+It's because it is not. It is selfish, and it is not a long term behaviour that
+will pay off.
+
+In conclusion I think this is a book I will have to read over and over again so
+that the principles and values can be hammered against my brain. Sometimes we
+slack off and need to be reminded of good work etiquette and for that we need
+to wear our pragmatic programmer hat.

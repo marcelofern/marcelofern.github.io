@@ -1,87 +1,39 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <meta name="author" content="Marcelo Fernandes" />
-  <meta name="dcterms.date" content="2023-01-04" />
-  <title>The Transistor</title>
-  <style>
-    html {
-      color: #1a1a1a;
-      background-color: #fdfdfd;
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:650px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
     }
-    body {
-      margin: 0 auto;
-      max-width: 36em;
-      padding-left: 50px;
-      padding-right: 50px;
-      padding-top: 50px;
-      padding-bottom: 50px;
-      hyphens: auto;
-      overflow-wrap: break-word;
-      text-rendering: optimizeLegibility;
-      font-kerning: normal;
-    }
-    @media (max-width: 600px) {
-      body {
-        font-size: 0.9em;
-        padding: 12px;
-      }
-      h1 {
-        font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        background-color: white;
-      }
-      body {
-        background-color: transparent;
-        color: black;
-        font-size: 12pt;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
-      }
-    }
-    p {
-      margin: 1em 0;
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
     }
     a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
     }
     img {
       max-width: 100%;
-    }
-    svg {
-      height: auto;
-      max-width: 100%;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      margin-top: 1.4em;
-    }
-    h5, h6 {
-      font-size: 1em;
-      font-style: italic;
-    }
-    h6 {
-      font-weight: normal;
-    }
-    ol, ul {
-      padding-left: 1.7em;
-      margin-top: 1em;
-    }
-    li > ol, li > ul {
-      margin-top: 0;
     }
     blockquote {
       margin: 1em 0 1em 1.7em;
@@ -89,217 +41,92 @@
       border-left: 2px solid #e6e6e6;
       color: #606060;
     }
-    code {
-      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
-      font-size: 85%;
-      margin: 0;
-      hyphens: manual;
-    }
-    pre {
-      margin: 1em 0;
-      overflow: auto;
-    }
-    pre code {
-      padding: 0;
-      overflow: visible;
-      overflow-wrap: normal;
-    }
-    .sourceCode {
-     background-color: transparent;
-     overflow: visible;
-    }
-    hr {
-      background-color: #1a1a1a;
-      border: none;
-      height: 1px;
-      margin: 1em 0;
-    }
-    table {
-      margin: 1em 0;
-      border-collapse: collapse;
-      width: 100%;
-      overflow-x: auto;
-      display: block;
-      font-variant-numeric: lining-nums tabular-nums;
-    }
-    table caption {
-      margin-bottom: 0.75em;
-    }
-    tbody {
-      margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
-    }
-    th {
-      border-top: 1px solid #1a1a1a;
-      padding: 0.25em 0.5em 0.25em 0.5em;
-    }
-    td {
-      padding: 0.125em 0.5em 0.25em 0.5em;
-    }
-    header {
-      margin-bottom: 4em;
-      text-align: center;
-    }
-    #TOC li {
-      list-style: none;
-    }
-    #TOC ul {
-      padding-left: 1.3em;
-    }
-    #TOC > ul {
-      padding-left: 0;
-    }
-    #TOC a:not(:hover) {
-      text-decoration: none;
-    }
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-<style rel="stylesheet">
-  html {
-    font-size: 16px;
-  }
-  body {
-    hyphens: auto;
-    text-align: justify;
-    line-height: 1.7;
-  }
-  a {
-    color: #1976d2;
-    text-decoration: none;
-    border-bottom: 1px solid;
-  }
-  a:visited {
-    color: #1976d2;
-  }
-  pre.sourceCode {
-    border-left: 3px solid #000;
-    padding-left: 1.5rem;
-    margin: 1em 0;
-  }
-  figcaption {
-    display: none;
-  }
-</style>
-<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
 </head>
 <body>
-<header id="title-block-header">
-<h1 class="title">The Transistor</h1>
-<p class="author">Marcelo Fernandes</p>
-<p class="date">January 4, 2023</p>
-</header>
-<h2 id="mission">Mission</h2>
+<hr>
+<h2>title: The Transistor
+author: Marcelo Fernandes
+date: January 4, 2023</h2>
+<h2>Mission</h2>
 <p>Our mission is to answer the following open question:</p>
 <blockquote>
-<p>Describe how FPGAs are buildable using transistors, and that ICs are
-just collections of transistors in a nice reliable package. Understand
-the LUTs and stuff. Talk briefly about the theory of transistors, but
-all projects must build on each other so we can’t build a
-transistor.</p>
+<p>Describe how FPGAs are buildable using transistors, and that ICs are just
+collections of transistors in a nice reliable package. Understand the LUTs
+and stuff. Talk briefly about the theory of transistors, but all projects
+must build on each other so we can’t build a transistor.</p>
 </blockquote>
-<p>From the question alone there’s a lot to unpack. My plan is to break
-that problem down by answering the following questions:</p>
-<ol type="1">
+<p>From the question alone there's a lot to unpack. My plan is to break that
+problem down by answering the following questions:</p>
+<ol>
 <li>What is a transistor?</li>
 <li>What is a FPGA? How do LUTs and Flip-flops work?</li>
 <li>How are FPGA buildable using transistors?</li>
-<li>Why are ICs a collection of transistors in a nice reliable
-package?</li>
+<li>Why are ICs a collection of transistors in a nice reliable package?</li>
 </ol>
-<h2 id="what-is-a-transistor">What is a transistor?</h2>
-<p>Transistors are semiconductor devices that can amplify or switch
-electrical signals and power.</p>
-<p>In electronic circuits, transistors are frequently used as switches.
-For low power applications, they can be used to generate logic gates
-(AND, OR, XOR, etc).</p>
-<p>The endgame is to be a perfect short-circuit when the switch is on,
-and a perfect open circuit when off. The transition between states
-should be as close to instantaneous as possible.</p>
-<figure>
-<img src="basic_transistor_circuit.jpg"
-alt="basic_transistor_circuit" />
-<figcaption aria-hidden="true">basic_transistor_circuit</figcaption>
-</figure>
-<p>The circuit above is called a <strong>grounded-emitter transistor
-circuit</strong>. As the voltage in the input signal rises, the emitter
-and collector currents rise exponentially.</p>
-<p>The voltage in the collector drops because of the reduced resistance
-between the collector and the emitter. If the emitter is ground, then
-the voltage on the collector is the ground voltage, and therefore the
-transistor is acting as a short-circuit. We also say that the transistor
-is <strong>saturated</strong> because current is moving freely from the
-collector to the emitter.</p>
-<h2 id="what-is-an-fpga">What is an FPGA?</h2>
+<h2>What is a transistor?</h2>
+<p>Transistors are semiconductor devices that can amplify or switch electrical
+signals and power.</p>
+<p>In electronic circuits, transistors are frequently used as switches. For low
+power applications, they can be used to generate logic gates (AND, OR, XOR,
+etc).</p>
+<p>The endgame is to be a perfect short-circuit when the switch is on, and a
+perfect open circuit when off. The transition between states should be as close
+to instantaneous as possible.</p>
+<p><img src="basic_transistor_circuit.jpg" alt="basic_transistor_circuit"></p>
+<p>The circuit above is called a <strong>grounded-emitter transistor circuit</strong>. As the
+voltage in the input signal rises, the emitter and collector currents rise
+exponentially.</p>
+<p>The voltage in the collector drops because of the reduced resistance between
+the collector and the emitter. If the emitter is ground, then the voltage on
+the collector is the ground voltage, and therefore the transistor is acting as
+a short-circuit. We also say that the transistor is <strong>saturated</strong> because
+current is moving freely from the collector to the emitter.</p>
+<h2>What is an FPGA?</h2>
 <p>FPGA stands for field-programmable gate array. These devices can be
-configurable by a customer <strong>after</strong> manufacturing (hence
-field-programmable).</p>
-<p>The configuration of a FPGA is specified via a hardware description
-language (HDL). By using HDL, engineers can program their own hardware
-rather than having to run software in a predefined processor. The “code”
-for the FPGA program is stored in a configurable flash memory that gets
-loaded into the FPGA every time it gets energised.</p>
-<figure>
-<img src="fpga-architecture.png" alt="fpga-architecture" />
-<figcaption aria-hidden="true">fpga-architecture</figcaption>
-</figure>
-<p>The basic architecture of FPGAs is composed of many Configurable
-Logic Blocks (CLB)</p>
-<p>In each configurable logic block we have Look Up Tables (LUT) and
-Flip-flops.</p>
-<p>The LUTs are essentially truth tables. They collect the inputs (a
-typical number of inputs is 6), and based on the truth tables they
-output a result. Keep in mind that LUTs can be used as both a logic
-engine or a data storage unit.</p>
-<p>The flip-flops are register elements that store the result of a
-LUT.</p>
-<p>As each CLB can be programmed to be independent from each other,
-FPGAs can achieve true parallelism.</p>
-<h2 id="how-are-fpga-buildable-using-transistors">How are FPGA buildable
-using transistors?</h2>
-<p>As we’ve seen from the above, CLBs are the building blocks of FPGAs.
-As CLBs are composed of LUT and Flip-flops, which are in turn composed
-by transistors, FPGAs are built by transistors.</p>
-<h2
-id="why-are-ics-a-collection-of-transistors-in-a-nice-reliable-package">Why
-are ICs a collection of transistors in a nice reliable package?</h2>
-<figure>
-<img src="integrated_circuit.jpg" alt="integrated_circuit" />
-<figcaption aria-hidden="true">integrated_circuit</figcaption>
-</figure>
-<p>When you buy an Integrated Circuit (IC) online, you can go to the
-vendor’s website and check its schematic. It will usually be represented
-as a combination of transistors, diodes, resistances, capacitors and so
-on. All of these components are enveloped in an encapsulated silicon
-chip.</p>
-<p>In terms of reliability, ICs are considered reliable because: 1. No
-soldering joints. Meaning the connections are more reliable. 2. All
-components are embedded in a single silicon chip, and finally
-encapsulated. This means that components are less likely to be corrupted
-by corrosion, vibration, etc. 3. The IC will be manufactured in a
-controlled automated factory, giving less room for human errors. 4. The
-layout is compact, reducing costs through power, and enhancing
-performance.</p>
-<p><a
-href="https://web.archive.org/web/20221122075828/https://www.evilmadscientist.com/2019/uncovering-the-silicon-%CE%BCl914/">Here</a>
-is a great article from evilmadscientist.com show casing how an IC looks
-like in real life once its silicon envelope is opened.</p>
+configurable by a customer <strong>after</strong> manufacturing (hence field-programmable).</p>
+<p>The configuration of a FPGA is specified via a hardware description language
+(HDL). By using HDL, engineers can program their own hardware rather than
+having to run software in a predefined processor. The &quot;code&quot; for the FPGA
+program is stored in a configurable flash memory that gets loaded into the
+FPGA every time it gets energised.</p>
+<p><img src="fpga-architecture.png" alt="fpga-architecture"></p>
+<p>The basic architecture of FPGAs is composed of many Configurable Logic Blocks
+(CLB)</p>
+<p>In each configurable logic block we have Look Up Tables (LUT) and Flip-flops.</p>
+<p>The LUTs are essentially truth tables. They collect the inputs (a typical
+number of inputs is 6), and based on the truth tables they output a result.
+Keep in mind that LUTs can be used as both a logic engine or a data storage
+unit.</p>
+<p>The flip-flops are register elements that store the result of a LUT.</p>
+<p>As each CLB can be programmed to be independent from each other, FPGAs can
+achieve true parallelism.</p>
+<h2>How are FPGA buildable using transistors?</h2>
+<p>As we've seen from the above, CLBs are the building blocks of FPGAs. As CLBs
+are composed of LUT and Flip-flops, which are in turn composed by transistors,
+FPGAs are built by transistors.</p>
+<h2>Why are ICs a collection of transistors in a nice reliable package?</h2>
+<p><img src="integrated_circuit.jpg" alt="integrated_circuit"></p>
+<p>When you buy an Integrated Circuit (IC) online, you can go to the vendor's
+website and check its schematic. It will usually be represented as a
+combination of transistors, diodes, resistances, capacitors and so on. All of
+these components are enveloped in an encapsulated silicon chip.</p>
+<p>In terms of reliability, ICs are considered reliable because:</p>
+<ol>
+<li>No soldering joints. Meaning the connections are more reliable.</li>
+<li>All components are embedded in a single silicon chip, and finally
+encapsulated. This means that components are less likely to be corrupted by
+corrosion, vibration, etc.</li>
+<li>The IC will be manufactured in a controlled automated factory, giving less
+room for human errors.</li>
+<li>The layout is compact, reducing costs through power, and enhancing performance.</li>
+</ol>
+<p><a href="https://web.archive.org/web/20221122075828/https://www.evilmadscientist.com/2019/uncovering-the-silicon-%CE%BCl914/">Here</a>
+is a great article from evilmadscientist.com show casing how an IC looks like
+in real life once its silicon envelope is opened.</p>
 </body>
 </html>
