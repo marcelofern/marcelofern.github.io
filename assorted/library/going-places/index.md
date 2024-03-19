@@ -1,8 +1,4 @@
----
-title: Going places. Migration, Economics, and the Future of New Zealand
-author: Marcelo Fernandes
-date: October 23, 2023
----
+October 23, 2023
 
 # Review
 

@@ -1,8 +1,4 @@
----
-title: Dune Messiah, Frank Herbert
-author: Marcelo Fernandes
-date: May 11, 2023
----
+May 11, 2023
 
 # Review
 

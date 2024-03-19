@@ -1,8 +1,4 @@
----
-title: Free as in Freedom - Richard Stallman's Crusade for Free Software
-author: Marcelo Fernandes
-date: October 22, 2023
----
+October 22, 2023
 
 # Review
 

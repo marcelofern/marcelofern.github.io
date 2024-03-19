@@ -1,8 +1,4 @@
----
-title: SQL Table Management
-author: Marcelo Fernandes
-date: October 2, 2020
----
+October 2, 2020
 
 ## Creating Tables
 

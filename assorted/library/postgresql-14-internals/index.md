@@ -1,8 +1,4 @@
----
-title: PostgreSQL 14 Internals
-author: Marcelo Fernandes
-date: January 5, 2024
----
+January 5, 2024
 
 ## Introduction
 

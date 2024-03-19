@@ -1,7 +1,3 @@
----
-pagetitle: Library
----
-
 # Personal Library
 
 I don't necessarily like all the books that I have read. But I consider the
@@ -74,7 +70,7 @@ ones in this list to be good enough to be shared with the public.
 - Herbert, Frank - Herectics of Dune.
 - Herbert, Frank - Chapterhouse: Dune.
 - Herbert, Brian - Hunters of Dune.
-- Herbert, Brian - Sandworms of Dune ([review](assorted/library/sandworms-of-dune/index.html)).
+- Herbert, Brian - Sandworms of Dune ([review](assorted/library/sandworms-of-dune/index.md)).
 - Shusterman, Neal - Arc of a Scythe Series ([review](assorted/library/arc-of-a-scythe/index.md))
 - Tolkien, J. R. R. - The Hobbit.
 - Tolkien, J. R. R. - The Lord of The Rings Trilogy.

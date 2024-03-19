@@ -1,7 +1,3 @@
----
-pagetitle: Posts
----
-
 # Posts
 
 Categories:

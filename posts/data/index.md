@@ -1,7 +1,3 @@
----
-pagetitle: Data
----
-
 # Data
 
 - [Iris dataset exploratory analysis](posts/data/iris-dataset/index.md)

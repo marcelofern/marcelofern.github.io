@@ -1,8 +1,4 @@
----
-title: The Transistor
-author: Marcelo Fernandes
-date: January 4, 2023
----
+January 4, 2023
 
 ## Mission
 

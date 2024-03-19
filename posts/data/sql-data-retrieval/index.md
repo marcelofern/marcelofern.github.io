@@ -1,8 +1,4 @@
----
-title: SQL Data Retrieval
-author: Marcelo Fernandes
-date: September 18, 2020
----
+September 18, 2020
 
 ## Single Table Data Retrieval
 

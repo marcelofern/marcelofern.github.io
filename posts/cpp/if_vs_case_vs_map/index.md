@@ -1,8 +1,4 @@
----
-title: if vs case vs map
-author: Marcelo Fernandes
-date: March 06, 2023
----
+March 06, 2023
 
 ## The introduction
 

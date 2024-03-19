@@ -1,8 +1,4 @@
----
-title: A critique of SOLID
-author: Marcelo Fernandes
-date: April 15, 2023
----
+April 15, 2023
 
 ## Introduction
 

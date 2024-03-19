@@ -1,8 +1,4 @@
----
-title: JavaScript - The Definitive Guide
-author: Marcelo Fernandes
-date: May 31, 2022
----
+May 31, 2022
 
 # Review
 

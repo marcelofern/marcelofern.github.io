@@ -1,8 +1,4 @@
----
-title: Verilog and Verilator
-author: Marcelo Fernandes
-date: January 5, 2023
----
+January 5, 2023
 
 ## Verilog
 

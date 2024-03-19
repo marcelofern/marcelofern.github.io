@@ -1,8 +1,4 @@
----
-title: Meditations, Marcus Aurelius
-author: Marcelo Fernandes
-date: January 24, 2021
----
+January 24, 2021
 
 # Review
 

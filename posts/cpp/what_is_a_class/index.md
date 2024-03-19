@@ -1,8 +1,4 @@
----
-title: What is a C++ class?
-author: Marcelo Fernandes
-date: March 07, 2023
----
+March 07, 2023
 
 ## Introduction
 

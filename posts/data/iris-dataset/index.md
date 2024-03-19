@@ -1,8 +1,4 @@
----
-title: Iris Dataset
-author: Marcelo Fernandes
-date: April 20, 2021
----
+April 20, 2021
 
 # Exploratory Data Analysis
 

@@ -1,8 +1,4 @@
----
-title: Beyond Good and Evil, Friedrich Nietzsche
-author: Marcelo Fernandes
-date: March 1st, 2021
----
+March 1st, 2021
 
 # Review
 

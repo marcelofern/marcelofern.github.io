@@ -1,8 +1,4 @@
----
-title: Code
-author: Marcelo Fernandes
-date: August 15, 2023
----
+August 15, 2023
 
 # Review
 

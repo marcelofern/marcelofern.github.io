@@ -1,13 +1,10 @@
----
-title: Pragmatic Programmer
-author: Marcelo Fernandes
-date: January 21, 2022
----
+January 21, 2022
 
 # Review
 
 TLDR: This is the kind of book I wish I had read before taking my first job as
-a developer.
+a developer. Even though I probably wouldn't get as much from it as I did by
+reading it right now.
 
 The Pragmatic Programmer was originally written in 1999. Fast forward to 2022
 and the book feels like it was written just yesterday.

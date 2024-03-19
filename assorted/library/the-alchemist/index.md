@@ -1,8 +1,4 @@
----
-title: The Alchemist, Paulo Coelho
-author: Marcelo Fernandes
-date: May 11, 2021
----
+May 11, 2021
 
 # Review
 

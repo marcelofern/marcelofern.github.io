@@ -1,8 +1,4 @@
----
-title: Sandworms of Dune
-author: Marcelo Fernandes
-date: February 23th, 2024
----
+February 23th, 2024
 
 ## Review
 

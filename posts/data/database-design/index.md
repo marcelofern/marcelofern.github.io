@@ -1,8 +1,4 @@
----
-title: Database Design
-author: Marcelo Fernandes
-date: September 2, 2020
----
+September 2, 2020
 
 ## Data Model
 

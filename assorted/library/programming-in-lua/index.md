@@ -1,8 +1,4 @@
----
-title: Programming in Lua
-author: Marcelo Fernandes
-date: July 10, 2022
----
+July 10, 2022
 
 I've decided to start reading this book to get more insight into how to
 incorporate Lua into Neovim

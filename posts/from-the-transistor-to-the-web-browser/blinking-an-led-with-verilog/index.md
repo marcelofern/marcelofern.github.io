@@ -1,8 +1,4 @@
----
-title: Verilog and Verilator
-author: Marcelo Fernandes
-date: January 7, 2023
----
+January 7, 2023
 
 # Blinking an LED with Verilog
 

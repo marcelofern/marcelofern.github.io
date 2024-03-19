@@ -1,8 +1,4 @@
----
-title: Big Data, Jules J. Berman
-author: Marcelo Fernandes
-date: January 24, 2021
----
+January 24, 2021
 
 # Review
 

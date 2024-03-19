@@ -1,8 +1,4 @@
----
-title: God Emperor of Dune, Frank Herbert
-author: Marcelo Fernandes
-date: June 26, 2023
----
+June 26, 2023
 
 # Review
 

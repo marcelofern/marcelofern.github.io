@@ -1,8 +1,4 @@
----
-title: Verilog and Verilator
-author: Marcelo Fernandes
-date: January 9, 2023
----
+January 9, 2023
 
 # Building an UART with (System)Verilog
 

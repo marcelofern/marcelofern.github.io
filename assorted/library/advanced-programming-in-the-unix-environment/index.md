@@ -1,9 +1,3 @@
----
-title: Advanced Programming in the Unix Environment
-author: Marcelo Fernandes
-date: December 18th, 2023
----
-
 ## Unix System Overview
 
 ### Log in

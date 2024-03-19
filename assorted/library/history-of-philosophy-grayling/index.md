@@ -1,8 +1,4 @@
----
-title: The History of Philosophy
-author: Marcelo Fernandes
-date: January 23, 2021
----
+January 23, 2021
 
 # Review
 

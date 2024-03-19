@@ -1,8 +1,4 @@
----
-title: Arc of a Scythe
-author: Marcelo Fernandes
-date: January 4th, 2024
----
+January 4th, 2024
 
 ## Review
 

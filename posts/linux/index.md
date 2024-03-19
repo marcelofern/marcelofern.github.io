@@ -1,7 +1,3 @@
----
-pagetitle: Linux
----
-
 # Linux
 
 - [rice](posts/linux/rice/index.md)

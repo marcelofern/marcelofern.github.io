@@ -1,7 +1,3 @@
----
-pagetitle: From The Transistor To The Web Browser
----
-
 # From The Transistor To The Web Browser
 
 A breakdown of answers to George Hotz's [github:fromthetransistor](https://github.com/geohot/fromthetransistor).

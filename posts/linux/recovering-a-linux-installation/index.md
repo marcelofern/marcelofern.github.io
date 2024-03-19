@@ -1,8 +1,4 @@
----
-title: Recovering a linux installation
-author: Marcelo Fernandes
-date: January 08, 2023
----
+January 08, 2023
 
 ## The problem
 

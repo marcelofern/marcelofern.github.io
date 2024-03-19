@@ -1,7 +1,3 @@
----
-pagetitle: Marcelo Fernandes
----
-
 # Marcelo Fernandes
 
 - [Posts](posts/index.md)

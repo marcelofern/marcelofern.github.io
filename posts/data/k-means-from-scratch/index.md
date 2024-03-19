@@ -1,8 +1,4 @@
----
-title: K-means Clustering From Scratch
-author: Marcelo Fernandes
-date: March 15, 2021
----
+March 15, 2021
 
 Find the K-means clusters for the given the dataset and K=3.
 

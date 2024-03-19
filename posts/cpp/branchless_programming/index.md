@@ -1,8 +1,4 @@
----
-title: Branchless Programming
-author: Marcelo Fernandes
-date: August 22, 2023
----
+August 22, 2023
 
 ## What's branchless programming and why does it matter?
 

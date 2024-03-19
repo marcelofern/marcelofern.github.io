@@ -1,8 +1,4 @@
----
-title: The Mystery of Consciousness, John R. Searle
-author: Marcelo Fernandes
-date: January 30th, 2021
----
+January 30th, 2021
 
 # Review
 

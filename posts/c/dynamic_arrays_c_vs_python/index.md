@@ -1,8 +1,4 @@
----
-title: Dynamic Arrays. C vs Python
-author: Marcelo Fernandes
-date: September 30, 2023
----
+September 30, 2023
 
 ## Introduction
 

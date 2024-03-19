@@ -1,7 +1,3 @@
----
-pagetitle: About
----
-
 # About
 
 I am a programmer based in New Zealand. If you are interested in getting in

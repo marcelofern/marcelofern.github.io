@@ -1,8 +1,4 @@
----
-title: Linux Rice
-author: Marcelo Fernandes
-date: August 30, 2020
----
+August 30, 2020
 
 # Linux Rice
 

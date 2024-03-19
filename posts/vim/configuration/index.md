@@ -1,8 +1,4 @@
----
-title: Vim
-author: Marcelo Fernandes
-date: August 31, 2020
----
+August 31, 2020
 
 # VIM (for software engineers)
 

@@ -1,8 +1,4 @@
----
-title: Raspberry Pi as a sound module
-author: Marcelo Fernandes
-date: July 04, 2023
----
+July 04, 2023
 
 ## Electric/Digital Pianos
 

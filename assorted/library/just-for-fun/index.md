@@ -1,8 +1,4 @@
----
-title: Just for Fun, Linus Torvalds
-author: Marcelo Fernandes
-date: July 10, 2023
----
+July 10, 2023
 
 # Review
 

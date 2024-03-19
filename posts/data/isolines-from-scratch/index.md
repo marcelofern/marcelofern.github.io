@@ -1,8 +1,4 @@
----
-title: Isolines From Scratch
-author: Marcelo Fernandes
-date: March 21, 2021
----
+March 21, 2021
 
 ## Definition
 

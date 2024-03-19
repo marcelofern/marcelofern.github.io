@@ -1,7 +1,3 @@
----
-pagetitle: C++
----
-
 # C++
 
 - [if vs case vs map](posts/cpp/if_vs_case_vs_map/index.md)

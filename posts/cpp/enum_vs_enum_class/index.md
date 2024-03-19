@@ -1,8 +1,4 @@
----
-title: enum vs enum class
-author: Marcelo Fernandes
-date: March 10, 2023
----
+March 10, 2023
 
 ## Why you should use `enum class`.
 

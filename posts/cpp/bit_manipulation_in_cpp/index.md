@@ -1,8 +1,4 @@
----
-title: Bit Manipulation In C++
-author: Marcelo Fernandes
-date: April 05, 2023
----
+April 05, 2023
 
 ## Bit shifting
 

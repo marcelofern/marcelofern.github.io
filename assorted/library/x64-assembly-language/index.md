@@ -1,8 +1,4 @@
----
-title: x64 Assembly Language Step By Step, 4th Edition
-author: Marcelo Fernandes
-date: January 13, 2024
----
+January 13, 2024
 
 ## Notes about GDB
 
