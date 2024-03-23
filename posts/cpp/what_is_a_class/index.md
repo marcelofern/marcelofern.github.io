@@ -1,10 +1,5 @@
 March 07, 2023
 
-## Introduction
-
-In this post we'll walk through some of the internals of how C++ classes are
-implemented in Assembly code and how they work on a low level.
-
 ## Starting simple
 
 Our approach here will be to start simple and then incrementally expand our

@@ -8,7 +8,7 @@ lines) code-reviewers commonly recommend refactoring the conditional chains
 into a mapper to improve code clarity.
 
 So the idea here is to check whether or not the code is cleaner, and how much
-we pay in performance in order to have "cleaner" code.
+we pay in performance in order to have "cleaner" (TBD) code.
 
 ## The example
 

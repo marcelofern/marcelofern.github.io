@@ -4,7 +4,7 @@ April 05, 2023
 
 Bit shifting involves moving bits of a binary number to either the left or the
 right. Most programming languages use the characters `<<` to indicate a left
-bit shift, and `<<` to indicate a right bit shift.
+bit shift, and `>>` to indicate a right bit shift.
 
 There are a few common operations that can be performed through. These are:
 
