@@ -19,3 +19,4 @@ Reading list resources:
 ## Programming Languages
 
 - Modern C - Jens Gustedt
+- SEI CERT C Coding Standard by Carnegie Mellon University's Confluence.
