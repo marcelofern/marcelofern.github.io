@@ -1,5 +1,4 @@
 # Marcelo Fernandes
-test
 
 - [Posts](posts/index.md)
 - [Notes](notes/index.md)
