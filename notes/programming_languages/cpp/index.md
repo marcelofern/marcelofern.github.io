@@ -1,0 +1,4 @@
+- [bit manipulation](programming_languages/cpp/bit_manipulation.md)
+- [if vs case vs map](programming_languages/cpp/if_vs_case_vs_map.md)
+- [what is a class](programming_languages/cpp/what_is_a_class.md)
+- [enum vs enum class](programming_languages/cpp/enum_vs_enum_class.md)
