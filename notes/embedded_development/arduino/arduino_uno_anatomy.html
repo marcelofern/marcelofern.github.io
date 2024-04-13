@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p><img src="arduino_uno_board_anatomy.png" alt="arduino_uno_board_anatomy"></p>
+<h2>Summary</h2>
+<p><img src="arduino_uno_board_anatomy.svg" alt="arduino_uno_board_anatomy"></p>
+<p>Your UNO board might not look <em>exactly</em> like this, but the pins will be the
+same.</p>
+<p>Along with the description below:
+<a href="http://web.archive.org/web/20231205160445/https://docs.arduino.cc/tutorials/uno-rev3/board-anatomy">source</a>
+<a href="http://web.archive.org/web/20240125150406/https://docs.arduino.cc/tutorials/uno-rev3/intro-to-board">source 2</a>
+<a href="http://web.archive.org/web/20240324080100/https://en.wikipedia.org/wiki/Arduino_UNO">source 3</a></p>
+<ol>
+<li><p>Digital pins Use these pins with pinMode(), digitalRead(), digitalWrite(),
+and analogWrite(). analogWrite() works only on the pins with the PWM symbol.
+Each pin has an internal pull-up resistor which can be turned on and off
+using digitalWrite() (w/ a value of HIGH or LOW, respectively) when the pin
+is configured as an input. The maximum current per pin is 40 mA.</p>
+</li>
+<li><p>Pin 13 LED The only actuator built-in to your board. Besides being a handy
+target for your first blink sketch, this LED is very useful for debugging.</p>
+</li>
+<li><p>Power LED Indicates that your Arduino is receiving power. Useful for
+debugging.</p>
+</li>
+<li><p>ATmega microcontroller The heart of your board.</p>
+</li>
+<li><p>Analog in Use these pins with analogRead().</p>
+</li>
+<li><p>GND and 5V pins Use these pins to provide +5V power and ground to your
+circuits.</p>
+</li>
+<li><p>Power connector This is how you power your Arduino when it's not plugged
+into a USB port for power. Can accept voltages between 7-12V.</p>
+</li>
+<li><p>TX and RX LEDs These LEDs indicate communication between your Arduino and
+your computer. Expect them to flicker rapidly during sketch upload as well
+as during serial communication. Useful for debugging.</p>
+</li>
+<li><p>USB port Used for powering your Arduino UNO, uploading your sketches to your
+Arduino, and for communicating with your Arduino sketch (via Serial.
+println() etc.).</p>
+</li>
+<li><p>Reset button Resets the ATmega microcontroller.</p>
+</li>
+</ol>
+<h2>ATMEL ATMEGA8 in ASCII</h2>
+<pre><code>                 +-\/-+
+           PC6  1|    |28  PC5 (AI 5)
+     (D 0) PD0  2|    |27  PC4 (AI 4)
+     (D 1) PD1  3|    |26  PC3 (AI 3)
+     (D 2) PD2  4|    |25  PC2 (AI 2)
+PWM+ (D 3) PD3  5|    |24  PC1 (AI 1)
+     (D 4) PD4  6|    |23  PC0 (AI 0)
+           VCC  7|    |22  GND
+           GND  8|    |21  AREF
+           PB6  9|    |20  AVCC
+           PB7 10|    |19  PB5 (D 13)
+PWM+ (D 5) PD5 11|    |18  PB4 (D 12)
+PWM+ (D 6) PD6 12|    |17  PB3 (D 11) PWM
+     (D 7) PD7 13|    |16  PB2 (D 10) PWM
+     (D 8) PB0 14|    |15  PB1 (D 9) PWM
+                 +----+
+</code></pre>
+</body>
+</html>

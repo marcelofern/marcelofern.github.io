@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>September 30, 2023</p>
+<h2>The C code</h2>
+<p>The code is very short, and is pasted here as is:</p>
+<pre><code class="language-c">#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;err.h&gt;
+#include &lt;string.h&gt;
+
+#define INITIAL_SIZE 256
+
+typedef struct DynamicArray {
+  // pointer to a pointer, so that I can free it!
+  void** items;
+  int len;
+  int capacity;
+  size_t item_size;
+} DynamicArray;
+
+
+DynamicArray* init_darray() {
+  void* items = malloc(sizeof(void*) * INITIAL_SIZE);
+  if (items == NULL) {
+    err(EXIT_FAILURE, &quot;DynamicArray-&gt;items initialisation&quot;);
+  }
+  DynamicArray* array = (DynamicArray*) malloc(sizeof(DynamicArray));
+  if (array == NULL) {
+    err(EXIT_FAILURE, &quot;DynamicArray initialisation&quot;);
+  }
+  array-&gt;items = items;
+  array-&gt;len = 0;
+  array-&gt;capacity = INITIAL_SIZE;
+  return array;
+};
+
+
+void insert_darray(DynamicArray* darray, void* item) {
+  if ((darray-&gt;len + 1) &gt;= darray-&gt;capacity) {
+    int current_capacity = darray-&gt;capacity;
+    int new_capacity = current_capacity * 2;
+    void* tmp;
+    tmp = realloc(darray-&gt;items, sizeof(void*) * new_capacity);
+    if (tmp == NULL) {
+      err(EXIT_FAILURE, &quot;DynamicArray item insertion&quot;);
+    }
+    darray-&gt;items = tmp;
+    darray-&gt;capacity = new_capacity;
+  }
+  darray-&gt;items[darray-&gt;len] = item;
+  darray-&gt;len += 1;
+};
+
+
+void free_darray(DynamicArray* darray) {
+  if (darray == NULL) {
+    return;
+  }
+  for (int i = 0; i &lt; darray-&gt;len; i++) {
+    free(darray-&gt;items[i]);
+  }
+  free(darray-&gt;items);
+  free(darray);
+};
+</code></pre>
+<p>In order to initialise an array of one's, we can do the following:</p>
+<pre><code class="language-c">// insert 1,000 ints with value `1` in the array.
+for (int i = 0; i &lt; 1000000000; i++) {
+  int* item = (int*) malloc(sizeof(int));
+  *item = 1;
+  insert_darray(int_array, item);
+}
+free_darray(int_array);
+</code></pre>
+<h2>The equivalent Python code</h2>
+<p>Python is bolted-on with many syntax sugary things:</p>
+<pre><code class="language-python">int_array = [1 for i in range(1_000_000_000)]
+</code></pre>
+<h2>The performance comparison</h2>
+<p>I've just fired a very cheeky test to compute an array of a billion integers:</p>
+<pre><code class="language-sh">time python array.py
+&gt;&gt; 18.01s user 1.06s system 99% cpu 19.167 total
+</code></pre>
+<p>We only care about the <code>user</code> time, because that's the time the actual CPU
+spent running the script. Now the C code:</p>
+<pre><code class="language-sh">time ./a.out
+&gt;&gt;&gt; 4.04s user 2.96s system 99% cpu 7.042 total
+</code></pre>
+<p>To be honest, this doesn't look like a huge difference for an array of a
+billion elements in a test like this. But we think about economy of scale,
+this compounds a lot.</p>
+<h2>What about an array of user-defined types?</h2>
+<p>We were using <code>int</code> objects. This can be a bit of a cheat, specially because
+Python can have many optimisations in place for pure int objects.</p>
+<p>Let's create a class and see how it performs instead:</p>
+<pre><code class="language-python">class MySweetClass:
+    field_a: int
+    field_b: int
+    field_c: int
+
+    def __init__(self, a, b, c):
+        self.field_a = a
+        self.field_b = b
+        self.field_c = c
+
+int_array = [MySweetClass(1,1,1) for i in range(10_000_000)]
+</code></pre>
+<p>Note: I had to change the range to 10 million, because anything more than that
+blew up my laptop.</p>
+<p>This gives us:</p>
+<pre><code class="language-sh">time python array.py
+&gt;&gt;&gt; 6.14s user 0.29s system 99% cpu 6.438 total
+</code></pre>
+<p>As for our C code:</p>
+<pre><code class="language-c">typedef struct MySweetType {
+  int field_a;
+  int field_b;
+  int field_c;
+} MySweetType;
+
+int main() {
+  DynamicArray* array = init_darray();
+
+  for (int i = 0; i &lt; 10000000; i++) {
+    MySweetType* item = (MySweetType*) malloc(sizeof(MySweetType));
+    item-&gt;field_a = 1;
+    item-&gt;field_b = 1;
+    item-&gt;field_c = 1;
+    insert_darray(array, item);
+  }
+  free_darray(array);
+}
+</code></pre>
+<p>We've got:</p>
+<pre><code class="language-sh">a.out  0.18s user 0.11s system 99% cpu 0.292 total
+</code></pre>
+<p>In fact, I can still run 1 billion entries for about the same time penalty
+Python would've ran only 10 million.</p>
+<pre><code class="language-sh">a.out  6.19s user 3.37s system 98% cpu 9.744 total
+</code></pre>
+<h2>Bonus: How about C++ vectors?</h2>
+<p>Here's the C++ code:</p>
+<pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;memory&gt;
+
+class MySweetClass {
+public:
+  int field_a;
+  int field_b;
+  int field_c;
+
+  MySweetClass(int a, int b, int c) {
+    field_a = a;
+    field_b = b;
+    field_c = c;
+  }
+};
+
+int main() {
+  std::vector&lt;std::unique_ptr&lt;MySweetClass&gt;&gt; array;
+
+  for (int i = 0; i &lt; 100000000; i++) {
+    std::unique_ptr&lt;MySweetClass&gt; my_class = std::make_unique&lt;MySweetClass&gt;(1, 1, 1);
+    array.push_back(std::move(my_class));
+  }
+}
+</code></pre>
+<p>Yields these results for a billion entries:</p>
+<pre><code class="language-sh">/tmp/a.out  4.97s user 3.30s system 97% cpu 8.510 total
+</code></pre>
+<p>This is faster than the C code. At this point I'm not exactly sure why. My
+guess is that the <vector> and the &lt;unique_ptr&gt; are highly optimised for
+this kind of use case.</p>
+<h2>What I need to try further</h2>
+<ul>
+<li>I imagine that the C code will be doing less load operations from memory than
+the Python code. A further step would be to try and figure out this number as
+the load-from-memory operations would be taking a good chunk of time.</li>
+<li>Check if I could use 128bit registers for doing the arithmetics in C, this
+would further enhance performance of the C code.</li>
+<li>The Python docs has a page on the <code>array</code> feature and expresses it as a
+efficient way of doing arrays for numeric values. This can perhaps better
+enhance the performance of our Python code.</li>
+</ul>
+<h2>Conclusion (for now)</h2>
+<p>Don't use Python (joking).
+But the truth is, as soon as you need an array of something that is not an int
+in Python, the performance does go downhill.</p>
+</body>
+</html>

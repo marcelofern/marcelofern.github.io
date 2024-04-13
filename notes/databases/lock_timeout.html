@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>January 30, 2024</p>
+<h1>Definition</h1>
+<p>How long to wait until the lock is acquired before cancelling the statement.</p>
+<p>Note: Emphasis on the fact that the <code>lock_timeout</code> setting doesn't affect how
+long the lock is held, only how long it's allowed to take to acquire it.</p>
+<pre><code class="language-sql">// sets the lock for the whole session
+SET lock_timeout = '1s';
+
+// sets the lock for the current transaction
+SET LOCAL lock_timeout = 1000;
+
+ALTER TABLE accounts DROP COLUMN amount;
+// ERROR: canceling statement due to lock timeout
+</code></pre>
+<h2>Behaviour inside and outside a transaction</h2>
+<p>Basics: <code>SET lock_timeout 100ms</code>  sets the timeout for the whole session,
+whereas <code>SET LOCAL lock_timeout 100ms</code> sets the timeout for the current
+transactions.</p>
+<p>If SET (or equivalently SET SESSION) is issued within a transaction that is
+later aborted, the effects of the SET command disappear when the transaction is
+rolled back. Once the surrounding transaction is committed, the effects will
+persist until the end of the session, unless overridden by another SET.</p>
+<p>The effects of SET LOCAL last only till the end of the current transaction,
+whether committed or not. A special case is SET followed by SET LOCAL within a
+single transaction: the SET LOCAL value will be seen until the end of the
+transaction, but afterwards (if the transaction is committed) the SET value
+will take effect.</p>
+<p>The effects of SET or SET LOCAL are also cancelled by rolling back to a
+savepoint that is earlier than the command.</p>
+<p>Source: https://www.postgresql.org/docs/16/runtime-config-client.html</p>
+<h2>When used together with <code>statement_timeout</code></h2>
+<p>Note: If <code>lock_timeout</code> is set to the same value of <code>statement_timeout</code>, the
+<code>lock_timeout</code> value becomes redundant, as <code>statement_timeout</code> trumps the lock.</p>
+<blockquote>
+<p>Unlike <code>statement_timeout</code>, this timeout can only occur while waiting for
+locks. Note that if <code>statement_timeout</code> is nonzero, it is rather pointless to
+set <code>lock_timeout</code> to the same or larger value, since the statement timeout
+would always trigger first. If <code>log_min_error_statement</code> is set to ERROR or
+lower, the statement that timed out will be logged.</p>
+</blockquote>
+<p>Source: https://www.postgresql.org/docs/16/sql-set.html</p>
+</body>
+</html>

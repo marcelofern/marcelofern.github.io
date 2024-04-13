@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p><code>2024-04-05</code></p>
+<p>The first step is to install the arduino-cli.</p>
+<pre><code class="language-sh">sudo pacman -S arduino-cli
+</code></pre>
+<p>Create a local configuration file. This is not necessary, but it does help
+making commands less lengthy.</p>
+<pre><code class="language-sh">arduino-cli config init
+# Config file written to: /home/x/.arduino15/arduino-cli.yaml
+</code></pre>
+<p>The initial file looks like this:</p>
+<pre><code class="language-yaml">board_manager:
+    additional_urls: []
+build_cache:
+    compilations_before_purge: 10
+    ttl: 720h0m0s
+daemon:
+    port: &quot;50051&quot;
+directories:
+    data: /home/x/.arduino15
+    downloads: /home/x/.arduino15/staging
+    user: /home/x/Arduino
+library:
+    enable_unsafe_install: false
+logging:
+    file: &quot;&quot;
+    format: text
+    level: info
+metrics:
+    addr: :9090
+    enabled: true
+output:
+    no_color: false
+sketch:
+    always_export_binaries: false
+updater:
+    enable_notification: true
+</code></pre>
+<p>Don't worry about the file now, explanations and updates will happen in due
+course.</p>
+<h2>Create a sketch</h2>
+<p>I prefer to work from my <code>$HOME/workspace/</code> directory.</p>
+<pre><code class="language-sh">mkdir -p ~/workspace/arduino_sketches
+cd ~/workspace/arduino_sketches
+
+arduino-cli sketch new hello_world
+# Sketch created in: /home/x/workspace/arduino_sketches/hello_world
+
+cat hello_world/hello_world.ino
+</code></pre>
+<pre><code class="language-sh">void setup() {
+}
+
+void loop() {
+}
+</code></pre>
+<h2>Simple code</h2>
+<p>We'll stick to the example on the documentation for now. Change
+<code>hello_world.ino</code> to:</p>
+<pre><code class="language-c">void setup() {
+    pinMode(LED_BUILTIN, OUTPUT);
+}
+
+void loop() {
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(1000);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(1000);
+}
+</code></pre>
+<h2>Update packages:</h2>
+<pre><code class="language-sh">arduino-cli core update-index
+</code></pre>
+<p>This will download a bunch of files to your hidden <code>.arduino15</code> folder.</p>
+<h2>Finding the arduino</h2>
+<p>After connecting the arduino to your computer:</p>
+<pre><code class="language-sh">arduino-cli board list
+</code></pre>
+<p>If you are lucky you will get the board info, otherwise, you might get nothing
+like I did. You can use this command to find the name of your board and which
+core to install.</p>
+<pre><code class="language-sh">arduino-cli board search
+</code></pre>
+<p>I have an old arduino with an atmega328p microcontroller. Which links to the
+<code>arduino:avr:uno</code> core. The next step is to download that core:</p>
+<pre><code class="language-sh">arduino-cli core install arduino:avr:uno
+
+# Check the core has been installed via:
+arduino-cli core list
+</code></pre>
+<p>Note, if you are using 3rd-party cores, you'll need to follow the steps on this
+documentation: <a href="http://web.archive.org/web/20240226230704/https://arduino.github.io/arduino-cli/0.35/getting-started/">Adding 3rd party cores</a></p>
+<h2>Compiling the sketch</h2>
+<p>Using the info from <code>arduino-cli board search</code>, run this command:
+Note that my board FQBN is <code>arduino:avr:uno</code></p>
+<pre><code class="language-sh">arduino-cli compile --fqbn arduino:avr:uno hello_world
+</code></pre>
+<p>In my case the command immediately complained I didn't have <code>arduino:avr</code> even
+though that was not listed in the <code>arduino-cli board search</code> as my FQBN. I
+installed it nonetheless and then it compiled successfully.</p>
+<h2>Uploading the sketch</h2>
+<p>Run this command to find your usb port:</p>
+<pre><code class="language-sh">arduino-cli board list
+</code></pre>
+<p>Then run:</p>
+<pre><code class="language-sh">arduino-cli upload -p /dev/ttyUSB0 --fqbn arduino:avr:uno hello_world
+</code></pre>
+<p>If you don't have permission to upload to that port, do this:</p>
+<pre><code class="language-sh">stat /dev/ttyUSB0
+</code></pre>
+<p>This is the bit that matters:</p>
+<pre><code class="language-sh">Gid: (  986/    uucp)
+</code></pre>
+<p>Some people have other value rather than <code>uucp</code>, just change that value in the
+next command to whatever group your system is using:</p>
+<pre><code class="language-sh">sudo usermod -a -G uucp $USER
+</code></pre>
+<p>You'll have to reboot after that. It's important that you do so that the
+language server part is working properly.</p>
+<h2>Getting setting up with arduino language server</h2>
+<pre><code class="language-sh">sudo pacman -S arduino-language-server
+</code></pre>
+<p>Create a <code>sketch.yaml</code> file so that the LSP understands the configuration
+for the project.</p>
+<pre><code class="language-sh">cd ~/workspace/arduino_sketches/hello_world
+
+arduino-cli board attach -p /dev/ttyUSB0 -b arduino:avr:uno hello_world.ino
+
+cat sketch.yaml
+</code></pre>
+<pre><code>default_fqbn: arduino:avr:uno
+default_port: /dev/ttyUSB0
+</code></pre>
+<p>The file structure should now look like this:</p>
+<pre><code>.
+├── hello_world.ino
+└── sketch.yaml
+</code></pre>
+<p>That's all, now you can get by with whatever lsp library you use.
+In my case, I use nvim-lspconfig and my configuration looks like this:</p>
+<pre><code class="language-lua">local servers = {'jedi_language_server', 'clangd', 'arduino_language_server'}
+for _, lsp in pairs(servers) do
+  require('lspconfig')[lsp].setup {
+    on_attach = on_attach,
+    flags = {
+      -- This will be the default in neovim 0.7+
+      debounce_text_changes = 150,
+    }
+  }
+end
+</code></pre>
+<h2>Adding user commands in neovim</h2>
+<p>Usage:</p>
+<pre><code>:ArduinoCompile
+:ArduinoCompileWithUpload
+:ArduinoUpload
+:ArduinoMonitor
+</code></pre>
+<pre><code class="language-lua">local function arduino_compile(opts)
+  local cmd = table.concat({
+    &quot;!arduino-cli compile&quot;,
+    opts.args,
+  }, &quot; &quot;)
+  vim.cmd(cmd)
+end
+
+local function arduino_compile_with_upload(opts)
+  local cmd = table.concat({
+    &quot;!arduino-cli compile --upload&quot;,
+    opts.args,
+  }, &quot; &quot;)
+  vim.cmd(cmd)
+end
+
+local function arduino_upload(opts)
+  local cmd = table.concat({
+    &quot;!arduino-cli upload&quot;,
+    opts.args,
+  }, &quot; &quot;)
+  vim.cmd(cmd)
+end
+
+vim.api.nvim_create_user_command(&quot;ArduinoCompile&quot;, arduino_compile, {
+  -- Zero or one arguments are accepted
+  nargs=&quot;?&quot;,
+  -- Can't be used in visual mode.
+  range=false,
+})
+
+vim.api.nvim_create_user_command(&quot;ArduinoCompileWithUpload&quot;, arduino_compile_with_upload, {
+  -- Zero or one arguments are accepted
+  nargs=&quot;?&quot;,
+  -- Can't be used in visual mode.
+  range=false,
+})
+
+vim.api.nvim_create_user_command(&quot;ArduinoUpload&quot;, arduino_upload, {
+  -- Zero or one arguments are accepted
+  nargs=&quot;?&quot;,
+  -- Can't be used in visual mode.
+  range=false,
+})
+</code></pre>
+</body>
+</html>

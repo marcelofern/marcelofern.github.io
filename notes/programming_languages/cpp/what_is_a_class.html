@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>March 07, 2023</p>
+<h2>Starting simple</h2>
+<p>Our approach here will be to start simple and then incrementally expand our
+class. Our first example is a foo/bar class:</p>
+<pre><code class="language-cpp">class MySweetClass {
+public:
+    char foo;
+private:
+    char bar;
+};
+
+MySweetClass my_obj;
+</code></pre>
+<p>This is a simple class with two attributes <code>foo</code> and <code>bar</code>. Both are <code>char</code>s
+and aren't initialised by default. The following is the assembly code generated
+by the code above:</p>
+<pre><code class="language-assembly">my_obj:
+  .zero   2
+</code></pre>
+<p>The assembly code is very simple. It creates a new label <code>my_obj</code>, and uses
+the <code>.zero</code> directive to store two bytes of memory and initialise them to zero.</p>
+<p>If you're not familiar with Assembly, you can now use the label <code>my_obj</code> to
+refer to this memory location, so that we can use other instructions like
+<code>load</code> or <code>store</code>.</p>
+<p>If you are asking yourself &quot;If this Assembly is only reserving memory and
+initialising it to zero, wouldn't it be the same as an empty struct?&quot; Let's
+check it out. Here's our <code>struct</code> code:</p>
+<pre><code class="language-cpp">struct MySweetStruct {
+  char foo;
+  char bar;
+};
+
+MySweetStruct my_struct_obj;
+</code></pre>
+<p>And the result is...</p>
+<pre><code class="language-assembly">my_struct_obj:
+        .zero   2
+</code></pre>
+<p>Identical assembly code. Quite remarkable. Let's see what happens once we start
+adding initialisers in the class:</p>
+<pre><code class="language-diff">class MySweetClass {
+public:
++    MySweetClass() : foo('f'), bar('b') {}
+    char foo;
+private:
+    char bar;
+};
+
+MySweetClass my_obj;
+</code></pre>
+<p>Now things start to get more complicated...</p>
+<pre><code class="language-assembly">MySweetClass::MySweetClass() [base object constructor]:
+        push    rbp
+        mov     rbp, rsp
+        mov     QWORD PTR [rbp-8], rdi
+        mov     rax, QWORD PTR [rbp-8]
+        mov     BYTE PTR [rax], 102
+        mov     rax, QWORD PTR [rbp-8]
+        mov     BYTE PTR [rax+1], 98
+        nop
+        pop     rbp
+        ret
+my_obj:
+        .zero   2
+__static_initialization_and_destruction_0(int, int):
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 16
+        mov     DWORD PTR [rbp-4], edi
+        mov     DWORD PTR [rbp-8], esi
+        cmp     DWORD PTR [rbp-4], 1
+        jne     .L4
+        cmp     DWORD PTR [rbp-8], 65535
+        jne     .L4
+        mov     edi, OFFSET FLAT:my_obj
+        call    MySweetClass::MySweetClass() [complete object constructor]
+.L4:
+        nop
+        leave
+        ret
+_GLOBAL__sub_I_my_obj:
+        push    rbp
+        mov     rbp, rsp
+        mov     esi, 65535
+        mov     edi, 1
+        call    __static_initialization_and_destruction_0(int, int)
+        pop     rbp
+        ret
+</code></pre>
+<p>The constructor code for MySweetClass begins by pushing the value of the base
+pointer (rbp) onto the stack, and then moving the stack pointer (rsp) into rbp.
+This sets up the stack frame for the function.</p>
+<p>The constructor then stores the value of the &quot;this&quot; pointer (which is passed as
+the first argument to the function in register rdi) in the local stack variable
+at [rbp-8]. It then loads the &quot;this&quot; pointer back into rax and uses it to set
+the first byte of the object to the value 102 (char 'f'), and the second byte
+to the value 98 (char 'b').</p>
+<p>The constructor ends with a nop (no-operation) instruction, which does nothing,
+and then pops the base pointer off the stack and returns.</p>
+<p>The rest of the code is initialisation code for our static object &quot;my_obj&quot;.
+It begins by reserving 2 bytes of space for the object, which
+is indicated by the .zero 2 directive that we saw earlier. This space is being
+used to store the two bytes of data that were set by the MySweetClass
+constructor.</p>
+<p>Next, there is a function called static_initialization_and_destruction_0,
+which takes two integer arguments (edi and esi). The purpose of this function
+is to check the values of these arguments and call the MySweetClass constructor
+if they meet certain conditions. Specifically, if the first argument is equal
+to 1 and the second argument is equal to 65535, then the constructor is called
+with the &quot;this&quot; pointer set to the address of the my_obj object.</p>
+<p>After this function, there is another function called GLOBAL__sub_I_my_obj,
+which appears to be responsible for initializing the my_obj object. It starts
+by setting the values of edi and esi to 1 and 65535, respectively, and then
+calling the static_initialization_and_destruction_0 function with these
+values. Finally, it cleans up the stack and returns.</p>
+<p>The numbers <code>1</code> and <code>65535</code> are very misterious to me, I'm not sure why
+exactly they are used as prerequisite. If you do, please let me know.</p>
+<hr>
+<p>Let's now have a look at our <code>struct</code> when it has an initialiser:</p>
+<pre><code class="language-diff">struct MySweetStruct {
+  char foo;
+  char bar;
++  MySweetStruct() : foo('f'), bar('b') {}
+};
+
+MySweetStruct my_struct_obj;
+</code></pre>
+<p>This is the resulting assembly code:</p>
+<pre><code class="language-assembly">MySweetStruct::MySweetStruct() [base object constructor]:
+        push    rbp
+        mov     rbp, rsp
+        mov     QWORD PTR [rbp-8], rdi
+        mov     rax, QWORD PTR [rbp-8]
+        mov     BYTE PTR [rax], 102
+        mov     rax, QWORD PTR [rbp-8]
+        mov     BYTE PTR [rax+1], 98
+        nop
+        pop     rbp
+        ret
+my_struct_obj:
+        .zero   2
+__static_initialization_and_destruction_0(int, int):
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 16
+        mov     DWORD PTR [rbp-4], edi
+        mov     DWORD PTR [rbp-8], esi
+        cmp     DWORD PTR [rbp-4], 1
+        jne     .L4
+        cmp     DWORD PTR [rbp-8], 65535
+        jne     .L4
+        mov     edi, OFFSET FLAT:my_struct_obj
+        call    MySweetStruct::MySweetStruct() [complete object constructor]
+.L4:
+        nop
+        leave
+        ret
+_GLOBAL__sub_I_my_struct_obj:
+        push    rbp
+        mov     rbp, rsp
+        mov     esi, 65535
+        mov     edi, 1
+        call    __static_initialization_and_destruction_0(int, int)
+        pop     rbp
+        ret
+</code></pre>
+<p>You guessed it. Yes, it generates the same code.
+In fact, even if you add functions to the struct or to the class, their
+assembly code would look fairly similar.</p>
+<p>This is nice, because you're using an OOP abstraction instead of using a struct,
+but you're not paying much (if anything) for it.</p>
+</body>
+</html>

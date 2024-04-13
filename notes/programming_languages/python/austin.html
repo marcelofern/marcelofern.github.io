@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>March 1st, 2024</p>
+<blockquote>
+<p>Austin is a Python frame stack sampler for CPython written in pure C. Samples
+are collected by reading the CPython interpreter virtual memory space to
+retrieve information about the currently running threads along with the stack
+of the frames that are being executed. Hence, one can use Austin to easily
+make powerful statistical profilers that have minimal impact on the target
+application and that don't require any instrumentation.</p>
+</blockquote>
+<p><a href="https://web.archive.org/web/20240221112118/https://github.com/P403n1x87/austin">Source</a></p>
+<p>Note: Austin will generate extremely huge output files if you are running it
+against a 5 million LOC Django codebase like I am.</p>
+<h2>With Django Runserver</h2>
+<pre><code class="language-sh">austin ./manage.py runserver &gt; /tmp/austin
+</code></pre>
+<p>Throw the <code>/tmp/austin</code> file in: https://www.speedscope.app/</p>
+<h2>Attaching to a running process</h2>
+<pre><code class="language-sh">austin -p $PROCESS_NUMBER &gt; /tmp/austin
+</code></pre>
+</body>
+</html>

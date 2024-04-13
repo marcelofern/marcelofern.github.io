@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>When declaring a function that <em>takes no parameters</em> one should use this syntax:</p>
+<pre><code class="language-c">void foo(void);
+</code></pre>
+<p>Instead of:</p>
+<pre><code class="language-c">void foo();
+</code></pre>
+<p>The nuance is that the second form declares that the function takes a number of
+arguments, but doesn't specifies their types nor the count of arguments.</p>
+<p>This implies that the caller needs to know the arguments and the types
+beforehand, otherwise they risk side-effects like corrupting the stack, or some
+other kind of bug.</p>
+<p>The form <code>foo(void)</code> <strong>explicitly</strong> states that the function takes no
+arguments.</p>
+<p>Note that this is only the case in C, and not in C++, where both forms mean
+the same (no arguments).</p>
+<h2>Standards</h2>
+<p>If you attempt to do this:</p>
+<pre><code>int f();
+int f(int a) {
+  return a+42;
+}
+</code></pre>
+<p>It will compile in standards &lt; c2x. But you will get the following warning from
+gcc:</p>
+<blockquote>
+<p>A function declaration without a prototype is deprecated in all versions of C
+and is not supported in C2x.</p>
+</blockquote>
+<h2>Examples</h2>
+<p>The main function is a good example, as it is always called with the number
+of arguments (at least 1) and the arguments themselves (the name of the
+executable for instance), and it is often defined as <code>int main()</code>.</p>
+</body>
+</html>

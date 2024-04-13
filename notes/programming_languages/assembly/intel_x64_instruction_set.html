@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>February 18th, 2024</p>
+<h1>Introduction</h1>
+<p>This list does not include all of the instructions, only the ones I have used
+most frequently.</p>
+<h2>Instructions</h2>
+<h3>ADC</h3>
+<p>ADD with Carry Flag.</p>
+<p>Adds the destination operand (first operand), the source operand (second
+operand), and the carry (CF) flag and stores the result in the destination
+operand. The destination operand can be a register or a memory location; the
+source operand can be an immediate, a register, or a memory location. (However,
+two memory operands cannot be used in one instruction.) The state of the CF
+flag represents a carry from a previous addition. When an immediate value is
+used as an operand, it is sign-extended to the length of the destination
+operand format.</p>
+<p>The ADC instruction does not distinguish between signed or unsigned operands.
+Instead, the processor evaluates the result for both data types and sets the OF
+and CF flags to indicate a carry in the signed or unsigned result,
+respectively. The SF flag indicates the sign of the signed result.</p>
+<p>The ADC instruction is usually executed as part of a multibyte or multiword
+addition in which an ADD instruction is followed by an ADC instruction.</p>
+<pre><code class="language-asm">shr rax, 3
+adc rax, 0
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|  *  |  *  |     |     |  *  |  *  |  *  |     |  *  |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>ADD</h3>
+<p>ADD adds the source operand to the destination operand, and after the
+operation, the result replaces the destination operand. The add operation is an
+arithmetic add and does not take the Carry flag into account. (To add using the
+Carry flag, use the ADC Add with Carry instruction.) All affected flags are set
+according to the operation. Most importantly, if the result does not fit into
+the destination operand, the Carry flag is set to 1.</p>
+<pre><code class="language-asm">  mov rax, 0x23456
+  mov rbx, 0x54321
+  add rax, rbx
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|  *  |  *  |     |     |  *  |  *  |  *  |     |  *  |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>AND</h3>
+<p>Bit-by-bit binary operation. Useful for masking.</p>
+<pre><code class="language-asm">  and rax, rbx
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|  ?  |  *  |     |     |  *  |  *  |  *  |     |  *  |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<p>AND performs the AND logical operation on its two operands. Once the opera-
+tion is complete, the result replaces the destination operand. AND is performed
+on a bit-by-bit basis</p>
+<p>Note that the operation makes the Auxiliary carry flag unde- fined. CF and OF
+are cleared to 0, and the other affected flags are set according to the
+operation’s results.</p>
+<h3>BT</h3>
+<p>Bit test.</p>
+<p>It takes two operands, the destination that needs to be tested, and the
+source operand, which is the ordinal number bit that you want to test
+<strong>starting from 0</strong> (if you want to test the fourth bit from the right, the
+source = 3).</p>
+<p>BT copies a single specified bit from the left operand to the Carry flag, where
+it can be tested or fed back into a quantity using one of the shift/rotate
+instruc- tions. Which bit is copied is specified by the right operand. Neither
+operand is altered by BT</p>
+<pre><code class="language-asm">bt rax, 4 ; test bit 4 of rax -&gt; 10000b
+jnc quit  ; we're done if bit 4 = 0 (not carry).
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|     |  *  |     |     |     |     |     |     |     |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>CALL</h3>
+<p>Calls a routine. Before transferring control, CALL pushes the address of the
+instruction immediately after itself onto the stack. This allows a RET
+instruction (see also) to pop the return address into RIP and thus return
+control to the instruction immediately after the CALL instruction</p>
+<pre><code class="language-asm">call MyOtherRoutine
+</code></pre>
+<p>Note: The procedure <code>MyOtherRoutine</code> must have at least one RET instruction.
+Note: Can also be called with a register address</p>
+<pre><code class="language-asm">mov r13, myLabel
+call r13
+</code></pre>
+<p>Flags affected (none in this case):</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|     |     |     |     |     |     |     |     |     |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>CLD</h3>
+<p>Clear Direction Flag. This is relevant for string instruction work. It defines
+what direction in memory that a string operation takes.</p>
+<p>A clear flag usually means you want to go up-hill on memory. I.e., from the
+lowest address to the highest. If you want the opposite, use the STD
+instruction instead.</p>
+<h3>CMP</h3>
+<p>Compares two values. The destination operand is not affected.</p>
+<p>The operation itself is identical to arithmetic subtraction of the source from
+the destination without borrow (SUB), save that the result does not replace the
+destination.</p>
+<pre><code class="language-asm">cmp rax, rbx ; sets OF, SF, ZF, AF, PF, and CF
+jne SomeWhere
+cmp byte [Buffer], 0xFF
+jng SomeWhereElse
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|  *  |  *  |     |     |  *  |  *  |  *  |     |  *  |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>DIV</h3>
+<p>Warning: contains implicit operand.</p>
+<pre><code class="language-asm">div rbx
+</code></pre>
+<p>Divides <code>edx:eax</code> by <code>rbx</code>. The result (quotient) is in EAX and the remainder
+in EDX. Works similarly for AX, EAX, RAX.</p>
+<p>DIV divides the implicit dividend by the explicit divisor specified as DIV’s
+single operand. For dividing by 8-bit quantities, the dividend is assumed to be
+in AX. For dividing by 16-bit, 32-bit, and 64-bit quantities, the dividend is
+assumed to be in two registers, allowing a much greater range of calculation.
+The least significant portion of the dividend is placed in the “A” register (AX
+/ EAX / RAX), and the most significant portion of the dividend is placed in the
+“D” register (DX / EDX / RDX). Note that even when there is no “high” portion
+of the dividend, the “D” register is cleared to 0 by DIV and cannot be used to
+hold independent values while a DIV instruction is executed.</p>
+<p>DIV leaves no information in the flags. Note, however, that OF, SF, ZF, AF, PF,
+and CF become undefined after a DIV instruction.</p>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|  ?  |  ?  |     |     |  ?  |  ?  |  ?  |     |  ?  |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>INC and DEC</h3>
+<p>Increment or decrement the value by one.</p>
+<p>INC adds 1 to its single operand and does not affect the Carry flag CF. Be
+care- ful about that; it’s a common error to try to use CF after an INC
+instruction as though it were ADD instead. INC acting on memory data forms must
+be used with a data size specifier such as BYTE, WORD, DWORD, and QWORD.</p>
+<p>DEC subtracts 1 from its single operand and does not affect the Carry flag CF.
+Be careful about that; it’s a common error to try to use CF after a DEC
+instruction as though it were SUB instead. DEC acting on memory data forms must
+be used with a data size specifier such as BYTE, WORD, DWORD, and QWORD.</p>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|  *  |     |     |     |  *  |  *  |  *  |     |  *  |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>JA, JAE, JNA, JNAE</h3>
+<p>Note: unsigned comparison.
+Jump if above (equal/not equal). In this case, if the value in rax was higher
+than rbx.</p>
+<pre><code class="language-asm">cmp rax, rbx
+ja Somewhere
+</code></pre>
+<h3>JB, JBE, JNB, JNBE</h3>
+<p>Note: unsigned comparison.
+Jump if below (equal/not equal). In this case, if the value in rax was lower
+than rbx.</p>
+<pre><code class="language-asm">cmp rax, rbx
+jb Somewhere
+</code></pre>
+<h3>JC, JNC</h3>
+<p>Jump if the carry flag is set/not set.</p>
+<h3>JE, JNE</h3>
+<p>Jump if equal/not equal.</p>
+<pre><code class="language-asm">cmp rax, rbx
+je Somewhere
+</code></pre>
+<h3>JG, JGE, JNG, JNGE</h3>
+<p>Note: signed comparison.
+Jump if greater (equal/not equal).</p>
+<h3>JL, JLE, JNL, JNLE</h3>
+<p>Note: signed comparison.
+Jump if less (equal/not equal).</p>
+<h3>JZ, JNZ</h3>
+<p>Jump if zero (if ZF flag == 0) or not zero.</p>
+<pre><code>  mov rax, 2
+DoMore:
+  dec rax
+  jz SomewhereElse
+  jmp DoMore
+</code></pre>
+<h3>LEA</h3>
+<p>Load effective address.</p>
+<p>Allows you to calculate the effective address of any element in a table and
+drop that address in a register.</p>
+<p>LEA derives the address of the source operand and loads that offset into the
+destination operand. The destination operand must be a register and cannot be
+memory. The source operand must be a memory operand, but it can be any size.</p>
+<p>The address stored in the destination operand is the address of the first byte
+of the source in memory, and the size of the source in memory is unimportant.
+This is a good, clean way to place the address of a variable into a register
+prior to a procedure call or a system call. See SYSCALL.</p>
+<p>LEA can also be used to perform register math, since the address specified in
+the second operand is calculated but not accessed. The address can thus be an
+address for which your program does not have permission to access. Any math
+that can be expressed as a valid address calculation may be done with LEA.</p>
+<p>This is one of the few places where NASM does not require a size specifier
+before an operand providing a memory address, again because LEA calculates the
+address but moves no data to or from that address.</p>
+<pre><code class="language-asm">SomeVariable: dd 0, 25, 50, 75, 100
+
+lea rbx, [SomeVariable+rcx*4]
+
+lea rdx, [rdx*2+rdx] ; multiplies rdx by 3
+</code></pre>
+<p>This is often faster than using shifts + adds to multiply a value.</p>
+<h3>LEAVE</h3>
+<p>Releases the stack frame set up by an earlier ENTER instruction.</p>
+<p>It is the equivalent of an epilogue.</p>
+<pre><code class="language-asm">; same as
+mov rsp, rbp
+pop rbp
+</code></pre>
+<h3>LOOP</h3>
+<p>The LOOP instruction assumes that the RCX register contains the loop count.
+When the loop instruction is executed, the RCX register is decremented and the
+control jumps to the target label, until the RCX register value, i.e., the
+counter reaches the value zero.</p>
+<p>LOOP is a combination decrement counter, test, and jump instruction. It uses CX
+as the counter in 16-bit modes, ECX in 32-bit modes, or RCX in 64-bit modes.
+The operation of LOOP is logistically identical in all three modes, and I use
+64-bit coding as an example here.</p>
+<p>LOOP simplifies code by acting as a DEC RCX instruction, a CMP RCX,0
+instruction, and JZ instruction in one, executed in that order. A loop repeat
+count must be initially loaded into RCX. When the LOOP instruction is executed,
+it first decre- ments RCX. Then it tests to see if RCX = 0. If RCX is not 0,
+LOOP transfers control to the 8- bit displacement specified as its operand:</p>
+<pre><code class="language-asm">mov ECX,10
+l1:
+&lt;loop body&gt;
+loop l1
+</code></pre>
+<blockquote>
+<p>Looking at the &quot;8086/8088 User's Manual: Programmer's and Hardware Reference&quot;
+(Intel 1989) confirms that LOOP is marginally faster than the combination DEC
+CX; JNZ. DEC takes 3 clock cycles, JNZ takes 4 (not taken) or 16 (taken)
+cycles. So the combination requires 7 or 19 cycles. LOOP on the other hand
+requires 5 cycles (not taken) or 17 cycles (taken), for a saving of 2 cycles.</p>
+</blockquote>
+<p>Flags affected (none):</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|     |     |     |     |     |     |     |     |     |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<p>Insteresting trick:</p>
+<pre><code class="language-asm">loop $
+</code></pre>
+<p>The above creates an infinite loop until RCX reaches zero. The mark <code>$</code>
+corresponds to the current location or address in the code. This means that
+<code>loop</code> will loop back to itself.</p>
+<h3>MOV</h3>
+<ul>
+<li><code>mov rax, 0x42</code>: rax now stores the value 42h directly.</li>
+<li><code>mov rbx, rax</code>: rbx and rax now both store 42h directly.</li>
+<li><code>mov [rcx], rbx</code>: address stored in rcx now holds 42h.</li>
+<li><code>mov rdx, [rbx]</code>: rdx now holds value of address stored in rbx.</li>
+</ul>
+<p>Note: If you need to move a signed value use <code>MOVSX</code> instead.</p>
+<p>Flags affected (none):</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|     |     |     |     |     |     |     |     |     |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>MOVSB, MOVSW, MOVSD, MOVSQ</h3>
+<p>The gist of this instruction is this:</p>
+<ol>
+<li>RSI stores the source of the address in memory.</li>
+<li>RDI stores the destination address.</li>
+<li>The number of bytes to be moved is placed in the RCX register.</li>
+<li>RCX decrements by one after each byte is copied.</li>
+</ol>
+<p>Don’t forget that RCX counts operations (the number of times a data item is
+copied from source to destination) and not bytes!</p>
+<p>The DF (direction flag) affects this instruction. It is only important to
+set or not set the flag when the memory in RSI and RDI overlap, otherwise it
+shouldn't matter. The Direction flag DF thus determines whether your copy
+operation moves up-memory if DF is cleared (0) and down-memory if DF is set
+(1).</p>
+<p>The MOVSB can operate automatically (via <code>REP</code>) or semi-automatically, by
+manually decrementing RCX.</p>
+<p>Flags affected (none):</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|     |     |     |     |     |     |     |     |     |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>MOVSX</h3>
+<p>&quot;Move with signed extension&quot; used when moving values that are negative. Note
+that this instruction allows operands of different sizes!</p>
+<p>MOVSX operates like MOV but copies values from source operand to the destina-
+tion operand with sign extension. That is, it carries the sign bit of the
+smaller source operand to the sign bit of the larger destination operand. This
+way, for example, a 16-bit signed value in AX will still be a signed value when
+copied into 32-bit register EDX or 64-bit register RDX. Without sign extension,
+the sign bit of AX would simply become another bit in the binary value copied
+into RDX, and the value in RDX would bear no resemblance to the supposedly
+identical value in AX.</p>
+<pre><code>xor rax, rax
+mov ax, -42
+movsx rbx,ax
+</code></pre>
+<p>Flags affected (none):</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|     |     |     |     |     |     |     |     |     |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>MUL</h3>
+<p>Warning: contains implicit operand.</p>
+<pre><code class="language-asm">mul rbx
+</code></pre>
+<p>MUL multiplies its single operand by AL, AX, EAX, or RAX, and the result is
+placed in AX, in DX:AX, in EDX:EAX, or in RDX:RAX. If MUL is given an 8-bit
+operand (either an 8- bit register or an 8-bit memory operand), the results
+will be placed in AX. This means that AH will be affected, even if the results
+will fit entirely in AL</p>
+<p>The above multiplies the value of RBX x RAX. The result would be stored in
+two registers, <code>RDX:RAX</code>.</p>
+<p>It always multiplies the explicit operand by one of <code>AX,EAX,RAX</code>. And if it
+needs to store more than the size of the register, it uses <code>DX,EDX,RDX</code> to
+store the high-order portion.</p>
+<p>Not every multiplication will need the high-order register. If not, the
+carry flag CF will be set to 0.</p>
+<p>Note: It’s easy to assume that IMUL is identical to MUL save for IMUL’s ability
+to operate on signed values. Not so: IMUL has more legal instruction forms and
+is considerably more complex than MU</p>
+<p>The Carry and Overflow flags are cleared to 0 if the result value is 0; other-
+wise, both are set to 1. Remember that SF, ZF, AF, and PF become undefined
+after MUL.</p>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|  ?  |  *  |     |     |  *  |  ?  |  ?  |     |  ?  |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>NEG</h3>
+<p>Turns the value to its equivalent two's complement negative. Use this instead
+of trying to manually set the negative bit on.</p>
+<p>The two's compliment algorithm is basically:</p>
+<ul>
+<li>Step 1: starting with the binary representation of the number, with the
+leading bit being a sign bit;</li>
+<li>Step 2: inverting (or flipping) all bits – changing every 0 to 1, and every 1
+to 0;</li>
+<li>Step 3: adding 1 to the entire inverted number, ignoring any overflow.
+Accounting for overflow will produce the wrong value for the result.</li>
+</ul>
+<pre><code class="language-asm">  mov rax, 0x42
+  neg rax
+  add rax, 0x42
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|  *  |  *  |     |     |  *  |  *  |  *  |     |  *  |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>OR</h3>
+<p>Bit-by-bit OR binary operation</p>
+<pre><code class="language-asm">  or rax, rbx
+</code></pre>
+<p>Note that the OR instruction makes the Auxiliary Carry flag undefined. CF and
+OF are cleared to 0, and the other affected flags are set according to the
+operation’s result.</p>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|  ?  |  *  |     |     |  *  |  *  |  *  |     |  *  |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>POP</h3>
+<p>Pops an item of data off the stack.</p>
+<pre><code class="language-asm">pop rax ; pops 64bits from the stack
+pop [ebx]; pops 32bits from the stack onto the memory pointed by ebx
+</code></pre>
+<p>As with <code>PUSH</code>, it only works with 16bits or 64bits at the time.</p>
+<p>No flags are affected.</p>
+<h3>POPFQ</h3>
+<p>Pops 64 bits off the stack onto rflags</p>
+<h3>PUSH</h3>
+<p>Pushes a 16bit or 64bit register or memory value onto the stack. It doesn't
+work for 8bit or 32bit registers.</p>
+<pre><code class="language-asm">push rax
+push [rbx]
+</code></pre>
+<p>In Intel x64, where the stack grows downwards, if we push a 64bit register to
+the stack, the RSP (register stack pointer) will be decremented by 64bits and
+whatever that needs to be stored is saved at that memory address pointed by
+RSP. The &quot;empty&quot; 64bits space is now filled with the value that was pushed.</p>
+<p>No flags are affected.</p>
+<h3>PUSHFQ</h3>
+<p>Similar to <code>PUSH</code>, but pushes the rflags register. It takes no operands.</p>
+<h3>RCR</h3>
+<p>Rotate carry right.</p>
+<p>The right rotate instruction shifts all bits in the register or memory operand
+specified. The carry flag (CF) is included in the rotation. The least
+significant bit is rotated to the carry flag, the carry flag is rotated to the
+most significant bit position, all other bits are shifted to the right. The
+result includes the original value of the carry flag.</p>
+<p>The first operand value indicates how many times the rotate takes place. The
+value is either the contents of the CL register or an immediate number. For a
+single rotate, where the first operand is one, the overflow flag (OF) is
+defined. For all other cases, OF is undefined. After the shift, the carry flag
+bit is XORed with the two most significant result bits.</p>
+<pre><code class="language-asm">rcr rax, 1
+</code></pre>
+<h3>REP</h3>
+<p>Repeat string-operation until tested-condition</p>
+<p>Use the rep (repeat while equal), repnz (repeat while nonzero) or repz (repeat
+while zero) prefixes in conjunction with string operations. Each prefix causes
+the associated string instruction to repeat until the count register (CX) or
+the zero flag (ZF) matches a tested condition.</p>
+<h3>ROL / ROR</h3>
+<p>ROL: Similar to a shift left instruction, but the left-most bit is moved down
+to the right-most bit instead of going to the carry flag.</p>
+<p>ROR: Similar to a shift right instruction, but the right-most bit is moved down
+to the left-most bit instead of going to the carry flag.</p>
+<pre><code class="language-asm">  rol &lt;register/memory&gt;, &lt;count&gt;
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|     |  *  |     |     |  *  |     |     |     |     |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>SBB</h3>
+<p>Adds the source operand (second operand) and the carry (CF) flag, and subtracts
+the result from the destination operand (first operand). The result of the
+subtraction is stored in the destination operand. The destination operand can
+be a register or a memory location; the source operand can be an immediate, a
+register, or a memory location.</p>
+<pre><code class="language-asm">not rdx
+neg rax
+sbb rdx, -1
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|  *  |  *  |     |     |  *  |  *  |  *  |     |  *  |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>SHL / SHR</h3>
+<p>&quot;Shift left&quot; and &quot;shift right&quot;</p>
+<pre><code class="language-asm">  shl &lt;register/memory&gt;, &lt;count&gt;
+  shr &lt;register/memory&gt;, &lt;count&gt;
+</code></pre>
+<p>The number of bit positions shifted may be specified either as an 8-bit
+immediate value or by the value in CL—not CX/ECX/RCX. (The 8086 and 8088 are
+limited to the immediate value 1.)</p>
+<p>With SHL, the leftmost bit of the operand is shifted into CF; the rightmost bit
+is cleared to 0. With SHR, the rightmost bit is shifted into CF; the leftmost
+bit is cleared to 0. The Auxiliary Carry flag AF becomes undefined after both
+SHL and SHR. OF is modified only by the shift-by-one forms. After any of the
+shift-by-CL forms, OF becomes undefined.</p>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|  ?  |  *  |     |     |  *  |  *  |  *  |     |  *  |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>STOSB, STOSW, STOSD, STOSQ</h3>
+<p>STOre String by Byte.</p>
+<ul>
+<li>RDI must be loaded with the address of the destination string. Think R<code>DI</code>
+for destination index.</li>
+<li>AL must be loaded with the 8-bit value to be stored in the string.</li>
+<li>RCX must be loaded with the number of times the value in AL is to be stored
+in the string. No matter if you CLD or STD beforehand RCX will <em>decrement</em>.</li>
+<li>The Direction flag (DF) must be set or cleared, depending on whether you want
+the search to be up-memory (cleared; use CLD) or down memory (set; use STD).</li>
+</ul>
+<p>You must decrement RCX unless you use <code>rep stosb</code> instead.</p>
+<pre><code class="language-asm">cld ; clear DF so we're counting up-memory.
+mov al, FILLCHR ; put the buffer filler char in AL.
+mov rdi,VidBuff ; point the destination index at buffer.
+mov rcx, COLS*ROWS ; put the count of chars stored into RCX.
+rep stosb ; blast chars at the buffer.
+</code></pre>
+<p>Does not affect flags.</p>
+<h3>SUB</h3>
+<p>SUB performs a subtraction without borrow, where the source operand is
+subtracted from the destination operand, and the result replaces the
+destination operand. If the result is negative, the Carry flag CF is set.</p>
+<pre><code class="language-asm">SUB AX,DX
+SUB AL,DL
+SUB EBP,17
+SUB RAX,0FFFBH
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|  *  |  *  |     |     |  *  |  *  |  *  |     |  *  |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+<h3>SYSCALL</h3>
+<p>A way to call Linux syscalls from assembly.</p>
+<p>The available syscalls can be found here: <code>/usr/include/asm/unistd_64.h</code>.
+To see the register order for the architecture (e.g x86-64) visit the man
+page at <code>man syscall</code></p>
+<pre><code>The second table shows the registers used to pass the system call arguments.
+Arch/ABI      arg1  arg2  arg3  arg4  arg5  arg6  arg7  Notes
+──────────────────────────────────────────────────────────────
+i386          ebx   ecx   edx   esi   edi   ebp   -
+x86-64        rdi   rsi   rdx   r10   r8    r9    -
+x32           rdi   rsi   rdx   r10   r8    r9    -
+</code></pre>
+<p>Arguments for each POSIX syscall can be found by typing <code>man 2 exit</code> note the
+&quot;2&quot; argument to man which will link you to the system calls documentation.</p>
+<p>Note: syscall uses RAX, RCX, and R11 internally, so you can't assume that their
+values will remain the same after the call do <code>syscall</code></p>
+<p>Note 2: whether or not a register (like R9, say) is used to pass a parameter to
+a system call, that register i not preserved. Only seven registers are
+preserved by Linux across a system call: r12, r13, r14, r15, rbx, rsp, and rbp.</p>
+<p>Useful reference: https://hackeradam.com/x86-64-linux-syscalls/
+Useful google term: &quot;system call table x64&quot;</p>
+<p>No flags are affected.</p>
+<h3>TEST</h3>
+<p>Note: Prefer <code>BT</code> instead!</p>
+<p>Useful for mask testing. It does the same job as <code>AND</code>, but without changing
+the value of the destination.</p>
+<p>If the ZF (zero flag) is set to 0, it means that the mask worked. If it's
+set to 1, the mask didn't work. It sounds a bit counter-intuitive.</p>
+<p>Special use: It can be used to check if the value of a register is zero:</p>
+<pre><code class="language-asm">  ; jump to L4 if esi is zero
+  test  esi, esi
+  je  .L4
+</code></pre>
+<p>Caveat: TEST is only useful for finding 1 bit. If you need to find 0 bits,
+you need to flip each bit with the NOT instruction first.</p>
+<p>Caveat 2: TEST only works with a single bit. If you need to check if more than
+one bit is set to 1, it won't work.</p>
+<pre><code class="language-asm">test &lt;operand&gt;, &lt;bit mask&gt;
+
+test rax,0x8 ; checks if bit 3 is up.
+</code></pre>
+<h3>XCHG</h3>
+<p>Exchange the value of two variables (swap them)</p>
+<pre><code class="language-asm">xchg cl,ch
+</code></pre>
+<p>No flags are affected.</p>
+<h3>XLAT</h3>
+<p>The xlat instruction in x86 assembly language stands for &quot;translate byte at
+DS:[(E)BX] and store result in AL.&quot; It is used to perform a simple byte lookup
+and load the result into the AL register.</p>
+<ul>
+<li>The contents of the EBX register (or BX if in 16-bit mode) are treated as an
+offset address in the DS (Data Segment) segment.</li>
+<li>The byte at the calculated memory address (DS:[(E)BX]) is fetched.</li>
+<li>The fetched byte is then moved into the AL register.</li>
+</ul>
+<p>This instruction is often used in conjunction with string operations or table
+lookups, where EBX holds an offset or index into a data table, and xlat is used
+to retrieve a byte from that table.</p>
+<pre><code class="language-asm">section .data
+    str_table db '0123456789ABCDEF'  ; Hexadecimal digits lookup table
+
+section .text
+    global _start
+
+_start:
+    mov ebx, 10; Index 10 in the table corresponds to the hexadecimal digit 'A'
+    xlat       ; AL now contains 'A'
+
+    ; Continue with further instructions...
+</code></pre>
+<p>No flags are affected.</p>
+<h3>XOR</h3>
+<p>This is a nice trick, xor'ing something against itself yields zero. So if you
+want to zero a register, it's faster to do:</p>
+<pre><code class="language-asm">xor rax, rax
+; instead of
+mov rax, 0
+</code></pre>
+<p>Because we don't have to go out to memory to load the immediate value 0.</p>
+<p>The XOR operation yields a 1 if the operands are different and a 0 if the
+operands are the same. Note that the XOR instruction makes the Auxiliary Carry
+flag AF undefined. CF and OF are cleared to 0, and the other affected flags
+are set according to the operation’s results.</p>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|  ?  |  *  |     |     |  *  |  *  |  *  |     |  *  |
+
+AF: Aux carry flag
+CF: Carry flag
+DF: Direction flag
+IF: Interrupt flag
+OF: Overflow flag
+PF: Parity flag
+SF: Sign flag
+TF: Trap flag
+ZF: Zero flag
+</code></pre>
+</body>
+</html>

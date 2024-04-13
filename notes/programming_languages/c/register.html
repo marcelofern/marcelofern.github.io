@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p><code>2024-04-01</code></p>
+<h2>From wikipedia</h2>
+<p><code>register</code> is a reserved keyword, type modifier, storage class, and hint.</p>
+<p>The keyword hints the compiler to use a register to store a particular variable
+rather than using random-access memory (RAM).</p>
+<p>In C the location of a variable declared with register cannot be accessed, but
+the sizeof operator can be applied.</p>
+<p>Aside from this limitation, register is essentially meaningless in modern
+compilers due to optimization which will place variables in a register if
+appropriate regardless of whether the hint is given.</p>
+<p>For programming of embedded systems register may still be significant; for
+example the Microchip MPLAB XC32 compiler allows the programmer to specify a
+particular register with the keyword; however, this is discouraged in favor of
+the compiler's optimizations. When used, register is typically for loop
+counters, or possibly for other very frequently used variables in the code.</p>
+<p>Syntax:</p>
+<pre><code class="language-c">/* store integer variable &quot;i&quot; in RAM, register, or other location as compiler sees fit */
+int i;
+
+/* suggests storing integer variable &quot;i&quot; in a CPU register or other fast location */
+register int i;
+</code></pre>
+<p><a href="https://web.archive.org/web/20221105122749/https://en.wikipedia.org/wiki/Register_(keyword)">source</a></p>
+<h2>Limitations</h2>
+<ul>
+<li>The register keyword can only be applied to variables declared within a
+function (local variables). It cannot be used with global variables.</li>
+<li>You cannot take the address of a register variable because it doesn't have a
+memory location.</li>
+<li>It's also not possible to apply the register keyword to structure or union
+members.</li>
+<li>In practice, it's rare to see significant performance gains from using
+register, and its use is largely considered unnecessary in modern C
+programming.</li>
+</ul>
+<h2>Background</h2>
+<p>The &quot;register&quot; keyword tends to be ignored by modern compilers, because it
+messes with the compilers' optimized register assignment algorithms (which
+algorithms didn't exist in 1972, when the keyword was created).</p>
+<h2>Other uses</h2>
+<p>You can use the C register keyword to make sure your variable will not be
+accessed by address and changed outside of the scope that you expect.</p>
+<p>For example:</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main()
+{
+    register int number = 1;
+    scanf(&quot;%d&quot;, &amp;number);
+    printf(&quot;%d&quot;, number);
+
+    return 0;
+}
+</code></pre>
+<p>Compiles into an error:</p>
+<pre><code>/tmp/main.c:6:5: error: address of register variable ‘number’ requested.
+</code></pre>
+<p>Exception: If you're using a C++ compiler, it won't result in an error because
+C++ allows access to the address of register variables.</p>
+</body>
+</html>

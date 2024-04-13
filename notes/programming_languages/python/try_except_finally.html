@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>February 2, 2024</p>
+<h1>Introduction</h1>
+<p>Suppose you have the following code:</p>
+<pre><code class="language-python">def foo():
+    print(&quot;writing data to a temp file&quot;)
+    # write data here
+    # ...
+
+    print(&quot;doing some other stuff that raises an exception&quot;)
+    # ...
+    raise ValueError
+
+def remove_temp_file():
+    print(&quot;removing temp file&quot;)
+    # do removal here
+    # ...
+
+try:
+    foo()
+    remove_temp_file()
+except ValueError:
+    print(&quot;doing some logging&quot;)
+    # do some logging here
+    # ...
+    remove_temp_file()
+    raise
+</code></pre>
+<p>Note that regardless of succeeding or not, you want the temp file to be
+cleaned up (removed).</p>
+<h2><code>finally</code></h2>
+<p>We can remove some of this duplication by using <code>finally</code></p>
+<pre><code class="language-python">def foo():
+    print(&quot;writing data to a temp file&quot;)
+    # write data here
+    # ...
+
+    print(&quot;doing some other stuff that raises an exception&quot;)
+    # ...
+    raise ValueError
+
+def remove_temp_file():
+    print(&quot;removing temp file&quot;)
+    # do removal here
+    # ...
+
+try:
+    foo()
+except ValueError:
+    print(&quot;doing some logging&quot;)
+    # do some logging here
+    # ...
+    raise
+finally:
+    remove_temp_file()
+</code></pre>
+<p>The <code>finally</code> block will run no matter what. However, it has some special
+properties. According to the documentation:</p>
+<blockquote>
+<p>If finally is present, it specifies a ‘cleanup’ handler. The try clause is
+executed, including any except and else clauses. If an exception occurs in
+any of the clauses and is not handled, the exception is temporarily saved.
+The finally clause is executed. If there is a saved exception it is re-raised
+at the end of the finally clause. If the finally clause raises another
+exception, the saved exception is set as the context of the new exception. If
+the finally clause executes a return, break or continue statement, the saved
+exception is discarded.</p>
+</blockquote>
+<p><a href="https://web.archive.org/web/20240216014110/https://docs.python.org/3/reference/compound_stmts.html">Docs</a></p>
+<p>The catch here is that the code block under <code>finally</code>, will run before the
+<code>raise</code> exception in the <code>except</code> block runs, but after the code inside the
+<code>except</code> block.</p>
+<p>If we run the code above, we have the following print output:</p>
+<pre><code>writing data to a temp file
+doing some other stuff that raises an exception
+doing some logging
+removing temp file
+</code></pre>
+<p>Note that if the <code>finally</code> block raised an exception, that exception would
+take precedence over <code>ValueError</code> being re-raised:</p>
+<pre><code class="language-python">try:
+    foo()
+except ValueError:
+    print(&quot;doing some logging&quot;)
+    # do some logging here
+    # ...
+    raise
+finally:
+    remove_temp_file()
+    raise TypeError(&quot;error in finally block&quot;)
+</code></pre>
+<pre><code>&gt; TypeError: error in finally block
+</code></pre>
+<p>Also note that using <code>break</code> or <code>return</code> will cause the <code>ValueError</code> exception
+to <strong>not be re-raised</strong>. This can come as a shock, but it is helpful if you
+are looping through a lot of try/catch/finally and you don't want any
+exception to affect your loop.</p>
+<pre><code>def bar():
+    try:
+        foo()
+    except ValueError:
+        print(&quot;doing some logging&quot;)
+        # do some logging here
+        # ...
+        raise
+    finally:
+        remove_temp_file()
+        return
+
+# No exceptions raised
+bar()
+</code></pre>
+</body>
+</html>

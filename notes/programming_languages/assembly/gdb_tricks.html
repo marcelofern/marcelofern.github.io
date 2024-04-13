@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>February 18th, 2024</p>
+<h1>Introduction</h1>
+<p>A collection of notes about making Assembly work more pleasurable with GDB
+debugging.</p>
+<h2>Basics</h2>
+<p>Read these before expanding to the next sections.</p>
+<ol>
+<li>Set the layout <code>layout src</code> (or <code>ctrl + x + a</code>).</li>
+<li>Use <code>ni</code> and <code>si</code> (next instruction / step instruction).</li>
+<li>use <code>i r rax</code> (info register rax) to inspect a register.</li>
+<li>flag register is available as <code>i r eflags</code></li>
+<li>run <code>set disassembly-flavor intel</code> so MOV instructions aren't in reverse.</li>
+<li>use <code>x 0x402000</code> to print value starting in memory block 0x402000</li>
+<li>use <code>x/xg 0x402000</code> to do the same but print 64bit in hex decimal.</li>
+<li>You can normally use <code>p</code> for printing .data (casting them in C first!)</li>
+<li>Use <code>p /t $rax</code> to print contents of rax in binary.</li>
+</ol>
+<h2>Layout</h2>
+<p>Layout allows you to have your code and the line being debugged side-by-side on
+the GDB terminal user interface.</p>
+<p>You can have the following window configurations:</p>
+<ul>
+<li>source</li>
+<li>assembly</li>
+<li>source and assembly</li>
+<li>source and registers</li>
+<li>assembly and registers</li>
+</ul>
+<p>To change the layout you can type <code>layout</code> followed by a configuration.</p>
+<pre><code class="language-sh">(gdb) layout src
+</code></pre>
+<p>Helpful shortcuts:</p>
+<p><strong>ctrl + x + 1</strong>: Use the TUI with only 1 window configuration.
+<strong>ctrl + x + 2</strong>: Use the TUI with at least 2 windows.</p>
+<p>On the command terminal window, you can type <code>focus</code> + name of the window so
+that your keyboard arrows work within the specified window:</p>
+<pre><code class="language-sh">(gdb) focus src
+</code></pre>
+<h2>Printing memory addresses</h2>
+<p>You can use <code>p</code> followed by a C-casting command to find what the byte stored
+in a memory address is. For example:</p>
+<pre><code class="language-sh">(gdb) p (char*)0x402000
+</code></pre>
+<h2>Disassemble</h2>
+<p>Disassembles a specified section of memory. Can be useful for determining
+the assembly code in a routine.</p>
+<pre><code class="language-sh">(gdb) disassemble main // print all instructions of main.
+(gdb) disassemble /s main // also adds the source code.
+</code></pre>
+</body>
+</html>

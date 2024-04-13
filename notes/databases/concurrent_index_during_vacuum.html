@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>Vaccuming and Concurrent index creation conflict with each other in postgres:</p>
+<pre><code>|                   | ACCESS SHARE | ROW SHARE | ROW EXCL | SHARE UPDATE EXCL | SHARE | SHARE ROW EXCL | EXCL | ACCESS EXCL | QUERY                                                |
+|-------------------|--------------|-----------|----------|-------------------|-------|----------------|------|-------------|------------------------------------------------------|
+| ACCESS SHARE      |              |           |          |                   |       |                |      | X           | SELECT                                               |
+| ROW SHARE         |              |           |          |                   |       |                | X    | X           | SELECT FOR UPDATE/SHARE                              |
+| ROW EXCL          |              |           |          |                   | X     | X              | X    | X           | INSERT/UPDATE/DELETE                                 |
+| SHARE UPDATE EXCL |              |           |          | X                 | X     | X              | X    | X           | VACUUM/CREATE INDEX CONCURRENTLY                     |
+| SHARE             |              |           | X        | X                 |       | X              | X    | X           | CREATE INDEX                                         |
+| SHARE ROW EXCL    |              |           | X        | X                 | X     | X              | X    | X           | CREATE TRIGGER/ADD FOREIGN KEY                       |
+| EXCL              |              | X         | X        | X                 | X     | X              | X    | X           | REFRESH MATVIEW CONCURRENTLY                         |
+| ACCESS EXCL       | X            | X         | X        | X                 | X     | X              | X    | X           | DROP/TRUNCATE/VACUUM FULL/LOCK TABLE/REFRESH MATVIEW |
+</code></pre>
+<p>So there is a problem if you are running a <code>CREATE INDEX CONCURRENTLY</code>
+operation with a <code>SET lock_timeout</code> value.</p>
+<p>If the VACCUM operation started <em>before</em> the index creation, the index
+operation will just time-out nicely and the index won't be created.</p>
+<p>However, problems arise when the VACUUM operation starts <em>in the middle</em> of
+index creation.</p>
+<p>Here is a sandbox to try it out:</p>
+<pre><code class="language-sql">DROP DATABASE IF EXISTS test777;
+CREATE DATABASE test777;
+\c test777
+
+-- Create a new table
+CREATE TABLE big_table (
+    id SERIAL PRIMARY KEY,
+    data VARCHAR(100)
+);
+
+-- Insert some mock data in the table (optional)
+INSERT INTO big_table (data)
+SELECT md5(random()::text)
+FROM generate_series(1, 10000000);
+</code></pre>
+<p>Now you need to open two <code>psql</code> instances. One will run the SHARE UPDATE
+EXCLUSIVE lock that is run when a vacuum on the table is happening.</p>
+<p>You will have to be fast, because you need to run the index creation, and while
+it is executing, you will need to lock the table. You might add more entries in
+the <code>generate_series</code> command to make the index generation slower.</p>
+<p>So on the first psql instance:</p>
+<pre><code class="language-sql">SET lock_timeout TO '1s';
+-- Try to create an index on the table
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_data ON big_table (data);
+</code></pre>
+<p>And very quickly, run this on a second instance:</p>
+<pre><code class="language-sql">VACUUM FULL big_table;
+</code></pre>
+<p>You should see a:</p>
+<pre><code>ERROR:  canceling statement due to lock timeout
+</code></pre>
+<p>It is also possible to trigger this error after the index started by using:</p>
+<pre><code class="language-sql">begin;
+LOCK TABLE big_table IN ROW EXCLUSIVE MODE;
+-- commit; when you finished.
+</code></pre>
+<p>Or a simple update:</p>
+<pre><code class="language-sql">begin;
+UPDATE big_table SET data = 'New data' WHERE id = 10;
+-- commit; when you finished
+</code></pre>
+<p>In other cases, where you have a deadlock, it will do this:
+I don't know how I triggered this, but it happens mysteriously during my
+tests.</p>
+<pre><code>ERROR: deadlock detected
+DETAIL: Process 59567 waits for ShareLock on virtual transaction 6/3006;
+blocked by process 59554.
+
+Process 59554 waits for ShareUpdateExclusiveLock on relation 13338055 of
+database 8649321; blocked by process 59567
+</code></pre>
+<p>So the lock is blocking the index creation, and the index creation is blocking
+the lock = deadlock.</p>
+<p>You can now verify that the index isn't valid:</p>
+<pre><code class="language-sql">SELECT relname
+FROM pg_class, pg_index
+WHERE pg_index.indisvalid = false AND pg_index.indexrelid = pg_class.oid;
+</code></pre>
+</body>
+</html>

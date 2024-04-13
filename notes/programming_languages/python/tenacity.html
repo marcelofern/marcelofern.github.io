@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>February 26th, 2024</p>
+<p>Tenacity is a library that allows you to retry just about anything.</p>
+<p><a href="http://web.archive.org/web/20240206022100/https://tenacity.readthedocs.io/en/latest/">source</a></p>
+<h2>Retry something until it works</h2>
+<pre><code class="language-python">import random
+import tenacity
+
+@tenacity.retry
+def do_something_unreliable():
+    if random.randint(0, 10) &gt; 1:
+        print(&quot;Sorry, I have failed!&quot;)
+        raise IOError(&quot;Broken sauce, everything is hosed!!!111one&quot;)
+    else:
+        return &quot;Awesome sauce!&quot;
+
+print(do_something_unreliable())
+</code></pre>
+<h2>Stopping after some retries</h2>
+<pre><code class="language-python">@retry(stop=tenacity.stop_after_attempt(7))
+def stop_after_7_attempts():
+    print(&quot;Stopping after 7 attempts&quot;)
+    raise Exception
+</code></pre>
+<h2>Waiting with exponential backoff</h2>
+<pre><code class="language-python">@tenacity.retry(
+    wait=tenacity.wait_exponential(multiplier=1, min=4, max=10)
+)
+def wait_exponential_1():
+    print(
+        &quot;Wait 2^x * 1 second between each retry starting with 4 seconds, &quot;
+        &quot;then up to 10 seconds, then 10 seconds afterwards&quot;
+    )
+    raise Exception
+</code></pre>
+<h2>Retrying based on exception</h2>
+<pre><code class="language-python">@tenacity.retry(retry=tenacity.retry_if_exception_type(IOError))
+def might_io_error():
+    print(&quot;Retry forever with no wait if an IOError occurs, raise any other errors&quot;)
+    raise Exception
+</code></pre>
+<h2>Retrying code block</h2>
+<p>Tenacity allows you to retry a code block without the need to wraps it in an
+isolated function. This makes it easy to isolate failing block while sharing
+context. The trick is to combine a for loop and a context manager.</p>
+<pre><code class="language-python">from tenacity import Retrying, RetryError, stop_after_attempt
+
+try:
+    for attempt in Retrying(stop=stop_after_attempt(3)):
+        with attempt:
+            raise Exception('My code is failing!')
+except RetryError:
+    pass
+</code></pre>
+</body>
+</html>

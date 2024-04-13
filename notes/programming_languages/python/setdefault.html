@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>March, 19th 2024</p>
+<p>The <code>setdefault</code> feature is available for Python dictionaries.</p>
+<p>Consider you have a dictionary typed as such:</p>
+<pre><code class="language-python">mydict: dict[str, list[int]] = {}
+
+# mydict can look like this:
+# &gt;&gt;&gt; {&quot;A&quot;: [1,2,3], &quot;B&quot;: [4,5,6]}
+</code></pre>
+<p>And you have a routine that will populate this dictionary as such:</p>
+<pre><code class="language-python">if my_dict.get(key) is None:
+    my_dict[key] = [value]
+else:
+    my_dict[key].append(value)
+</code></pre>
+<p>One way to make it all in the same line of code is by using <code>setdefault</code>:</p>
+<pre><code class="language-python">my_dict.setdefault(key, []).append(value)
+</code></pre>
+</body>
+</html>

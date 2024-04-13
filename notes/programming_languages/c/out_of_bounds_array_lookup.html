@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>The C standard #46th undefined behaviour has the following description:</p>
+<blockquote>
+<p>Addition or subtraction of a pointer into, or just beyond, an array object
+and an integer type produces a result that does not point into, or just
+beyond, the same array object.</p>
+</blockquote>
+<p>Problematic code:</p>
+<pre><code class="language-c">enum { TABLESIZE = 100 };
+static int table[TABLESIZE];
+
+int *f(int index) {
+    if (index &lt; TABLESIZE) {
+        return table + index;
+    }
+    return NULL;
+}
+</code></pre>
+<p>The <code>index</code> argument value may be negative, given that <code>int</code> is signed. That
+would cause undefined behaviour.</p>
+<p>Better code:</p>
+<pre><code class="language-c">enum { TABLESIZE = 100 };
+static int table[TABLESIZE];
+
+int *f(int index) {
+    if (index &gt;= 0 &amp;&amp; index &lt; TABLESIZE) {
+        return table + index;
+    }
+    return NULL;
+}
+</code></pre>
+<p>An even better code would use a type that cannot be negative, such as <code>size_t</code>:</p>
+<pre><code class="language-c">#include &lt;stddef.h&gt;
+enum { TABLESIZE = 100 };
+static int table[TABLESIZE];
+int *f(size_t index) {
+    if (index &lt; TABLESIZE) {
+        return table + index;
+    }
+    return NULL;
+}
+</code></pre>
+</body>
+</html>

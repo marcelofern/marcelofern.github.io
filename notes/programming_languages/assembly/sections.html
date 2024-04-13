@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>February 18th, 2024</p>
+<h1>Introduction</h1>
+<p>I have only tested sections in Intel x64. After a bit of Googling I checked
+they work with other architectures, but syntax differences may be present.</p>
+<h2>.data</h2>
+<p>Contains data definitions of initialised data items. Those have a value before
+the program begins:</p>
+<pre><code class="language-asm">SECTION .data
+    MyByte db 0x7
+    MyWord dw 0xFFFF
+    MyDoubleWord dd 0x12345678
+    MyQuadWord dq 0xFFFFFFFFFFFFFFFF
+    QuadWordArray dq &quot;21,15,16,7,888,851&quot;
+
+    ; Strings are interesting as their value points to the first byte
+    ; in memory where the string lives. Also, strings can be concatenated by
+    ; using a comma &quot;,&quot;. Thus, the number 10 is being concatenated to the
+    ; string below. 10 == EOL (or new line) in Linux (a.k.a 0xA).
+    EatMsg: db &quot;Eat at Joe's!&quot;, 10
+    ; equ = equate. Use to associate a value with a label. Every time the
+    ; assembler finds this label, it swaps by the result of the equation.
+    ; Similar to C's macros. When NASM reaches the label EatLen, the value of
+    ; $ is the location immediately after the last character of EatMsg. We
+    ; take this value and &quot;-&quot; subtract it from the location at the beginning of
+    ; the EatMsg string. End - Beginning = Length
+    EatLen: equ $-EatMsg
+</code></pre>
+<p>Data items defined in this section increase the size of the executable file.</p>
+<h2>.bss (Block Start Symbol)</h2>
+<p>In this section you allocate blocks of memory to be used later during
+execution.</p>
+<p>Data items defined in this section <strong>do not</strong> increase the size of the
+executable file. This is because of the way Linux brings the program into
+memory, by allocating space in memory for data items in the <code>.bss</code> section when
+fetching the executable from disk.</p>
+<pre><code class="language-asm">; somewhere in the code
+lea rcx, [some_memory] ; Load effective address of memory location
+
+; then
+section .bss
+    some_memory resq 1 ; Reserve 1 quadword (64 bits)
+</code></pre>
+<h3>resb / restw / restd/ resq</h3>
+<p>Reserve bytes instruction, where N is the number of bytes to reserve:</p>
+<pre><code class="language-asm">section .bss
+    Buff resb 42 ; reserves 42 bytes for Buff
+</code></pre>
+<h3>equ</h3>
+<p>Stands for equate.</p>
+<p>Use to associate a value with a label. Every time the assembler finds this
+label, it swaps by the result of the equation. Similar to C's macros.</p>
+<pre><code class="language-asm">sections .bss
+    BUFFLEN equ 128
+</code></pre>
+<h2>.text</h2>
+<p>This section stores the machine instructions that make up the program.</p>
+<p>All global labels need to be declared in this section, otherwise they cannot be
+seen outside of the program.</p>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>According to P.J. Plauger</p>
+<blockquote>
+<p>Its origins lie in the old <code>&lt;std.h&gt;</code> header we developed at Whitesmiths, Ltd.
+in the late 1970s. We used the typedef BYTES as the type of sizeof, to be
+sure we could count all the bytes in the largest declarable (or allocatable)
+object. X3J11 chose <code>size_t</code> to follow the <code>*_t</code> convention that had begun to
+creep up in Posix.</p>
+</blockquote>
+<p><a href="http://web.archive.org/web/20220818070526/https://bytes.com/topic/c/answers/221996-origin-size_t-curious">source</a></p>
+<p>Essentially, C needed a portable way to represent the sizes of objects
+in memory. Before the <code>size_t</code> came about, it was common practice to use
+<code>unsigned int</code> instead. K&amp;R C book has a reference to <code>size_t</code> on the Appendix
+A (page 204).</p>
+<p>From the man page, <code>size_t</code> is defined as:</p>
+<pre><code>Used  for  a  count of bytes.  It is the result of the sizeof() operator.
+It is an unsigned integer type capable of storing values in the range [0,
+SIZE_MAX].
+</code></pre>
+<p>The <code>SIZE_MAX</code> value is defined as:</p>
+<pre><code class="language-c">/* Limit of `size_t' type.  */
+# if __WORDSIZE == 64
+#  define SIZE_MAX		(18446744073709551615UL)
+# else
+#  if __WORDSIZE32_SIZE_ULONG
+#   define SIZE_MAX		(4294967295UL)
+#  else
+#   define SIZE_MAX		(4294967295U)
+#  endif
+# endif
+</code></pre>
+<p>In my machine I'm getting the value of <code>4294967295l</code> from the script below:</p>
+<pre><code class="language-c">#include &lt;stdint.h&gt;
+#include &lt;stdio.h&gt;
+
+int main() {
+  printf(&quot;sizemax is: %ul&quot;, SIZE_MAX);
+}
+</code></pre>
+<h2>Common use</h2>
+<p>Apart from functions that deal with memory (alloc and company), the <code>size_t</code>
+type is also used for array indexing.</p>
+<p>Given that <code>size_t</code> is a portable type, and it is unsigned by virtue, it is
+a natural type for array indexing.</p>
+<p>Besides that, <code>size_t</code> is typically large enough to represent the maximum size
+of an array that can be allocated in memory.</p>
+<p>In other words, it is capable of holding the size of the largest object you can
+allocate. It is useful for indexing because this means it can index into the
+largest array you can allocate.</p>
+<p>Some standard library function implementations use <code>size_t</code> internally:</p>
+<ul>
+<li><code>strcpy</code> <a href="https://elixir.bootlin.com/glibc/glibc-2.17/source/string/strncpy.c">source</a></li>
+<li><code>strcat</code> <a href="https://elixir.bootlin.com/glibc/glibc-2.17/source/string/strncat.c">source</a></li>
+</ul>
+<p>Also, using <code>int</code> (as an alternative) for the index can cause an extra ASM
+instruction on x86-64:</p>
+<pre><code class="language-c">// ; zero-extending idx (in edx) is &quot;free&quot; by simply using rsi.
+// get_index:
+//   movzx  eax, BYTE PTR [rdi+rsi]
+//   ret
+char get_index(char *ptr, size_t idx)
+{
+   return ptr[idx];
+}
+
+// ; sign extending idx from 32 bits to 64 bits with movsx here.
+// get_index:
+//   movsx  rsi, esi
+//   movzx  eax, BYTE PTR [rdi+rsi]
+//   ret
+char get_index(char *ptr, int idx)
+{
+   return ptr[idx];
+}
+</code></pre>
+<h2>Do not do these</h2>
+<ol>
+<li>Remember that <code>size_t</code> is <strong>unsigned</strong>. Do not mingle arithmetic operations
+between <code>size_t</code> and other signed types. For example,</li>
+</ol>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main() {
+  size_t foo = 10;
+  int bar = -20;
+  size_t foo_bar = foo + bar;
+
+  // This prints: &quot;foo_bar is 18446744073709551606&quot;
+  printf(&quot;foo_bar is %lu&quot;, foo_bar);
+}
+</code></pre>
+<ol start="2">
+<li>Make sure that arithmetic doesn't overflow:</li>
+</ol>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt;
+
+int main() {
+  size_t foo = (SIZE_MAX - 10);
+  int bar = 11;
+  size_t foo_bar = foo + bar;
+
+  // This prints: &quot;foo_bar is 0&quot;
+  printf(&quot;foo_bar is %lu&quot;, foo_bar);
+}
+</code></pre>
+</body>
+</html>

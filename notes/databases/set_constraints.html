@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>February 29, 2024</p>
+<p>SET CONSTRAINTS — set constraint check timing for the current transaction</p>
+<p><a href="http://web.archive.org/web/20240127151138/https://www.postgresql.org/docs/current/sql-set-constraints.html">Source</a></p>
+<h2>What it does</h2>
+<blockquote>
+<p>SET CONSTRAINTS sets the behavior of constraint checking within the current
+transaction. IMMEDIATE constraints are checked at the end of each statement.
+DEFERRED constraints are not checked until transaction commit. Each
+constraint has its own IMMEDIATE or DEFERRED mode.</p>
+</blockquote>
+<blockquote>
+<p>Upon creation, a constraint is given one of three characteristics: DEFERRABLE
+INITIALLY DEFERRED, DEFERRABLE INITIALLY IMMEDIATE, or NOT DEFERRABLE. The
+third class is always IMMEDIATE and is not affected by the SET CONSTRAINTS
+command. The first two classes start every transaction in the indicated mode,
+but their behavior can be changed within a transaction by SET CONSTRAINTS.</p>
+</blockquote>
+<h2>Surprise!</h2>
+<blockquote>
+<p>When SET CONSTRAINTS changes the mode of a constraint from DEFERRED to
+IMMEDIATE, the new mode takes effect retroactively: any outstanding data
+modifications that would have been checked at the end of the transaction are
+instead checked during the execution of the SET CONSTRAINTS command. If any
+such constraint is violated, the SET CONSTRAINTS fails (and does not change
+the constraint mode). Thus, SET CONSTRAINTS can be used to force checking of
+constraints to occur at a specific point in a transaction.</p>
+</blockquote>
+<h2>But...</h2>
+<blockquote>
+<p>Currently, only UNIQUE, PRIMARY KEY, REFERENCES (foreign key), and EXCLUDE
+constraints are affected by this setting. NOT NULL and CHECK constraints are
+always checked immediately when a row is inserted or modified (not at the end
+of the statement). Uniqueness and exclusion constraints that have not been
+declared DEFERRABLE are also checked immediately.</p>
+</blockquote>
+</body>
+</html>

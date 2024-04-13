@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>February 28th, 2024</p>
+<p><code>pympler</code> is a library that displays the size of a python object in bytes.
+It is able to recursevily analyse child-objects linked through pointers and
+grab their sizes too.</p>
+<h2>asizeof</h2>
+<blockquote>
+<p>pympler.asizeof can be used to investigate how much memory certain Python
+objects consume. In contrast to sys.getsizeof, asizeof sizes objects
+recursively. You can use one of the asizeof functions to get the size of
+these objects and all associated referents:</p>
+</blockquote>
+<p><a href="http://web.archive.org/web/20231217210011/https://pympler.readthedocs.io/en/latest/intro.html">Source</a></p>
+<pre><code>&gt;&gt;&gt; from pympler import asizeof
+&gt;&gt;&gt; obj = [1, 2, (3, 4), 'text']
+&gt;&gt;&gt; asizeof.asizeof(obj)
+176
+&gt;&gt;&gt; print(asizeof.asized(obj, detail=1).format())
+[1, 2, (3, 4), 'text'] size=176 flat=48
+    (3, 4) size=64 flat=32
+    'text' size=32 flat=32
+    1 size=16 flat=16
+    2 size=16 flat=16
+</code></pre>
+<h2>clastracker</h2>
+<blockquote>
+<p>The basic tools of the ClassTracker are tracking objects or classes, taking
+snapshots, and printing or dumping statistics. The first step is to decide
+what to track. Then spots of interest for snapshot creation have to be
+identified. Finally, the gathered data can be printed or saved:</p>
+</blockquote>
+<p>The below doesn't work quite well with Django querysets, go to the next section
+on <code>muppy</code> for an alternative.</p>
+<pre><code class="language-python">from pympler.classtracker import ClassTracker
+tracker = ClassTracker()
+tracker.track_object(AccountQuerySet)
+tracker.create_snapshot()
+
+list(Account.objects.all())
+
+tracker.create_snapshot()
+tracker.stats.print_summary()
+</code></pre>
+<h2>muppy</h2>
+<pre><code class="language-python">import pympler
+
+start = pympler.muppy.get_objects()
+
+result = list(Account.objects.all())
+
+end = pympler.muppy.get_objects()
+
+sum_start = pympler.muppy.summary.summarize(start)
+sum_end = pympler.muppy.summary.summarize(end)
+diff = pympler.muppy.summary.get_diff(sum_start, sum_end)
+pympler.muppy.summary.print_(diff)
+
+# Below may fail without tkinter
+# print(f&quot;Size start in bytes: {pympler.asizeof.asizeof(start)}&quot;)
+# print(f&quot;Size end in bytes: {pympler.asizeof.asizeof(end)}&quot;)
+</code></pre>
+<p>Result:</p>
+<pre><code>                                    types |   # objects |   total size
+========================================= | =========== | ============
+                                     list |          75 |     16.36 MB
+                                     dict |       25268 |      9.83 MB
+                                      str |       42416 |      2.47 MB
+                                     type |         604 |    631.62 KB
+                    weakref.ReferenceType |        7020 |    493.59 KB
+                                      set |         258 |    469.17 KB
+               builtin_function_or_method |        6100 |    428.91 KB
+                        datetime.datetime |        6180 |    289.69 KB
+                                      int |        8696 |    238.16 KB
+                                     code |        1032 |    178.02 KB
+                                    tuple |        2390 |    151.93 KB
+         django.db.models.base.ModelState |        3090 |    144.84 KB
+  octoenergy.data.accounts.models.Account |        3090 |    144.84 KB
+                              abc.ABCMeta |         111 |    116.20 KB
+                            datetime.date |        3084 |     96.38 KB
+</code></pre>
+</body>
+</html>

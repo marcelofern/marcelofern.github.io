@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>February 22, 2024</p>
+<h2>The problem</h2>
+<p>Note: check the <code>Solution</code> section at the end.</p>
+<p>When a migration is run with the <code>atomic</code> argument set to <code>False</code>, it is meant
+that the migration itself won't run inside a transaction (at least in theory).</p>
+<p>Say you have this migration:</p>
+<pre><code class="language-python">from django.db import migrations
+
+
+class Migration(migrations.Migration):
+    atomic = False
+    dependencies = [
+        (
+            &quot;my_sweet_app&quot;,
+            &quot;0001_initial&quot;,
+        ),
+    ]
+
+    create_index = &quot;&quot;&quot;
+        SET lock_timeout = 10000;
+        SET statement_timeout = 20000;
+        CREATE INDEX CONCURRENTLY if NOT EXISTS my_sweet_index
+        ON public.&quot;my_sweet_app_table&quot;
+        USING gist (field_one, field_two, field_three);
+    &quot;&quot;&quot;
+    drop_index = &quot;&quot;&quot;
+        DROP INDEX CONCURRENTLY if EXISTS my_sweet_index;
+    &quot;&quot;&quot;
+
+    operations = [
+        migrations.RunSQL(sql=create_index, reverse_sql=drop_index),
+    ]
+</code></pre>
+<p>This looks all normal:</p>
+<ol>
+<li>If the CREATE INDEX CONCURRENTLY instruction waits for longer than 10s to
+acquire a lock, it times out.</li>
+<li>If the CREATE INDEX CONCURRENTLY query itself takes longer than 20s to
+complete, it times out.</li>
+</ol>
+<p>However:</p>
+<blockquote>
+<p>If a statement must be executed outside a transaction (such as CREATE
+DATABASE), it cannot be executed in batch with other statements, even if the
+connection is in autocommit mode:</p>
+</blockquote>
+<pre><code class="language-python">&gt;&gt;&gt; conn.autocommit = True
+&gt;&gt;&gt; conn.execute(&quot;CREATE DATABASE foo; SELECT 1&quot;)
+
+Traceback (most recent call last):
+...
+psycopg.errors.ActiveSqlTransaction: CREATE DATABASE cannot run inside a transaction block
+</code></pre>
+<blockquote>
+<p>This happens because PostgreSQL itself will wrap multiple statements in a
+transaction. Note that you will experience a different behaviour in psql
+(psql will split the queries on semicolons and send them to the server
+separately).</p>
+</blockquote>
+<p>The problem is the same for CREATE INDEX CONCURRENTLY.</p>
+<pre><code>CREATE INDEX CONCURRENTLY cannot run inside a transaction block
+</code></pre>
+<p>Source: <a href="https://www.psycopg.org/psycopg3/docs/basic/from_pg2.html#multiple-statements-in-the-same-query">psycopg</a></p>
+<h2>Solution</h2>
+<ol>
+<li>Don't run multiple statements inside a <code>atomic = False</code> migration.</li>
+<li>Set sane timeouts directly in the psql user that runs migrations.</li>
+</ol>
+</body>
+</html>

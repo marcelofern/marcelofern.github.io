@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>February 2, 2024</p>
+<h1>Introduction</h1>
+<p>A colleague asked in a code review whether or not we should change a list
+membership-lookup to a set membership-lookup for performance reasons.</p>
+<p>The original code looked something like this:</p>
+<pre><code class="language-python">foo_objects: list[Foo]
+bars: list[Bar]
+
+result = [foo for foo in foo_objects if foo.bar in bars]
+</code></pre>
+<p>Knowing that a set membership-lookup is O(1 + C) a.k.a O(1), and that a list
+membership-lookup is O(N + C2) a.k.a O(N), it sounded like using a set was
+going to be a no-brainer.</p>
+<p>The proposed change would be something like this:</p>
+<pre><code class="language-python">foos: list[Foo]
+bars: list[Bar]
+
+# Convert bars to a set
+bars = set(bars)
+
+result = [foo for foo in foos if foo.bar in bars]
+</code></pre>
+<p>Before the changes, we had a direct list membership evaluation.
+After the changes, we convert the list into a set, and then perform the lookup.</p>
+<p>For reasons beyond the scope of this post, it was not possible to initialise
+<code>bars</code> as a set directly, to avoid converting it from a <code>list</code> in the first
+place.</p>
+<p>This is because the function applying this change does not own the code that
+generates <code>foos</code> nor <code>bars</code>.</p>
+<h2>First try with a bad benchmark</h2>
+<p>My first try at trying to measure the performance differences for this problem
+was far from ideal.</p>
+<p>I started with a list of primitive integers:</p>
+<pre><code class="language-python">import timeit
+
+sample_size = 1000
+lookup_size = 10
+
+my_list_primitives = list(range(sample_size))
+primitives_lookup = [i for i in range(lookup_size)]
+
+def list_primitive_lookup():
+    return [i for i in primitives_lookup if i in my_list_primitives]
+
+def set_primitive_lookup():
+    set_of_primitives = set(my_list_primitives)
+    return [i for i in primitives_lookup if i in set_of_primitives]
+
+# Measure time for list primitive lookup
+list_time = timeit.timeit(list_primitive_lookup, number=10000)
+print(f&quot;List Primitive Lookup Time: {list_time:.6f} seconds&quot;)
+
+# Measure time for set primitive lookup
+set_time = timeit.timeit(set_primitive_lookup, number=10000)
+print(f&quot;Set Primitive Lookup Time: {set_time:.6f} seconds&quot;)
+
+# Compare the two times
+if set_time &lt; list_time:
+    print(&quot;Set Primitive lookup is faster.\n&quot;)
+else:
+    print(&quot;List Primitive lookup is faster.\n&quot;)
+</code></pre>
+<p>The result was:</p>
+<pre><code class="language-txt">List Primitive Lookup Time: 0.005507 seconds
+Set Primitive Lookup Time: 0.077754 seconds
+List Primitive lookup is faster.
+</code></pre>
+<p><strong>Why was this benchmark bad?</strong></p>
+<p>We can start with the fact that all the integers being looked-up are in the
+list. We also know that the worst case scenario, is when <em>none</em> of the look-ups
+is in the list, given that we'd need to traverse the whole list first.</p>
+<p>If I changed the following line:</p>
+<pre><code class="language-diff">- primitives_lookup = [i for i in range(lookup_size)]
++ primitives_lookup = [i+2000 for i in range(lookup_size)]
+</code></pre>
+<p>I get the following results for the worst-case scenario:</p>
+<pre><code class="language-diff">List Primitive Lookup Time: 0.422299 seconds
+Set Primitive Lookup Time: 0.074659 seconds
+Set Primitive lookup is faster.
+</code></pre>
+<p>But we know from the real application where this code sits, that at least some
+of the <code>Foo.bar's</code> being looked-up will be in the <code>bars</code> list.</p>
+<p>We'll make a decision here and say that 50% of the <code>Foo.bars</code> will be in the
+list and 50% will not.</p>
+<p>The ones in the list, will be randomly distributed.</p>
+<pre><code class="language-diff">- primitives_lookup = [i+2000 for i in range(lookup_size)]
++ primitives_lookup = (
++     [random.randint(0, sample_size-1) for i in range(int(lookup_size/2))]
++     +
++     [sample_size + 1 for i in range(int(lookup_size/2))]
++ )
+</code></pre>
+<p>We get this result, which is a bit better than previously, but not good enough
+to justify a list lookup yet.</p>
+<pre><code class="language-text">List Primitive Lookup Time: 0.319727 seconds
+Set Primitive Lookup Time: 0.075953 seconds
+Set Primitive lookup is faster.
+</code></pre>
+<p>Note that at this point, even with a small value of <code>sample_size</code> and
+<code>lookup_size</code>, the set beats the list.</p>
+<h2>Second try, using custom classes</h2>
+<p>Instead of primitives, I tried to run the same test but using custom Python
+classes:</p>
+<p>You can see the full code here:</p>
+<pre><code class="language-python">import timeit
+import random
+
+sample_size = 1000
+lookup_size = 10
+
+my_list_primitives = list(range(sample_size))
+primitives_lookup = (
+    [random.randint(0, sample_size-1) for i in range(int(lookup_size/2))]
+    +
+    [sample_size + 1 for i in range(int(lookup_size/2))]
+)
+
+class Bar:
+    id: int
+
+    def __init__(self, i):
+        self.id = i
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def __hash__(self):
+        return hash(self.id)
+
+class Foo:
+    bar: Bar
+
+    def __init__(self, i):
+        self.bar = Bar(i)
+
+    def __eq__(self, other):
+        return self.bar == other.bar
+
+    def __hash__(self):
+        return hash(self.bar.id)
+
+
+my_list_foo = [Foo(i) for i in range(1000, 1000+sample_size)]
+foo_lookup = [Foo(i) for i in range(1000, 1000+lookup_size)]
+foo_lookup = (
+    [Foo(random.randint(0, sample_size-1)) for i in range(int(lookup_size/2))]
+    +
+    [Foo(sample_size + 1) for i in range(int(lookup_size/2))]
+)
+
+def list_primitive_lookup():
+    return [
+        i for i in primitives_lookup if i in my_list_primitives
+    ]
+
+def set_primitive_lookup():
+    set_of_primitives = set(my_list_primitives)
+    return [
+        i for i in primitives_lookup if i in set_of_primitives
+    ]
+
+def list_foo_lookup():
+    return [
+        i for i in foo_lookup if i in my_list_foo
+    ]
+
+def set_foo_lookup():
+    set_of_foo = set(my_list_foo)
+    return [
+        i for i in foo_lookup if i in set_of_foo
+    ]
+
+assert list_primitive_lookup() == set_primitive_lookup()
+assert list_foo_lookup() == set_foo_lookup()
+
+
+# Measure time for list primitive lookup
+list_time = timeit.timeit(list_primitive_lookup, number=10000)
+print(f&quot;List Primitive Lookup Time: {list_time:.6f} seconds&quot;)
+
+# Measure time for set primitive lookup
+set_time = timeit.timeit(set_primitive_lookup, number=10000)
+print(f&quot;Set Primitive Lookup Time: {set_time:.6f} seconds&quot;)
+
+# Compare the two times
+if set_time &lt; list_time:
+    print(&quot;Set Primitive lookup is faster.\n&quot;)
+else:
+    print(&quot;List Primitive lookup is faster.\n&quot;)
+
+# Measure time for list foo lookup
+list_time = timeit.timeit(list_foo_lookup, number=10000)
+print(f&quot;List Foo Lookup Time: {list_time:.6f} seconds&quot;)
+
+# Measure time for set foo lookup
+set_time = timeit.timeit(set_foo_lookup, number=10000)
+print(f&quot;Set Foo Lookup Time: {set_time:.6f} seconds&quot;)
+
+# Compare the two times
+if set_time &lt; list_time:
+    print(&quot;Set Foo lookup is faster.&quot;)
+else:
+    print(&quot;List Foo lookup is faster.&quot;)
+</code></pre>
+<p>And results:</p>
+<pre><code class="language-text">List Primitive Lookup Time: 0.328242 seconds
+Set Primitive Lookup Time: 0.073281 seconds
+Set Primitive lookup is faster.
+
+List Foo Lookup Time: 4.221350 seconds
+Set Foo Lookup Time: 1.050486 seconds
+Set Foo lookup is faster.
+</code></pre>
+<p>The non-primitive types, as expected, are much slower.</p>
+<p>I haven't got to the bottom of <em>why</em> exactly it is much slower, but I will
+come and update this note as soon as I find out.</p>
+<h2>Conclusion</h2>
+<ol>
+<li>Ensure you know the size of your containers before benchmarking.</li>
+<li>Ensure you know the proportion of objects in the list and out of the list.</li>
+<li>Figure out why primitives are so much faster and tell me!</li>
+</ol>
+</body>
+</html>

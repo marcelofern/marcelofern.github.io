@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>March, 11th 2024</p>
+<blockquote>
+<p>In software development, time-of-check to time-of-use (TOCTOU, TOCTTOU or
+TOC/TOU) is a class of software bugs caused by a race condition involving the
+checking of the state of a part of a system (such as a security credential)
+and the use of the results of that check.</p>
+</blockquote>
+<blockquote>
+<p>TOCTOU race conditions are common in Unix between operations on the file
+system, but can occur in other contexts, including local sockets and improper
+use of database transactions.</p>
+</blockquote>
+<p><a href="https://web.archive.org/web/20240128022038/https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use">source</a></p>
+<p>This vulnerability is mentioned in the book &quot;Advanced Programming in the Unix
+Environment&quot; when the book introduces the <code>open</code> and <code>open_at</code> unix functions.</p>
+<p>It says that:</p>
+<blockquote>
+<p>The basic idea behind TOCTTOU errors is that a program is vulnerable if it
+makes two file-based function calls where the second call depends on the
+results of the first call. Because the two calls are not atomic, the file can
+change between the two calls, thereby invalidating the results of the first
+call (...)</p>
+</blockquote>
+<blockquote>
+<p>(...) TOCTTOU errors in the file system namespace generally deal with
+attempts to subvert file system permissions by tricking a privileged program
+into either reducing permissions on a privileged file or modifying a
+privileged file to open up a security hole.</p>
+</blockquote>
+<p>The book also mentions the work by Wei and Pu, referenced in the following
+source, which we use in the example section below.</p>
+<p><a href="https://web.archive.org/web/20230516115534/https://www.usenix.org/legacy/event/fast05/tech/full_papers/wei/wei.pdf">source</a></p>
+<h2>Example</h2>
+<p>This example is taken from the article above:</p>
+<blockquote>
+<p>First, a vulnerable program checks for a file status. Second, the program
+operates on the file assuming the original file status remained invariant
+during execution. For example, <code>sendmail</code> may check for a specific attribute
+of a mailbox (e.g., it is not a symbolic link) in step one and then append
+new messages (as root) in step two. Because the two steps are not executed
+atomically, a local attacker (mailbox owner) can exploit the window of
+vulnerability between the two steps by deleting his/her mailbox and replacing
+it with a symbolic link to /etc/passwd. If the replacement is completed
+within the window and the new messages happen to be syntactically correct
+/etc/passwd entries with root access, then sendmail may unintentionally give
+unauthorized root access to a normal user (the attacker).</p>
+</blockquote>
+<p>This example might not explain thoroughly what the consequences are.</p>
+<p>First, the <code>etc/passwd</code> file stores information about users. Each line in the
+file represents a user, with various fields separated by colons. One of these
+fields is the user privilege to the system, represented by a numerical value.
+For example, a value of 0 indicates the highest privilege, that of the root
+user.</p>
+<p>Example <code>/etc/passwd</code> file:</p>
+<pre><code>root:x:0:0::/root:/bin/bash
+bin:x:1:1::/:/usr/bin/nologin
+daemon:x:2:2::/:/usr/bin/nologin
+mail:x:8:12::/var/spool/mail:/usr/bin/nologin
+</code></pre>
+<p>So the exploit runs like this:</p>
+<ol>
+<li>The hacker calls sendmail with a message that looks like this:
+<code>my_root:x:0:0::/root:/bin/bash</code>.</li>
+<li>The sendmail code does the first pass to verify the mailbox file to append
+the message is not a symbolic link.</li>
+<li>The hacker changes their mailbox to point to the <code>/etc/passwd</code> so that
+instead of appending to their mailbox, their message above will be appended
+to the <code>/etc/passwd</code> file.</li>
+<li>The sendmail code writes, with root access, to the <code>/etc/passwd</code> folder the
+message above.</li>
+<li>The hacker now has a user with root access to the system.</li>
+</ol>
+<p>Note that the attack can only succeed if the hacker managed to change their
+mailbox to the <code>/etc/passwd</code> file in that time window where the program is
+running between the check and the message appending.</p>
+<p>This might not take as much time as expected if the hacker managed to create a
+brute force program with random time-window guesses.</p>
+<h2>Vulnerable code</h2>
+<p>Take for example this C code snippet:</p>
+<pre><code class="language-c">if (access(&quot;file&quot;, W_OK) != 0) {
+    // check if the `file` is OK to write on. Exit if not.
+    exit(1);
+}
+
+// The exploit must start from here until the time the file is opened for
+// writting.
+
+fd = open(&quot;file&quot;, O_WRONLY);
+write(fd, buffer, sizeof(buffer));
+</code></pre>
+<h2>openat</h2>
+<pre><code class="language-c">int openat(int dirfd, const char *pathname, int flags, ...
+          /* mode_t mode */ );
+``
+
+The system function `openat` is a more secure way to avoid the TOCTTOU attacks.
+Instead of opening any kinds of files in the system, it can accept a file
+descriptor for a base directory (`dirfd`), and a relative path `pathname` and
+only operate within that directory.
+
+Another possibility is the `openat2()` system call. It optionally allows for
+the file to be created at the same time the file is being written, helping with
+atomicity.
+</code></pre>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>February 22, 2024</p>
+<h2>Support Reading</h2>
+<p><a href="https://web.archive.org/web/20231222001234/https://peps.python.org/pep-0661/">pep-0661</a></p>
+<h2>Definition</h2>
+<p>If you have a dictionary in Python and you perform:</p>
+<pre><code class="language-python">my_dict.get(&quot;my_key&quot;)
+</code></pre>
+<p>You will get <code>None</code> if either the <code>my_key</code> doesn't exist, or if it exists and
+the value of that key is <code>None</code>.</p>
+<p>This is cause for ambiguity because <code>None</code> means two things at the same time.</p>
+<p>Function arguments can suffer from the same problem:</p>
+<pre><code class="language-python">def is_it_bed_time(hour_to_go_to_bed: int | None = None) -&gt; bool:
+    if hour_to_go_to_bed is None:
+        print(&quot;I don't have a time to go to bed mom!&quot;)
+    if datetime.now().hour &gt; hour_to_go_to_bed:
+        print(&quot;Go to sleep!&quot;)
+    else:
+        print(&quot;Don't go to sleep yet!)
+</code></pre>
+<p>What happens if you want <code>None</code> to be a possible value, but also you'd like
+to have a default if the caller didn't pass in the argument?</p>
+<p>This is what sentinels are for.</p>
+<pre><code class="language-python">class NotProvided:
+    pass
+
+DEFAULT_HOUR = 23
+
+def is_it_bed_time(
+    hour_to_go_to_bed: int | None | NotProvided = NotProvided
+) -&gt; bool:
+    # We have a default when the value is not passed.
+    if hour_to_go_to_bed is NotProvided:
+        hour_to_go_to_bed = DEFAULT_HOUR
+    # But `None` means something different:
+    elif hour_to_go_to_bed is None:
+        print(&quot;I don't have a time to go to bed mom!&quot;)
+        return False
+
+    if datetime.now().hour &gt; hour_to_go_to_bed:
+        print(&quot;Go to sleep!&quot;)
+        return True
+    else:
+        print(&quot;Don't go to sleep yet!&quot;)
+        return False
+</code></pre>
+<h2>Initial problem</h2>
+<p>The version above is rather simple, but it does not work well with mypy.</p>
+<p>Suppose you have this:</p>
+<pre><code class="language-python">class NotProvided:
+    &quot;&quot;&quot;
+    A sentinel for when an argument to a function is not provided.
+    &quot;&quot;&quot;
+    pass
+
+
+def foo(bar: int | None | NotProvided = NotProvided) -&gt; int:
+    if bar is NotProvided:
+        bar = 0
+    elif bar is None:
+        bar = 42
+
+    reveal_type(bar)
+
+    return bar + 10
+</code></pre>
+<p>When running mypy, we get the following errors:</p>
+<pre><code>!mypy /tmp/test_type.py
+
+/tmp/test_type.py:11: note: Revealed type is &quot;Union[builtins.int, Type[test_type.NotProvided]]&quot;
+/tmp/test_type.py:13: error: Unsupported operand types for + (&quot;Type[NotProvided]&quot; and &quot;int&quot;)  [operator]
+/tmp/test_type.py:13: note: Left operand is of type &quot;Union[int, Type[NotProvided]]&quot;
+Found 1 error in 1 file (checked 1 source file)
+</code></pre>
+<p>Even though you know that when we hit the return bar is an integer, the type
+narrowing cannot infer that.</p>
+<p>These are some ways to narrow a type according to mypy, and <code>is</code> doesn't get
+a reference:</p>
+<ul>
+<li><code>isinstance()</code> like in <code>isinstance(obj, float)</code> will narrow obj to have float
+type</li>
+<li><code>issubclass()</code> like in <code>issubclass(cls, MyClass)</code> will narrow cls to be
+Type[MyClass]</li>
+<li><code>type</code> like in <code>type(obj)</code> is int will narrow obj to have int type</li>
+<li><code>callable()</code> like in <code>callable(obj)</code> will narrow object to callable type</li>
+<li><code>obj is not None</code> will narrow object to its non-optional form</li>
+</ul>
+<p><a href="https://mypy.readthedocs.io/en/stable/type_narrowing.html">Source</a></p>
+<h2>Overcoming the typing limitation</h2>
+<p>The list above says that <code>isinstance</code> would type narrow the sentinel value.</p>
+<pre><code class="language-python">class NotProvidedType(type):
+    pass
+
+class NotProvided(metaclass=NotProvidedType):
+    pass
+
+
+def foo(bar: int | None | NotProvidedType = NotProvided) -&gt; int:
+    if isinstance(bar, NotProvidedType):
+        bar = 0
+    elif bar is None:
+        bar = 42
+
+    reveal_type(bar)
+
+    return bar + 10
+</code></pre>
+<pre><code>/tmp/test_type.py:14: note: Revealed type is &quot;builtins.int&quot;
+</code></pre>
+<p>This works, but having to resort to <code>isinstance</code> isn't always the best.</p>
+<h2>Using a singleton type</h2>
+<p>A colleague at work investigated this issue and came up with a clever idea:</p>
+<pre><code class="language-python">import typing
+import enum
+
+@enum.unique
+class Sentinel(enum.Enum):
+    NotProvided = enum.auto()
+
+    def __repr__(self) -&gt; str:
+        return self.name
+
+    def __str__(self) -&gt; str:
+        return self.__repr__()
+
+
+NotProvidedType = typing.Literal[Sentinel.NotProvided]
+NotProvided: typing.Final = Sentinel.NotProvided
+
+
+def foo(bar: int | None | NotProvidedType = NotProvided) -&gt; int:
+    if bar is NotProvided:
+        bar = 0
+    elif bar is None:
+        bar = 42
+
+    reveal_type(bar)
+
+    return bar + 10
+</code></pre>
+<pre><code>!mypy %
+/tmp/test_type.py:25: note: Revealed type is &quot;builtins.int&quot;
+</code></pre>
+<h3>Breaking it down</h3>
+<h4><code>@enum.unique</code></h4>
+<p>Ensures the enumeration only has unique member values. If you have more
+sentinels this is just generally good to have</p>
+<pre><code class="language-python">import enum
+
+@enum.unique
+class Sentinel(enum.Enum):
+    value_1 = &quot;test&quot;
+    value_2 = &quot;test&quot;
+</code></pre>
+<pre><code>:!python %
+Traceback (most recent call last):
+  File &quot;/tmp/kaoekoea.py&quot;, line 4, in &lt;module&gt;
+    class Sentinel(enum.Enum):
+  File &quot;/home/x/.pyenv/versions/3.10.6/lib/python3.10/enum.py&quot;, line 1022, in unique
+    raise ValueError('duplicate values found in %r: %s' %
+ValueError: duplicate values found in &lt;enum 'Sentinel'&gt;: value_2 -&gt; value_1
+</code></pre>
+<h4><code>enum.auto()</code></h4>
+<p>Gives a nice initial value for the fields:</p>
+<pre><code class="language-python">import enum
+
+@enum.unique
+class Sentinel(enum.Enum):
+    value_1 = enum.auto()
+    value_2 = &quot;test&quot;
+    value_3 = enum.auto()
+
+import ipdb; ipdb.set_trace(); from pprint import pprint as p
+</code></pre>
+<pre><code>ipdb&gt; Sentinel.value_1
+&lt;Sentinel.value_1: 1&gt;
+ipdb&gt; Sentinel.value_2
+&lt;Sentinel.value_2: 'test'&gt;
+ipdb&gt; Sentinel.value_3
+&lt;Sentinel.value_3: 2&gt;
+</code></pre>
+<h4><code>typing.Literal</code></h4>
+<pre><code>NotProvidedType = typing.Literal[Sentinel.NotProvided]
+</code></pre>
+<p>This form can be used to indicate to type checkers that the corresponding
+variable or function parameter has a value equivalent to the provided
+literal (or one of several literals):</p>
+<pre><code class="language-python">def validate_simple(data: Any) -&gt; Literal[True]:  # always returns True
+  ...
+
+MODE = Literal['r', 'rb', 'w', 'wb']
+def open_helper(file: str, mode: MODE) -&gt; str:
+</code></pre>
+<h4><code>typing.Final</code></h4>
+<pre><code>NotProvided: typing.Final = Sentinel.NotProvided
+</code></pre>
+<p>Special typing construct to indicate final names to type checkers.
+A final name cannot be re-assigned or overridden in a subclass. For example:</p>
+<pre><code class="language-python">MAX_SIZE: Final = 9000
+MAX_SIZE += 1  # Error reported by type checker
+
+class Connection:
+  TIMEOUT: Final[int] = 10
+
+class FastConnector(Connection):
+  TIMEOUT = 1  # Error reported by type checker
+</code></pre>
+</body>
+</html>
