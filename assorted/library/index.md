@@ -46,6 +46,7 @@ ones in this list to be good enough to be shared with the public.
 
 - Collins, Michael and Price, Matthew - The Story of Christianity.
 - Reader's Digest - Jesus and His Times.
+- Kerninghan, Brian - UNIX A History and a Memoir ([review](assorted/library/unix-a-history-and-a-memoir/index.md))
 
 ## Finances
 

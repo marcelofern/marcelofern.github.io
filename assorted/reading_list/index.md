@@ -15,6 +15,8 @@ Reading list resources:
 ## Computer Systems
 
 - Computer System a Programmer's Approach - Bryant O'Hallaron
+- The Practice of Programming - Brian Kerninghan & Rob Pike
+- The UNIX programming environment - Brian K. & Rob Pike
 
 ## Programming Languages
 
