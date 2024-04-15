@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>Differently from the Neumann architecture, The Harvard architecture has
+different storage and buses for code instructions and data.</p>
+<blockquote>
+<p>Modern processors appear to the user to be systems with von Neumann
+architectures, with the program code stored in the same main memory as the
+data. For performance reasons, internally and largely invisible to the user,
+most designs have separate processor caches for the instructions and data,
+with separate pathways into the processor for each. This is one form of what
+is known as the modified Harvard architecture.</p>
+</blockquote>
+<p><a href="http://web.archive.org/web/20240326034703/https://en.wikipedia.org/wiki/Harvard_architecture">source</a></p>
+<p>An important note is that:</p>
+<blockquote>
+<p>A modified Harvard architecture is a variation of the Harvard computer
+architecture that, unlike the pure Harvard architecture, allows memory that
+contains instructions to be accessed as data. Most modern computers that are
+documented as Harvard architecture are, in fact, modified Harvard
+architecture.</p>
+</blockquote>
+<blockquote>
+<p>This modification is widespread in modern processors, such as the ARM
+architecture, Power ISA and x86 processors. It is sometimes loosely called a
+Harvard architecture, overlooking the fact that it is actually &quot;modified&quot;.</p>
+</blockquote>
+<h2>Use in embedded</h2>
+<blockquote>
+<p>Harvard architecture model is mainly used in microcontrollers:
+microcontrollers have a small program and data memory that needs to be
+accessed simultaneously. However, Harvard architecture is not always used in
+microcontrollers; some microcontroller families use hybrid or Von Neumann
+architecture models.</p>
+</blockquote>
+<p><a href="http://web.archive.org/web/20240414220510/https://docs.arduino.cc/learn/programming/memory-guide/">source</a></p>
+</body>
+</html>

@@ -22,3 +22,7 @@ Reading list resources:
 
 - Modern C - Jens Gustedt
 - SEI CERT C Coding Standard by Carnegie Mellon University's Confluence.
+
+## Security
+
+- Practical Malware Analysis
