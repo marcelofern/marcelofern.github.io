@@ -1,3 +1,7 @@
+## Layouts
+
+- [memory layout](embedded_development/arduino/memory_layout.md)
+
 ## Protocols
 - [uart](embedded_development/arduino/uart.md)
 

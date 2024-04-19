@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<blockquote>
+<p>In microcontroller-based systems, Erasable Programmable Read-Only Memory, or
+EEPROM, is also part of its ROM; actually, Flash memory is a type of EEPROM.
+The main difference between Flash memory and EEPROM is how they are managed;
+EEPROM can be managed at the byte level (write or erased) while Flash can be
+managed at the block level.</p>
+</blockquote>
+<p><a href="http://web.archive.org/web/20240414220510/https://docs.arduino.cc/learn/programming/memory-guide/">source</a></p>
+<p>Main differences between EEPROM and Flash:</p>
+<h2>EEPROM</h2>
+<ul>
+<li>Erase Mechanism: EEPROM allows individual bytes or words to be erased and
+rewritten electrically.</li>
+<li>Write Mechanism: EEPROM can be written byte-by-byte, offering more
+flexibility for small changes compared to Flash.</li>
+<li>Speed: EEPROM generally has slower write and erase speeds compared to Flash
+memory.</li>
+<li>Endurance: EEPROM typically has a higher endurance compared to Flash memory,
+with tens of thousands to millions of erase/write cycles.</li>
+<li>Usage: EEPROM is often used in applications requiring frequent and small data
+updates, such as in embedded systems for storing configuration data or
+firmware updates.</li>
+<li>Cost: EEPROM tends to be more expensive on a per-bit basis compared to Flash
+memory due to its lower storage density.</li>
+</ul>
+<h2>Flash</h2>
+<ul>
+<li>Erase Mechanism: Flash memory erases data in blocks, which means larger
+sections of memory are erased at once. It is organized into blocks, pages,
+and sectors.</li>
+<li>Write Mechanism: Flash memory requires data to be written in pages, which are
+larger than the typical byte-sized writes in EEPROM.</li>
+<li>Speed: Flash memory generally offers faster write and erase speeds compared
+to EEPROM.</li>
+<li>Endurance: Flash memory typically has a limited number of erase/write cycles,
+which can be a few thousand to hundreds of thousands depending on the type
+and quality.</li>
+<li>Usage: Flash memory is commonly used in mass storage devices like USB drives,
+memory cards, and solid-state drives (SSDs) due to its higher storage
+capacity and faster access times.</li>
+<li>Cost: Flash memory is generally more cost-effective for larger storage
+capacities compared to EEPROM.</li>
+</ul>
+</body>
+</html>
