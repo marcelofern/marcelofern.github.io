@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>2024-04-21</p>
+<p>Install the following packages:</p>
+<ol>
+<li><code>avr-gcc</code></li>
+<li><code>avr-binutils</code> (should already come with avr-gcc)</li>
+<li><code>avr-libc</code></li>
+<li><code>libserialport</code></li>
+<li><code>avrdude</code></li>
+</ol>
+<p><strong>Assumptions</strong>:</p>
+<ul>
+<li>The file you want to compile is called <code>main.S</code>.</li>
+<li>You have an assembly file. If you don't, use the one I provide at the end of
+this note.</li>
+</ul>
+<h2>Compiling to elf:</h2>
+<pre><code class="language-sh">avr-gcc -DF_CPU=16000000UL -mmcu=atmega328p main.S -o main
+</code></pre>
+<ul>
+<li><code>DF_CPU</code> adds the macro F_CPU which evaluates to 16MHz (the CPU freq).</li>
+<li><code>-mmcu</code> specifies the architecture</li>
+<li><code>-E</code> stop after the preprocessing stage; the output is in the form of
+pre-processed source code.</li>
+<li><code>-o</code> output</li>
+</ul>
+<h2>[Optional] compiling without stdlib</h2>
+<p>For small scripts you may not need the stdlib, so you can pass the argument
+<code>nostdlib</code> to the compiler. The default is to include the stdlib.</p>
+<pre><code class="language-sh">avr-gcc -DF_CPU=16000000UL -nostdlib -mmcu=atmega328p main.S -o main
+</code></pre>
+<p>If you check the size of the compiled file, it should have less bytes now.</p>
+<pre><code class="language-sh">avr-size --format=avr --mcu=atmega328p main
+</code></pre>
+<p>In my current version of avr-gcc, this has saved me 132 bytes.</p>
+<h2>Transform the file into a hex file</h2>
+<p>When avrdude pushes the compiled code to the arduino, it requires a hex file
+that can be produced by running the following command:</p>
+<pre><code class="language-sh">avr-objcopy -O ihex main main.hex
+</code></pre>
+<ul>
+<li><code>-O</code> write the output file using the object format bfdname (ihex for intel
+hex)</li>
+</ul>
+<h2>Find the usb the arduino is connected to</h2>
+<p>Connect your arduino and run</p>
+<pre><code class="language-sh">ls /dev/tty*
+</code></pre>
+<p>If it's not obvious to you which port it is using, disconnect the arduino and
+run the command again. Check which port disappeared, that is your port!</p>
+<h2>Run avrdude</h2>
+<p>This is the one that will differ depending on what programmer you are using.
+I'm just using the Arduino bootloader, so I can run avrdude like this:</p>
+<pre><code class="language-sh">avrdude -v -p atmega328p -c arduino -P /dev/ttyUSB0 -b 115200 -U flash:w:main.hex:i
+</code></pre>
+<p><strong>NOTE</strong>: Sometimes you have to play with the bound rate to get it to push
+properly. I have had success with higher bound rates.</p>
+<h2>My script</h2>
+<p>This script turns a LED on/off every 3 seconds.</p>
+<pre><code class="language-asm">#include &lt;avr/io.h&gt;
+.section .data
+
+.section .bss
+
+.section .text
+
+.global main
+
+main:
+  .org 0x00
+  ldi r16, (1&lt;&lt;PB5)
+  ldi r17, (1&lt;&lt;PB5)
+  out _SFR_IO_ADDR (DDRB), r16
+loop:
+  out _SFR_IO_ADDR (PORTB), r16
+  rcall delay_1s
+  rcall delay_1s
+  rcall delay_1s
+  eor r16, r17
+  rjmp loop
+delay_1s:
+  ldi r20, 64
+delay1:
+  ldi r21, 250
+delay2:
+  ldi r22, 250
+delay3:
+  dec r22
+  nop
+  brne delay3
+  dec r21
+  brne delay2
+  dec r20
+  brne delay1
+  ret
+</code></pre>
+</body>
+</html>

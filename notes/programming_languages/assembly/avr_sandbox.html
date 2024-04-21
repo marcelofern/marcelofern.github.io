@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>2024-04-18</p>
+<h2>Basic program</h2>
+<pre><code class="language-asm">; C/C++ preprocessor directives are available.
+#include &lt;avr/io.h&gt;
+
+.section .data
+
+.section .bss
+
+.section .text
+    ; org sets the address in which the assembler starts chucking instructions
+    .org 0x00 ;
+</code></pre>
+<h2>Delay routine</h2>
+<pre><code class="language-asm">    ; Load an immediate value into r20 that will
+    ; create the expected delay in seconds.
+    ; This instruction will take 1 cycle, but
+    ; this cycle is ignored in this case.
+    ldi r20, 255
+
+delay:
+    ; This instruction takes 1 CPU cycle,
+    dec r20
+
+    ; This instruction takes 1 CPU cycle.
+    nop
+
+    ; this instruction takes 2 cycles if r20 != 0
+    ; and 1 cycle if r20 == 0.
+    brne delay
+
+; The delay body took 255*4 - 1 = 1019 instructions,
+; plus 1 cycle to set up the loop, totalling 1020
+; instructions.
+
+; For a clock of 16MHz like in the ATMega328p:
+; 16,000,000 instructions per second.
+; Our delay takes 63.7 micro seconds.
+</code></pre>
+<p>This is too small and barely observable.</p>
+<p>We can't increase the value from 255 because that is as much as we can store in
+an 8bit register.</p>
+<p>We can't add more nop operations because there would be too many of them to fit
+in the flash.</p>
+<p>The next idea is to add nested loops.</p>
+<pre><code class="language-asm">delay_1s:
+    ; This instruction takes 1 cycle.
+    ldi r20, 64
+.delay1:
+    ; This instruction takes 1 cycle.
+    ; The total cycles spent here are 64 cycles.
+    ldi r21, 250
+.delay2:
+    ; This instruction takes 1 cycle.
+    ; The total cycles spent here are 16,000 cycles
+    ; 16,000 comes from 64*250 (r20 * r21)
+    ldi r22, 250
+.delay3:
+    ; This instruction takes 1 cycle.
+    ; The total cycles spent here are 4(10**6)
+    ; 4(10**6) comes from (r20 *r21 * r22).
+    dec r22
+    ; This instruction takes 1 cycle.
+    ; The total cycles spent here are 4(10**6)
+    nop
+    ; This instruction takes 2 cycles.
+    ; The total cycles spent here are 8(10**6)
+    ; However when r22 reaches zero it only
+    ; spends 1 cycle.
+    ; - 1 cycle * 16,000 = -16,000 cycles.
+    brne delay3
+    ; This instruction takes 1 cycle.
+    ; The total cycles spent here are 16,000
+    dec r21
+    ; This instruction takes 2 cycles.
+    ; The total cycles spent here are 32,000 cycles
+    ; However when r21 reaches zero it only
+    ; spends 1 cycle.
+    ; - 1 cycle * 64 = -64 cycles.
+    brne delay2
+
+    ; This instruction takes 1 cycle.
+    ; The total cycles spent here are 64 cycles
+    dec r20
+
+    ; This instruction takes 2 cycles.
+    ; The total cycles spent here are 128 cycles
+    ; However when r20 reaches 0 it takes 1 cycle
+    ; -1 cycle * 64 = - 64 cycles
+    brne delay1
+    ; Ret takes 4 cycles.
+    ret
+</code></pre>
+<p>Summing all of the above we get:</p>
+<pre><code class="language-py">total = (
+    1 + 64 + 16000 + 4_000_000 + 4_000_000
+    + 8_000_000 + 16_000 + 16_000
+    + 32_000 - 64 + 64 -64 + 4
+)
+print(total)
+&gt;&gt; 16080005
+</code></pre>
+<p>This is pretty close to 16MHz, it is about 1.005 seconds.
+This might be a tolerable number depending on your use case.</p>
+<p>If you want to get more accurate, you should use timers and interrupts.</p>
+</body>
+</html>

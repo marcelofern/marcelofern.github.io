@@ -102,10 +102,15 @@ database 8649321; blocked by process 59567
 So the lock is blocking the index creation, and the index creation is blocking
 the lock = deadlock.
 
-You can now verify that the index isn't valid:
+You can now verify that the index isn't valid (invalid):
 
 ```sql
 SELECT relname
 FROM pg_class, pg_index
 WHERE pg_index.indisvalid = false AND pg_index.indexrelid = pg_class.oid;
 ```
+
+Here's a reference to postgres source code where CONCURRENT index creation
+waits for locks:
+
+[source](https://github.com/postgres/postgres/blob/84db9a0eb10dd1dbee6db509c0e427fa237177dc/src/backend/commands/indexcmds.c#L1665-L1681)

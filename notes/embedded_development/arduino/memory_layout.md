@@ -72,6 +72,22 @@ So any time a particular program needs to read "Hello" from the flash, it will
 do so byte per byte. This dual-address scheme might be confusing at first, but
 makes sense over time.
 
+### bootloader
+
+On the arduino, the lowest flash addresses are reserved for the bootloader. The
+bootloader is the code that looks at the flash for the Arduino sketch that
+needs to run. This happens every time the Arduino board is reset, and it comes
+configured from factory if you buy an arduino board (or equivalent).
+
+Usually the bootloader will wait a bit for an incoming Serial/UART connection.
+If this connection comes, it expects it to be code that needs to be stored in
+the flash (this is the sketch).
+
+However, if no incoming Serial/UART connection shows up, it loads the program
+that already exists in the flash.
+
+The bootloader can't be reprogrammed as a regular sketch.
+Usually the bootloader code is small (512 bytes approx on Arduino).
 
 ### .data and .bss in the RAM
 
@@ -139,6 +155,52 @@ reading its corresponding bit in the Digital Input Port.
 
 Note that some bits in certain ports may remain unused.
 
+### SRAM (Internal RAM - also General Purpose RAM)
 
+This can be used by the program to store its objects, variables, arrays, and
+what not.
+
+It starts at the address RAMEND, and grows towards the special function
+registers address.
+
+AVR microcontrollers utilize two dedicated registers to manage the current
+function's stack frame: the "SPL" (Stack Pointer Low) and "SPH" (Stack Pointer
+High) registers. Together, they form the Stack Pointer, indicating the end of
+the active stack frame. Given that AVR microcontrollers use 2-byte RAM
+addresses, these registers store the low and high bytes separately. For
+instance, on the ATmega328P Arduino uno, where RAMEND holds a value of 0x08FF
+(equivalent to 2303 in decimal, aligning with the 2K bytes of SRAM specified in
+the datasheet), the SPL register should start with a value of 0xFF, while the
+SPH register should begin with 0x08.
+
+### eFuse (electronic fuse)
+
+> an eFuse (electronic fuse) is a microscopic fuse put into a computer chip.
+> This technology was invented by IBM in 2004[1] to allow for the dynamic
+> real-time reprogramming of chips. In the abstract, computer logic is
+> generally "etched" or "hard-wired" onto a chip and cannot be changed after
+> the chip has finished being manufactured. By utilizing a set of eFuses, a
+> chip manufacturer can allow for the circuits on a chip to change while it is
+> in operation.
+
+[source](http://web.archive.org/web/20240413134439/https://en.wikipedia.org/wiki/EFUSE)
+
+In the AVR board, these can be seen as super-special registers. These fuses can
+only be changed by a **programmer** (not a real person, but a device that
+programs the board).
+
+AVR has a fuse calculator that allows you to configure the fuses and upload
+them by using a tool (like avrdude).
+
+These fuses can control information about the clock frequency of the MCU,
+information for debugging, etc.
+
+Changing these fuses might create finicky and subtle bugs, like your code might
+expect the clock value to be the default of 16MHz, but one of the fuses is
+changed and ended-up dividing that value by 8 (CKDIV8)!
+
+[source](http://web.archive.org/web/20240330064156/https://www.engbedded.com/fusecalc/)
+
+## Other resources
 
 [reading resource](http://web.archive.org/web/20231103004009/https://dumblebots.com/2022/07/31/programming-arduino-and-avr-microcontrollers-using-the-assembly-language/)

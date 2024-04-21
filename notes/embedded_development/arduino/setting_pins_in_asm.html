@@ -57,23 +57,25 @@
   <![endif]-->
 </head>
 <body>
+<p>2024-04-19</p>
+<p>On the arduino board, the LED is marked as pin number 13. However, in the
+microcontroller, the equivalent pin is number 19.</p>
+<p>The below is how you'd set the pin 19 using asm.</p>
+<p>For a refresher of AVR assembly language see:
+<a href="notes/programming_languages/assembly/avr_instruction_set.html">avr instructions</a></p>
+<pre><code class="language-asm">ldi r16, (1&lt;&lt;PB5)
+out _SFR_IO_ADDR (DDRB), r16
+</code></pre>
+<p>Note that:</p>
 <ul>
-<li><a href="gdb_tricks.html">gdb tricks</a></li>
-<li><a href="intel_x64_registers.html">intel x64 registers</a></li>
-<li><a href="sections.html">sections</a></li>
-<li><a href="xchg_rax_rax.html">xchg rax,rax</a></li>
-</ul>
-<h2>Compilers</h2>
-<p><a href="avr_gcc.html">avr gcc</a></p>
-<h2>Instruction Sets</h2>
-<ul>
-<li><a href="intel_x64_instruction_set.html">intel x64 instruction set</a></li>
-<li><a href="avr_instruction_set.html">avr instruction set</a></li>
-</ul>
-<h2>Sandboxes</h2>
-<ul>
-<li><a href="x64_sandbox.html">x64 sandbox</a></li>
-<li><a href="avr_sandbox.html">avr sandbox</a></li>
+<li><code>PB5</code> is a macro that evaluates to 5.</li>
+<li>1&lt;&lt;5 = 0b10000.</li>
+<li><code>ldi</code> only works for registers 16 to 31.</li>
+<li><code>out</code> copies the value of r16 to an IO port or SFR.</li>
+<li><code>DDRB</code> is a macro that evaluates to the address of DDRB.</li>
+<li><code>_SFR_IO_ADDR</code> is a macro that conver the absolute address of DDRB to the
+relative address in the special function registers (SFRs). This is because
+<code>out</code> is optimised to only use relative addresses.</li>
 </ul>
 </body>
 </html>

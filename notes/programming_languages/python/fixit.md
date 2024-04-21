@@ -46,7 +46,7 @@ pip install silence-lint-error
 And then running:
 
 ```sh
-silence-lint-error fixit tools.fixit.rules.common:MyCustomRule src/octoenergy/data/models/debt.py
+silence-lint-error fixit tools.fixit.rules.common:MyCustomRule src/octoenergy/
 ```
 
 Where `tools.fixit.rules.common` is the path denominated in your pyproject.toml

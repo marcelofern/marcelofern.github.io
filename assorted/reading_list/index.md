@@ -26,3 +26,7 @@ Reading list resources:
 ## Security
 
 - Practical Malware Analysis
+
+## History
+
+- Sapiens, a brief history of human kind - Yuval Noah Harari

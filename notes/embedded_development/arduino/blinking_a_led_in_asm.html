@@ -57,23 +57,45 @@
   <![endif]-->
 </head>
 <body>
+<p>2024-04-20</p>
+<p>Information about AVR assembly is in my notes:</p>
 <ul>
-<li><a href="gdb_tricks.html">gdb tricks</a></li>
-<li><a href="intel_x64_registers.html">intel x64 registers</a></li>
-<li><a href="sections.html">sections</a></li>
-<li><a href="xchg_rax_rax.html">xchg rax,rax</a></li>
+<li><a href="notes/programming_languages/assembly/avr_instruction_set.html">avr instruction set</a></li>
 </ul>
-<h2>Compilers</h2>
-<p><a href="avr_gcc.html">avr gcc</a></p>
-<h2>Instruction Sets</h2>
+<p>And information about the delay routine and how it works is in:</p>
 <ul>
-<li><a href="intel_x64_instruction_set.html">intel x64 instruction set</a></li>
-<li><a href="avr_instruction_set.html">avr instruction set</a></li>
+<li><a href="notes/programming_languages/assembly/avr_sandbox.html">avr_sandbox</a></li>
 </ul>
-<h2>Sandboxes</h2>
-<ul>
-<li><a href="x64_sandbox.html">x64 sandbox</a></li>
-<li><a href="avr_sandbox.html">avr sandbox</a></li>
-</ul>
+<pre><code class="language-asm">#include &lt;avr/io.h&gt;
+.section .data
+
+.section .bss
+
+.section .text
+  .org 0x00
+  ldi r16, (1&lt;&lt;PB5)
+  ldi r17, (1&lt;&lt;PB5)
+  out _SFR_IO_ADDR (DDRB), r16
+loop:
+  out _SFR_IO_ADDR (PORTB), r16
+  rcall delay_1s
+  eor r16, r17
+  rjmp loop
+delay_1s:
+  ldi r20, 64
+delay1:
+  ldi r21, 250
+delay2:
+  ldi r22, 250
+delay3:
+  dec r22
+  nop
+  brne delay3
+  dec r21
+  brne delay2
+  dec r20
+  brne delay1
+  ret
+</code></pre>
 </body>
 </html>
