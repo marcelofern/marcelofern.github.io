@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>2024-04-26</p>
+<h2>Intro and important terms</h2>
+<ul>
+<li>The ATMega328p has 3 timers, all of them have PWM support, and they are named
+by a number: timer 0, timer 1, timer 2.</li>
+<li>Both timer 0 and 2 are 8 bit timers, only timer 1 is 16 bits.</li>
+<li>The counter value can be accessed via register <code>TCNTn</code> (n=0,1,2).</li>
+</ul>
+<h2>Timer/Counter 0</h2>
+<p>The following are details about operation mode of timer/counter 0.
+The are few differences between the timers, but most of the content below is
+generalisable.</p>
+<h3>Normal mode</h3>
+<p>In this mode, the counter always go up (incremental instead of decremental),
+and no counter clear is performed. The counter value is simply wrapped when it
+reach the maximum (255) back to zero.</p>
+<p>This mode is set when the waveform generation mode value is WGM02:0 = 0.</p>
+<h3>Fast PWM mode</h3>
+<p>In this mode, a high frequency PWM waveform generation is available.
+The counter counts from BOTTOM to TOP then restarts from BOTTOM. TOP is defined
+as 0xFF when WGM2:0 = 3, and OCR0A when WGM2:0 = 7.</p>
+<p>The PWM frequency for the output can be calculated by the following equation:</p>
+<p><code>f_pwm = f_clk / (N*256)</code></p>
+<p>For the 16bit timer this becomes:</p>
+<p>`f_pwm = f_clk / (N*(1+TOP))</p>
+<p>N is a pre-scale value that can be configured (1, 8, 64, 256, or 1024).</p>
+<p>This mode is set when the waveform generation mode value is WGM02:0 = 3 or 7.</p>
+<h2>Examples</h2>
+<pre><code class="language-c">void timer0_init() {
+  /*
+   * Initialise timer 0 with PWM.
+   * Frequency: 62.5khz
+   *
+   * Output:
+   *  OC0A: PD6 (duty cycle: 50%) | Arduino D6
+   *  OC0B: PD5 (duty cycle: 30%) | Arduino D5
+   *
+   * A Mode: Fast PWM mode (non-inverting).
+   *         COM0A1 = 1
+   *         COM0A0 = 0
+   *
+   * B Mode: Fast PWM mode (non-inverting).
+   *         COM0B1 = 1
+   *         COM0B0 = 0
+   *
+   * Wave form: Fast PWM with TOP at 0xFF
+   *            WGM01 = WGM00 = 1
+   *
+   * Pre-scaler: No pre-scaler
+   *             CS01 = 0
+   *             CS00 = 1
+   *
+   * Output compare registers:
+   *  OCR0A = (256*0.5) = 128.
+   *  OCR0B = (256*0.3) = 77.
+   */
+  DDRD |= (1 &lt;&lt; PD5) | (1 &lt;&lt; PD6);
+  TCCR0A |= (1 &lt;&lt; COM0A1) | (1 &lt;&lt; COM0B1) | (1 &lt;&lt; WGM01) | (1 &lt;&lt; WGM00);
+  TCCR0B |= (1 &lt;&lt; CS00);
+  OCR0A = (256 * 0.5);
+  OCR0B = (256 * 0.3);
+}
+
+void timer1_init() {
+  /*
+   * Initialise timer 1 with PWM.
+   * Frequency: 1,953khz
+   *
+   * Output:
+   *  OC1A: PB1 (duty cycle: 50%) | Arduino D9
+   *  OC1B: PB2 (duty cycle: 25%) | Arduino D10
+   *
+   * A Mode: Fast PWM mode (non-inverting).
+   *         COM1A1 = 1
+   *         COM1A0 = 0
+   *
+   * B Mode: Fast PWM mode (non-inverting).
+   *         COM1B1 = 1
+   *         COM1B0 = 0
+   *
+   * Wave form: Fast PWM with TOP at 0x03FF (1023)
+   *            WGM10 = WGM11 = WGM12 = 1
+   *
+   * Pre-scaler: 1/8 (an eighth).
+   *             CS11 = 1
+   *
+   * Output compare registers:
+   *  OCR1A = (65536*0.5) = 32768.
+   *  OCR1B = (65536*0.25) = 16384.
+   */
+  DDRB |= (1 &lt;&lt; PB1) | (1 &lt;&lt; PB2);
+  TCCR1A |= (1 &lt;&lt; COM1A1) | (1 &lt;&lt; COM1B1) | (1 &lt;&lt; WGM12) | (1 &lt;&lt; WGM11) |
+            (1 &lt;&lt; WGM10);
+  TCCR1B |= (1 &lt;&lt; CS11);
+  OCR1A = (uint16_t)(65535 * 0.5);
+  OCR1B = (uint16_t)(65535 * 0.25);
+}
+
+void timer2_init() {
+  /*
+   * Initialise timer 0 with PWM.
+   * Frequency: 488.28hz
+   *
+   * Output:
+   *  OC2A: PB3 (duty cycle: 50%) | Arduino D11
+   *  OC2B: PD3 (duty cycle: 30%) | Arduino D3
+   *
+   * A Mode: Fast PWM mode (non-inverting).
+   *         COM2A1 = 1
+   *         COM2A0 = 0
+   *
+   * B Mode: Fast PWM mode (non-inverting).
+   *         COM2B1 = 1
+   *         COM2B0 = 0
+   *
+   * Wave form: Fast PWM with TOP at 0xFF
+   *            WGM21 = WGM20 = 1
+   *
+   * Pre-scaler: 1/128
+   *             CS22 = 1
+   *             CS21 = 0
+   *             CS20 = 1
+   *
+   * Output compare registers:
+   *  OCR2A = (256*0.5) = 128.
+   *  OCR2B = (256*0.3) = 77.
+   */
+  DDRD |= (1 &lt;&lt; PD3);
+  DDRB |= (1 &lt;&lt; PB3);
+
+  TCCR2A |= (1 &lt;&lt; COM2A1) | (1 &lt;&lt; COM2B1) | (1 &lt;&lt; WGM21) | (1 &lt;&lt; WGM20);
+  TCCR2B |= (1 &lt;&lt; CS22) | (1 &lt;&lt; CS20);
+  OCR2A = (256 * 0.5);
+  OCR2B = (256 * 0.3);
+}
+</code></pre>
+<ul>
+<li><code>TCCR1A</code>: Timer/Counter1 Control Register A.</li>
+<li><code>TCCR1B</code>: Timer/Counter1 Control Register B.</li>
+<li><code>CS12</code>: Clock select. A value of 1 &lt;&lt; CS12 | 1 &lt;&lt; CS10, gives clk/1024
+(from prescaler) which is 16Mhz/1024 == 15,625hz.</li>
+</ul>
+<h2>Further reading</h2>
+<p><a href="http://web.archive.org/web/20240120043955/https://docs.arduino.cc/tutorials/generic/secrets-of-arduino-pwm">source</a></p>
+</body>
+</html>

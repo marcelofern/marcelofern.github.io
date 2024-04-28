@@ -22,7 +22,6 @@ avr-gcc -DF_CPU=16000000UL -mmcu=atmega328p main.S -o main
 
 - `DF_CPU` adds the macro F_CPU which evaluates to 16MHz (the CPU freq).
 - `-mmcu` specifies the architecture
-- `-E` stop after the preprocessing stage; the output is in the form of
   pre-processed source code.
 - `-o` output
 

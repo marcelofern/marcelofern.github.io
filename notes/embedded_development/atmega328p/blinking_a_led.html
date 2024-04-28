@@ -57,16 +57,25 @@
   <![endif]-->
 </head>
 <body>
-<h2>High-level computing</h2>
+<p>2024-04-25</p>
+<p>This example blinks the LED in the arduino UNO board that uses ATMega328p.
+It can be compiled using the script in my other notes:</p>
 <ul>
-<li><a href="databases/index.html">databases</a></li>
-<li><a href="programming_languages/index.html">programming languages</a></li>
-<li><a href="security/index.html">security</a></li>
+<li><a href="atmega328p_on_vim.html">ATMega328P on vim</a></li>
 </ul>
-<h2>Low-level computing</h2>
-<ul>
-<li><a href="computer_architecture/index.html">computer architecture</a></li>
-<li><a href="embedded_development/index.html">embedded development</a></li>
-</ul>
+<pre><code class="language-c">#include &lt;avr/io.h&gt;
+#include &lt;util/delay.h&gt;
+
+int main(void) {
+  DDRB |= (1 &lt;&lt; DDB5);
+  while (1) {
+    PORTB |= (1 &lt;&lt; PB5);
+    _delay_ms(1000);
+
+    PORTB &amp;= ~(1 &lt;&lt; PB5);
+    _delay_ms(1000);
+  }
+}
+</code></pre>
 </body>
 </html>

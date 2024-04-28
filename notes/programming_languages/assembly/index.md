@@ -5,7 +5,7 @@
 
 ## Compilers
 
-[avr gcc](programming_languages/assembly/avr_gcc.md)
+- [avr gcc](programming_languages/assembly/avr_gcc.md)
 
 ## Instruction Sets
 

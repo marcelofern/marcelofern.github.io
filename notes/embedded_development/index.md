@@ -1,6 +1,10 @@
-# Devices
+# Boards
 
 - [arduino](embedded_development/arduino/index.md)
+
+# Microcontrollers
+
+- [ATMega328p](embedded_development/atmega328p/index.md)
 
 # Theory
 

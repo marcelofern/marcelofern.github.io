@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>2024-04-28</p>
+<h2>Types of interrupt</h2>
+<p>The ATMega328P has three kinds of interrupts:</p>
+<ul>
+<li><code>external interrupts</code>: E.g. a change in voltage on an external pin.</li>
+<li><code>timer interrupts</code>: E.g. when the timer reaches a certain value or overflows.</li>
+<li><code>serial communication interrupts</code>: E.g. a particular event from UART or SPI
+triggers an interrupt.</li>
+</ul>
+<h2>How interrupts work</h2>
+<p>When an interrupt occurs, the microcontroller suspends the current execution
+of the program (changing the instruction pointer register), and jumps to a
+place in memory that points to an <strong>interrupt vector table</strong>.</p>
+<p>The interrupt vector table contains the address of functions that need to be
+called for particular interrupts.</p>
+<p>These functions are often called interrupt service routine (ISR), or simply
+&quot;interrupt handler&quot;.</p>
+<p>The interrupt vector table is available on section 11.1 of the manual.</p>
+<h2>Disabling / Re-enabling interrupts</h2>
+<p>Interrupts can be disabled temporarily by calling <code>cli()</code> and can then be
+re-enabled by calling <code>sei()</code>:</p>
+<pre><code class="language-c">#include &lt;avr/interrupt.h&gt;
+
+int main() {
+    // Disable interrupts
+    cli();
+    // Critical section without interrupts
+    // (e.g., accessing shared resources)
+    // Re-enable interrupts
+    sei();
+    // Rest of the code with interrupts enabled
+}
+</code></pre>
+<h2>When to disable interrupts</h2>
+<ul>
+<li><code>Multi-byte objects</code>: Always disable interrupts before updating multi-byte
+objects.</li>
+<li><code>Updating multiple variables atomically</code>: If you rely on a pack of variables
+to be set in a particular way, you should disable interrupts first, lest you
+end up with half of the pack updated, and the other half out of date.</li>
+<li><code>Hardware access</code>: Some hardware expect a sequence of read-modify-write
+operations to be handled.</li>
+<li><code>Bootloader of firmware update</code>: No interrupts here otherwise the system will
+become corrupted.</li>
+<li><code>Real time constraints</code>: With interrupts you lose some of the deterministic
+aspect of real-time systems.</li>
+</ul>
+<h2>Example</h2>
+<p>The script below prints &quot;I have been pressed!&quot;, every time the button has been
+pressed. It can print to usart and picocom if you're using the usart script
+from my previous note: <a href="usart.html">usart</a></p>
+<pre><code class="language-c">#include &lt;avr/interrupt.h&gt;
+#include &lt;stdio.h&gt;
+#include &quot;../include/usart.h&quot;
+
+void configure_interrupt() {
+  /*
+   * Interrupt that happens when PB0 is &quot;pressed&quot;.
+   * In arduino, this is digital 8.
+   *
+   * 1. Set PB0 as input with pull-up resistor.
+   * 2. Activate interrupts in PCINT7..0.
+   * 3. But only enable interrupts for PB0.
+   * 4. Enable interrupts globally.
+   *
+   * Note: PCINT0 is another name (special function) for PB0.
+   */
+  DDRB &amp;= ~(1 &lt;&lt; PB0);
+  PORTB |= (1 &lt;&lt; PB0);
+  PCICR |= (1 &lt;&lt; PCIE0);
+  PCMSK0 |= (1 &lt;&lt; PCINT0);
+  sei();
+}
+
+static void button_interrupt() {
+  /*
+   * Code that runs when the button is pressed.
+   *
+   */
+  printf(&quot;I have been pressed!\r\n&quot;);
+}
+
+ISR(PCINT0_vect) {
+  if (!(PINB &amp; (1 &lt;&lt; PB0))) {
+    button_interrupt();
+  }
+}
+
+int main(void) {
+  usart_init();
+  configure_interrupt();
+  printf(&quot;Let's go boys\r\n&quot;);
+  while (1) {
+  }
+  return 0;
+}
+</code></pre>
+<p>The board can be wired like in the picture below. It is important to set up
+the pull-down resistor, otherwise the button will be in a floating state and
+won't work.</p>
+<p><img src="interrupt_switch.png" alt="interrupt_switch"></p>
+</body>
+</html>
