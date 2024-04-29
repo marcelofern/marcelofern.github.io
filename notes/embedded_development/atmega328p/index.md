@@ -10,5 +10,5 @@
 
 - [Blinking a LED](embedded_development/atmega328p/blinking_a_led.md)
 - [USART](embedded_development/atmega328p/usart.md)
-- [timer](embedded_development/atmega328p/timer.md)
-- [interrupts](embedded_development/atmega328p/interrupts.md)
+- [Timer](embedded_development/atmega328p/timer.md)
+- [Interrupts](embedded_development/atmega328p/interrupts.md)

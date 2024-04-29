@@ -1,4 +1,4 @@
-- [assembly](programming_languages/assembly/index.md)
-- [c](programming_languages/c/index.md)
-- [cpp](programming_languages/cpp/index.md)
-- [python](programming_languages/python/index.md)
+- [Assembly](programming_languages/assembly/index.md)
+- [C](programming_languages/c/index.md)
+- [Cpp](programming_languages/cpp/index.md)
+- [Python](programming_languages/python/index.md)

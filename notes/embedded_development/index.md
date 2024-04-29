@@ -1,6 +1,6 @@
 # Boards
 
-- [arduino](embedded_development/arduino/index.md)
+- [Arduino](embedded_development/arduino/index.md)
 
 # Microcontrollers
 
@@ -8,4 +8,4 @@
 
 # Theory
 
-- [memory types](embedded_development/memory_types/index.md)
+- [Memory types](embedded_development/memory_types/index.md)

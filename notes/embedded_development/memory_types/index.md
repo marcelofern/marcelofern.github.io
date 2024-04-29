@@ -7,6 +7,6 @@
 
 [source](http://web.archive.org/web/20240414220510/https://docs.arduino.cc/learn/programming/memory-guide/)
 
-- [flash](embedded_development/memory_types/flash.md)
-- [ram](embedded_development/memory_types/ram.md)
+- [Flash](embedded_development/memory_types/flash.md)
+- [RAM](embedded_development/memory_types/ram.md)
 - [EEPROM](embedded_development/memory_types/eeprom.md)

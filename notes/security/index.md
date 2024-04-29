@@ -4,5 +4,5 @@
 
 ## C
 
-- [out of bounds array lookup](programming_languages/c/out_of_bounds_array_lookup.md)
-- [out of bounds allocation](programming_languages/c/out_of_bounds_allocation.md)
+- [Out of bounds array lookup](programming_languages/c/out_of_bounds_array_lookup.md)
+- [Out of bounds allocation](programming_languages/c/out_of_bounds_allocation.md)
