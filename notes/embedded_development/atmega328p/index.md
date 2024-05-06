@@ -12,3 +12,4 @@
 - [USART](embedded_development/atmega328p/usart.md)
 - [Timer](embedded_development/atmega328p/timer.md)
 - [Interrupts](embedded_development/atmega328p/interrupts.md)
+- [LED Rainbow](embedded_development/atmega328p/led_rainbow.md)

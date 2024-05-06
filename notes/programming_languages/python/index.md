@@ -3,6 +3,7 @@
 - [Non-atomic migrations with multiple sql statements](programming_languages/python/non_atomic_migrations_with_multiple_sql_statements.md)
 - [`iterator`](programming_languages/python/django_orm_iterator.md)
 - [Migration state and operation](programming_languages/python/migration_state_and_operation.md)
+- [Testing django locally](programming_languages/python/testing_django_locally.md)
 
 ## libs
 

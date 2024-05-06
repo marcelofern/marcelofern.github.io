@@ -115,3 +115,10 @@ the pull-down resistor, otherwise the button will be in a floating state and
 won't work.
 
 ![interrupt_switch](interrupt_switch.png)
+
+## Other remarks
+
+- There is also PCIE1 (for pins PCINT14..8) and PICIE2 (for pins PCINT23..16)
+- Analogously, there's PCMSK1 and PCMSK2.
+- Analogously, there's PCINT1_vect and PCINT2_vect.
+
