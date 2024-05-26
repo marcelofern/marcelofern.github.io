@@ -57,45 +57,67 @@
   <![endif]-->
 </head>
 <body>
-<h2>django</h2>
-<ul>
-<li><a href="non_atomic_migrations_with_multiple_sql_statements.html">Non-atomic migrations with multiple sql statements</a></li>
-<li><a href="django_orm_iterator.html"><code>iterator</code></a></li>
-<li><a href="migration_state_and_operation.html">Migration state and operation</a></li>
-<li><a href="testing_django_locally.html">Testing django locally</a></li>
-</ul>
-<h2>internals</h2>
-<ul>
-<li><a href="set_ordering.html">set ordering</a></li>
-</ul>
-<h2>libs</h2>
-<ul>
-<li><a href="tenacity.html">Tenacity</a></li>
-<li><a href="fixit.html">Fixit</a></li>
-</ul>
-<h2>performance</h2>
-<ul>
-<li><a href="set_and_list_performance.html"><code>set</code> and <code>list</code> performance</a></li>
-<li><a href="inspecting_memory.html">Inspecting memory</a></li>
-<li><a href="list_unpacking_vs_concat.html">list unpacking vs concat</a></li>
-</ul>
-<h2>profiling</h2>
-<ul>
-<li><a href="austin.html">Austin</a></li>
-<li><a href="tuna.html">Tuna</a></li>
-</ul>
-<h2>syntax</h2>
-<ul>
-<li><a href="try_except_finally.html"><code>try</code>-<code>except</code>-<code>finally</code></a></li>
-<li><a href="setdefault.html"><code>setdefault</code></a></li>
-</ul>
-<h2>typing</h2>
-<ul>
-<li><a href="sentinels.html">Sentinels</a></li>
-</ul>
-<h2>Virtual Environments</h2>
-<ul>
-<li><a href="venv.html">venv</a></li>
-</ul>
+<h1>Exercise 1.1</h1>
+<blockquote>
+<p>Below is a sequence of expressions. What is the result printed by the
+interpreter in response to each expression? Assume that the sequence is to be
+evaluated in the order in which it is presented.</p>
+</blockquote>
+<p>The answers are included below each listing using a comment <code>;</code> character.</p>
+<pre><code class="language-scm">10
+; 10
+
+(+ 5 3 4)
+; 12
+
+(- 9 1)
+; 8
+
+(/ 6 2)
+; 3
+
+(+ (* 2 4) (- 4 6))
+; (+ (8) (-2))
+; 6
+
+(define a 3)
+; a = 3
+
+(define b (+ a 1))
+; b = 4
+
+(+ a b (* a b))
+; (+ 3 4 (* 3 4))
+; (+ 7 (12))
+; 19
+
+(= a b)
+; #f (false, a is not equal to b)
+
+(if (and (&gt; b a) (&lt; b (* a b))) b a)
+; (if (and (&gt; 4 3) (&lt; 4 (* 3 4))) 4 3)
+; (if (and (#t) (#t)) 4 3)
+; 4
+
+(cond
+    ((= a 4) 6)
+    ((= b 4) (+ 6 7 a))
+    (else 25)
+)
+; 16
+
+(+ 2 (if (&gt; b a) b a))
+; 6
+
+
+(* (cond
+        ((&gt; a b) a)
+        ((&lt; a b) b)
+        (else -1)
+    )
+    (+ a 1)
+)
+; 16
+</code></pre>
 </body>
 </html>

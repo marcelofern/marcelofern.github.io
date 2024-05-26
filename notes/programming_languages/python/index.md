@@ -5,6 +5,10 @@
 - [Migration state and operation](programming_languages/python/migration_state_and_operation.md)
 - [Testing django locally](programming_languages/python/testing_django_locally.md)
 
+## internals
+
+- [set ordering](programming_languages/python/set_ordering.md)
+
 ## libs
 
 - [Tenacity](programming_languages/python/tenacity.md)
@@ -14,6 +18,7 @@
 
 - [`set` and `list` performance](programming_languages/python/set_and_list_performance.md)
 - [Inspecting memory](programming_languages/python/inspecting_memory.md)
+- [list unpacking vs concat](programming_languages/python/list_unpacking_vs_concat.md)
 
 ## profiling
 
@@ -28,3 +33,7 @@
 ## typing
 
 - [Sentinels](programming_languages/python/sentinels.md)
+
+## Virtual Environments
+
+- [venv](programming_languages/python/venv.md)

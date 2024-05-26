@@ -57,45 +57,69 @@
   <![endif]-->
 </head>
 <body>
-<h2>django</h2>
-<ul>
-<li><a href="non_atomic_migrations_with_multiple_sql_statements.html">Non-atomic migrations with multiple sql statements</a></li>
-<li><a href="django_orm_iterator.html"><code>iterator</code></a></li>
-<li><a href="migration_state_and_operation.html">Migration state and operation</a></li>
-<li><a href="testing_django_locally.html">Testing django locally</a></li>
-</ul>
-<h2>internals</h2>
-<ul>
-<li><a href="set_ordering.html">set ordering</a></li>
-</ul>
-<h2>libs</h2>
-<ul>
-<li><a href="tenacity.html">Tenacity</a></li>
-<li><a href="fixit.html">Fixit</a></li>
-</ul>
-<h2>performance</h2>
-<ul>
-<li><a href="set_and_list_performance.html"><code>set</code> and <code>list</code> performance</a></li>
-<li><a href="inspecting_memory.html">Inspecting memory</a></li>
-<li><a href="list_unpacking_vs_concat.html">list unpacking vs concat</a></li>
-</ul>
-<h2>profiling</h2>
-<ul>
-<li><a href="austin.html">Austin</a></li>
-<li><a href="tuna.html">Tuna</a></li>
-</ul>
-<h2>syntax</h2>
-<ul>
-<li><a href="try_except_finally.html"><code>try</code>-<code>except</code>-<code>finally</code></a></li>
-<li><a href="setdefault.html"><code>setdefault</code></a></li>
-</ul>
-<h2>typing</h2>
-<ul>
-<li><a href="sentinels.html">Sentinels</a></li>
-</ul>
-<h2>Virtual Environments</h2>
-<ul>
-<li><a href="venv.html">venv</a></li>
-</ul>
+<h1>Exercise 1.2</h1>
+<h2>Pre-exercise Theory</h2>
+<p><strong>Prefix Form</strong> is the &quot;convention of placing the operator to the left of the
+operands&quot;.</p>
+<p>One advantage of this form is that it can take any amount of arguments without
+any ambiguity:</p>
+<pre><code class="language-scm">(+ 42 77 12)
+</code></pre>
+<p>The other advantage is that nesting operations are also simple and unambiguous:</p>
+<pre><code class="language-scm">(+ 42 (- 77 12))
+</code></pre>
+<p>A good way of formatting prefix operations is by aligning the operands of an
+expression vertically, so that by looking at the indentation one can follow
+which operations go together:</p>
+<pre><code class="language-scm">; without pretty-print
+(+ (* 3 (+ (* 2 4) (+ 3 5))) (+ (- 10 7) 6))
+
+; with pretty-print
+(+ (* 3
+      (+
+          (* 2 4)
+          (+ 3 5)
+      )
+    )
+   (+ (- 10 7)
+      6
+   )
+)
+
+## Problem
+
+&gt; Translate the following expression into prefix form:
+
+</code></pre>
+<h2>5 + 4 + (2 - (3 - (6 + 4/5)))</h2>
+<pre><code>    3(6 - 2)(2 - 7)
+</code></pre>
+<pre><code>
+The total of this division is = -0.246 or -37/150
+
+```scm
+(/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5))))) (* 3 (- 6 2) (- 2 7)))
+; -37/150
+
+; pretty-print format:
+
+
+(/ 
+    (+ 5
+       4
+       (- 2
+          (- 3
+             (+ 6
+                (/ 4 5)
+             )
+          )
+       )
+    )
+    (* 3
+       (- 6 2)
+       (- 2 7)
+    )
+)
+</code></pre>
 </body>
 </html>

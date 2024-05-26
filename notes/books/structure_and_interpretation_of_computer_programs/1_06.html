@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Exercise 1.6</h1>
+<h2>Pre-exercise theory</h2>
+<p>First of all, this question is based on the procedures <code>good-enough?</code>,
+<code>improve</code>, <code>guess</code>, <code>improve</code>, and <code>sqrt-iter</code> that have just been
+written in the section prior to the exercise.</p>
+<p>These procedures are layed out below:</p>
+<pre><code class="language-scm">(define (average x y)
+        (/ (+ x y) 2)
+)
+
+(define (improve guess x)
+        (average guess (/ x guess))
+)
+
+(define (square x)
+        (* x x)
+)
+
+(define (good-enough? guess x)
+        (&lt; (abs (- (square guess) x)) 0.001)
+)
+
+(define (sqrt-iter guess x)
+        (if (good-enough? guess x)
+            guess
+            (sqrt-iter (improve guess x) x)
+        )
+)
+
+(define (sqrt x)
+        (sqrt-iter 1.0 x)
+)
+</code></pre>
+<h2>Question</h2>
+<blockquote>
+<p>Alyssa P. Hacker doesn't see why <code>if</code> needs to be provided as a special form.
+&quot;Why can't I just define it as an ordinary procedure in terms of <code>cond</code>?&quot; she
+asks. Alyssa's friend Eva Lu Ator claims this can indeed be done, and she
+defines a new version of <code>if</code>:</p>
+</blockquote>
+<pre><code class="language-scm">(define (new-if predicate then-clause else-clause)
+        (cond (predicate then-clause) (else else-clause))
+)
+</code></pre>
+<blockquote>
+<p>Eva demonstrates the program for Alyssa:</p>
+</blockquote>
+<pre><code class="language-scm">(new-if (= 2 3) 0 5)
+; 5
+
+(new-if (= 1 1) 0 5)
+; 0
+</code></pre>
+<blockquote>
+<p>Delighted, Alyssa uses new-if to rewrite the square-root program:</p>
+</blockquote>
+<pre><code class="language-scm">(define (sqrt-iter guess x)
+        (new-if (good-enough? guess x)
+                guess
+                (sqrt-iter (improve guess x)
+                           x
+                )
+        )
+)
+</code></pre>
+<h2>Answer</h2>
+<p>If one tries to run the program above with that alteration, it will never
+resolve as it will turn into an infinite loop.</p>
+<p>The <code>else-clause</code> includes a recursion to the function itself, and the Scheme
+interpreter can't deal with recursions in this way as shown in exercise 1.5.</p>
+<p>With the <code>new-if</code> function being a procedure, the interpreter will try to
+evaluate both arguments before applying the reduction due to the
+applicative-order evaluation nature of the interpreter.</p>
+<p>The <code>if</code> conditional is different. It only evaluates the predicate and <em>then</em>
+it evaluates which condition needs to run next.</p>
+<p>Essentially, it is not possible to mimic the <code>cond</code> and <code>if</code> operators because
+they do not follow applicative-order evaluation.</p>
+</body>
+</html>

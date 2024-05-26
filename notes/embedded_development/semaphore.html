@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>2024-05-11</p>
+<p>Semaphores are similar to mutexes as in they allow to control who has access to
+a particular resource in a scenario where multiple threads are trying to mutate
+shared data.</p>
+<p>However, mutexes are used when only one thread can access a particular
+resource, whereas semaphores are more general, and allow a number N of threads
+(but no more) to access a particular resource.</p>
+<h2>Library Analogy</h2>
+<blockquote>
+<p>Suppose a physical library has ten identical study rooms, to be used by one
+student at a time. Students must request a room from the front desk. If no
+rooms are free, students wait at the desk until someone relinquishes a room.
+When a student has finished using a room, the student must return to the desk
+and indicate that the room is free.</p>
+</blockquote>
+<blockquote>
+<p>In the simplest implementation, the clerk at the front desk knows only the
+number of free rooms available. This requires that all of the students use
+their room while they have signed up for it and return it when they are done.
+When a student requests a room, the clerk decreases this number. When a
+student releases a room, the clerk increases this number. The room can be
+used for as long as desired, and so it is not possible to book rooms ahead of
+time.</p>
+</blockquote>
+<blockquote>
+<p>In this scenario, the front desk count-holder represents a counting
+semaphore, the rooms are the resource, and the students represent
+processes/threads. The value of the semaphore in this scenario is initially
+10, with all rooms empty. When a student requests a room, they are granted
+access, and the value of the semaphore is changed to 9. After the next
+student comes, it drops to 8, then 7, and so on. If someone requests a room
+and the current value of the semaphore is 0,[3] they are forced to wait until
+a room is freed (when the count is increased from 0). If one of the rooms was
+released, but there are several students waiting, then any method can be used
+to select the one who will occupy the room (like FIFO or randomly picking
+one). And of course, a student must inform the clerk about releasing their
+room only after really leaving it.</p>
+</blockquote>
+<blockquote>
+<p>The paradigm is especially powerful because the semaphore count may serve as
+a useful trigger for a number of different actions. The librarian above may
+turn the lights off in the study hall when there are no students remaining,
+or may place a sign that says the rooms are very busy when most of the rooms
+are occupied.</p>
+</blockquote>
+<p><a href="http://web.archive.org/web/20240507180413/https://en.wikipedia.org/wiki/Semaphore_(programming)">source</a></p>
+</body>
+</html>

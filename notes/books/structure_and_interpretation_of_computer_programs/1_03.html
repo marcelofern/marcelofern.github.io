@@ -57,45 +57,61 @@
   <![endif]-->
 </head>
 <body>
-<h2>django</h2>
-<ul>
-<li><a href="non_atomic_migrations_with_multiple_sql_statements.html">Non-atomic migrations with multiple sql statements</a></li>
-<li><a href="django_orm_iterator.html"><code>iterator</code></a></li>
-<li><a href="migration_state_and_operation.html">Migration state and operation</a></li>
-<li><a href="testing_django_locally.html">Testing django locally</a></li>
-</ul>
-<h2>internals</h2>
-<ul>
-<li><a href="set_ordering.html">set ordering</a></li>
-</ul>
-<h2>libs</h2>
-<ul>
-<li><a href="tenacity.html">Tenacity</a></li>
-<li><a href="fixit.html">Fixit</a></li>
-</ul>
-<h2>performance</h2>
-<ul>
-<li><a href="set_and_list_performance.html"><code>set</code> and <code>list</code> performance</a></li>
-<li><a href="inspecting_memory.html">Inspecting memory</a></li>
-<li><a href="list_unpacking_vs_concat.html">list unpacking vs concat</a></li>
-</ul>
-<h2>profiling</h2>
-<ul>
-<li><a href="austin.html">Austin</a></li>
-<li><a href="tuna.html">Tuna</a></li>
-</ul>
-<h2>syntax</h2>
-<ul>
-<li><a href="try_except_finally.html"><code>try</code>-<code>except</code>-<code>finally</code></a></li>
-<li><a href="setdefault.html"><code>setdefault</code></a></li>
-</ul>
-<h2>typing</h2>
-<ul>
-<li><a href="sentinels.html">Sentinels</a></li>
-</ul>
-<h2>Virtual Environments</h2>
-<ul>
-<li><a href="venv.html">venv</a></li>
-</ul>
+<h1>Exercise 1.3</h1>
+<h2>Pre-exercise Theory</h2>
+<p>A procedure can be defined in Scheme like this:</p>
+<pre><code class="language-scm">(define (cube x) (* x x x))
+</code></pre>
+<h2>The problem</h2>
+<blockquote>
+<p>Define a procedure that takes three numbers as arguments and returns the sum
+of the squares of the two larger numbers.</p>
+</blockquote>
+<pre><code class="language-scm">(define (squared_sum_of_two_largest x y z)
+        (define (squared x) (* x x))
+        (define (sum_of_squares x y) (+ (squared x) (squared y)))
+        (
+            cond
+            ((and (&gt;= x y) (&gt;= y z)) (sum_of_squares x y))
+            ((and (&gt;= y x) (&gt;= x z)) (sum_of_squares y x))
+            ((and (&gt;= y z) (&gt;= z x)) (sum_of_squares y z))
+            ((and (&gt;= z y) (&gt;= y x)) (sum_of_squares z y))
+            ((and (&gt;= z x) (&gt;= x y)) (sum_of_squares z x))
+            ((and (&gt;= x z) (&gt;= z y)) (sum_of_squares x z))
+        )
+)
+
+; z &gt; y &gt; x
+(squared_sum_of_two_largest 2 3 4)
+; 25
+
+; x &gt; y &gt; z
+(squared_sum_of_two_largest 4 3 2)
+; 25
+
+; y &gt; x &gt; z
+(squared_sum_of_two_largest 3 4 2)
+; 25
+
+; z &gt; x &gt; y
+(squared_sum_of_two_largest 3 2 4)
+; 25
+
+; x = y = z
+(squared_sum_of_two_largest 2 2 2)
+; 8
+
+; x = y &gt; z
+(squared_sum_of_two_largest 3 3 2)
+; 18
+
+; x &lt; y = z
+(squared_sum_of_two_largest 2 3 3)
+; 18
+
+; z = x &gt; y
+(squared_sum_of_two_largest 3 2 3)
+; 18
+</code></pre>
 </body>
 </html>

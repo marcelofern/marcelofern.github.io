@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>List unpacking via <code>*</code> versus concatenation via <code>+</code></h1>
+<p>Here is the question, which method is faster?</p>
+<pre><code class="language-python">array_1 = [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;]
+array_2 = [&quot;four&quot;, &quot;five&quot;, &quot;six&quot;]
+
+def method1():
+    return [*array_1, *array_2]
+
+def method2():
+    return array_1 + array_2
+</code></pre>
+<h2>Dis</h2>
+<p>For method one:</p>
+<pre><code>  5           0 RESUME                   0
+
+  6           2 BUILD_LIST               0
+              4 LOAD_GLOBAL              0 (array_1)
+             14 LIST_EXTEND              1
+             16 LOAD_GLOBAL              2 (array_2)
+             26 LIST_EXTEND              1
+             28 RETURN_VALUE
+</code></pre>
+<p>For method two:</p>
+<pre><code>  8           0 RESUME                   0
+
+  9           2 LOAD_GLOBAL              0 (array_1)
+             12 LOAD_GLOBAL              2 (array_2)
+             22 BINARY_OP                0 (+)
+             26 RETURN_VALUE
+</code></pre>
+<h2>The benchmark</h2>
+<pre><code class="language-python">array_1 = [0] * 32000
+array_2 = [0] * 32000
+import sys
+print(f&quot;array size: {sys.getsizeof(array_1)}&quot;) # approx 256kb...
+
+def method1():
+    new_array = [*array_1, *array_2]
+
+def method2():
+    new_array = array_1 + array_2
+
+import timeit
+import tracemalloc
+
+tracemalloc.start()
+method1_time = timeit.timeit(method1, number=10000)
+method1_snapshot = tracemalloc.take_snapshot()
+tracemalloc.stop()
+
+tracemalloc.start()
+method2_time = timeit.timeit(method2, number=10000)
+method2_snapshot = tracemalloc.take_snapshot()
+tracemalloc.stop()
+
+print(&quot;Method 1 (Unpacking):&quot;, method1_time)
+print(&quot;Method 2 (List +):&quot;, method2_time)
+
+print(&quot;\nMemory allocation statistics for Method 1:&quot;)
+for stat in method1_snapshot.statistics('traceback'):
+    print(stat)
+
+print(&quot;\nMemory allocation statistics for Method 2:&quot;)
+for stat in method2_snapshot.statistics('traceback'):
+    print(stat)
+</code></pre>
+<p>The result varies, but both methods return similar results for an array of
+256kb. Note that the value of 256kb was used because this is the size of a
+memory arena in Python.</p>
+<pre><code>array size: 256056
+Method 1 (Unpacking): 0.5150032740202732
+Method 2 (List +): 0.5120943429938052
+
+Memory allocation statistics for Method 1:
+/usr/lib/python3.12/timeit.py:113: size=218 KiB, count=1478, average=151 B
+/usr/lib/python3.12/timeit.py:135: size=1934 B, count=33, average=59 B
+/usr/lib/python3.12/timeit.py:176: size=56 B, count=1, average=56 B
+
+Memory allocation statistics for Method 2:
+/usr/lib/python3.12/timeit.py:135: size=168 B, count=3, average=56 B
+/usr/lib/python3.12/timeit.py:237: size=72 B, count=1, average=72 B
+</code></pre>
+<p>I've tried increasing the size of the array, but the output remains consistent
+and both seem to run at the same speed.</p>
+<p>Looking at the python source for Cpython, the only difference I see between the
+<a href="https://github.com/python/cpython/blob/d065edfb66470bbf06367b3570661d0346aa6707/Objects/listobject.c#L726">list
+concat</a>
+function and the <a href="https://github.com/python/cpython/blob/d065edfb66470bbf06367b3570661d0346aa6707/Objects/listobject.c#L1161">list
+extend</a>
+function is that the concatenation does a malloc to begin with, and the second
+one does a calloc + memset.</p>
+<h2>TLDR</h2>
+<p>It doesn't seem to be any significant difference that I can note at present
+between these two ways of doing the same thing.</p>
+</body>
+</html>

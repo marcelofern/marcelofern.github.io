@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>2024-05-24</p>
+<h1>First-class citizen</h1>
+<blockquote>
+<p>In a given programming language design, a first-class citizen[a] is an entity
+which supports all the operations generally available to other entities.</p>
+</blockquote>
+<p><a href="http://web.archive.org/web/20240515144017/https://en.wikipedia.org/wiki/First-class_citizen">source</a></p>
+<p>From the SICP book:</p>
+<blockquote>
+<p>Elements with the fewest restrictions are said to have first-class status.
+Some of the &quot;rights and privileges&quot; of first-class elements are:</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>They may be named by variables.</li>
+<li>They may be passed as arguments to procedures.</li>
+<li>They may be returned as the results of procedures.</li>
+<li>They may be included in data structures.</li>
+</ul>
+</blockquote>
+<p>Further from wikipedia:</p>
+<blockquote>
+<p>In many older languages, arrays and strings are not first-class: they cannot
+be assigned as objects or passed as parameters to a subroutine. For example,
+neither Fortran IV nor C supports array assignment, and when they are passed
+as parameters, only the position of their first element is actually
+passed—their size is lost. C appears to support assignment of array pointers,
+but in fact these are simply pointers to the array's first element, and again
+do not carry the array's size.</p>
+</blockquote>
+<p><a href="http://web.archive.org/web/20240515144017/https://en.wikipedia.org/wiki/First-class_citizen">source</a></p>
+<pre><code>| first-class function     | closures and anonymous functions | Smalltalk; Dart; Scheme; ML; Haskell; F#; Kotlin; Scala; Swift; Perl; PHP; Python; Raku; JavaScript; Delphi; Rust |
+| first-class control      | continuations                    | Scheme; ML; F#                                                                                                    |
+| first-class type         | dependent types                  | Coq; Idris; Agda                                                                                                  |
+| first-class data type    |                                  | Generic Haskell; C++11                                                                                            |
+| first-class polymorphism | impredicative polymorphism       |                                                                                                                   |
+| first-class message      | dynamic messages (method calls)  | Smalltalk; Objective-C; Common Lisp                                                                               |
+| first-class class        | metaclass and metaobject         | Smalltalk; Objective-C; Ruby; Python; Delphi; Common Lisp                                                         |
+| first-class proofs       | proof object                     | Coq; Agda                                                                                                         |
+</code></pre>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Set Ordering</h1>
+<p>Python sets do not have an order.
+However, a developer may be confused by this:</p>
+<pre><code class="language-python">&gt;&gt;&gt; list({&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;})
+['2', '4', '1', '3']
+
+# Repeat the line above and get the same ordering:
+&gt;&gt;&gt; list({&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;})
+['2', '4', '1', '3']
+
+# You can repeat forever and it will always have
+# The same ordering.
+</code></pre>
+<p><strong>Why does this happen?</strong></p>
+<p>The Python hashing algorithm relies on a seed value that is computed when the
+interpreter process starts.</p>
+<p>The hashing algorithm uses this initial seed to create the hashing function
+that will be used for the rest of the life-time of the python process.</p>
+<p>So in the example above, the ordering of the set-converted-list will always be
+the same, but as soon as a different process is initialised, the ordering of
+the result will likely be different:</p>
+<pre><code>$ python
+Python 3.12.3 (main, Apr 23 2024, 09:16:07) [GCC 13.2.1 20240417] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; list({&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;})
+['2', '4', '3', '1']
+&gt;&gt;&gt; exit()
+$ python
+Python 3.12.3 (main, Apr 23 2024, 09:16:07) [GCC 13.2.1 20240417] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; list({&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;})
+['4', '1', '2', '3']
+&gt;&gt;&gt; exit()
+$ python
+Python 3.12.3 (main, Apr 23 2024, 09:16:07) [GCC 13.2.1 20240417] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; list({&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;})
+['1', '4', '2', '3']
+</code></pre>
+</body>
+</html>

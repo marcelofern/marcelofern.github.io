@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Exercise 1.5</h1>
+<h2>Pre-exercise theory</h2>
+<h3>Applicative-order evaluation</h3>
+<p>In this evaluation, the interpreter evaluates the elements of the operation
+and then applies the procedure. For example:</p>
+<pre><code class="language-scm">(* (+ 2 (* 4 6)) (+ 3 5 7))
+
+; The interpreter first evaluates (* 4 6)
+; reducing the operation to:
+(* (+ 2 (24)) (+ 3 5 7))
+
+; The interpreter then reduces (+ 2 (24))
+(* (26) (+ 3 5 7))
+
+; The interpreter then reduces (+ 3 5 7)
+(* (26) (15))
+
+; And then yields the result
+390
+</code></pre>
+<h3>Normal-order evaluation</h3>
+<p>All the operators are expanded until only &quot;primitives&quot; are left, then, only at
+the end, the reduction is performed:</p>
+<pre><code class="language-scm">(sum-of-squares (+ 5 1) (* 5 2))
+
+; becomes
+(+ (square (+ 5 1)) (square (* 5 2)))
+
+; becomes
+(+ (* (+ 5 1) (+ 5 1)) (* (* 5 2) (* 5 2)))
+
+; becomes
+(+ (* 6 6) (* 10 10))
+
+; becomes
+(+ (36) (100))
+
+; becomes
+136
+</code></pre>
+<h3>Further</h3>
+<p>Lisp uses the applicative-order evaluation because it can avoid multiple
+evaluation of expressions as in the example above with (+ 5 1) and (* 5 2) and
+because normal-order is very complicated when procedures can't be modelled by
+substitution.</p>
+<h2>The question</h2>
+<blockquote>
+<p>Ben Bitdiddle has invented a test to determine whether the interpreter he is
+faced with is using applicative-order evaluation or normal-order evaluation.
+He defines the following two procedures:</p>
+</blockquote>
+<pre><code class="language-scm">(define (p) (p))
+
+(define (test x y)
+        (if (= x 0) 0 y)
+)
+</code></pre>
+<blockquote>
+<p>Then he evaluates the expression:</p>
+</blockquote>
+<pre><code class="language-scm">(test 0 (p))
+</code></pre>
+<blockquote>
+<p>What behaviour will Ben observe with an interpreter that uses
+applicative-order evaluation? What behaviour will he observe with an
+interpreter that uses normal-order evaluation? Explain your answer. (Assume
+that the evaluation rule for the special form <code>if</code> is the same whether the
+interpreter is using normal or applicative order. The predicate expression is
+evaluated first, and the result determines whether to evaluate the consequent
+or the alternative expression).</p>
+</blockquote>
+<h2>Answer</h2>
+<p>Using applicative-order evaluation, we have the following reductions:</p>
+<pre><code class="language-scm">; p is evaluated and returns itself.
+(test 0 (p))
+
+; try to evaluate (p) again, because
+; the expression hasn't been reduced.
+(test 0 (p))
+
+; stays in an infinite loop because
+; (p) can never be evaluated.
+</code></pre>
+<p>Running the above in guile never returns.</p>
+<p>In normal-order evaluation, everything must be expanded first.</p>
+<pre><code class="language-scm">(test 0 (p))
+
+; becomes
+(if (= 0 0) 0 (p))
+
+; becomes
+(if (#t) 0 (p))
+
+; resolves to:
+0
+</code></pre>
+</body>
+</html>

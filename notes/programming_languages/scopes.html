@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>2024-05-22</p>
+<h1>Scopes</h1>
+<p>The scope of a name binding (the name that corresponds to a variable, a
+function, class, etc.) is the part/area/block of the program where the name
+biding is valid.</p>
+<p>Scopes can be used to prevent name collisions, as the same name for a variable
+might bind to different objects depending on the scope where the variable is
+used or assigned.</p>
+<h2>Lexical vs Dynamic Scope</h2>
+<p>In most programming languages, the &quot;part/area/block&quot; of the program where the
+scope applies is a portion of the code as seen from the text editor, and is
+referred to as &quot;lexical scope&quot; or &quot;static scope&quot;.</p>
+<p>In other languages, however, the &quot;part/area/block&quot; of the program where the
+scope applies is a portion of the run time and is known as &quot;dynamic scope&quot;.</p>
+<p>When using lexical scope, a name binding is resolved by looking at the local
+lexical context, and if that fails, looking at the outer lexical context, so
+on so forth.</p>
+<p>In dynamic scope, the name binding is resolved by looking at the local
+execution context, and if that fails, looking at the outer execution context,
+so on so forth.</p>
+<p>Lexical context can be known at compile time, and thus can be called &quot;early
+binding&quot;, whereas the execution context can only be known at runtime and thus
+can be called &quot;late binding&quot;.</p>
+<p>Lexical scope can be easier to reason about than dynamic scope, as a look at
+the code from the text editor provides all that is needed, whereas in dynamic
+scope, one needs to reason about all the different contexts a piece of code
+may be run.</p>
+<blockquote>
+<p>With dynamic scope, a name refers to execution context. In technical terms,
+this means that each name has a global stack of bindings. Introducing a local
+variable with name x pushes a binding onto the global x stack (which may have
+been empty), which is popped off when the control flow leaves the scope.
+Evaluating x in any context always yields the top binding. Note that this
+cannot be done at compile-time because the binding stack only exists at
+run-time, which is why this type of scope is called dynamic scope.</p>
+</blockquote>
+<blockquote>
+<p>(...) Examples of languages that use dynamic scope include Logo, Emacs Lisp,
+LaTeX and the shell languages bash, dash, and PowerShell.</p>
+</blockquote>
+<blockquote>
+<p>(...) Dynamic scope is fairly easy to implement. To find an name's value, the
+program could traverse the runtime stack, checking each activation record
+(each function's stack frame) for a value for the name. In practice, this is
+made more efficient via the use of an association list, which is a stack of
+name/value pairs.</p>
+</blockquote>
+<p><a href="http://web.archive.org/web/20240519152822/https://en.wikipedia.org/wiki/Scope_(computer_science)">source</a></p>
+<h2>Example from the the C standard</h2>
+<p>The below is from C99 revised in 2007.</p>
+<blockquote>
+<p>An identifier can denote an object; a function; a tag or a member of a
+structure, union, or enumeration; a typedef name; a label name; a macro name;
+or a macro parameter. The same identifier can denote different entities at
+different points in the program. [...] For each different entity that an
+identifier designates, the identifier is visible (i.e., can be used) only
+within a region of program text called its scope.</p>
+</blockquote>
+</body>
+</html>

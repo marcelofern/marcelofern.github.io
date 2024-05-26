@@ -57,45 +57,34 @@
   <![endif]-->
 </head>
 <body>
-<h2>django</h2>
-<ul>
-<li><a href="non_atomic_migrations_with_multiple_sql_statements.html">Non-atomic migrations with multiple sql statements</a></li>
-<li><a href="django_orm_iterator.html"><code>iterator</code></a></li>
-<li><a href="migration_state_and_operation.html">Migration state and operation</a></li>
-<li><a href="testing_django_locally.html">Testing django locally</a></li>
-</ul>
-<h2>internals</h2>
-<ul>
-<li><a href="set_ordering.html">set ordering</a></li>
-</ul>
-<h2>libs</h2>
-<ul>
-<li><a href="tenacity.html">Tenacity</a></li>
-<li><a href="fixit.html">Fixit</a></li>
-</ul>
-<h2>performance</h2>
-<ul>
-<li><a href="set_and_list_performance.html"><code>set</code> and <code>list</code> performance</a></li>
-<li><a href="inspecting_memory.html">Inspecting memory</a></li>
-<li><a href="list_unpacking_vs_concat.html">list unpacking vs concat</a></li>
-</ul>
-<h2>profiling</h2>
-<ul>
-<li><a href="austin.html">Austin</a></li>
-<li><a href="tuna.html">Tuna</a></li>
-</ul>
-<h2>syntax</h2>
-<ul>
-<li><a href="try_except_finally.html"><code>try</code>-<code>except</code>-<code>finally</code></a></li>
-<li><a href="setdefault.html"><code>setdefault</code></a></li>
-</ul>
-<h2>typing</h2>
-<ul>
-<li><a href="sentinels.html">Sentinels</a></li>
-</ul>
-<h2>Virtual Environments</h2>
-<ul>
-<li><a href="venv.html">venv</a></li>
-</ul>
+<h1>Exercise 1.4</h1>
+<h2>Pre-exercise theory</h2>
+<p>Compound expressions represent the application of an operator to one or more
+operands.</p>
+<p>For example (* 5 2) is a compound-expression as the operator (+) operates on
+the operands 5 and 2.</p>
+<p>Compound expressions are used all the time in LISP. One example of non-compound
+expression is the evaluation of a literal number like typing <code>421</code> and hitting
+enter in a REPL.</p>
+<h2>The question</h2>
+<blockquote>
+<p>Observe that our model of evaluation allows for combinations whose operators
+are compound expressions. Use this observation to describe the behaviour of
+the following procedure:</p>
+</blockquote>
+<pre><code class="language-scm">(define (a-plus-abs-b a b)
+        ((if (&gt; b 0) + -)) a b
+)
+</code></pre>
+<p>The <code>if</code> statement checks if <code>b</code> is greater 0, if so, it returns +, otherwise
+it returns -. This indicates which operation is going to be taken on the
+operands <code>a b</code>.</p>
+<p>In LISP, the operators <code>+</code> and <code>-</code> are procedures themselves:</p>
+<pre><code class="language-scm">scheme@(guile-user) [9]&gt; +
+$59 = #&lt;procedure + (#:optional _ _ . _)&gt;
+scheme@(guile-user) [9]&gt; -
+$60 = #&lt;procedure - (#:optional _ _ . _)&gt;
+</code></pre>
+<p>So they can be selected using conditional statements.</p>
 </body>
 </html>

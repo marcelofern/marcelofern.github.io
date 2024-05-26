@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>2024-05-11</p>
+<h2>Keep queues short</h2>
+<p>RabbitMQ will start writing messages to disk in order to free RAM.</p>
+<p>This process is called &quot;Page out&quot;. While RabbitMQ is writing messages to
+disk, the queue is blocked.</p>
+<p>If a cluster is restarted, its message index needs to be rebuilt. The more
+messages in the queue, the longer it takes. The same is true for syncing
+messages between nodes after a restart.</p>
+<h2>Use quorum queues</h2>
+<p>The Mirrored Queues (older implementation) have been deprecated.</p>
+<p>The basic design of Mirror Queues is based on a single leader queue and one
+or more copies (mirrors).</p>
+<p>All reading and writing operations must go to the leader first, and then the
+leader replicates those commands in the copies. When all the mirrors have the
+commands synchronised, the leader will confirm the operation with the
+publisher.</p>
+<p>If the confirmation doesn't work because the leader failed, another mirror is
+promoted as leader. Meaning the queue remains available without any data loss.</p>
+<p>On the whole, Mirrored Queues have slower performance because the algorithm
+that replicates messages is inefficient. However, there are also a few design
+flaws with this system.</p>
+<p><strong>Brokers restarting</strong>. When a broker goes off-line and is brought back up
+again, the data in their mirrors is completely discarded. With the empty
+mirror, admins can decide whether they sync the mirror to get the messages
+back or not.</p>
+<p><strong>Synchronisation blocks</strong>. If the broker restarted and needed to re-sync,
+the whole queue has to be blocked while synchronisation happens. If the queue
+is really long (&gt;1kk messages) or very heavy (&gt;1GB) this can take a lot of
+time.</p>
+<p><strong>Synchronisation defaults</strong>. All mirror will synchronise by default
+automatically. But it is possible to change settings so that the
+synchronisation doesn't happen automatically. This means that new messages
+would get mirrored normally, but existing ones would not. In this case, there's
+less redundancy and higher chances of memory loss.</p>
+<p>Thus enters the QUORUM QUEUES:</p>
+<p>Quorum Queues function as a replicated queue with one leader and multiple
+followers. For instance, a quorum queue with a replication factor of six will
+include six replicated queues: one leader and five followers, each queue living
+on a distinct node (broker).</p>
+<p>Clients, both publishers and consumers, exclusively interact with the leader,
+which then disseminates all read and write commands to the followers.</p>
+<p>Followers remain isolated from client interactions and serve solely for
+redundancy purposes, ensuring continuity in case of a RabbitMQ broker failure,
+shutdown, or reboot. In the event of a broker outage, a follower replica on
+another broker is elected as the leader, seamlessly maintaining service.</p>
+<p>When a publisher dispatches a message, the queue confirms its receipt only
+after a majority of replicas have persisted the message to disk. Consequently,
+a slow minority does not impede the overall queue performance. Similarly,
+leader election necessitates majority agreement, preventing dual leadership
+acceptance during network partitioning. Thus, quorum queues prioritize
+consistency over availability.</p>
+<h2>Enable lazy queues</h2>
+<p>When operating a Lazy Queue, all the messages are automatically written to
+disk.</p>
+<p>This minimises RAM in exchange for slower throughput.</p>
+<p>Lazy Queues will make the cluster more stable and will make it easier to
+predict the overall performance of the broker. This means that there will be
+less unpredictability when sending a lot of messages in a short period of time.</p>
+<p>This is recommended if the queue is used for managing batch jobs and when
+there's a chance that consumers may not keep up with how quickly messages get
+published. Since RabbitMQ 3.12, this feature is turned on by default.</p>
+<h2>Auto-deleting unused queues</h2>
+<p>Unused queues might fail behind due to dropped connections. In these cases it
+is sensible to set a TTL of 28 days (or so) to delete queries that haven't been
+consumed from in 28 days.</p>
+<h2>Further reading</h2>
+<ul>
+<li><a href="http://web.archive.org/web/20240408165450/https://www.cloudamqp.com/blog/part1-rabbitmq-best-practice.html">source</a></li>
+<li><a href="http://web.archive.org/web/20240408165447/https://www.cloudamqp.com/blog/reasons-you-should-switch-to-quorum-queues.html">source</a></li>
+</ul>
+</body>
+</html>

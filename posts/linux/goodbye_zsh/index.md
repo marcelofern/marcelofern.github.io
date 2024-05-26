@@ -34,11 +34,16 @@ never use or hear of, and that includes themes as well.
 
 Even though this isn't a problem in itself, as those plugins are just text
 files that will hang around in your system, they are still there when you
-didn't ask for them. This is something that I personally have been trying to
-reduce in my system.
+didn't ask for them.
 
-A more important problem, is around bash `aliases` that oh-my-zsh brings with
-it. Many of each are for applications you may not even have installed.
+This is something that I personally have been trying to reduce in my system.
+
+The less unused files, dependencies, libs, etc, the less risk there is of
+something crashing, requiring updates, or being a surface for cyber attacks.
+
+But this is just me preaching a particular philosophy. A more important
+practical problem, is around the bash `aliases` that oh-my-zsh brings with it.
+Many of each are for applications you may not even have installed.
 
 For example, these are some of the aliases available with oh-my-zsh:
 
@@ -57,7 +62,7 @@ alias hadat='heroku addons:attach'
 
 This might not be a problem unless you have a crashing alias. But still, did
 you know you had all those aliases available? Are them really that useful to
-you? Have you come across them accidentally and become surprised?
+you? Have you come across them accidentally and became surprised?
 
 Even if some aliases or plugins are useful, you can copy the ones you want, and
 just plug into your `.bashrc` file.
@@ -65,10 +70,12 @@ just plug into your `.bashrc` file.
 In the end of the day oh-my-zsh plugins are just bash files written in zsh
 syntax, many of which are compatible with plain bash, or can be easily ported.
 
-There is no versioning control or anything fancy like that. Just files.
+There is no versioning control or anything fancy like that. Just files. This is
+one of the reasons many people won't categorise oh-my-zsh as a plug-in manager,
+as it lacks so many features to that end.
 
-For me it came down to: I don't need this technology, and it does not add much
-value to my daily use of my computer, therefore it should go.
+For me it comes down to: I don't need this technology, and it does not add much
+value to my daily use of my computer, therefore it must go.
 
 Next are the reasons why I stopped using zsh.
 
@@ -118,12 +125,19 @@ Apart from the vim mode, I must say that I'm not very keen on any of the extra
 functionalities.
 
 More over, some functionalities like expanding `/u/lo/b` to `/usr/local/bin`
-are things that I do not want to have and strike me as bad patterns.
+are things that I do not want to have in my shell, and they strike me as bad
+patterns.
 
 But the biggest problem for me is that the zsh scripting language adds way too
-many non-POSIX compliant features that end up confusing me. I always have to
-look up the syntax to make sure my zsh script isn't going to be flawed in
+many non-POSIX compliant features that end up confusing me a lot. I always have
+to look up the syntax to make sure my zsh script isn't going to be flawed in
 another environment that doesn't use zsh due to invalid syntax errors.
+
+This diminishes my ability to write good portable scripts.
+Part of this is skill-issue on my side (everything is!) as we know every
+bash script should be POSIX compliant (joking, not even bash is POSIX
+compliant), but nonetheless, for newcomers like I once was, picking up the
+shell the looked the most "cool" was part of a factor for picking up a shell.
 
 This type of problem is more pronounced for me because I have several bash
 scripts that I created overtime with zsh scripting not even knowing I was using
@@ -135,21 +149,22 @@ So what is the alternative to all of this?
 
 ## bash
 
-Yep. I'm just using raw bash now and trying to figure out how far I can get
-with it. So far I haven't got a reason to get anything more featureful.
+Yep. I'm just using plain bash now and trying to figure out how far I can get
+with it. So far I haven't got a reason to get anything more featureful than
+bash.
 
-Additionally, I have been using `fzf`, which is a dependency I already had and
-am familiar with, to deal with autocompletion and recursive command search
+I have been using `fzf` in the terminal, which is a dependency I already had
+and am familiar with, to deal with autocompletion and recursive command search
 instead. The experience is much better than the zsh autocompletion.
 
-Adding these lines to your .bashrc:
+These are the lines in my .bashrc that turn on the fzf integration.
 
 ```sh
 source /usr/share/fzf/key-bindings.bash
 source /usr/share/fzf/completion.bash
 ```
 
-Will enable:
+This will enable:
 
 - Ctrl+t list files+folders in current directory (e.g., type git add , press
   Ctrl+t, select a few files using Tab, finally Enter)
@@ -157,16 +172,19 @@ Will enable:
 - Alt+c fuzzy change directory
 
 This is handy for me, as the functionality is similar to the `Telescope` plugin
-I have been using in neovim.
+I have been using in neovim, and I can see a quick preview of files but also
+a fuzzy-search output of the reverse search I'm performing at the time.
 
-And on that note, I have been using alacritty as my terminal.
-Alacritty has vi key bindings, so I don't need my shell to provide that for me.
+Also, I use alacritty as my terminal.
+Alacritty has vi key bindings, so I don't need my shell to provide that for me,
+one less feature I need from the shell!
 
-Most terminal emulator have some form of emacs or vi key bindings these days,
+Most terminal emulators have some form of emacs or vi key bindings these days,
 so this isn't something necessary for a shell to support.
 
-That is pretty much it, nothing fancy - just getting rid of new technology that
-doesn't aggregate value in my day-to-day activities.
+And that is pretty much it.
+Nothing fancy - just getting rid of new technology that doesn't aggregate value
+in my day-to-day activities.
 
 I'm on a journey to make my installation script as lean as possible to make
 updating my system as fast as possible, and also to give my system less

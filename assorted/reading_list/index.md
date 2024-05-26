@@ -11,6 +11,7 @@ Reading list resources:
 - The Art of Electronics - Paul Horowitz et al.
 - Fundamentals of Microelectronics - Behzad Razavi.
 - Introduction to Circuit Synthesis and Design - Gabor C Temes et al.
+- Digital Computer Electronics - Albert Paul Malvino
 
 ## Computer Systems
 
@@ -31,3 +32,7 @@ Reading list resources:
 ## History
 
 - Sapiens, a brief history of human kind - Yuval Noah Harari
+
+## Design
+
+- Ruined by design - Mike Monteiro

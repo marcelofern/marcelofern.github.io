@@ -1,6 +1,7 @@
 ## High-level computing
 
 - [Databases](databases/index.md)
+- [Message brokers](message_brokers/index.md)
 - [Programming languages](programming_languages/index.md)
 - [Security](security/index.md)
 
@@ -12,3 +13,7 @@
 ## Electronics
 
 - [Components](components/index.md)
+
+## Etc.
+
+- [Notes on books](books/index.md)

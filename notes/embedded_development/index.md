@@ -9,3 +9,5 @@
 # Theory
 
 - [Memory types](embedded_development/memory_types/index.md)
+- [Mutex](embedded_development/mutex.md)
+- [Semaphore](embedded_development/semaphore.md)
