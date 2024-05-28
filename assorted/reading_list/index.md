@@ -36,3 +36,7 @@ Reading list resources:
 ## Design
 
 - Ruined by design - Mike Monteiro
+
+## Learning
+
+- Get Better at Anything, Scott Young
