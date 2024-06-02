@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>2024-05-29</p>
+<h1>Arch Linux Installation</h1>
+<h2>Uploading a .iso to a USB drive</h2>
+<p>Identify the usb drive with the <code>lsblk</code> command:</p>
+<pre><code class="language-sh">lsblk
+</code></pre>
+<p>Ensure the USB drive is unmounted and using vfat:</p>
+<pre><code class="language-sh">sudo umount /dev/sdX1
+sudo mkfs.vfat -F 32 /dev/sdX
+</code></pre>
+<p>You can use the archlinux tutorial from here, or keep following the
+instructions below (up to you).
+<a href="http://web.archive.org/web/20240516115931/https://wiki.archlinux.org/title/USB_flash_installation_medium">Arch wiki</a></p>
+<p>Find the name of the USB drive:</p>
+<pre><code class="language-sh">ls -l /dev/disk/by-id/usb-*
+</code></pre>
+<p>NOTE: Do not pick any of the names with <code>part-X</code> as suffix. Select only the
+&quot;main&quot; one that is not a partition.</p>
+<pre><code class="language-sh">sudo dd if=path/to/your.iso of=/dev/sdX1 bs=4M status=progress
+sudo dd bs=4M if=path/to/archlinux-version-x86_64.iso of=/dev/disk/by-id/usb-My_flash_drive conv=fsync oflag=direct status=progress
+
+# Notes:
+# if = The input file.
+# of = The output file.
+# bs = sets the block size to 4 megabytes.
+# status = shows the operation progress.
+</code></pre>
+<p>Run <code>sync</code> to ensure all data is written to the USB drive.</p>
+<pre><code class="language-sh">sync
+</code></pre>
+<h2>Booting from USB drive</h2>
+<p>In a thinkpad, you can press F12 during device startup to go to the boot menu.
+You can also try pressing <code>Esc</code> if your boot mode is set to &quot;quick&quot; in the
+BIOS.</p>
+<p>If your computer is running windows you can also:</p>
+<ol>
+<li>Go to the <code>Settings</code> app, and search for <code>Windows Update</code>.</li>
+<li>Click on <code>Advanced Options</code>.</li>
+<li>Click on <code>Recovery</code>.</li>
+<li>Click on <code>Advanced startup</code> and then <code>Restart now</code>.</li>
+<li>The options menu will pop up, click on <code>Troubleshoot</code>.</li>
+<li>Select <code>Advanced options</code>.</li>
+<li>Select <code>UEFI Firmware Settings</code> and click <code>Restart</code>.</li>
+<li>Press the necessary key to enter the BIOS (enter) followed by the option in
+the menu.</li>
+</ol>
+<h2>Installing the OS</h2>
+<p>You'll need internet connection. If using wifi, run:</p>
+<pre><code class="language-sh">iwctl
+
+# list device names
+[iwd] device list
+# turn on (if not on already)
+[iwd] device name set-property Powered on
+[iwd] adapter adapter set-property Powered on
+# scan networks (this won't output anything)
+[iwd] station name scan
+# see available networks
+[iwd] station name get-networks
+# connect to a network
+[iwd] station name connect SSID
+</code></pre>
+<p>Finally run <code>archinstall</code>.</p>
+<pre><code class="language-sh">archinstall
+</code></pre>
+<p>Notes:
+0. Remove your USB disk to not interfere with lsbk during install.</p>
+<ol>
+<li>Use <code>us</code> keyboard layout but en_GB locale.</li>
+<li>Use ext4 filesystem for stability.</li>
+<li>Do not create a separate partition for <code>/home</code>.</li>
+<li>Make sure to copy wifi config to installation.</li>
+<li>Repeat a few times if the installation failed (yeah...)</li>
+</ol>
+</body>
+</html>

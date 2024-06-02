@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>2024-06-01</p>
+<h1>Avoid <code>char</code> with <code>getc</code></h1>
+<p>Using a <code>char</code> to represent the output of <code>getc</code> (get char) might sound like
+the right way to do it, but it is not.</p>
+<p>Let's show an example. First, create a binary file with the following content:</p>
+<pre><code>10101010 00000000 11111111 01010101 00001111 11000011
+# or in hex:
+AA00FF550FC3
+</code></pre>
+<p>This can be done in bash:</p>
+<pre><code class="language-sh">echo &quot;AA00FF550FC3&quot; | xxd -r -p &gt; /tmp/file.bin
+</code></pre>
+<p>You can confirm the content by using xxd:</p>
+<pre><code class="language-sh">xxd -b /tmp/file.bin
+</code></pre>
+<p>And a dumb code that will:</p>
+<ul>
+<li>Read one byte using <code>getc</code>.</li>
+<li>Print the byte.</li>
+</ul>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main() {
+  FILE* fp = fopen(&quot;/tmp/file.bin&quot;, &quot;rb&quot;);
+
+  char byte;
+  while ((byte = getc(fp)) != EOF) {
+    printf(&quot;byte: %x\n&quot;, byte);
+  };
+
+  fclose(fp);
+}
+</code></pre>
+<p>The expected result should have been:</p>
+<pre><code>byte: aa
+byte: 00
+byte: ff
+byte: 55
+byte: 0f
+byte: c3
+</code></pre>
+<p>But instead you'll get:</p>
+<pre><code>byte: aa
+byte: 00
+</code></pre>
+<p>This happens because the byte <code>11111111</code> equals <code>EOF</code> which is a macro that
+returns -1. This evaluation breaks the while loop.</p>
+<p>Instead, one should use either <code>int</code> or <code>uint8_t</code> to get the correct result.</p>
+<p>Note: The same is valid for <code>ungetc</code>!</p>
+</body>
+</html>

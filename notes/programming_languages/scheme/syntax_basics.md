@@ -28,6 +28,33 @@
 (let ((x 1) (y 3)) (+ x y)) ; == 4
 ```
 
+### Pairs
+
+Know as "tuples" in other languages, can be defined using the `cons` keyword
+which is short for "construct".
+
+```scm
+(define x (cons 1 2))
+
+; a list
+(define my_list (cons 1 (cons 2 (cons 3 4))))
+
+```
+
+The first argument can be fetched with the keyword `car` which is legacy from
+the IBM 704 days and means "Contents of Address part of Register".
+
+TO fetch the scond argument, we use `cdr` which means "Contents of Decrement
+part of Register"
+
+```scm
+(car x)
+1
+
+(cdr x)
+2
+```
+
 ## Conditionals
 
 Here are three different options:

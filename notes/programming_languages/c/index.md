@@ -1,4 +1,4 @@
-## Asm
+## ASM
 
 - [Calling assembly functions](programming_languages/c/calling_assembly_functions.md)
 - [Inline assembly](programming_languages/c/inline_assembly.md)
@@ -29,6 +29,10 @@
 
 - [Out of bounds array lookup](programming_languages/c/out_of_bounds_array_lookup.md)
 - [Out of bounds allocation](programming_languages/c/out_of_bounds_allocation.md)
+
+## Gotchas
+
+- [avoid char with getc](programming_languages/c/avoid_char_with_getc.md)
 
 ## Types
 
