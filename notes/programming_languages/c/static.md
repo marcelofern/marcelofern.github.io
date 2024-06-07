@@ -28,7 +28,6 @@ int main() {
   func();  // my_var = 3
   func();  // my_var = 4
   func();  // my_var = 5
-
   return 0;
 }
 ```
@@ -106,6 +105,68 @@ func:
 
 I am not sure why the alignment is set to 32 bytes here! Different array types
 such as `int`, `float`, `long long` are all yielding 32 bytes.
+
+## What about jump tables
+
+`static` can also be helpful to initialise jump tables.
+
+For example:
+
+```c
+unsigned int func(unsigned int idx) {
+  static unsigned int my_table[] = {10, 20, 30, 40};
+  return my_table[idx];
+}
+```
+
+Yields the assembly code:
+
+```asm
+func:
+  mov  edi, edi
+  lea  rax, my_table.0[rip]
+  mov  eax, DWORD PTR [rax+rdi*4]
+  ret
+  .size  func, .-func
+  .section  .rodata
+  .align 16
+  .type  my_table.0, @object
+  .size  my_table.0, 16
+my_table.0:
+  .long  10
+  .long  20
+  .long  30
+  .long  40
+```
+
+Note: Ignore the `mov edi, edi` instruction as it has a murky intention behind
+it. [source](http://web.archive.org/web/20240303170320/https://devblogs.microsoft.com/oldnewthing/20110921-00/?p=9583)
+
+Note 2: `my_table.0[rip]` is the relative address of my_table.0 to the
+current instruction pointer. [source](https://www.quora.com/How-does-AMD64-RIP-relative-addressing-work)
+
+Look what happens if we remove the `static` keyword:
+
+```asm
+func:
+  sub  rsp, 40
+  movdqa  xmm0, XMMWORD PTR .LC0[rip]
+  mov  edi, edi
+  mov  rax, QWORD PTR fs:40
+  mov  QWORD PTR 24[rsp], rax
+  xor  eax, eax
+  movaps  XMMWORD PTR [rsp], xmm0
+  mov  eax, DWORD PTR [rsp+rdi*4]
+  mov  rdx, QWORD PTR 24[rsp]
+  sub  rdx, QWORD PTR fs:40
+  jne  .L5
+  add  rsp, 40
+  ret
+```
+
+It is better to use `static` in this case, because the array does not need to
+be initiated in the stack for every call to the function and there are way less
+instructions for the CPU to run.
 
 ## What about threads
 

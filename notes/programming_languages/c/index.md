@@ -33,6 +33,7 @@
 ## Gotchas
 
 - [avoid char with getc](programming_languages/c/avoid_char_with_getc.md)
+- [printf evaluation order](programming_languages/c/printf_evaluation_order.md)
 
 ## Types
 

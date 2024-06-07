@@ -83,7 +83,6 @@ int main() {
   func();  // my_var = 3
   func();  // my_var = 4
   func();  // my_var = 5
-
   return 0;
 }
 </code></pre>
@@ -142,6 +141,54 @@ func2:
 </code></pre>
 <p>I am not sure why the alignment is set to 32 bytes here! Different array types
 such as <code>int</code>, <code>float</code>, <code>long long</code> are all yielding 32 bytes.</p>
+<h2>What about jump tables</h2>
+<p><code>static</code> can also be helpful to initialise jump tables.</p>
+<p>For example:</p>
+<pre><code class="language-c">unsigned int func(unsigned int idx) {
+  static unsigned int my_table[] = {10, 20, 30, 40};
+  return my_table[idx];
+}
+</code></pre>
+<p>Yields the assembly code:</p>
+<pre><code class="language-asm">func:
+  mov  edi, edi
+  lea  rax, my_table.0[rip]
+  mov  eax, DWORD PTR [rax+rdi*4]
+  ret
+  .size  func, .-func
+  .section  .rodata
+  .align 16
+  .type  my_table.0, @object
+  .size  my_table.0, 16
+my_table.0:
+  .long  10
+  .long  20
+  .long  30
+  .long  40
+</code></pre>
+<p>Note: Ignore the <code>mov edi, edi</code> instruction as it has a murky intention behind
+it. <a href="http://web.archive.org/web/20240303170320/https://devblogs.microsoft.com/oldnewthing/20110921-00/?p=9583">source</a></p>
+<p>Note 2: <code>my_table.0[rip]</code> is the relative address of my_table.0 to the
+current instruction pointer. <a href="https://www.quora.com/How-does-AMD64-RIP-relative-addressing-work">source</a></p>
+<p>Look what happens if we remove the <code>static</code> keyword:</p>
+<pre><code class="language-asm">func:
+  sub  rsp, 40
+  movdqa  xmm0, XMMWORD PTR .LC0[rip]
+  mov  edi, edi
+  mov  rax, QWORD PTR fs:40
+  mov  QWORD PTR 24[rsp], rax
+  xor  eax, eax
+  movaps  XMMWORD PTR [rsp], xmm0
+  mov  eax, DWORD PTR [rsp+rdi*4]
+  mov  rdx, QWORD PTR 24[rsp]
+  sub  rdx, QWORD PTR fs:40
+  jne  .L5
+  add  rsp, 40
+  ret
+</code></pre>
+<p>It is better to use <code>static</code> in this case, because the array does not need to
+be initiated in the stack for every call to the function and there are way less
+instructions for the CPU to run.</p>
 <h2>What about threads</h2>
 <p>In a multi-threaded environment, local static variables are shared across all
 threads. This may cause race conditions. For example:</p>
