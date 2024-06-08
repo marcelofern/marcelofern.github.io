@@ -65,7 +65,7 @@ the catch; that operation is used for zero'ing the most significant 32 bits of
 the register.
 
 It does not seem obvious, but the answer can be found in the x86 tour of Intel
-manuals (http://web.archive.org/web/20240415061928/http://x86asm.net/articles/x86-64-tour-of-intel-manuals/)
+manuals [source](http://web.archive.org/web/20240415061928/http://x86asm.net/articles/x86-64-tour-of-intel-manuals/)
 
 > **General-purpose Registers**
 > (...)
