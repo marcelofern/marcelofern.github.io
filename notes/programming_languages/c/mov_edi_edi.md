@@ -18,7 +18,8 @@ Which returned the following x86 assembly (compiled via gcc):
 
 ```asm
 func:
-  mov  edi, edi lea  rax, my_table.0[rip]
+  mov  edi, edi
+  lea  rax, my_table.0[rip]
   mov  eax, DWORD PTR [rax+rdi*4]
   ret
   .size  func, .-func
