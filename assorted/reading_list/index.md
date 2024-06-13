@@ -32,6 +32,7 @@ Reading list resources:
 ## History
 
 - Sapiens, a brief history of human kind - Yuval Noah Harari
+- Hackers: Heroes of the Computer Revolution by Steven Levy
 
 ## Design
 
@@ -44,3 +45,7 @@ Reading list resources:
 ## Mathematical Logic
 
 Godel, Escher, Bach: An Eternal Golden Braid - Douglas Hofstadter
+
+## Philosophy
+
+The Parallax View - Slavoj Zizek
