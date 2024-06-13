@@ -13,7 +13,7 @@
 - [`int` sign extension](programming_languages/c/int_sign_extension.md)
 - [Standards](programming_languages/c/standards.md)
 - [What is a struct](programming_languages/c/what_is_a_struct.md)
-- [mov edi, edi](programming_languages/c/mov_edi_edi.md)
+- [Function pointers](programming_languages/c/function_pointers.md)
 
 ## Keywords
 

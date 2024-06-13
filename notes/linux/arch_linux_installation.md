@@ -93,7 +93,7 @@ archinstall
 
 Notes:
 0. Remove your USB disk to not interfere with lsbk during install.
-1. Use `us` keyboard layout but en_GB locale.
+1. Use `us` keyboard layout and locale to avoid dmenu errors.
 2. Use ext4 filesystem for stability.
 3. Do not create a separate partition for `/home`.
 4. Make sure to copy wifi config to installation.

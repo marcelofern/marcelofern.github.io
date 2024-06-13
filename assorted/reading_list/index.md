@@ -40,3 +40,7 @@ Reading list resources:
 ## Learning
 
 - Get Better at Anything, Scott Young
+
+## Mathematical Logic
+
+Godel, Escher, Bach: An Eternal Golden Braid - Douglas Hofstadter

@@ -57,51 +57,32 @@
   <![endif]-->
 </head>
 <body>
-<p>Reading list resources:</p>
-<ul>
-<li><a href="www.doradolist.com">www.doradolist.com</a></li>
-<li><a href="https://www.reddit.com/r/eebooks/">reddit r/eebooks</a></li>
-</ul>
-<h2>Digital Circuits</h2>
-<ul>
-<li>Digital Integrated Circuits - Jan M. Rabaey et al.</li>
-</ul>
-<h2>Electronics</h2>
-<ul>
-<li>The Art of Electronics - Paul Horowitz et al.</li>
-<li>Fundamentals of Microelectronics - Behzad Razavi.</li>
-<li>Introduction to Circuit Synthesis and Design - Gabor C Temes et al.</li>
-<li>Digital Computer Electronics - Albert Paul Malvino</li>
-</ul>
-<h2>Computer Systems</h2>
-<ul>
-<li>Computer System a Programmer's Approach - Bryant O'Hallaron</li>
-<li>The Practice of Programming - Brian Kerninghan &amp; Rob Pike</li>
-<li>The UNIX programming environment - Brian K. &amp; Rob Pike</li>
-</ul>
-<h2>Programming Languages</h2>
-<ul>
-<li>Modern C - Jens Gustedt</li>
-<li>SEI CERT C Coding Standard by Carnegie Mellon University's Confluence.</li>
-<li>Embedded Systems with ARM Cortex-M Microcontrollers in Assembly Language and C.</li>
-</ul>
-<h2>Security</h2>
-<ul>
-<li>Practical Malware Analysis</li>
-</ul>
-<h2>History</h2>
-<ul>
-<li>Sapiens, a brief history of human kind - Yuval Noah Harari</li>
-</ul>
-<h2>Design</h2>
-<ul>
-<li>Ruined by design - Mike Monteiro</li>
-</ul>
-<h2>Learning</h2>
-<ul>
-<li>Get Better at Anything, Scott Young</li>
-</ul>
-<h2>Mathematical Logic</h2>
-<p>Godel, Escher, Bach: An Eternal Golden Braid - Douglas Hofstadter</p>
+<h1>2024-06-12</h1>
+<h2>Declaration</h2>
+<p>One of the most confusing aspects of a function pointer is its declaration.</p>
+<p>Take for example this silly function:</p>
+<pre><code class="language-c">long foo(int a, short b, float c) {
+    return a + b + c;
+}
+</code></pre>
+<p>The simplest way of declaring a function pointer to this function is by taking
+its signature:</p>
+<pre><code class="language-c">long foo(int, short, float);
+</code></pre>
+<p>And swapping the function name by <code>(*)</code></p>
+<pre><code class="language-c">long (*)(int, short, float);
+</code></pre>
+<p>Now after the <code>*</code> you pick the variable name that will hold that pointer:</p>
+<pre><code class="language-c">int main() {
+    long (*my_pointer)(int, short, float) = foo;
+    // This also works, the assembly is the same.
+    // long (*my_pointer)(int, short, float) = &amp;foo;
+}
+</code></pre>
+<p>And you can do the same when declarying a type for this function:</p>
+<pre><code class="language-c">typedef long (*my_type)(int, short, float);
+
+my_type f = foo;
+</code></pre>
 </body>
 </html>
