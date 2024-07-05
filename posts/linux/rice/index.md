@@ -1,24 +1,27 @@
-August 30, 2020
+Created: 2020-08-30
+Updated: 2024-07-06
 
 # Linux Rice
 
 ## Introduction
 
-What is a "linux rice"? When someone is "ricing" their unix system, they are
-making functional and visual customisations to their desktop. Those could be
-anything from changing the colour of a status bar to completely restructuring
-their computer environment.
+When someone is "ricing" their unix system, they are making functional and
+visual customisations to their desktop. These changes could be anything from
+changing the colour of a status bar to completely restructuring their computer
+environment.
 
 _**Why?**_
 
 These are my main reasons:
 
-- **Productivity**: You can customise your applications and keyboard shortcuts to
-  satisfy your work-flow.
-- **Performance**: You are in control of what gets installed on your application.
-  Strange background application no more.
-- **Privacy**: It is your system, you are not paying to use software that
-  deliberately spies on you.
+- **Productivity**: You can customise your applications and keyboard shortcuts
+  to satisfy your work-flow.
+- **Performance**: You are in control of what gets installed on your
+  application and not have to worry about unknown apps running on the
+  background.
+- **Privacy**: It is your system and the defaults in some distributions
+  can contain software that can spy on your behaviour like Canonical has done
+  in the past.
 - **Visual Satisfaction**: Whatever colour scheme you like.
 - **Because it is fun**.
 
@@ -30,18 +33,20 @@ These are my main reasons:
 
 ### arch linux
 
-Arch is a DIY linux distribution. This means that arch gives the user a minimal
-operational system (OS), delegating responsibility of packages installation to
-the user. I.e, no batteries included. A good understanding of linux is
-necessary to use this distro. Unless you are prepared to spend time learning
-fundamentals and reading documentation. Some of the big perks of using arch
-are:
+Arch gives the user a minimal operational system, delegating responsibility of
+most of the packages installation to the user. I.e, no batteries included.
+
+An OK understanding of linux is necessary to use this distro, you trully don't
+need much more than being confortable around the terminal these days. This is
+because everything you need to learn is already in the arch wiki.
+
+Some of the perks of using arch are:
 
 - Rolling releases
 - Rich user repository (AUR)
 - The fantastic Arch wiki
 - No corporations behind it (community support only)
-- Amazingly helpful community
+- Helpful community
 
 ### i3-gaps
 

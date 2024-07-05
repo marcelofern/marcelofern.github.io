@@ -1,6 +1,10 @@
-# Posts
+# Posts Index
 
-Categories:
+- [2024-05-08 Goodbye ZSH](posts/linux/goodbye_zsh/index.md)
+- [2023-08-22 Branchless Programming in CPP and Python](posts/cpp/branchless_programming/index.md)
+- [2020-08-30 Linux rice](posts/linux/rice/index.md)
+
+## Categories:
 
 - [C++](posts/cpp/index.md)
 - [From the transistor to the Web Browser](posts/from-the-transistor-to-the-web-browser/index.md)

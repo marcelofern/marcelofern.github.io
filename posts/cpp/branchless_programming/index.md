@@ -1,4 +1,8 @@
-August 22, 2023
+Created: 2023-08-22
+Updated: 2024-07-06
+
+This article talks about high-level theoretical concepts of branchless
+programming, along with examples of branchless programming in C++ and Python.
 
 ## What's branchless programming and why does it matter?
 
@@ -20,28 +24,28 @@ cycles.
 
 ## How does Instruction Pipelining work?
 
-The processor is one of the components present in a CPU. It is composed of
-multiple processor units. Each processor unit performs an instruction such as
-adding two numbers, comparing two numbers, jumping to a different part of a
-program, loading and storing data in memory, etc. Those operations are
-hardwired into the circuitry of the processor inside the CPU.
+The CPU is composed of multiple processor units. Each processor unit performs
+an instruction such as adding two numbers, comparing two numbers, jumping to a
+different part of a program, loading and storing data in memory, etc. Those
+operations are hardwired into the circuitry of the processor inside the CPU.
 
 When the CPU is asked to perform an instruction, it will receive an `opcode`,
 which is just a unique binary number that the CPU will decode into
 controlling signals that will orchestrate the behaviour of the CPU.
 
 The CPU executes an instruction by fetching it from memory (either the
-computer's memory or the CPU cache), decoding the `opcode`, executing the
-instruction itself in the processor, and storing it back to memory.
+computer's memory or the CPU cache), following up by decoding the `opcode`,
+executing the instruction itself in the processor, and storing it back to
+memory.
 
 In a nutshell, a pipeline is consisted of four stages: **fetch**, **decode**,
 **execute**, **write-back**.
 
 Each one of those stages will be handled by a circuit in the CPU. So whenever
-a instruction needs to be run, there are **4 steps until the result is finally
-stored in memory.**
+a instruction needs to be run, there are **4 high-level steps until the result
+is finally stored in memory.**
 
-## Analogy time
+## Pipeline analogy time
 
 Imagine you are going to a buffet restaurant with 4 different dishes. This is
 a peculiar restaurant, and you need to wait for the person in front of you to
@@ -61,11 +65,11 @@ This is how it looks visually (image borrowed from wikipedia):
 
 ![pipelining_happy_path](pipelining_happy_path.png)
 
-Now back to the buffet analogy. What happens if the person in front of you
-grabbed all the chips from the buffet plate, and if you had known that, you
-would go back and put another spoon of mashed potatos on your plate?
+What happens if the person in front of you in the buffet grabbed all the chips
+from the buffet plate, and if you had known that in advance, you would go back
+and put another spoon of mashed potatos on your plate?
 
-That happens a lot with the CPU when the next instruction depends on the
+That happens *a lot* in the CPU when the next instruction depends on the
 execution of the current one. In this case, the CPU needs to wait for the
 first instruction to resolve before executing the next one, and this incurs a
 time penalty.
@@ -182,12 +186,12 @@ max(int, int):
 ```
 
 In this case, the branchless C++ code fell apart due to the compiler being
-really good at optimisations, one of such optimisations is using branchless
-programming itself. However, this illustrates why it's important to
-actually see what the compiled code looks like. However, all things being
-equal, branchless code **will** be faster on an assembly level, and there will
-be many times where the compiler can't optimise the code (like when you have a
-`volatile` variables all over the show).
+really good at optimisations. One of such optimisations is using branchless
+programming itself! However, this illustrates why it's important to actually
+see what the compiled code looks like. However, all things being equal,
+branchless code **will** be faster on an assembly level, and there will be many
+times where the compiler can't optimise the code (like when you have `volatile`
+variables all over).
 
 ## What about interpreted languages?
 
@@ -348,7 +352,6 @@ having double `COMPARE_OP` instructions. The other differences here are:
    speedup on microbenchmarks. */
 ```
 
-
 In conclusion this kind of branchless optimisation does not quite work with
-Python. However, due to time I haven't really analysed other branchless
+Python. However, due to time, I haven't really analysed other branchless
 techniques that are superior in many situations like bit masking.

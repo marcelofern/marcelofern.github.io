@@ -1,4 +1,5 @@
-2024-05-08
+Created: 2024-05-08
+Updated: 2024-07-06
 
 ## Goodbye ZSH
 
@@ -17,7 +18,7 @@ rid of `oh-my-zsh` first.
 ## oh-my-zsh
 
 One may think that oh-my-zsh is zsh itself, but that is not true.
-oh-my-zsh is simply a plugin manager for zsh.
+oh-my-zsh is simply a "plugin manager" for zsh.
 
 The oh-my-zsh package promises wonders. From their website:
 
@@ -36,10 +37,13 @@ Even though this isn't a problem in itself, as those plugins are just text
 files that will hang around in your system, they are still there when you
 didn't ask for them.
 
-This is something that I personally have been trying to reduce in my system.
+This is something that I personally have been trying to reduce in my system as
+the burden of maintenance rises with every package added.
 
 The less unused files, dependencies, libs, etc, the less risk there is of
-something crashing, requiring updates, or being a surface for cyber attacks.
+something crashing, requiring updates, or being a security risk. This is
+particularly relevant as on-my-zsh plugins are just a bunch of zsh shell
+scripts.
 
 But this is just me preaching a particular philosophy. A more important
 practical problem, is around the bash `aliases` that oh-my-zsh brings with it.
@@ -62,7 +66,9 @@ alias hadat='heroku addons:attach'
 
 This might not be a problem unless you have a crashing alias. But still, did
 you know you had all those aliases available? Are them really that useful to
-you? Have you come across them accidentally and became surprised?
+you? Have you come across them accidentally and became surprised? The `helper`
+alias to `man` particularly bothers me. But also, I don't want heroku aliases
+in my user land.
 
 Even if some aliases or plugins are useful, you can copy the ones you want, and
 just plug into your `.bashrc` file.
@@ -71,8 +77,9 @@ In the end of the day oh-my-zsh plugins are just bash files written in zsh
 syntax, many of which are compatible with plain bash, or can be easily ported.
 
 There is no versioning control or anything fancy like that. Just files. This is
-one of the reasons many people won't categorise oh-my-zsh as a plug-in manager,
-as it lacks so many features to that end.
+one of the reasons many people won't categorise oh-my-zsh as a plug-in manager
+(and why it put it between quote marks when I mentioned it earlier), as it
+lacks so many features to that end.
 
 For me it comes down to: I don't need this technology, and it does not add much
 value to my daily use of my computer, therefore it must go.
@@ -100,7 +107,7 @@ ls **/*bar
 
 There are more advanced filename-generation patterns, but you get the idea.
 
-zsh also allows you to `cd` into a directory just by typing its name
+`zsh` also allows you to `cd` into a directory just by typing its name
 
 ```sh
 % cd /
@@ -110,23 +117,13 @@ zsh also allows you to `cd` into a directory just by typing its name
 /bin
 ```
 
-One very good feature is that zsh allows you to turn vi mode on via:
-
-```sh
-bindkey -v
-```
-
-We will talk more about this later.
-
 The official introduction page has a lot more examples of what is available.
 You can check it [here](http://web.archive.org/web/20240503012616/https://zsh.sourceforge.io/Intro/intro_toc.html).
 
-Apart from the vim mode, I must say that I'm not very keen on any of the extra
-functionalities.
-
-More over, some functionalities like expanding `/u/lo/b` to `/usr/local/bin`
-are things that I do not want to have in my shell, and they strike me as bad
-patterns.
+Some functionalities like expanding `/u/lo/b` to `/usr/local/bin` are things
+that I do not want to have in my shell, and they strike me as bad patterns due
+to the high risk of doing the wrong matching and expanding to the wrong dir
+or file.
 
 But the biggest problem for me is that the zsh scripting language adds way too
 many non-POSIX compliant features that end up confusing me a lot. I always have
@@ -134,10 +131,11 @@ to look up the syntax to make sure my zsh script isn't going to be flawed in
 another environment that doesn't use zsh due to invalid syntax errors.
 
 This diminishes my ability to write good portable scripts.
+
 Part of this is skill-issue on my side (everything is!) as we know every
 bash script should be POSIX compliant (joking, not even bash is POSIX
 compliant), but nonetheless, for newcomers like I once was, picking up the
-shell the looked the most "cool" was part of a factor for picking up a shell.
+shell that looked the most "cool" was part of a factor for picking up a shell.
 
 This type of problem is more pronounced for me because I have several bash
 scripts that I created overtime with zsh scripting not even knowing I was using
@@ -182,7 +180,11 @@ one less feature I need from the shell!
 Most terminal emulators have some form of emacs or vi key bindings these days,
 so this isn't something necessary for a shell to support.
 
+But that said, I can still turn vi mode on bash with `set -o vi`, so you can
+choose between using vi mode on your shell or on your terminal.
+
 And that is pretty much it.
+
 Nothing fancy - just getting rid of new technology that doesn't aggregate value
 in my day-to-day activities.
 
@@ -194,3 +196,7 @@ Granted, I haven't had any bad experiences with zsh, but that alone doesn't
 mean I should re-check my previous assumptions and switch a particular
 technology for something better (or just pick the boring tech that has always
 been there to begin with).
+
+I have no plans to go more basic and further switch to `sh` at this stage, but
+I will be looking at `dash` next to get the sweet performance enhancements and
+something that is more POSIX compliant than bash.

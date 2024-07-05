@@ -57,7 +57,10 @@
   <![endif]-->
 </head>
 <body>
-<p>August 22, 2023</p>
+<p>Created: 2023-08-22
+Updated: 2024-07-06</p>
+<p>This article talks about high-level theoretical concepts of branchless
+programming, along with examples of branchless programming in C++ and Python.</p>
 <h2>What's branchless programming and why does it matter?</h2>
 <p>A branchless program is a program that doesn't include any conditional
 operator (<code>if</code>, <code>else</code>, <code>switch</code>, ...).</p>
@@ -72,23 +75,23 @@ incorrect, the CPU discards the instructions previously read, and read the
 new instruction set for the correct path. This takes time and valuable clock
 cycles.</p>
 <h2>How does Instruction Pipelining work?</h2>
-<p>The processor is one of the components present in a CPU. It is composed of
-multiple processor units. Each processor unit performs an instruction such as
-adding two numbers, comparing two numbers, jumping to a different part of a
-program, loading and storing data in memory, etc. Those operations are
-hardwired into the circuitry of the processor inside the CPU.</p>
+<p>The CPU is composed of multiple processor units. Each processor unit performs
+an instruction such as adding two numbers, comparing two numbers, jumping to a
+different part of a program, loading and storing data in memory, etc. Those
+operations are hardwired into the circuitry of the processor inside the CPU.</p>
 <p>When the CPU is asked to perform an instruction, it will receive an <code>opcode</code>,
 which is just a unique binary number that the CPU will decode into
 controlling signals that will orchestrate the behaviour of the CPU.</p>
 <p>The CPU executes an instruction by fetching it from memory (either the
-computer's memory or the CPU cache), decoding the <code>opcode</code>, executing the
-instruction itself in the processor, and storing it back to memory.</p>
+computer's memory or the CPU cache), following up by decoding the <code>opcode</code>,
+executing the instruction itself in the processor, and storing it back to
+memory.</p>
 <p>In a nutshell, a pipeline is consisted of four stages: <strong>fetch</strong>, <strong>decode</strong>,
 <strong>execute</strong>, <strong>write-back</strong>.</p>
 <p>Each one of those stages will be handled by a circuit in the CPU. So whenever
-a instruction needs to be run, there are <strong>4 steps until the result is finally
-stored in memory.</strong></p>
-<h2>Analogy time</h2>
+a instruction needs to be run, there are <strong>4 high-level steps until the result
+is finally stored in memory.</strong></p>
+<h2>Pipeline analogy time</h2>
 <p>Imagine you are going to a buffet restaurant with 4 different dishes. This is
 a peculiar restaurant, and you need to wait for the person in front of you to
 go through all the 4 dishes and pay for it before you can go down and start
@@ -102,10 +105,10 @@ first instruction is decoded and starts being executed, now the second one
 starts being decoded, and a third one is fetched, and so on so forth...</p>
 <p>This is how it looks visually (image borrowed from wikipedia):</p>
 <p><img src="pipelining_happy_path.png" alt="pipelining_happy_path"></p>
-<p>Now back to the buffet analogy. What happens if the person in front of you
-grabbed all the chips from the buffet plate, and if you had known that, you
-would go back and put another spoon of mashed potatos on your plate?</p>
-<p>That happens a lot with the CPU when the next instruction depends on the
+<p>What happens if the person in front of you in the buffet grabbed all the chips
+from the buffet plate, and if you had known that in advance, you would go back
+and put another spoon of mashed potatos on your plate?</p>
+<p>That happens <em>a lot</em> in the CPU when the next instruction depends on the
 execution of the current one. In this case, the CPU needs to wait for the
 first instruction to resolve before executing the next one, and this incurs a
 time penalty.</p>
@@ -198,12 +201,12 @@ assembly code is worse as the compiler can't optimise it further:</p>
         ret
 </code></pre>
 <p>In this case, the branchless C++ code fell apart due to the compiler being
-really good at optimisations, one of such optimisations is using branchless
-programming itself. However, this illustrates why it's important to
-actually see what the compiled code looks like. However, all things being
-equal, branchless code <strong>will</strong> be faster on an assembly level, and there will
-be many times where the compiler can't optimise the code (like when you have a
-<code>volatile</code> variables all over the show).</p>
+really good at optimisations. One of such optimisations is using branchless
+programming itself! However, this illustrates why it's important to actually
+see what the compiled code looks like. However, all things being equal,
+branchless code <strong>will</strong> be faster on an assembly level, and there will be many
+times where the compiler can't optimise the code (like when you have <code>volatile</code>
+variables all over).</p>
 <h2>What about interpreted languages?</h2>
 <p>Many interpreted languages don't have the cleverness for optimisation of a GCC
 compiler, and in many cases, code ran by the virtual machine is murky to the
@@ -340,7 +343,7 @@ someone tried to optimise int summation <a href="https://github.com/python/cpyth
    speedup on microbenchmarks. */
 </code></pre>
 <p>In conclusion this kind of branchless optimisation does not quite work with
-Python. However, due to time I haven't really analysed other branchless
+Python. However, due to time, I haven't really analysed other branchless
 techniques that are superior in many situations like bit masking.</p>
 </body>
 </html>
