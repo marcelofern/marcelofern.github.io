@@ -57,7 +57,8 @@
   <![endif]-->
 </head>
 <body>
-<p>April 15, 2023</p>
+<p>Created: 2023-04-15
+Updated: 2024-07-06</p>
 <h2>Introduction</h2>
 <p>SOLID is an acronym coined by Robert C. Martin (also known as uncle Bob),
 particularly focused at making Object Oriented Programming designs easier to
@@ -80,8 +81,6 @@ developing new changes.</li>
 </ul>
 <p>The general expectation set by Robert C. Martin is that if you follow the SOLID
 principles your code will experience less software rot.</p>
-<p>However, my own expectation for this article is to provide satisfactory
-examples showing how SOLID can actually become <strong>the cause</strong> of software rot.</p>
 <h2>SOLID</h2>
 <p>The 5 principles of object oriented <strong>class</strong> design (as called by the paper),
 are:</p>
@@ -107,8 +106,9 @@ perfect code doesn't need to change, but only be <em>extended</em>.</p>
 extended whilst keeping its original elegance and efficiency. If that's
 materialised, the developer can be said to be following the OPC principle.</p>
 <p>You probably can see where this is going by my wording (&quot;perfect code&quot;,
-whatever that means). But let's not diverge from the theme just yet, we will go
-through an example of code provided by Martin that violates the OPC principle:</p>
+whatever that actually means). But let's not diverge from the theme just yet,
+we will go through an example of code provided by Martin that violates the OPC
+principle:</p>
 <pre><code class="language-cpp">struct Modem {
     enum Type {hayes, courrier, ernie) type;
 };
@@ -139,9 +139,10 @@ void LogOn(Modem&amp; m, string&amp; pno, string&amp; user, string&amp; pw) {
     // ...you get the idea
 }
 </code></pre>
-<p>The <code>LogOn</code> function violates OPC because its inner code needs to change every
-time a new modem is added. Moreover, every modem type depends on the <code>struct Modem</code>. Therefore if we need to add a new type of modem to that struct, all the
-existing modems need to be recompiled.</p>
+<p>The <code>LogOn</code> function violates Martin's OPC because its inner code needs to
+change every time a new modem is added. Moreover, every modem type depends on
+the <code>struct Modem</code>. Therefore if we need to add a new type of modem to that
+struct, all the existing modems need to be recompiled.</p>
 <p>So how do we make this code better? According to Martin:</p>
 <blockquote>
 <p>Abstraction is the key to the OCP</p>
@@ -149,14 +150,12 @@ existing modems need to be recompiled.</p>
 <p>There're a few possible abstraction techniques that conform to OPC. Let's
 follow the first one Martin provides, <strong>Dynamic Polymorphism</strong>.</p>
 <h4>Dynamic Polymorphism</h4>
-<p>First of all, poly means <em>many</em> and morphism means <em>forms</em>. Many forms. In
-Object Oriented Programming this means we will have an abstract class with
+<p>In Object Oriented Programming this means we will have an abstract class with
 abstract methods (virtual functions), and concrete child classes implementing
 the actual code for each method.</p>
-<p>Now we add the word &quot;Dynamic&quot; in the bake, thus <strong>Dynamic Polymorphism</strong>. Here
-dynamic means that the form (concrete class implementation) is found during run
-time. Putting it all together and rewriting the code above, we end up with
-something like the example provided in Martin's paper:</p>
+<p>Here the word &quot;Dynamic&quot; means that the form (concrete class implementation) is
+found during run time. Putting it all together and rewriting the code above, we
+end up with something like the example provided in Martin's paper:</p>
 <pre><code class="language-cpp">class Modem {
 public:
     virtual void Dial(const string&amp; pno) = 0;
@@ -168,8 +167,8 @@ void LogOn(Modem&amp; m, string&amp; pno, string&amp; user, string&amp; pw) {
     // you get the idea.
 }
 </code></pre>
-<p>Now the class <code>Modem</code> is closed for modification. To use the LogOn function,
-you need code like this:</p>
+<p>Now the class <code>Modem</code> is closed for modification when we need to add new types
+of modems. To use the LogOn function, you need code like this:</p>
 <pre><code class="language-cpp">class Hayes : public Modem {
 public:
     virtual void Dial(const std::string&amp; pno) {
@@ -187,9 +186,8 @@ int main() {
 <p>Now that we see the whole picture we can tell that the function <code>LogOn</code> calls
 the method <code>Dial</code> on the child instance. This child instance is only
 available at runtime. Note that Martin omits this initialisation code in his
-original paper. He also does not discuss the downsides of this approach.
-However, I don't think we should toss it away too quickly. Let's critique the
-example a little bit before moving on.</p>
+original paper. He also does not discuss the downsides of this approach.</p>
+<p>However, I don't think we should toss this example away too quickly.</p>
 <p>We know for a fact that when types are only resolved at runtime our code
 becomes slower. But why? For each class that inherits virtual functions the
 compiler creates a <code>vtable</code>. A <code>vtable</code> is essentially a table of function
@@ -199,7 +197,7 @@ object, the code looks at the appropriate function pointer on the object vtable
 and then calls the function through that pointer.</p>
 <p>This all means that by using <strong>Dynamic polymorphism</strong> our code requires
 an additional level of indirection for <em>each</em> virtual function call, and the
-memory footprint of objects will increase program memory usage.</p>
+memory footprint of objects will increase program memory usage too.</p>
 <p>Furthermore, the given example is a simplistic one. In cases where dynamic
 polymorphism is overused, the code may have convoluted inheritance
 hierarchies. Such complexity impairs compiler optimization as virtual function
@@ -207,7 +205,7 @@ calls aren't assignable until runtime.</p>
 <p>You might be thinking that the code above looks clean and that there's no
 reason to not do it. After all, reduced performance and more memory usage is
 a fair price to pay for cleaner code,  right? Well. What if we didn't have
-to pay this price and still have &quot;clean code&quot; (whatever that means)?</p>
+to pay this price and still have &quot;clean code&quot;?</p>
 <p>We will get there, but to keep things fair we need to go through another
 abstraction example given by Martin.</p>
 <h4>Static Polymorphism</h4>
@@ -224,7 +222,7 @@ void LogOn(MODEM&amp; m, string&amp; pno, string&amp; user, string&amp; pw) {
 </code></pre>
 <p>This looks alright, but is this a real improvement? What is the trade off?</p>
 <p>Each time a template is instantiated a new copy of the code is created. This
-is how compilers make generic programming type safe at compiling time. The more
+is how compilers make generic programming type-safe at compiling time. The more
 instantiations your code has, the larger your executable becomes, and the
 longer compilation takes.</p>
 <p>This all means that we are trading runtime performance for compile time
@@ -233,7 +231,8 @@ didn't have to?</p>
 <h4>Addressing the open-closed principle</h4>
 <p>Martin's original argument stressed the following:</p>
 <ol>
-<li>The dependency between the Modem struct and its implementation structs is bad.</li>
+<li>The dependency between the Modem struct and its implementation structs is
+bad.</li>
 </ol>
 <p>My problem with this assertion is that it sounds like a straw man fallacy. You
 absolutely don't need to create one struct for each type of modem. Let's fix
@@ -277,19 +276,65 @@ modem. Using the <code>switch</code> above you'd have to change the LogOn functi
 recompile it. You will also need to recompile everything that depends on the
 LogOn function, and that can be a lot. If you were using polymorphism, you just
 needed to add a new type (potentially in a new file), and you would need to
-only compile one single file. Looks good, right?</p>
-<p>But what if you need to add a new functionality in the abstract class? In the
+only compile one single file plus the place where it is instantiated (and
+everything that depends on that).</p>
+<p>But what if you need to add new functionality in the abstract class? In the
 polymorphism case you'd need to add a new function for every single type, and
-that could be a lot. Differently, in the <code>switch</code> case, you could add a new
-function (potentially in a new file) and you only need to compile that one
-single file.</p>
+that would induce a lot of recompilation across the project for a fairly use
+piece of code.</p>
+<p>Differently, in the <code>switch</code> case, you could add a new function (potentially in
+a new file) and you only need to compile that one single file.</p>
+<p>Someone might argue that a potential downside from the <code>switch</code> approach is
+that when a new type of Modem is added, you need to track all the functions
+that have a <code>switch (m.type)</code> to change their code, and this can induce human
+error.</p>
+<p>I would tend to agree. However, compiler warnings will let you know of all
+these use cases that are missing a switch handle. For example:</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+enum ModemType { HAYES, COURRIER, ERNIE };
+
+struct Modem {
+    enum ModemType type;
+};
+
+void LogOn(struct Modem* m) {
+  switch (m-&gt;type) {
+    // Note how we are only handling HAYES and
+    // forgot to handle COURRIER and ERNIE.
+    case HAYES:
+      printf(&quot;LogOn HAYES&quot;);
+      break;
+  }
+}
+
+int main() {
+  struct Modem m = {HAYES};
+  LogOn(&amp;m);
+  return 0;
+}
+</code></pre>
+<p>If I try to run this code with:</p>
+<pre><code class="language-sh">gcc -Wall &lt;file_name&gt; -o /tmp/a.o
+</code></pre>
+<p>I get the following error:</p>
+<pre><code class="language-c">/tmp/main.c: In function ‘LogOn’:
+/tmp/main.c:10:3: warning: enumeration value ‘COURRIER’ not handled in switch [-Wswitch]
+   10 |   switch (m-&gt;type) {
+      |   ^~~~~~
+/tmp/main.c:10:3: warning: enumeration value ‘ERNIE’ not handled in switch [-Wswitch]
+</code></pre>
+<p>In other words, the compile catches this mistake for us.</p>
 <p>In conclusion, this design choice will determine what will be easier and what
 will be harder for your program. Ask yourself the question: &quot;Do I want it to be
 easier to add more functionality to my program, or do I prioritise adding more
-types?&quot;. The answer will dictate what is best on your situation. Polymorphism
-isn't a silver bullet that will always make your code OPC compliant. In fact,
-the more functional your code looks like, the greater the penalty of using
-polymorphism.</p>
+types?&quot;. The answer will dictate what is best for your situation.</p>
+<p>Polymorphism isn't a silver bullet that will always make your code OPC
+compliant. In fact, the more functional your code looks like, the greater the
+penalty of using polymorphism.</p>
+<p>In my professional experience, I spend much more time adding new functionality
+to existing software than I spend adding new types. So for me, it would be
+inadequate to prefer an architecture that focuses on types.</p>
 <h3>The Liskov Substitution Principle (LSP)</h3>
 <p>This principle states that an object (such as an abstract class), may be
 replaced by a sub-object (such as a child class) without breaking the program.</p>
@@ -389,5 +434,77 @@ implementation.</p>
 <p>Be suspicious of base classes of which there is only one derived class.</p>
 </blockquote>
 <h2>Single Responsibility Principle (SRP)</h2>
+<p>This principle wasn't included in the original publication I linked above, and
+more details can be found in this blog post from <a href="http://web.archive.org/web/20240328163818/https://blog.cleancoder.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html">clean
+coder</a>.</p>
+<p>This principle builds up on the &quot;Separation of Concerns&quot; term that was
+popularised in a famous article &quot;On the role of scientific thought&quot; by Dijkstra
+<a href="http://web.archive.org/web/20221104003446/https://www.cs.utexas.edu/~EWD/ewd04xx/EWD447.PDF">source</a></p>
+<p>The principle can be summarised as:</p>
+<blockquote>
+<p>The Single Responsibility Principle (SRP) states that each software module
+should have one and only one reason to change.</p>
+</blockquote>
+<p>The definition lacks specification and my major criticism here is the
+specification itself. What is a reasonable &quot;reason to change&quot;?</p>
+<p>Martin gives more information on the blog post linked about, saying:</p>
+<blockquote>
+<p>Imagine you took your car to a mechanic in order to fix a broken electric
+window. He calls you the next day saying it’s all fixed. When you pick up
+your car, you find the window works fine; but the car won’t start. It’s not
+likely you will return to that mechanic because he’s clearly an idiot.
+...
+That’s how customers and managers feel when we break things they care about
+that they did not ask us to change.
+...
+Another wording for the Single Responsibility Principle is:
+Gather together the things that change for the same reasons. Separate those
+things that change for different reasons.
+...
+However, as you think about this principle, remember that the reasons for
+change are people. It is people who request changes. And you don’t want to
+confuse those people, or yourself, by mixing together the code that many
+different people care about for different reasons.</p>
+</blockquote>
+<p>I agree that mixing code from different teams with different responsibilities
+isn't ideal. I would call that unnecessary coupling.</p>
+<p>It is obviously bad, for example, for a change in a back-end billing engine of
+a bank to affect its front-end application and display data in a different
+format.</p>
+<p>Although I think that the definition isn't ideal, the principle here does sound
+like the most reasonable in the list.</p>
+<h2>Conclusions</h2>
+<p>In my opinion, those shouldn't be called &quot;principles&quot;. The word <em>principle</em> as
+it is defined below should be reserved for terms that are really hard to
+debunk:</p>
+<blockquote>
+<p>Principle: a fundamental truth or proposition that serves as the foundation
+for a system of belief or behaviour or for a chain of reasoning. &quot;the basic
+principles of justice&quot;</p>
+</blockquote>
+<p>Most of what we have seen here fit within the saying &quot;different horses for
+different courses&quot;. I do appreciate that when those principles were written
+OOP was all the rage and many people were investing resources in it and many
+books were written. So I can accept that they were the single truth at the
+time.</p>
+<p>However, having many decades passed since the inception of those principles,
+many other things have improved in the industry. I feel like we have moved
+forward as a whole.</p>
+<p>OOP is not considered <strong>the only way</strong> of developing any more, though still
+very popular. Polymorphism, inheritance, and most importantly multi-level
+inheritance is seen with bad eyes. More and more people have come to appreciate
+composition over inheritance.</p>
+<p>The classic book example of inheritance Shape-&gt;Ellipsis-&gt;Circle is very hard to
+derive in the real world in a non-forceful way. Inheritance and thus
+polymorphism has become a way of getting generic functionality from parent
+classes <strong>instead of sharing identities</strong> between classes of the same base
+implementation, and thus much tangled code has been created so that unrelated
+classes could get the same shared behaviour. I feel like a lot of people
+nowadays have scars to prove that.</p>
+<p>Nonetheless, I feel positive that Martin has created these principles even
+though I don't agree with them fully. It is easy to look back on the past and
+point fingers about decisions that don't apply to the present. I think that
+overall the popularity of SOLID and the outcome of having more people thinking
+about designs and their own set of principles is a positive thing.</p>
 </body>
 </html>
