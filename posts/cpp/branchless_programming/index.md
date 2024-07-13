@@ -1,5 +1,9 @@
+# Branchless Programming Experiments in C++ and Python
+
+```
 Created: 2023-08-22
 Updated: 2024-07-06
+```
 
 This article talks about high-level theoretical concepts of branchless
 programming, along with examples of branchless programming in C++ and Python.

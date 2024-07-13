@@ -1,5 +1,9 @@
+# A Critique of SOLID
+
+```
 Created: 2023-04-15
 Updated: 2024-07-06
+```
 
 ## Introduction
 

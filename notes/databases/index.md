@@ -6,6 +6,7 @@
 
 - [Indexing for LIKE](databases/indexing_for_like.md)
 - [Concurrent index during vacuum](databases/concurrent_index_during_vacuum.md)
+- [Postgres BRIN index](databases/postgres_brin_index.md)
 
 ## Locks
 

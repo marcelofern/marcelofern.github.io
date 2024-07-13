@@ -1,7 +1,9 @@
+# Linux Rice
+
+```
 Created: 2020-08-30
 Updated: 2024-07-06
-
-# Linux Rice
+```
 
 ## Introduction
 

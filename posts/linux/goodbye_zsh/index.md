@@ -1,7 +1,9 @@
+# Goodbye ZSH
+
+```
 Created: 2024-05-08
 Updated: 2024-07-06
-
-## Goodbye ZSH
+```
 
 After 7 years using
 [zsh](http://web.archive.org/web/20240503162424/https://www.zsh.org/) and
