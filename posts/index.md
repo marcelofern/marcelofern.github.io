@@ -1,4 +1,3 @@
-
 # Posts Index
 
 Also available via [RSS feed](https://marcelofern.com/feed).

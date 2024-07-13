@@ -5,12 +5,11 @@ ones in this list to be good enough to be shared with the public.
 
 ## Computing
 
-- Bier, Jonathan - The Blocksize War
 - Burkov, Andriy - The Hundred Page Machine Learning Book
-- Duntemann, Jeff - x64 Assembly Language Step-by-step. ([review](assorted/library/x64-assembly-language/index.md))
-- Flanagan, David - JavaScript, the definitive guide. ([review](assorted/library/javascript-the-definitive-guide/index.md))
+- Duntemann, Jeff - x64 Assembly Language Step-by-step. ([notes](assorted/library/x64-assembly-language/index.md))
+- Flanagan, David - JavaScript, the definitive guide. ([notes](assorted/library/javascript-the-definitive-guide/index.md))
 - Hunt, Andrew and Thomas, David - Pragmatic Programmer. ([review](assorted/library/pragmatic-programmer/index.md))
-- Ierusalimschy Roberto - Programming in Lua. ([review](assorted/library/programming-in-lua/index.md))
+- Ierusalimschy Roberto - Programming in Lua. ([notes](assorted/library/programming-in-lua/index.md))
 - Martin, C. Robert - Clean Architecture.
 - Martin, C. Robert - Clean Code.
 - Martin, C. Robert - Clean Coder.
@@ -22,8 +21,6 @@ ones in this list to be good enough to be shared with the public.
 - Poulton, Nigel - Docker Deep Dive
 - Ritchie, Dennis and Kernighan, Brian - The C Programming Language
 - Seacord, Robert - Effective C
-- Stallman, Richard - Free as in freedom ([review](assorted/library/free-as-in-freedom/index.md))
-- Torvalds, Linus - Just for Fun ([review](assorted/library/just-for-fun/index.md))
 
 ## Mathematics
 
@@ -44,6 +41,7 @@ ones in this list to be good enough to be shared with the public.
 
 ## History
 
+- Bier, Jonathan - The Blocksize War
 - Collins, Michael and Price, Matthew - The Story of Christianity.
 - Reader's Digest - Jesus and His Times.
 - Kerninghan, Brian - UNIX A History and a Memoir ([review](assorted/library/unix-a-history-and-a-memoir/index.md))
@@ -78,6 +76,12 @@ ones in this list to be good enough to be shared with the public.
 
 ## Health
 - Walker, Matthew - Why We Sleep. ([review](assorted/library/why-we-sleep/index.md))
+
+## General Technology
+
+- Newport, Cal - Digital Minimalism ([review](assorted/library/digital-minimalism/index.md))
+- Stallman, Richard - Free as in freedom ([review](assorted/library/free-as-in-freedom/index.md))
+- Torvalds, Linus - Just for Fun ([review](assorted/library/just-for-fun/index.md))
 
 ## Culture
 
