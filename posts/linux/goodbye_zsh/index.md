@@ -53,6 +53,7 @@ Many of each are for applications you may not even have installed.
 
 For example, these are some of the aliases available with oh-my-zsh:
 
+
 ```sh
 alias help='man'
 alias _='sudo '
