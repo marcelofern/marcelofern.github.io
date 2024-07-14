@@ -1,0 +1,1018 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xml:lang="en-US" xmlns="http://www.w3.org/2005/Atom">
+  <title>Marcelo Fernandes</title>
+  <link rel="alternate" type="text/html" href="https://marcelofern.com"/>
+  <link rel="self" type="application/atom+xml" href="https://marcelofern.com/feed"/>
+  <updated>2003-12-13T18:30:02Z</updated>
+  <author>
+    <name>Marcelo Fernandes</name>
+    <email>marceelofernandes@gmail.com</email>
+    <uri>https://marcelofern.com</uri>
+  </author>
+  <id>tag:marcelofern.com,2024:/feed</id>
+<entry><title>Goodbye ZSH</title><link href="https://www.marcelofern.com/linux/goodbye_zsh/index.html"/><id>tag:marcelofern.com,2024-05-08:/linux/goodbye_zsh/index.html</id><content type="html">&lt;h1&gt;Goodbye ZSH&lt;/h1&gt;
+&lt;pre&gt;&lt;code&gt;Created: 2024-05-08
+Updated: 2024-07-06
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After 7 years using
+&lt;a href=&quot;http://web.archive.org/web/20240503162424/https://www.zsh.org/&quot;&gt;zsh&lt;/a&gt; and
+&lt;a href=&quot;http://web.archive.org/web/20240501165521/https://ohmyz.sh/&quot;&gt;oh-my-zsh&lt;/a&gt;, I&#x27;ve
+completely ditched both of them today.&lt;/p&gt;
+&lt;p&gt;I would like to state at the top that there isn&#x27;t anything inherently bad or
+wrong with zsh and oh-my-zsh. It is just that these technologies don&#x27;t fit well
+within my way of doing things, and have become unnecessary over time.&lt;/p&gt;
+&lt;p&gt;There are many reasons for this, but I will start with the reasons for getting
+rid of &lt;code&gt;oh-my-zsh&lt;/code&gt; first.&lt;/p&gt;
+&lt;h2&gt;oh-my-zsh&lt;/h2&gt;
+&lt;p&gt;One may think that oh-my-zsh is zsh itself, but that is not true.
+oh-my-zsh is simply a &amp;quot;plugin manager&amp;quot; for zsh.&lt;/p&gt;
+&lt;p&gt;The oh-my-zsh package promises wonders. From their website:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Oh My Zsh will not make you a 10x developer...but you may feel like one!&lt;/p&gt;
+&lt;p&gt;Once installed, your terminal shell will become the talk of the town or your
+money back! With each keystroke in your command prompt, you&#x27;ll take advantage
+of the hundreds of powerful plugins and beautiful themes. Strangers will come
+up to you in cafés and ask you, &amp;quot;that is amazing! are you some sort of
+genius?&amp;quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;oh-my-zsh comes with hundreds of plugins pre-installed, many of which you will
+never use or hear of, and that includes themes as well.&lt;/p&gt;
+&lt;p&gt;Even though this isn&#x27;t a problem in itself, as those plugins are just text
+files that will hang around in your system, they are still there when you
+didn&#x27;t ask for them.&lt;/p&gt;
+&lt;p&gt;This is something that I personally have been trying to reduce in my system as
+the burden of maintenance rises with every package added.&lt;/p&gt;
+&lt;p&gt;The less unused files, dependencies, libs, etc, the less risk there is of
+something crashing, requiring updates, or being a security risk. This is
+particularly relevant as on-my-zsh plugins are just a bunch of zsh shell
+scripts.&lt;/p&gt;
+&lt;p&gt;But this is just me preaching a particular philosophy. A more important
+practical problem, is around the bash &lt;code&gt;aliases&lt;/code&gt; that oh-my-zsh brings with it.
+Many of each are for applications you may not even have installed.&lt;/p&gt;
+&lt;p&gt;For example, these are some of the aliases available with oh-my-zsh:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;alias help=&#x27;man&#x27;
+alias _=&#x27;sudo &#x27;
+alias :3=&#x27;echo&#x27;
+alias dud=&#x27;du -d 1 -h&#x27;
+alias drm=&#x27;docker container rm&#x27;
+alias p=&#x27;ps -f&#x27;
+alias rm=&#x27;rm -i&#x27;
+alias ldot=&#x27;ls -ld .*&#x27;
+alias lS=&#x27;ls -1FSsh&#x27;
+alias hadat=&#x27;heroku addons:attach&#x27;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This might not be a problem unless you have a crashing alias. But still, did
+you know you had all those aliases available? Are them really that useful to
+you? Have you come across them accidentally and became surprised? The &lt;code&gt;helper&lt;/code&gt;
+alias to &lt;code&gt;man&lt;/code&gt; particularly bothers me. But also, I don&#x27;t want heroku aliases
+in my user land.&lt;/p&gt;
+&lt;p&gt;Even if some aliases or plugins are useful, you can copy the ones you want, and
+just plug into your &lt;code&gt;.bashrc&lt;/code&gt; file.&lt;/p&gt;
+&lt;p&gt;In the end of the day oh-my-zsh plugins are just bash files written in zsh
+syntax, many of which are compatible with plain bash, or can be easily ported.&lt;/p&gt;
+&lt;p&gt;There is no versioning control or anything fancy like that. Just files. This is
+one of the reasons many people won&#x27;t categorise oh-my-zsh as a plug-in manager
+(and why it put it between quote marks when I mentioned it earlier), as it
+lacks so many features to that end.&lt;/p&gt;
+&lt;p&gt;For me it comes down to: I don&#x27;t need this technology, and it does not add much
+value to my daily use of my computer, therefore it must go.&lt;/p&gt;
+&lt;p&gt;Next are the reasons why I stopped using zsh.&lt;/p&gt;
+&lt;h2&gt;zsh&lt;/h2&gt;
+&lt;p&gt;One thing that people aren&#x27;t really aware of is that zsh doubles as a scripting
+language of its own. They might not realise this until they share a script with
+someone, and that script doesn&#x27;t run on their machine.&lt;/p&gt;
+&lt;p&gt;For example, the syntax below is only available in zsh:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;# All files that are NOT .c files (^ provides negation)
+ls -d ^*.c
+
+# Grouping
+ls (foo|bar).*
+
+# Recursive search with **
+ls **/*bar
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;There are more advanced filename-generation patterns, but you get the idea.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;zsh&lt;/code&gt; also allows you to &lt;code&gt;cd&lt;/code&gt; into a directory just by typing its name&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;% cd /
+% setopt autocd
+% bin
+% pwd
+/bin
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The official introduction page has a lot more examples of what is available.
+You can check it &lt;a href=&quot;http://web.archive.org/web/20240503012616/https://zsh.sourceforge.io/Intro/intro_toc.html&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Some functionalities like expanding &lt;code&gt;/u/lo/b&lt;/code&gt; to &lt;code&gt;/usr/local/bin&lt;/code&gt; are things
+that I do not want to have in my shell, and they strike me as bad patterns due
+to the high risk of doing the wrong matching and expanding to the wrong dir
+or file.&lt;/p&gt;
+&lt;p&gt;But the biggest problem for me is that the zsh scripting language adds way too
+many non-POSIX compliant features that end up confusing me a lot. I always have
+to look up the syntax to make sure my zsh script isn&#x27;t going to be flawed in
+another environment that doesn&#x27;t use zsh due to invalid syntax errors.&lt;/p&gt;
+&lt;p&gt;This diminishes my ability to write good portable scripts.&lt;/p&gt;
+&lt;p&gt;Part of this is skill-issue on my side (everything is!) as we know every
+bash script should be POSIX compliant (joking, not even bash is POSIX
+compliant), but nonetheless, for newcomers like I once was, picking up the
+shell that looked the most &amp;quot;cool&amp;quot; was part of a factor for picking up a shell.&lt;/p&gt;
+&lt;p&gt;This type of problem is more pronounced for me because I have several bash
+scripts that I created overtime with zsh scripting not even knowing I was using
+zsh scripting. This is a common newbie mistake to make, but when you just want
+to get something going you often get into these types trade-offs that become
+more pronounced later once you have mastered a few tools.&lt;/p&gt;
+&lt;p&gt;So what is the alternative to all of this?&lt;/p&gt;
+&lt;h2&gt;bash&lt;/h2&gt;
+&lt;p&gt;Yep. I&#x27;m just using plain bash now and trying to figure out how far I can get
+with it. So far I haven&#x27;t got a reason to get anything more featureful than
+bash.&lt;/p&gt;
+&lt;p&gt;I have been using &lt;code&gt;fzf&lt;/code&gt; in the terminal, which is a dependency I already had
+and am familiar with, to deal with autocompletion and recursive command search
+instead. The experience is much better than the zsh autocompletion.&lt;/p&gt;
+&lt;p&gt;These are the lines in my .bashrc that turn on the fzf integration.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;source /usr/share/fzf/key-bindings.bash
+source /usr/share/fzf/completion.bash
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This will enable:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Ctrl+t list files+folders in current directory (e.g., type git add , press
+Ctrl+t, select a few files using Tab, finally Enter)&lt;/li&gt;
+&lt;li&gt;Ctrl+r search history of shell commands&lt;/li&gt;
+&lt;li&gt;Alt+c fuzzy change directory&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This is handy for me, as the functionality is similar to the &lt;code&gt;Telescope&lt;/code&gt; plugin
+I have been using in neovim, and I can see a quick preview of files but also
+a fuzzy-search output of the reverse search I&#x27;m performing at the time.&lt;/p&gt;
+&lt;p&gt;Also, I use alacritty as my terminal.
+Alacritty has vi key bindings, so I don&#x27;t need my shell to provide that for me,
+one less feature I need from the shell!&lt;/p&gt;
+&lt;p&gt;Most terminal emulators have some form of emacs or vi key bindings these days,
+so this isn&#x27;t something necessary for a shell to support.&lt;/p&gt;
+&lt;p&gt;But that said, I can still turn vi mode on bash with &lt;code&gt;set -o vi&lt;/code&gt;, so you can
+choose between using vi mode on your shell or on your terminal.&lt;/p&gt;
+&lt;p&gt;And that is pretty much it.&lt;/p&gt;
+&lt;p&gt;Nothing fancy - just getting rid of new technology that doesn&#x27;t aggregate value
+in my day-to-day activities.&lt;/p&gt;
+&lt;p&gt;I&#x27;m on a journey to make my installation script as lean as possible to make
+updating my system as fast as possible, and also to give my system less
+entrypoints to break or be exploited.&lt;/p&gt;
+&lt;p&gt;Granted, I haven&#x27;t had any bad experiences with zsh, but that alone doesn&#x27;t
+mean I should re-check my previous assumptions and switch a particular
+technology for something better (or just pick the boring tech that has always
+been there to begin with).&lt;/p&gt;
+&lt;p&gt;I have no plans to go more basic and further switch to &lt;code&gt;sh&lt;/code&gt; at this stage, but
+I will be looking at &lt;code&gt;dash&lt;/code&gt; next to get the sweet performance enhancements and
+something that is more POSIX compliant than bash.&lt;/p&gt;</content><published>2024-05-08T00:00:00Z</published><updated>2024-07-06T00:00:00Z</updated></entry><entry><title>Branchless Programming Experiments in C++ and Python</title><link href="https://www.marcelofern.com/cpp/branchless_programming/index.html"/><id>tag:marcelofern.com,2023-08-22:/cpp/branchless_programming/index.html</id><content type="html">&lt;h1&gt;Branchless Programming Experiments in C++ and Python&lt;/h1&gt;
+&lt;pre&gt;&lt;code&gt;Created: 2023-08-22
+Updated: 2024-07-06
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This article talks about high-level theoretical concepts of branchless
+programming, along with examples of branchless programming in C++ and Python.&lt;/p&gt;
+&lt;h2&gt;What&#x27;s branchless programming and why does it matter?&lt;/h2&gt;
+&lt;p&gt;A branchless program is a program that doesn&#x27;t include any conditional
+operator (&lt;code&gt;if&lt;/code&gt;, &lt;code&gt;else&lt;/code&gt;, &lt;code&gt;switch&lt;/code&gt;, ...).&lt;/p&gt;
+&lt;p&gt;The reason why people would go through the trouble of branchless programming is
+onefold: performance.&lt;/p&gt;
+&lt;p&gt;Modern CPUs try to read future instructions before they are executed so that
+they can stay ahead of the game. This is called &amp;quot;instruction pipelining&amp;quot;, and
+is meant to implement instruction-level parallelism on single processors.&lt;/p&gt;
+&lt;p&gt;However, when the CPU is pipelining and a branch is present, the CPU won&#x27;t be
+able to know what path it needs to run, so it takes a guess. When this guess is
+incorrect, the CPU discards the instructions previously read, and read the
+new instruction set for the correct path. This takes time and valuable clock
+cycles.&lt;/p&gt;
+&lt;h2&gt;How does Instruction Pipelining work?&lt;/h2&gt;
+&lt;p&gt;The CPU is composed of multiple processor units. Each processor unit performs
+an instruction such as adding two numbers, comparing two numbers, jumping to a
+different part of a program, loading and storing data in memory, etc. Those
+operations are hardwired into the circuitry of the processor inside the CPU.&lt;/p&gt;
+&lt;p&gt;When the CPU is asked to perform an instruction, it will receive an &lt;code&gt;opcode&lt;/code&gt;,
+which is just a unique binary number that the CPU will decode into
+controlling signals that will orchestrate the behaviour of the CPU.&lt;/p&gt;
+&lt;p&gt;The CPU executes an instruction by fetching it from memory (either the
+computer&#x27;s memory or the CPU cache), following up by decoding the &lt;code&gt;opcode&lt;/code&gt;,
+executing the instruction itself in the processor, and storing it back to
+memory.&lt;/p&gt;
+&lt;p&gt;In a nutshell, a pipeline is consisted of four stages: &lt;strong&gt;fetch&lt;/strong&gt;, &lt;strong&gt;decode&lt;/strong&gt;,
+&lt;strong&gt;execute&lt;/strong&gt;, &lt;strong&gt;write-back&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Each one of those stages will be handled by a circuit in the CPU. So whenever
+a instruction needs to be run, there are &lt;strong&gt;4 high-level steps until the result
+is finally stored in memory.&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;Pipeline analogy time&lt;/h2&gt;
+&lt;p&gt;Imagine you are going to a buffet restaurant with 4 different dishes. This is
+a peculiar restaurant, and you need to wait for the person in front of you to
+go through all the 4 dishes and pay for it before you can go down and start
+serving yourself.&lt;/p&gt;
+&lt;p&gt;This is a waste of time. A better way of serving people is to only wait for
+the person in front of you to go through the first dish before you start
+serving yourself.&lt;/p&gt;
+&lt;p&gt;This is what CPUs try to do by &amp;quot;pipelining&amp;quot; the work. While one instruction
+is being &lt;code&gt;decoded&lt;/code&gt;, the following one is already being &lt;code&gt;fetched&lt;/code&gt;. When the
+first instruction is decoded and starts being executed, now the second one
+starts being decoded, and a third one is fetched, and so on so forth...&lt;/p&gt;
+&lt;p&gt;This is how it looks visually (image borrowed from wikipedia):&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;pipelining_happy_path.png&quot; alt=&quot;pipelining_happy_path&quot;&gt;&lt;/p&gt;
+&lt;p&gt;What happens if the person in front of you in the buffet grabbed all the chips
+from the buffet plate, and if you had known that in advance, you would go back
+and put another spoon of mashed potatos on your plate?&lt;/p&gt;
+&lt;p&gt;That happens &lt;em&gt;a lot&lt;/em&gt; in the CPU when the next instruction depends on the
+execution of the current one. In this case, the CPU needs to wait for the
+first instruction to resolve before executing the next one, and this incurs a
+time penalty.&lt;/p&gt;
+&lt;p&gt;In the example below, during cycle 3 the purple instruction can only be decoded
+once the green one is executed. A bubble is created to represent that during
+cycle 3 the &lt;code&gt;decode&lt;/code&gt; step will be idle, and subsequently on cycle 4 the
+&lt;code&gt;execute&lt;/code&gt; step will be idle and so on so forth until the bubble is out of
+the pipeline - at which point execution resumes normally.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;pipelining_sad_path.png&quot; alt=&quot;pipelining_sad_path&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Sometimes it is even worse than this, you might have an &lt;code&gt;if/else&lt;/code&gt; statement
+in your code, and the CPU tried to guess which one to load beforehand, but it
+it guessed the wrong one. Now it has to flush all of those instructions out of
+the pipeline and load the correct ones.&lt;/p&gt;
+&lt;p&gt;Here is where branchless programming comes handy. Code that doesn&#x27;t have
+conditionals will likely have less erroneously-guessed instructions loaded as
+the equivalent code with conditionals.&lt;/p&gt;
+&lt;h2&gt;How do branches look in assembly language?&lt;/h2&gt;
+&lt;p&gt;Let&#x27;s start with the strawman example. Here&#x27;s some simple C++ code with a
+branch:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-cpp&quot;&gt;int max(int a, int b) {
+  if (a &amp;gt; b) {
+    return b;
+  } else {
+    return a;
+  }
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And the resulting assembly code (note: no optimisation flag turned on):&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-assembly&quot;&gt;max(int, int):
+        push    rbp
+        mov     rbp, rsp
+        mov     DWORD PTR [rbp-4], edi
+        mov     DWORD PTR [rbp-8], esi
+        mov     eax, DWORD PTR [rbp-4]
+        cmp     eax, DWORD PTR [rbp-8]
+        jle     .L2
+        mov     eax, DWORD PTR [rbp-8]
+        jmp     .L3
+.L2:
+        mov     eax, DWORD PTR [rbp-4]
+.L3:
+        pop     rbp
+        ret
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You will notice that we have two conditional jumps. The equivalent branchless
+code looks like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-cpp&quot;&gt;int max(int a, int b) {
+    return a*(a &amp;gt; b) + b*(b &amp;gt;= a);
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&quot;language-assembly&quot;&gt;max(int, int):
+        push    rbp
+        mov     rbp, rsp
+        mov     DWORD PTR [rbp-4], edi
+        mov     DWORD PTR [rbp-8], esi
+        mov     eax, DWORD PTR [rbp-4]
+        cmp     eax, DWORD PTR [rbp-8]
+        setg    al
+        movzx   eax, al
+        imul    eax, DWORD PTR [rbp-4]
+        mov     edx, eax
+        mov     eax, DWORD PTR [rbp-8]
+        cmp     eax, DWORD PTR [rbp-4]
+        setge   al
+        movzx   eax, al
+        imul    eax, DWORD PTR [rbp-8]
+        add     eax, edx
+        pop     rbp
+        ret
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This looks a bit more convoluted, and it has more instructions. However, we
+got rid of those jumps.&lt;/p&gt;
+&lt;p&gt;This example is terrible, and it&#x27;s chosen on purpose. The first function, can
+be very easily optimised by the compiler if we use the flag &lt;code&gt;-O3&lt;/code&gt;. Generating
+this assembly code:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-assembly&quot;&gt;max(int, int):
+        cmp     edi, esi
+        mov     eax, esi
+        cmovle  eax, edi
+        ret
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Whereas for the second code, even with the optimisation flag on, the underlying
+assembly code is worse as the compiler can&#x27;t optimise it further:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-assembly&quot;&gt;max(int, int):
+        xor     eax, eax
+        cmp     edi, esi
+        cmovle  edi, eax
+        cmovg   esi, eax
+        lea     eax, [rdi+rsi]
+        ret
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this case, the branchless C++ code fell apart due to the compiler being
+really good at optimisations. One of such optimisations is using branchless
+programming itself! However, this illustrates why it&#x27;s important to actually
+see what the compiled code looks like. However, all things being equal,
+branchless code &lt;strong&gt;will&lt;/strong&gt; be faster on an assembly level, and there will be many
+times where the compiler can&#x27;t optimise the code (like when you have &lt;code&gt;volatile&lt;/code&gt;
+variables all over).&lt;/p&gt;
+&lt;h2&gt;What about interpreted languages?&lt;/h2&gt;
+&lt;p&gt;Many interpreted languages don&#x27;t have the cleverness for optimisation of a GCC
+compiler, and in many cases, code ran by the virtual machine is murky to the
+outsiders eyes. Nevertheless, I work with Python at the moment and it would be
+interesting to see what happens once branchless programming takes over.&lt;/p&gt;
+&lt;p&gt;Using the same example in Python we have:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;def max(a, b):
+    if a &amp;gt; b:
+        return a
+    else:
+        return b
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And this is the disassembled Python byte code into mnemonics:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;  2           0 LOAD_FAST                0 (a)
+              2 LOAD_FAST                1 (b)
+              4 COMPARE_OP               4 (&amp;gt;)
+              6 POP_JUMP_IF_FALSE        6 (to 12)
+
+  3           8 LOAD_FAST                0 (a)
+             10 RETURN_VALUE
+
+  5     &amp;gt;&amp;gt;   12 LOAD_FAST                1 (b)
+             14 RETURN_VALUE
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;First things first, what is happening under the hood? For every bytecode
+instruction that is executed, the interpreter will branch out many times.
+The comparison operator &lt;code&gt;&amp;gt;&lt;/code&gt; for example, requires a branch to check for the
+opcode equivalent of &lt;code&gt;&amp;gt;&lt;/code&gt;, another branch to verify if the object being
+compared has a &lt;code&gt;__gt__&lt;/code&gt; method, more branches to verify if both objects
+being compared are valid for the comparison being performed, and many other
+branches until the value of the function call is actually computed and
+returned.&lt;/p&gt;
+&lt;p&gt;We cannot compare Python bytecode with a single machine-level instruction,
+because a single bytecode instruction will perform many machine-level
+instructions inside the interpreter. Also, some Python bytecode instructions
+like calling a function are more expensive than other simpler ones like
+performing a mathematical operation like adding.&lt;/p&gt;
+&lt;p&gt;With all the conditional compilation clutter removed from CPython, the code
+that evaluates a piece of bytecode into a C instruction is as follows:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-c&quot;&gt;PyObject* _PyEval_EvalFrameDefault(/* ... */ ) {
+    // context setup
+    for (;;) {
+        // periodic check
+        switch (opcode) {
+            case TARGET(LOAD_FAST): {
+                PyObject *value = GETLOCAL(oparg);
+                if (value == NULL) {
+                    format_exc_check_arg(/* ... */ );
+                    goto error;
+                }
+                Py_INCREF(value);
+                PUSH(value);
+                FAST_DISPATCH();
+            }
+            case TARGET(STORE_FAST): {
+                PyObject *value = POP();
+                SETLOCAL(oparg, value);
+                FAST_DISPATCH();
+            }
+            case TARGET(BINARY_MULTIPLY): {
+                PyObject *right = POP();
+                PyObject *left = TOP();
+                PyObject *res = PyNumber_Multiply(left, right);
+                Py_DECREF(left);
+                Py_DECREF(right);
+                SET_TOP(res);
+                if (res == NULL)
+                goto error;
+                DISPATCH();
+            }
+        /* ... */
+        }
+    }
+error:
+    // exception unwinding
+}
+    // context cleanup
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The full implementation is &lt;a href=&quot;https://github.com/python/cpython/blob/3.8/Python/ceval.c#L1323&quot;&gt;here&lt;/a&gt;.
+The interesting bit is that even for a simple instruction like &lt;code&gt;LOAD_FAST&lt;/code&gt;, we
+can see a branch in the top-level case statement handler.&lt;/p&gt;
+&lt;p&gt;This means that to get a rough estimation of how two functions compare, we&#x27;ll
+need to check how many bytecode instructions there are, and how expensive those
+bytecode instructions are.&lt;/p&gt;
+&lt;p&gt;At the moment of writing, I haven&#x27;t found a handy table of Python bytecodes
+ordered from more-overhead to less-overhead, so we&#x27;ll analyse one by one.&lt;/p&gt;
+&lt;p&gt;Our &lt;code&gt;max(a, b)&lt;/code&gt; function above had the following instructions:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;LOAD_FAST&lt;/code&gt; (4x): Performs an index lookup in the local variables array to
+load the variable. This is pretty fast.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;COMPARE_OP&lt;/code&gt; (1x): Has a very high overhead when the comparison operator
+is not just checking object identity as it needs to look at what is
+in the dunder method for the particular comparison.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;POP_JUMP_IF_FALSE&lt;/code&gt; (1x): Has a low overhead from the interpreter&#x27;s
+perspective as the next position to jump to is not hard to find out by
+reading the bytecode.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;RETURN_VALUE&lt;/code&gt; (2x): This just pops the stack, nice and easy.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;How about the branchless version?&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;def max(a, b):
+    return a*(a &amp;gt; b) + b*(b &amp;gt;= a)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;opcodes:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;  2           0 LOAD_FAST                0 (a)
+              2 LOAD_FAST                0 (a)
+              4 LOAD_FAST                1 (b)
+              6 COMPARE_OP               4 (&amp;gt;)
+              8 BINARY_MULTIPLY
+             10 LOAD_FAST                1 (b)
+             12 LOAD_FAST                1 (b)
+             14 LOAD_FAST                0 (a)
+             16 COMPARE_OP               5 (&amp;gt;=)
+             18 BINARY_MULTIPLY
+             20 BINARY_ADD
+             22 RETURN_VALUE
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We already can tell that this will not be light on the interpreter due to
+having double &lt;code&gt;COMPARE_OP&lt;/code&gt; instructions. The other differences here are:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;BINARY_MULTIPLY&lt;/code&gt;: Surprisingly this has a considerable amount of overhead.
+The interpreter needs to figure out the types being multiplied and find
+their underlying multiply function before they can actually be multiplied.
+So a &amp;quot;binary multiply&amp;quot; does not mean the interpreter will just process a
+C &lt;code&gt;*&lt;/code&gt; between the two operands.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;BINARY_ADD&lt;/code&gt; is very similar to the above, curiously enough it seems like
+someone tried to optimise int summation &lt;a href=&quot;https://github.com/python/cpython/blob/3.8/Python/ceval.c#L1547&quot;&gt;but failed&lt;/a&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&quot;language-c&quot;&gt;/* NOTE(haypo): Please don&#x27;t try to micro-optimize int+int on
+   CPython using bytecode, it is simply worthless.
+   See http://bugs.python.org/issue21955 and
+   http://bugs.python.org/issue10044 for the discussion. In short,
+   no patch shown any impact on a realistic benchmark, only a minor
+   speedup on microbenchmarks. */
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In conclusion this kind of branchless optimisation does not quite work with
+Python. However, due to time, I haven&#x27;t really analysed other branchless
+techniques that are superior in many situations like bit masking.&lt;/p&gt;</content><published>2023-08-22T00:00:00Z</published><updated>2024-07-06T00:00:00Z</updated></entry><entry><title>A Critique of SOLID</title><link href="https://www.marcelofern.com/software-design/a-critique-of-solid/index.html"/><id>tag:marcelofern.com,2023-04-15:/software-design/a-critique-of-solid/index.html</id><content type="html">&lt;h1&gt;A Critique of SOLID&lt;/h1&gt;
+&lt;pre&gt;&lt;code&gt;Created: 2023-04-15
+Updated: 2024-07-06
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;SOLID is an acronym coined by Robert C. Martin (also known as uncle Bob),
+particularly focused at making Object Oriented Programming designs easier to
+understand, maintain, and adapt.&lt;/p&gt;
+&lt;p&gt;The &lt;a href=&quot;https://web.archive.org/web/20150906155800/http://www.objectmentor.com/resources/articles/Principles_and_Patterns.pdf&quot;&gt;original paper (archived)&lt;/a&gt;
+introducing the term in 2000 is a quick read worth checking, even if only for
+historical context.&lt;/p&gt;
+&lt;p&gt;Before the paper starts to talk about SOLID, it mentions the 4 symptoms of
+&amp;quot;rotting software&amp;quot; (a very popular term between 1998-2006 according to
+google ngram). Those 4 symptoms are: &lt;strong&gt;rigidity&lt;/strong&gt;, &lt;strong&gt;fragility&lt;/strong&gt;,
+&lt;strong&gt;immobility&lt;/strong&gt; and &lt;strong&gt;viscosity&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;It is important to know what those terms mean, because they are the reason that
+SOLID principles exist in the first place. Here is a brief summary:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Rigidity: How difficult it is to change the code.&lt;/li&gt;
+&lt;li&gt;Fragility: How easy it is to break the code.&lt;/li&gt;
+&lt;li&gt;Immobility: How hard it is to reuse existing code.&lt;/li&gt;
+&lt;li&gt;Viscosity: How hard it is to preserve the existing design of code when
+developing new changes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The general expectation set by Robert C. Martin is that if you follow the SOLID
+principles your code will experience less software rot.&lt;/p&gt;
+&lt;h2&gt;SOLID&lt;/h2&gt;
+&lt;p&gt;The 5 principles of object oriented &lt;strong&gt;class&lt;/strong&gt; design (as called by the paper),
+are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;S&lt;/strong&gt;ingle responsibility principle.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;O&lt;/strong&gt;pen-closed principle.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;L&lt;/strong&gt;iskov substitution principle.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;I&lt;/strong&gt;nterface segregation principle.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;D&lt;/strong&gt;ependency inversion principle.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;My plan is to analyse each of them critically, understanding their weaknesses
+and providing evidence to counter their adoption.&lt;/p&gt;
+&lt;h3&gt;The Open Closed Principle (OPC)&lt;/h3&gt;
+&lt;p&gt;According to Martin this is the most important principle, and we will start
+with it. Here is its definition:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A module should be open for extension but closed for modification.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;This sounds simple and reasonable. Perfect code that addresses a particular
+problem is only needed to be written once. To address further problems, this
+perfect code doesn&#x27;t need to change, but only be &lt;em&gt;extended&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;When developers keep this in mind, they try to produce perfect code that can be
+extended whilst keeping its original elegance and efficiency. If that&#x27;s
+materialised, the developer can be said to be following the OPC principle.&lt;/p&gt;
+&lt;p&gt;You probably can see where this is going by my wording (&amp;quot;perfect code&amp;quot;,
+whatever that actually means). But let&#x27;s not diverge from the theme just yet,
+we will go through an example of code provided by Martin that violates the OPC
+principle:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-cpp&quot;&gt;struct Modem {
+    enum Type {hayes, courrier, ernie) type;
+};
+
+struct Hayes {
+    Modem::Type type;
+    // Hayes related stuff
+};
+
+struct Courrier {
+    Modem::Type type;
+    // Courrier related stuff
+};
+
+struct Ernie
+{
+    Modem::Type type;
+    // Ernie related stuff
+};
+
+void LogOn(Modem&amp;amp; m, string&amp;amp; pno, string&amp;amp; user, string&amp;amp; pw) {
+    if (m.type == Modem::hayes)
+        DialHayes((Hayes&amp;amp;)m, pno);
+    else if (m.type == Modem::courrier)
+        DialCourrier((Courrier&amp;amp;)m, pno);
+    else if (m.type == Modem::ernie)
+        DialErnie((Ernie&amp;amp;)m, pno)
+    // ...you get the idea
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;LogOn&lt;/code&gt; function violates Martin&#x27;s OPC because its inner code needs to
+change every time a new modem is added. Moreover, every modem type depends on
+the &lt;code&gt;struct Modem&lt;/code&gt;. Therefore if we need to add a new type of modem to that
+struct, all the existing modems need to be recompiled.&lt;/p&gt;
+&lt;p&gt;So how do we make this code better? According to Martin:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Abstraction is the key to the OCP&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;There&#x27;re a few possible abstraction techniques that conform to OPC. Let&#x27;s
+follow the first one Martin provides, &lt;strong&gt;Dynamic Polymorphism&lt;/strong&gt;.&lt;/p&gt;
+&lt;h4&gt;Dynamic Polymorphism&lt;/h4&gt;
+&lt;p&gt;In Object Oriented Programming this means we will have an abstract class with
+abstract methods (virtual functions), and concrete child classes implementing
+the actual code for each method.&lt;/p&gt;
+&lt;p&gt;Here the word &amp;quot;Dynamic&amp;quot; means that the form (concrete class implementation) is
+found during run time. Putting it all together and rewriting the code above, we
+end up with something like the example provided in Martin&#x27;s paper:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-cpp&quot;&gt;class Modem {
+public:
+    virtual void Dial(const string&amp;amp; pno) = 0;
+    // other virtual methods here, you get the idea.
+};
+
+void LogOn(Modem&amp;amp; m, string&amp;amp; pno, string&amp;amp; user, string&amp;amp; pw) {
+    m.Dial(pno);
+    // you get the idea.
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now the class &lt;code&gt;Modem&lt;/code&gt; is closed for modification when we need to add new types
+of modems. To use the LogOn function, you need code like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-cpp&quot;&gt;class Hayes : public Modem {
+public:
+    virtual void Dial(const std::string&amp;amp; pno) {
+        // do something...
+    }
+};
+
+
+int main() {
+    Hayes hayes = Hayes();
+    string pno = &amp;quot;1&amp;quot;;
+    LogOn(hayes, pno);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now that we see the whole picture we can tell that the function &lt;code&gt;LogOn&lt;/code&gt; calls
+the method &lt;code&gt;Dial&lt;/code&gt; on the child instance. This child instance is only
+available at runtime. Note that Martin omits this initialisation code in his
+original paper. He also does not discuss the downsides of this approach.&lt;/p&gt;
+&lt;p&gt;However, I don&#x27;t think we should toss this example away too quickly.&lt;/p&gt;
+&lt;p&gt;We know for a fact that when types are only resolved at runtime our code
+becomes slower. But why? For each class that inherits virtual functions the
+compiler creates a &lt;code&gt;vtable&lt;/code&gt;. A &lt;code&gt;vtable&lt;/code&gt; is essentially a table of function
+pointers. When an object is created at runtime, a pointer to its vtable is
+added to its memory layout, and when a virtual function is called on this
+object, the code looks at the appropriate function pointer on the object vtable
+and then calls the function through that pointer.&lt;/p&gt;
+&lt;p&gt;This all means that by using &lt;strong&gt;Dynamic polymorphism&lt;/strong&gt; our code requires
+an additional level of indirection for &lt;em&gt;each&lt;/em&gt; virtual function call, and the
+memory footprint of objects will increase program memory usage too.&lt;/p&gt;
+&lt;p&gt;Furthermore, the given example is a simplistic one. In cases where dynamic
+polymorphism is overused, the code may have convoluted inheritance
+hierarchies. Such complexity impairs compiler optimization as virtual function
+calls aren&#x27;t assignable until runtime.&lt;/p&gt;
+&lt;p&gt;You might be thinking that the code above looks clean and that there&#x27;s no
+reason to not do it. After all, reduced performance and more memory usage is
+a fair price to pay for cleaner code,  right? Well. What if we didn&#x27;t have
+to pay this price and still have &amp;quot;clean code&amp;quot;?&lt;/p&gt;
+&lt;p&gt;We will get there, but to keep things fair we need to go through another
+abstraction example given by Martin.&lt;/p&gt;
+&lt;h4&gt;Static Polymorphism&lt;/h4&gt;
+&lt;p&gt;What if there was a way to have something similar to Dynamic Polymorphism but
+without the runtime overhead, with more compiler optimisation, and more
+control over object types? Here is where static polymorphism comes handy.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Static&lt;/strong&gt; here means that the child type will be defined at compile time. But
+how? The answer is by using generic programming templates.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-cpp&quot;&gt;template &amp;lt;typename MODEM&amp;gt;
+void LogOn(MODEM&amp;amp; m, string&amp;amp; pno, string&amp;amp; user, string&amp;amp; pw) {
+    m.Dial(pno);
+    // you get the idea.
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This looks alright, but is this a real improvement? What is the trade off?&lt;/p&gt;
+&lt;p&gt;Each time a template is instantiated a new copy of the code is created. This
+is how compilers make generic programming type-safe at compiling time. The more
+instantiations your code has, the larger your executable becomes, and the
+longer compilation takes.&lt;/p&gt;
+&lt;p&gt;This all means that we are trading runtime performance for compile time
+performance. It might be OK to do so in certain applications, but what if we
+didn&#x27;t have to?&lt;/p&gt;
+&lt;h4&gt;Addressing the open-closed principle&lt;/h4&gt;
+&lt;p&gt;Martin&#x27;s original argument stressed the following:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The dependency between the Modem struct and its implementation structs is
+bad.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;My problem with this assertion is that it sounds like a straw man fallacy. You
+absolutely don&#x27;t need to create one struct for each type of modem. Let&#x27;s fix
+the example:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-cpp&quot;&gt;enum ModemType { HAYES, COURRIER, ERNIE };
+
+struct Modem {
+    ModemType type;
+    // other attributes, you get the idea.
+};
+
+void LogOn(Modem&amp;amp; m, string&amp;amp; pno) {
+    switch (m.type) {
+        case ModemType.HAYES:
+            // do something with hayes
+        case ModemType.COURRIER:
+            // do something with courrier
+        // ...you get the idea
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;Now the compiler knows all the code paths the code goes through at compiling
+time. Code can easily be optimised.&lt;/li&gt;
+&lt;li&gt;No layers of indirection and thus no performance costs at runtime.&lt;/li&gt;
+&lt;li&gt;No memory overhead.&lt;/li&gt;
+&lt;li&gt;No executable size overhead.&lt;/li&gt;
+&lt;li&gt;Less lines of code.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Is the code above objectively bad? Is it difficult to read? I could argue that
+any CS student could make sense of this code in a very short amount of time.&lt;/p&gt;
+&lt;p&gt;The idea behind polymorphism is that it makes code flexible and easier to read.
+However, the flexibility of using virtual functions can be costly as we have
+seen. If you don&#x27;t know whether you need that flexibility yet, you will be
+imagining future use cases that &lt;em&gt;may&lt;/em&gt; use your code. If this flexibility ends
+up not being needed, the programmer has fundamentally over-scoped their own
+code and caused unnecessary memory and CPU degradation to their program with no
+added benefit.&lt;/p&gt;
+&lt;p&gt;Here is where the trade-off lies. Imagine that you need to add a new type of
+modem. Using the &lt;code&gt;switch&lt;/code&gt; above you&#x27;d have to change the LogOn function and
+recompile it. You will also need to recompile everything that depends on the
+LogOn function, and that can be a lot. If you were using polymorphism, you just
+needed to add a new type (potentially in a new file), and you would need to
+only compile one single file plus the place where it is instantiated (and
+everything that depends on that).&lt;/p&gt;
+&lt;p&gt;But what if you need to add new functionality in the abstract class? In the
+polymorphism case you&#x27;d need to add a new function for every single type, and
+that would induce a lot of recompilation across the project for a fairly use
+piece of code.&lt;/p&gt;
+&lt;p&gt;Differently, in the &lt;code&gt;switch&lt;/code&gt; case, you could add a new function (potentially in
+a new file) and you only need to compile that one single file.&lt;/p&gt;
+&lt;p&gt;Someone might argue that a potential downside from the &lt;code&gt;switch&lt;/code&gt; approach is
+that when a new type of Modem is added, you need to track all the functions
+that have a &lt;code&gt;switch (m.type)&lt;/code&gt; to change their code, and this can induce human
+error.&lt;/p&gt;
+&lt;p&gt;I would tend to agree. However, compiler warnings will let you know of all
+these use cases that are missing a switch handle. For example:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-c&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+
+enum ModemType { HAYES, COURRIER, ERNIE };
+
+struct Modem {
+    enum ModemType type;
+};
+
+void LogOn(struct Modem* m) {
+  switch (m-&amp;gt;type) {
+    // Note how we are only handling HAYES and
+    // forgot to handle COURRIER and ERNIE.
+    case HAYES:
+      printf(&amp;quot;LogOn HAYES&amp;quot;);
+      break;
+  }
+}
+
+int main() {
+  struct Modem m = {HAYES};
+  LogOn(&amp;amp;m);
+  return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If I try to run this code with:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;gcc -Wall &amp;lt;file_name&amp;gt; -o /tmp/a.o
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I get the following error:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-c&quot;&gt;/tmp/main.c: In function ‘LogOn’:
+/tmp/main.c:10:3: warning: enumeration value ‘COURRIER’ not handled in switch [-Wswitch]
+   10 |   switch (m-&amp;gt;type) {
+      |   ^~~~~~
+/tmp/main.c:10:3: warning: enumeration value ‘ERNIE’ not handled in switch [-Wswitch]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In other words, the compile catches this mistake for us.&lt;/p&gt;
+&lt;p&gt;In conclusion, this design choice will determine what will be easier and what
+will be harder for your program. Ask yourself the question: &amp;quot;Do I want it to be
+easier to add more functionality to my program, or do I prioritise adding more
+types?&amp;quot;. The answer will dictate what is best for your situation.&lt;/p&gt;
+&lt;p&gt;Polymorphism isn&#x27;t a silver bullet that will always make your code OPC
+compliant. In fact, the more functional your code looks like, the greater the
+penalty of using polymorphism.&lt;/p&gt;
+&lt;p&gt;In my professional experience, I spend much more time adding new functionality
+to existing software than I spend adding new types. So for me, it would be
+inadequate to prefer an architecture that focuses on types.&lt;/p&gt;
+&lt;h3&gt;The Liskov Substitution Principle (LSP)&lt;/h3&gt;
+&lt;p&gt;This principle states that an object (such as an abstract class), may be
+replaced by a sub-object (such as a child class) without breaking the program.&lt;/p&gt;
+&lt;p&gt;This means that if we have a function &lt;code&gt;foo(Parent bar)&lt;/code&gt;, we should also be
+able to call foo as &lt;code&gt;foo(Child bar)&lt;/code&gt; without altering the correctness of the
+program.&lt;/p&gt;
+&lt;p&gt;Martin uses an example of a parent class called &lt;code&gt;Ellipse&lt;/code&gt; and a child class
+called &lt;code&gt;Circle&lt;/code&gt;. As every circle is an ellipse with a very particular
+configuration, this sounds about right. However, Martin only uses this example
+to stress that it is an inheritance &lt;em&gt;bad&lt;/em&gt; practice.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-cpp&quot;&gt;void f(Ellipse&amp;amp; e) {
+    Point a(-1,0);
+    Point b(1,0);
+    e.SetFoci(a,b);
+    e.SetMajorAxis(3);
+    assert(e.GetFocusA() == a);
+    assert(e.GetFocusB() == b);
+    assert(e.GetMajorAxis() == 3);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The function &lt;code&gt;f&lt;/code&gt; above, for example, can&#x27;t receive a &lt;code&gt;Circle&lt;/code&gt; instead of an
+&lt;code&gt;Ellipse&lt;/code&gt;. Reason being that the method &lt;code&gt;setFoci&lt;/code&gt; will alter the circle and
+turn it into an ellipse. This can become a subtle bug in the application code.&lt;/p&gt;
+&lt;p&gt;A safe option is for the &lt;code&gt;Circle::SetFoci&lt;/code&gt; method to add an extra validation,
+asserting that &lt;code&gt;a == b&lt;/code&gt;. This violates LSP. The child object now has an extra
+restriction that the parent object doesn&#x27;t. Martin concludes that:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;derived methods should expect no more and provide no less.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I don&#x27;t have much to critique about this principle itself. To be honest it
+sounds alright to me. However, this is only &lt;strong&gt;one more thing&lt;/strong&gt; to remember when
+you&#x27;re using polymorphism, which contributes as a &lt;strong&gt;negative&lt;/strong&gt; to the OPC
+principle through abstraction that we discussed above.&lt;/p&gt;
+&lt;p&gt;Apart from performance and memory degradation, the programmer also has to worry
+about loose/tight contracts between the parent and the child. This means that
+the functionality may not work that well if the type implementation is
+faulty.&lt;/p&gt;
+&lt;p&gt;Martin himself comments that LSP violation can be costly. If the interface is
+being used in many different places, the cost of repairing this violation might
+be too much to take. A possible solution, as stated by Martin, is to provide an
+&lt;code&gt;if/else&lt;/code&gt; statement to make sure the Ellipse is indeed an Ellipse.&lt;/p&gt;
+&lt;p&gt;Another problem of this type of polymorphism is that the Circle object is way
+simpler than an Ellipse. This means that the Circle class will inherit many
+methods that it doesn&#x27;t need to use, generating &lt;strong&gt;method spam&lt;/strong&gt;. This violates
+another principle of SOLID, the Interface Segregation Principle that we will
+look into later on.&lt;/p&gt;
+&lt;h2&gt;The Dependency Inversion Principle (DIP)&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Depend upon Abstractions. Do not depend upon concretions.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In essence, this principle means that code in high level modules should not
+depend on code in low level modules. High level modules are usually top
+abstractions that express the policies of the application, whereas low level
+modules contain the implementation details. In other words, the abstraction
+should not worry about the implementation.&lt;/p&gt;
+&lt;p&gt;By inverting the dependency, i.e., making the low level modules depend on the
+high ones and not the opposite, a developer will be DIP complaint.&lt;/p&gt;
+&lt;p&gt;You might be noticing a trend now. Most of these SOLID rules are greatly
+related to polymorphism. After all, they were created for OOP. As I feel like I
+have addressed the main trade-off in that approach, I could easily end up
+repeating myself here. Let&#x27;s proceed nonetheless :&#x27;)&lt;/p&gt;
+&lt;p&gt;Inverting dependencies in a codebase must be seen as a trade-off. As now your
+abstraction can be changed without having to worry about the implementation
+details, you can&#x27;t change the implementation details without having to worry
+about the abstraction. This means that if the interface changes often, it will
+be harder to manage the concrete implementations.&lt;/p&gt;
+&lt;p&gt;More over, classes that could simply be a concrete implementation alone, with
+no dependency on a high-level interface, now may have an artificial interface
+so that this principle isn&#x27;t violated. This usually happens because &amp;quot;you never
+know whether another concrete implementation that needs to use the interface
+might come about&amp;quot;. One regular example is an interface &lt;code&gt;ShipmentPolicy&lt;/code&gt; which
+has &lt;strong&gt;only one&lt;/strong&gt; concrete implementation, often called &lt;code&gt;ShipmentPolicyImpl&lt;/code&gt;.
+One could say that this is a code redundancy.&lt;/p&gt;
+&lt;h2&gt;The Interface Segregation Principle (ISP)&lt;/h2&gt;
+&lt;p&gt;ISP states that no code should depend on methods it does not use. This implies
+having smaller interfaces so that clients that depend on them only need to know
+a few relevant methods.&lt;/p&gt;
+&lt;p&gt;This idea sounds reasonable, and it&#x27;s a way of controlling inheritance method
+spam when inheriting from bloated interfaces. But I think this technique is
+more of a refactoring tool rather than a principle itself.&lt;/p&gt;
+&lt;p&gt;Treating ISP as a principle can add unnecessary complexity. You should design
+your code to solve the problem at hand rather than worrying about whether your
+interface will become too bloated in future when more use cases are added. As
+you don&#x27;t know how your codebase will progress in future, you shouldn&#x27;t make
+compromises from early on. If an interface grew too much, and &lt;strong&gt;now&lt;/strong&gt; you have
+legitimate reason to split it into smaller ones, then go and refactor it.&lt;/p&gt;
+&lt;p&gt;As all the other principles we have discussed so far, take ISP as a
+trade-off instead of a principle.&lt;/p&gt;
+&lt;p&gt;Here are a few quotes from the Code Complete book that are relevant for the
+matter:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;If the derived class isn&#x27;t going to adhere completely to the same interface
+contract defined by the base class, inheritance is not the right
+implementation.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Be suspicious of base classes of which there is only one derived class.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Single Responsibility Principle (SRP)&lt;/h2&gt;
+&lt;p&gt;This principle wasn&#x27;t included in the original publication I linked above, and
+more details can be found in this blog post from &lt;a href=&quot;http://web.archive.org/web/20240328163818/https://blog.cleancoder.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html&quot;&gt;clean
+coder&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;This principle builds up on the &amp;quot;Separation of Concerns&amp;quot; term that was
+popularised in a famous article &amp;quot;On the role of scientific thought&amp;quot; by Dijkstra
+&lt;a href=&quot;http://web.archive.org/web/20221104003446/https://www.cs.utexas.edu/~EWD/ewd04xx/EWD447.PDF&quot;&gt;source&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The principle can be summarised as:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The Single Responsibility Principle (SRP) states that each software module
+should have one and only one reason to change.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The definition lacks specification and my major criticism here is the
+specification itself. What is a reasonable &amp;quot;reason to change&amp;quot;?&lt;/p&gt;
+&lt;p&gt;Martin gives more information on the blog post linked about, saying:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Imagine you took your car to a mechanic in order to fix a broken electric
+window. He calls you the next day saying it’s all fixed. When you pick up
+your car, you find the window works fine; but the car won’t start. It’s not
+likely you will return to that mechanic because he’s clearly an idiot.
+...
+That’s how customers and managers feel when we break things they care about
+that they did not ask us to change.
+...
+Another wording for the Single Responsibility Principle is:
+Gather together the things that change for the same reasons. Separate those
+things that change for different reasons.
+...
+However, as you think about this principle, remember that the reasons for
+change are people. It is people who request changes. And you don’t want to
+confuse those people, or yourself, by mixing together the code that many
+different people care about for different reasons.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I agree that mixing code from different teams with different responsibilities
+isn&#x27;t ideal. I would call that unnecessary coupling.&lt;/p&gt;
+&lt;p&gt;It is obviously bad, for example, for a change in a back-end billing engine of
+a bank to affect its front-end application and display data in a different
+format.&lt;/p&gt;
+&lt;p&gt;Although I think that the definition isn&#x27;t ideal, the principle here does sound
+like the most reasonable in the list.&lt;/p&gt;
+&lt;h2&gt;Conclusions&lt;/h2&gt;
+&lt;p&gt;In my opinion, those shouldn&#x27;t be called &amp;quot;principles&amp;quot;. The word &lt;em&gt;principle&lt;/em&gt; as
+it is defined below should be reserved for terms that are really hard to
+debunk:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Principle: a fundamental truth or proposition that serves as the foundation
+for a system of belief or behaviour or for a chain of reasoning. &amp;quot;the basic
+principles of justice&amp;quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Most of what we have seen here fit within the saying &amp;quot;different horses for
+different courses&amp;quot;. I do appreciate that when those principles were written
+OOP was all the rage and many people were investing resources in it and many
+books were written. So I can accept that they were the single truth at the
+time.&lt;/p&gt;
+&lt;p&gt;However, having many decades passed since the inception of those principles,
+many other things have improved in the industry. I feel like we have moved
+forward as a whole.&lt;/p&gt;
+&lt;p&gt;OOP is not considered &lt;strong&gt;the only way&lt;/strong&gt; of developing any more, though still
+very popular. Polymorphism, inheritance, and most importantly multi-level
+inheritance is seen with bad eyes. More and more people have come to appreciate
+composition over inheritance.&lt;/p&gt;
+&lt;p&gt;The classic book example of inheritance Shape-&amp;gt;Ellipsis-&amp;gt;Circle is very hard to
+derive in the real world in a non-forceful way. Inheritance and thus
+polymorphism has become a way of getting generic functionality from parent
+classes &lt;strong&gt;instead of sharing identities&lt;/strong&gt; between classes of the same base
+implementation, and thus much tangled code has been created so that unrelated
+classes could get the same shared behaviour. I feel like a lot of people
+nowadays have scars to prove that.&lt;/p&gt;
+&lt;p&gt;Nonetheless, I feel positive that Martin has created these principles even
+though I don&#x27;t agree with them fully. It is easy to look back on the past and
+point fingers about decisions that don&#x27;t apply to the present. I think that
+overall the popularity of SOLID and the outcome of having more people thinking
+about designs and their own set of principles is a positive thing.&lt;/p&gt;</content><published>2023-04-15T00:00:00Z</published><updated>2024-07-06T00:00:00Z</updated></entry><entry><title>Linux Rice</title><link href="https://www.marcelofern.com/linux/rice/index.html"/><id>tag:marcelofern.com,2020-08-30:/linux/rice/index.html</id><content type="html">&lt;h1&gt;Linux Rice&lt;/h1&gt;
+&lt;pre&gt;&lt;code&gt;Created: 2020-08-30
+Updated: 2024-07-06
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;When someone is &amp;quot;ricing&amp;quot; their unix system, they are making functional and
+visual customisations to their desktop. These changes could be anything from
+changing the colour of a status bar to completely restructuring their computer
+environment.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Why?&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Productivity&lt;/strong&gt;: You can customise your applications and keyboard shortcuts
+to satisfy your work-flow.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Performance&lt;/strong&gt;: You are in control of what gets installed on your
+application and not have to worry about unknown apps running on the
+background.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Privacy&lt;/strong&gt;: It is your system and the defaults in some distributions
+can contain software that can spy on your behaviour like Canonical has done
+in the past.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Visual Satisfaction&lt;/strong&gt;: Whatever colour scheme you like.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Because it is fun&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;How does it look like?&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;dark_theme.png&quot; alt=&quot;dark_theme&quot;&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;$ neofetch
+                   -`                    x@x
+                  .o+`                   ---
+                 `ooo/                   OS: Arch Linux x86_64
+                `+oooo:                  Host: 20Q5S01400 ThinkPad L490
+               `+oooooo:                 Kernel: 6.6.39-1-lts
+               -+oooooo+:                Uptime: 1 hour, 32 mins
+             `/:-:++oooo+:               Packages: 519 (pacman)
+            `/++++/+++++++:              Shell: bash 5.2.26
+           `/++++++++++++++:             Resolution: 1920x1080
+          `/+++ooooooooooooo/`           WM: i3
+         ./ooosssso++osssssso+`          Theme: Adwaita [GTK2/3]
+        .oossssso-````/ossssss+`         Icons: Adwaita [GTK2/3]
+       -osssssso.      :ssssssso.        Terminal: alacritty
+      :osssssss/        osssso+++.       Terminal Font: LiterationMono Nerd Font
+     /ossssssss/        +ssssooo/-       CPU: Intel i7-8565U (8) @ 4.600GHz
+   `/ossssso+/:-        -:/+osssso+-     GPU: Intel WhiskeyLake-U GT2 [UHD Graphics 620]
+  `+sso+:-`                 `.-/+oso:    Memory: 1571MiB / 7134MiB
+ `++:.                           `-/+/
+ .`                                 `/
+
+du -h /
+# 5.6G
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Workflow Tools&lt;/h2&gt;
+&lt;p&gt;Most of my tools revolve around &lt;a href=&quot;https://github.com/davatorium/rofi&quot;&gt;rofi&lt;/a&gt;
+which is an application launcher.&lt;/p&gt;
+&lt;p&gt;For example, my &amp;quot;TODO&amp;quot; list is a script that let&#x27;s me add, read, and remove
+entries from a list via rofi:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;todo.png&quot; alt=&quot;todo&quot;&gt;&lt;/p&gt;
+&lt;p&gt;You can configure rofi to be able to run any script you like.
+Some of my scripts include: two-factor authentication, vpn connections, getting
+a wayback-machine link to a website, compiling my website and rss feed, etc.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;rofi_scripts.png&quot; alt=&quot;rofi_scripts&quot;&gt;&lt;/p&gt;
+&lt;h2&gt;Software used&lt;/h2&gt;
+&lt;h3&gt;Neovim&lt;/h3&gt;
+&lt;p&gt;I use Neovim for coding (work and personal projects), for taking notes, and
+journaling.&lt;/p&gt;
+&lt;p&gt;This website, for example, is entirely written from Neovim. The website is
+built using markdown files that are parsed through a C program capable
+of converting the &lt;code&gt;.md&lt;/code&gt; files into &lt;code&gt;.html&lt;/code&gt; files.&lt;/p&gt;
+&lt;p&gt;After having tried so many auto-generators and converters, I decided to build
+myself a simple and fast one. It was also such a fun C project.&lt;/p&gt;
+&lt;p&gt;This is what editing this website feels like along with a snippet of the C
+code used to compile the &lt;code&gt;.md&lt;/code&gt; files into &lt;code&gt;.html&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;neovim.png&quot; alt=&quot;neovim&quot;&gt;&lt;/p&gt;
+&lt;h3&gt;Arch Linux&lt;/h3&gt;
+&lt;p&gt;Arch has been my daily driver since 2019. Before that, I&#x27;ve used Linux Mint and
+Ubuntu at work; back when I didn&#x27;t care and didn&#x27;t know the differences between
+all the flavours of Linux. I have also had to use MacOS for a job where the
+company mandated developers to use Apple machines.&lt;/p&gt;
+&lt;p&gt;I have tried other different flavours of Linux on virtual machines in the past,
+but I decided to stick with Arch Linux given how simple it is to customise.&lt;/p&gt;
+&lt;p&gt;That means I can use my simple bash script to download and auto-configure my
+system without manual intervention. I can also sync my environment between my
+work laptop and my personal laptop with one command. Apart from the hardware,
+all my machines are identical from a user&#x27;s experience.&lt;/p&gt;
+&lt;p&gt;An basic understanding of Linux is necessary to use this distro. You don&#x27;t need
+much more than being comfortable around the terminal these days. This is
+because everything you need to learn is already in the arch wiki and arch now
+has assisted installation scripts via &lt;code&gt;archinstall&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Some other perks of using arch are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Rolling releases&lt;/li&gt;
+&lt;li&gt;Rich user repository (AUR)&lt;/li&gt;
+&lt;li&gt;The fantastic Arch wiki&lt;/li&gt;
+&lt;li&gt;No corporations behind it (community support only)&lt;/li&gt;
+&lt;li&gt;Helpful community&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;i3-gaps&lt;/h3&gt;
+&lt;p&gt;i3-gaps is a fork of the i3wm (tilling window manager) for X11. Instead of
+having stacked windows that overlap (like in microsoft windows, or macOs),
+windows are organized side-by-side as default, having gaps between them.
+The benefits are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Able to customise keyboard shortcuts to navigate through windows.&lt;/li&gt;
+&lt;li&gt;Easy to setup.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;polybar&lt;/h3&gt;
+&lt;p&gt;Polybar is was the easiest and most user-friendly status bar I could find. With
+a lot of pre-configured setups and out-of-the-box integrations, getting up to
+speed was very simple.&lt;/p&gt;
+&lt;h3&gt;rofi&lt;/h3&gt;
+&lt;p&gt;A very simple and configurable application/script launcher.&lt;/p&gt;
+&lt;h3&gt;pywal&lt;/h3&gt;
+&lt;p&gt;For setting colours and themes.&lt;/p&gt;
+&lt;h2&gt;More about Ricing&lt;/h2&gt;
+&lt;p&gt;When it comes to finding inspiration for ricing in Linux, a good place to look
+at is &lt;a href=&quot;https://www.reddit.com/r/unixporn/&quot;&gt;/r/unixporn&lt;/a&gt;. Most of my setup came
+from picking apart different rices that users have shared in that channel. It
+is also a good place to visit once in a while to stay up-to-date with what the
+rest of the community is using and trying.&lt;/p&gt;</content><published>2020-08-30T00:00:00Z</published><updated>2024-07-06T00:00:00Z</updated></entry>
+</feed>

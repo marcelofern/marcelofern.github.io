@@ -13,6 +13,11 @@
       color: #333;
       text-align: justify;
     }
+    /* add empty line before <pre> blocks */
+    pre:before {
+        content: "\A";
+        white-space: pre;
+    }
     pre {
       background: #f4f4f4;
       border: 1px solid #ddd;
@@ -70,7 +75,6 @@ visual customisations to their desktop. These changes could be anything from
 changing the colour of a status bar to completely restructuring their computer
 environment.</p>
 <p><em><strong>Why?</strong></em></p>
-<p>These are my main reasons:</p>
 <ul>
 <li><strong>Productivity</strong>: You can customise your applications and keyboard shortcuts
 to satisfy your work-flow.</li>
@@ -85,14 +89,68 @@ in the past.</li>
 </ul>
 <h2>How does it look like?</h2>
 <p><img src="dark_theme.png" alt="dark_theme"></p>
-<h2>Softwares used</h2>
-<h3>arch linux</h3>
-<p>Arch gives the user a minimal operational system, delegating responsibility of
-most of the packages installation to the user. I.e, no batteries included.</p>
-<p>An OK understanding of linux is necessary to use this distro, you trully don't
-need much more than being confortable around the terminal these days. This is
-because everything you need to learn is already in the arch wiki.</p>
-<p>Some of the perks of using arch are:</p>
+<pre><code class="language-sh">$ neofetch
+                   -`                    x@x
+                  .o+`                   ---
+                 `ooo/                   OS: Arch Linux x86_64
+                `+oooo:                  Host: 20Q5S01400 ThinkPad L490
+               `+oooooo:                 Kernel: 6.6.39-1-lts
+               -+oooooo+:                Uptime: 1 hour, 32 mins
+             `/:-:++oooo+:               Packages: 519 (pacman)
+            `/++++/+++++++:              Shell: bash 5.2.26
+           `/++++++++++++++:             Resolution: 1920x1080
+          `/+++ooooooooooooo/`           WM: i3
+         ./ooosssso++osssssso+`          Theme: Adwaita [GTK2/3]
+        .oossssso-````/ossssss+`         Icons: Adwaita [GTK2/3]
+       -osssssso.      :ssssssso.        Terminal: alacritty
+      :osssssss/        osssso+++.       Terminal Font: LiterationMono Nerd Font
+     /ossssssss/        +ssssooo/-       CPU: Intel i7-8565U (8) @ 4.600GHz
+   `/ossssso+/:-        -:/+osssso+-     GPU: Intel WhiskeyLake-U GT2 [UHD Graphics 620]
+  `+sso+:-`                 `.-/+oso:    Memory: 1571MiB / 7134MiB
+ `++:.                           `-/+/
+ .`                                 `/
+
+du -h /
+# 5.6G
+</code></pre>
+<h2>Workflow Tools</h2>
+<p>Most of my tools revolve around <a href="https://github.com/davatorium/rofi">rofi</a>
+which is an application launcher.</p>
+<p>For example, my &quot;TODO&quot; list is a script that let's me add, read, and remove
+entries from a list via rofi:</p>
+<p><img src="todo.png" alt="todo"></p>
+<p>You can configure rofi to be able to run any script you like.
+Some of my scripts include: two-factor authentication, vpn connections, getting
+a wayback-machine link to a website, compiling my website and rss feed, etc.</p>
+<p><img src="rofi_scripts.png" alt="rofi_scripts"></p>
+<h2>Software used</h2>
+<h3>Neovim</h3>
+<p>I use Neovim for coding (work and personal projects), for taking notes, and
+journaling.</p>
+<p>This website, for example, is entirely written from Neovim. The website is
+built using markdown files that are parsed through a C program capable
+of converting the <code>.md</code> files into <code>.html</code> files.</p>
+<p>After having tried so many auto-generators and converters, I decided to build
+myself a simple and fast one. It was also such a fun C project.</p>
+<p>This is what editing this website feels like along with a snippet of the C
+code used to compile the <code>.md</code> files into <code>.html</code>:</p>
+<p><img src="neovim.png" alt="neovim"></p>
+<h3>Arch Linux</h3>
+<p>Arch has been my daily driver since 2019. Before that, I've used Linux Mint and
+Ubuntu at work; back when I didn't care and didn't know the differences between
+all the flavours of Linux. I have also had to use MacOS for a job where the
+company mandated developers to use Apple machines.</p>
+<p>I have tried other different flavours of Linux on virtual machines in the past,
+but I decided to stick with Arch Linux given how simple it is to customise.</p>
+<p>That means I can use my simple bash script to download and auto-configure my
+system without manual intervention. I can also sync my environment between my
+work laptop and my personal laptop with one command. Apart from the hardware,
+all my machines are identical from a user's experience.</p>
+<p>An basic understanding of Linux is necessary to use this distro. You don't need
+much more than being comfortable around the terminal these days. This is
+because everything you need to learn is already in the arch wiki and arch now
+has assisted installation scripts via <code>archinstall</code>.</p>
+<p>Some other perks of using arch are:</p>
 <ul>
 <li>Rolling releases</li>
 <li>Rich user repository (AUR)</li>
@@ -112,16 +170,16 @@ The benefits are:</p>
 <h3>polybar</h3>
 <p>Polybar is was the easiest and most user-friendly status bar I could find. With
 a lot of pre-configured setups and out-of-the-box integrations, getting up to
-speed is very simple.</p>
+speed was very simple.</p>
 <h3>rofi</h3>
 <p>A very simple and configurable application/script launcher.</p>
 <h3>pywal</h3>
 <p>For setting colours and themes.</p>
 <h2>More about Ricing</h2>
-<p>When it comes to finding inspiration for ricing in linux, a good place to look
+<p>When it comes to finding inspiration for ricing in Linux, a good place to look
 at is <a href="https://www.reddit.com/r/unixporn/">/r/unixporn</a>. Most of my setup came
 from picking apart different rices that users have shared in that channel. It
 is also a good place to visit once in a while to stay up-to-date with what the
-rest of the community is using.</p>
+rest of the community is using and trying.</p>
 </body>
 </html>
