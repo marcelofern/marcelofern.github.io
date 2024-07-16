@@ -35,7 +35,9 @@ my joint home and root partition like this:
 $ mount /dev/nvme0n1p2 /mnt
 ```
 
-And the first error shows up:
+## Unknown filesystem type "LVM2_member".
+
+If you didn't see this error, go to the next section!
 
 > unknown filesystem type "LVM2_member".
 
@@ -52,22 +54,33 @@ that.
 mount /dev/lvm/lvroot /mnt
 ```
 
-Now you might get the following error:
+## Unknown filesystem type 'crypto_LUKS'
+
+If you didn't see the below error, skip to the next section!
 
 > unknown filesystem type 'crypto_LUKS'
 
 Of course, my hard-drive is encrypted. So let's map the encrypted drive...
 
 ```sh
+# If you had the error above (LVM2_member), it will be:
 $ cryptsetup luksOpen /dev/lvm/lvroot mydata
+# Otherwise it will be
+$ cryptsetup luksOpen /dev/nvme0n1p2 mydata
 ```
 
 It will ask you for a password.
 
+## Mount your system
+
 Now you can finally mount it:
 
 ```sh
+# If you had the errors above it will be:
 $ mount /dev/mapper/mydata /mnt
+
+# Otherwise you can mount directly:
+$ mount /dev/nvme0n1p2 /mnt
 ```
 
 If you have a boot partition, mount that as well now:
@@ -76,6 +89,14 @@ If you have a boot partition, mount that as well now:
 $ mount /dev/nvme0n1p1 /mnt/boot
 ```
 
+(Optional) You might need to mount some other necessary stuff such as:
+
+```sh
+ for i in /sys /proc /run /dev; do sudo mount --rbind "$i" "/mnt$i"; done
+ ```
+
+## Get into the system
+
 Now you can get into the system and debug it:
 
 ```sh
@@ -83,3 +104,16 @@ $ arch-chroot /mnt
 ```
 
 Good luck!
+
+## Optional: Fixing Grub
+
+I've broken grub for the first time today after 7 years of arch linux
+(2024-07-14), once a `yay` upgrade crashed midway through.
+
+```sh
+# call
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+I wasn't able to go further than this given that recovering a luks
+encrypted hard drive via grub isn't something standard.

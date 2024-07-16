@@ -13,11 +13,6 @@
       color: #333;
       text-align: justify;
     }
-    /* add empty line before <pre> blocks */
-    pre:before {
-        content: "\A";
-        white-space: pre;
-    }
     pre {
       background: #f4f4f4;
       border: 1px solid #ddd;
@@ -88,7 +83,8 @@ partitions live under the same partition, so beware.</p>
 my joint home and root partition like this:</p>
 <pre><code class="language-sh">$ mount /dev/nvme0n1p2 /mnt
 </code></pre>
-<p>And the first error shows up:</p>
+<h2>Unknown filesystem type &quot;LVM2_member&quot;.</h2>
+<p>If you didn't see this error, go to the next section!</p>
 <blockquote>
 <p>unknown filesystem type &quot;LVM2_member&quot;.</p>
 </blockquote>
@@ -99,23 +95,44 @@ my joint home and root partition like this:</p>
 that.</p>
 <pre><code class="language-sh">mount /dev/lvm/lvroot /mnt
 </code></pre>
-<p>Now you might get the following error:</p>
+<h2>Unknown filesystem type 'crypto_LUKS'</h2>
+<p>If you didn't see the below error, skip to the next section!</p>
 <blockquote>
 <p>unknown filesystem type 'crypto_LUKS'</p>
 </blockquote>
 <p>Of course, my hard-drive is encrypted. So let's map the encrypted drive...</p>
-<pre><code class="language-sh">$ cryptsetup luksOpen /dev/lvm/lvroot mydata
+<pre><code class="language-sh"># If you had the error above (LVM2_member), it will be:
+$ cryptsetup luksOpen /dev/lvm/lvroot mydata
+# Otherwise it will be
+$ cryptsetup luksOpen /dev/nvme0n1p2 mydata
 </code></pre>
 <p>It will ask you for a password.</p>
+<h2>Mount your system</h2>
 <p>Now you can finally mount it:</p>
-<pre><code class="language-sh">$ mount /dev/mapper/mydata /mnt
+<pre><code class="language-sh"># If you had the errors above it will be:
+$ mount /dev/mapper/mydata /mnt
+
+# Otherwise you can mount directly:
+$ mount /dev/nvme0n1p2 /mnt
 </code></pre>
 <p>If you have a boot partition, mount that as well now:</p>
 <pre><code class="language-sh">$ mount /dev/nvme0n1p1 /mnt/boot
 </code></pre>
+<p>(Optional) You might need to mount some other necessary stuff such as:</p>
+<pre><code class="language-sh"> for i in /sys /proc /run /dev; do sudo mount --rbind &quot;$i&quot; &quot;/mnt$i&quot;; done
+</code></pre>
+<h2>Get into the system</h2>
 <p>Now you can get into the system and debug it:</p>
 <pre><code class="language-sh">$ arch-chroot /mnt
 </code></pre>
 <p>Good luck!</p>
+<h2>Optional: Fixing Grub</h2>
+<p>I've broken grub for the first time today after 7 years of arch linux
+(2024-07-14), once a <code>yay</code> upgrade crashed midway through.</p>
+<pre><code class="language-sh"># call
+grub-mkconfig -o /boot/grub/grub.cfg
+</code></pre>
+<p>I wasn't able to go further than this given that recovering a luks
+encrypted hard drive via grub isn't something standard.</p>
 </body>
 </html>

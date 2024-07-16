@@ -79,6 +79,7 @@ ones in this list to be good enough to be shared with the public.
 
 ## General Technology
 
+- Monteiro, Mike - Ruined By Design ([review](assorted/library/ruined-by-design/index.md))
 - Newport, Cal - Digital Minimalism ([review](assorted/library/digital-minimalism/index.md))
 - Stallman, Richard - Free as in freedom ([review](assorted/library/free-as-in-freedom/index.md))
 - Torvalds, Linus - Just for Fun ([review](assorted/library/just-for-fun/index.md))

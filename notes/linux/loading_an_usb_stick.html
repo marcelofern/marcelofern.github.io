@@ -60,12 +60,25 @@
   <![endif]-->
 </head>
 <body>
-<h1>Linux</h1>
-<ul>
-<li><a href="goodbye_zsh/index.html">goodbye zsh</a></li>
-<li><a href="rice/index.html">rice</a></li>
-<li><a href="raspberry-pi-as-a-sound-module/index.html">Raspberry Pi as a sound module</a></li>
-<li><a href="recovering-a-linux-installation/index.html">Recovering a linux installation</a></li>
-</ul>
+<p>2024-07-14</p>
+<h1>Loading an USB stick</h1>
+<pre><code class="language-sh"># make a mounting directory
+sudo mkdir /mnt/usb
+
+# find the name of the driver
+sudo fdisk -l
+
+# mount the disk [in this case /dev/sda]
+sudo mount /dev/sda /mnt/usb
+
+# access the files via
+cd /mnt/usb
+
+# then umount the disk
+sudo umount /mnt/usb
+
+# and remove the file
+rm -rf /mnt/usb
+</code></pre>
 </body>
 </html>
