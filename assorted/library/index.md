@@ -60,6 +60,7 @@ ones in this list to be good enough to be shared with the public.
 - Asimov, Isaac - The End of Eternity.
 - Asimov, Isaac - The Foundation Series.
 - Asimov, Isaac - The Robot Series.
+- Cixin, Liu - Remembrance of Earth's Past Trilogy ([review](assorted/library/remembrance-of-earths-past/index.md))
 - Coelho, Paulo - The Alchemist ([review](assorted/library/the-alchemist/index.md))
 - Egan, Greg - Permutation City.
 - Herbert, Frank - Dune.
