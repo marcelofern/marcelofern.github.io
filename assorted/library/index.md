@@ -10,6 +10,7 @@ ones in this list to be good enough to be shared with the public.
 - Flanagan, David - JavaScript, the definitive guide. ([notes](assorted/library/javascript-the-definitive-guide/index.md))
 - Hunt, Andrew and Thomas, David - Pragmatic Programmer. ([review](assorted/library/pragmatic-programmer/index.md))
 - Ierusalimschy Roberto - Programming in Lua. ([notes](assorted/library/programming-in-lua/index.md))
+- Kernighan, Brian and Pike, Rob - The Practice of Programming. ([review](assorted/library/the-practice-of-programming/index.md))
 - Martin, C. Robert - Clean Architecture.
 - Martin, C. Robert - Clean Code.
 - Martin, C. Robert - Clean Coder.
@@ -62,6 +63,7 @@ ones in this list to be good enough to be shared with the public.
 - Asimov, Isaac - The Robot Series.
 - Cixin, Liu - Remembrance of Earth's Past Trilogy ([review](assorted/library/remembrance-of-earths-past/index.md))
 - Coelho, Paulo - The Alchemist ([review](assorted/library/the-alchemist/index.md))
+- Dostoevsky, Fyodor - Crime and Punishment ([review](assorted/library/crime-and-punishment/index.md))
 - Egan, Greg - Permutation City.
 - Herbert, Frank - Dune.
 - Herbert, Frank - Dune Messiah. ([review](assorted/library/dune-messiah/index.md))
