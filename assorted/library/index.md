@@ -63,6 +63,7 @@ ones in this list to be good enough to be shared with the public.
 - Asimov, Isaac - The Robot Series.
 - Cixin, Liu - Remembrance of Earth's Past Trilogy ([review](assorted/library/remembrance-of-earths-past/index.md))
 - Coelho, Paulo - The Alchemist ([review](assorted/library/the-alchemist/index.md))
+- Dostoevsky, Fyodor - Brothers Karamazov ([review](assorted/library/brothers-karamazov/index.md))
 - Dostoevsky, Fyodor - Crime and Punishment ([review](assorted/library/crime-and-punishment/index.md))
 - Egan, Greg - Permutation City.
 - Herbert, Frank - Dune.
