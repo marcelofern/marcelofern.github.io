@@ -1,4 +1,4 @@
-# AT&T vs Intel Syntax For Assembly
+# ATT vs Intel Syntax For Assembly
 
 ```
 Created at: 2024-07-24

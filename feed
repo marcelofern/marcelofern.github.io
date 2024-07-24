@@ -10,7 +10,7 @@
     <uri>https://marcelofern.com</uri>
   </author>
   <id>tag:marcelofern.com,2024:/feed</id>
-<entry><title>AT&T vs Intel Syntax For Assembly</title><link href="https://www.marcelofern.com/asm/att-vs-intel-syntax/index.html"/><id>tag:marcelofern.com,Created at: 2024-07-24:/asm/att-vs-intel-syntax/index.html</id><content type="html">&lt;h1&gt;AT&amp;amp;T vs Intel Syntax For Assembly&lt;/h1&gt;
+<entry><title>ATT vs Intel Syntax For Assembly</title><link href="https://www.marcelofern.com/asm/att-vs-intel-syntax/index.html"/><id>tag:marcelofern.com,Created at: 2024-07-24:/asm/att-vs-intel-syntax/index.html</id><content type="html">&lt;h1&gt;ATT vs Intel Syntax For Assembly&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-07-24
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;strong&gt;TLDR&lt;/strong&gt;: Use the Intel syntax, but AT&amp;amp;T isn&#x27;t that bad.&lt;/p&gt;
