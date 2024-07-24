@@ -1,4 +1,4 @@
-# AT&T vs Intel Syntax For Assembly
+# Which Assembly Syntax to Choose?
 
 ```
 Created at: 2024-07-24
