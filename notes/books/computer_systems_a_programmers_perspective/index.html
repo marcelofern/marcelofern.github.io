@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>CSAPP</h1>
+<p>I have started this book somewhere around June 2024. It is thick, and it is
+full of information and homework.</p>
+<p>I am trying to not be too ambitious so I will not commit to reading the whole
+book, though it wouldn't be a tragedy if I end up doing so. The chapters that I
+have chosen to read are already plenty to go through, and they have been
+selected based on where I believe most of my knowledge gaps are:</p>
+<ul>
+<li>Chapter 3: Machine-Level Representation of Programs</li>
+<li>Chapter 4: Processor Architecture</li>
+<li>Chapter 5: Optimising Program Performance</li>
+<li>Chapter 7: Linking</li>
+<li>Chapter 9: Virtual Memory</li>
+</ul>
+<p>I'll also skim through the following chapters, but likely not going to dive too
+deep:</p>
+<ul>
+<li>Chapter 6: The Memory Hierarchy</li>
+<li>Chapter 8: Exceptional Control Flow</li>
+</ul>
+<h2>Tools</h2>
+<p>For assembly code, I much prefer Intel syntax over AT&amp;T. It is annoying that
+<code>gcc</code> and <code>objdump</code> defaults use AT&amp;T, so we need to set the appropriate flags
+in many commands below.</p>
+<h3>Compiling and running <code>.c</code> binaries</h3>
+<pre><code class="language-sh">gcc -Og /tmp/main.c -o /tmp/a.o &amp;&amp; /tmp/a.o
+</code></pre>
+<h3>Compiling <code>.c</code> to <code>.asm</code></h3>
+<pre><code class="language-sh">gcc -S -masm=intel -fno-asynchronous-unwind-tables &lt;options&gt; -o /tmp/main.asm
+</code></pre>
+<p>I've translated the above to a vim command &quot;CToAssembly&quot; for convenience.</p>
+<h3>Showing the compiled bytes for function</h3>
+<pre><code class="language-sh">gdb /tmp/a.o
+# Display the first 14 hex of the function my_sweet_function.
+# However note that using a disassembler is best! See section below.
+(gdb) x/14xb my_sweet_function
+</code></pre>
+<h3>Disassembling</h3>
+<pre><code class="language-sh">objdump -d --disassembler-options=intel /tmp/a.o
+</code></pre>
+<p>Analogously, I've translated the above to a vim command &quot;Disassembler&quot; for
+convenience.</p>
+<h2>Pertinent notes</h2>
+<p>Calling convention between C and assembly for function calls.
+The order of arguments is:</p>
+<ol>
+<li>rdi</li>
+<li>rsi</li>
+<li>rdx</li>
+<li>rcx</li>
+<li>r8</li>
+<li>r9</li>
+</ol>
+</body>
+</html>

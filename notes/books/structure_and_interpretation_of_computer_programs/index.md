@@ -5,7 +5,7 @@ whenever time allows me to do so.
 
 At present I have no ambition of even finishing this book, but given it is in
 my list of "classic CS books that have withstood the test of time", I'll try
-to give it a fair try.
+to give it a fair go.
 
 ## Tools
 

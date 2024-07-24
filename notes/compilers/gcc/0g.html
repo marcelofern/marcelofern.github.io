@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>-0g</h1>
+<p>The first time I've heard of this flag was while reading &quot;Computer Systems, a
+Programmer's Approach&quot;. Before that, I've always just used plain <code>-g</code>.</p>
+<p>According to the man pages:</p>
+<blockquote>
+<p>If you are not using some other optimization option, consider using -Og with
+-g.  With no -O option at all, some compiler passes that collect information
+useful for debugging do not run at all, so that -Og may result in a better
+debugging experience.</p>
+</blockquote>
+<blockquote>
+<p>Most optimizations are completely disabled at -O0 or if an -O level is not
+set on the command line, even if individual optimization flags are specified.
+Similarly, -Og suppresses many optimization passes.</p>
+</blockquote>
+<blockquote>
+<p>-Og should be the optimization level of choice for the standard
+edit-compile-debug cycle, offering a reasonable level of optimization while
+maintaining fast compilation and a good debugging experience.  It is a better
+choice than -O0 for producing debuggable code because some compiler passes
+that collect debug information are disabled at -O0.</p>
+</blockquote>
+<blockquote>
+<p>Like -O0, -Og completely disables a number of optimization passes so that
+individual options controlling them have no effect.  Otherwise -Og enables
+all -O1 optimization flags except for those that may interfere with
+debugging:</p>
+</blockquote>
+<blockquote>
+<p>-fbranch-count-reg
+-fdelayed-branch
+-fdse
+-fif-conversion
+-fif-conversion2
+-finline-functions-called-once
+-fmove-loop-invariants
+-fmove-loop-stores
+-fssa-phiopt
+-ftree-bit-ccp
+-ftree-dse
+-ftree-pta
+-ftree-sra</p>
+</blockquote>
+<p>Note that the flag <code>-0</code> referred by the documentation is an alias for <code>-01</code>,
+which is defined by:</p>
+<blockquote>
+<p>-O1 Optimize.  Optimizing compilation takes somewhat more time, and a lot
+more memory for a large function.</p>
+</blockquote>
+<blockquote>
+<p>With -O, the compiler tries to reduce code size and execution time, without
+performing any optimizations that take a great deal of compilation time.</p>
+</blockquote>
+<blockquote>
+<p>-O turns on the following optimization flags:
+-fauto-inc-dec
+-fbranch-count-reg
+-fcombine-stack-adjustments
+-fcompare-elim
+-fcprop-registers
+-fdce
+-fdefer-pop
+-fdelayed-branch
+-fdse
+-fforward-propagate
+-fguess-branch-probability
+-fif-conversion
+-fif-conversion2
+-finline-functions-called-once
+-fipa-modref
+-fipa-profile
+-fipa-pure-const
+-fipa-reference
+-fipa-reference-addressable
+-fmerge-constants
+-fmove-loop-invariants
+-fmove-loop-stores
+-fomit-frame-pointer
+-freorder-blocks
+-fshrink-wrap
+-fshrink-wrap-separate
+-fsplit-wide-types
+-fssa-backprop
+-fssa-phiopt
+-ftree-bit-ccp
+-ftree-ccp
+-ftree-ch
+-ftree-coalesce-vars
+-ftree-copy-prop
+-ftree-dce
+-ftree-dominator-opts
+-ftree-dse
+-ftree-forwprop
+-ftree-fre
+-ftree-phiprop
+-ftree-pta
+-ftree-scev-cprop
+-ftree-sink
+-ftree-slsr
+-ftree-sra
+-ftree-ter
+-funit-at-a-time</p>
+</blockquote>
+</body>
+</html>

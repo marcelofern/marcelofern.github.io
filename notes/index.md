@@ -8,6 +8,7 @@
 
 ## Low-level computing
 
+- [Compilers](compilers/index.md)
 - [Computer architecture](computer_architecture/index.md)
 - [Embedded development](embedded_development/index.md)
 
