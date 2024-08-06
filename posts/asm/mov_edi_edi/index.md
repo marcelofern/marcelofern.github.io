@@ -69,7 +69,7 @@ the catch; that `mov edi, edi` operation is used for zero'ing the most
 significant 32 bits of the `rdi` register.
 
 It does not seem obvious, but the answer can be found in the x86 tour of Intel
-manuals source
+manuals [source](http://web.archive.org/web/20240610022212/http://web.archive.org/web/20240415061928/http://x86asm.net/articles/x86-64-tour-of-intel-manuals/)
 
 > General-purpose Registers (...)
 >

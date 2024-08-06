@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>SET NOT NULL</h1>
+<pre><code>Created at: 2024-07-29
+</code></pre>
+<p>Since Postgres 12 (inclusive), the operation <code>ALTER TABLE .. UPDATE COLUMN ... SET NOT NULL</code> can be managed safely, that is, without locking reads and writes.</p>
+<p>In prior versions of Postgres, this operation would need to scan the whole
+table, and thus, could take a long time.</p>
+<p>According to this
+<a href="http://web.archive.org/web/20240521033839/https://dba.stackexchange.com/questions/267947/how-can-i-set-a-column-to-not-null-without-locking-the-table-during-a-table-scan">source</a>,
+Postgres can now prove the correctness of NOT NULL simply by checking an
+existing constraint.</p>
+<pre><code class="language-sql">-- The below still requires ACCESS EXCLUSIVE lock, but doesn't require a full
+-- table scan.
+-- This check will only be applied to new or modified rows, existing rows
+-- won't be validated because of the NOT VALID clause.
+ALTER TABLE foo
+  ADD CONSTRAINT foo_not_null
+  CHECK (bar1 IS NOT NULL) NOT VALID;
+
+-- The below performs a sequential scan, but without an exclusive lock.
+-- Concurrent sessions can read/write.
+-- The operation will require a SHARE UPDATE EXCLUSIVE lock, which will block
+-- only other schema changes and the VACUUM operation.
+-- This may take a long time, but the operation is idempotent once the
+--  constraint is marked as valid.
+ALTER TABLE foo VALIDATE CONSTRAINT foo_not_null;
+
+-- Requires ACCESS EXCLUSIVE LOCK, but foo_not_null proves that there is no
+-- NULL in this column and a full table scan is not required. Therefore, the
+-- ALTER TABLE command should be fast.
+-- If you are not on Postgres &gt;=12, you should skip this as it will take a lot
+-- of time, and the current CHECK constraint might be good enough.
+ALTER TABLE foo ALTER COLUMN bar1 SET NOT NULL;
+
+-- The CHECK constraint has fulfilled its obligation and can now departure.
+ALTER TABLE foo DROP CONSTRAINT foo_not_null;
+</code></pre>
+</body>
+</html>

@@ -62,7 +62,7 @@
 <body>
 <h1>Branchless Programming Experiments in C++ and Python</h1>
 <pre><code>Created: 2023-08-22
-Updated: 2024-07-06
+Updated: 2024-07-28
 </code></pre>
 <p>This article talks about high-level theoretical concepts of branchless
 programming, along with examples of branchless programming in C++ and Python.</p>
@@ -79,6 +79,10 @@ able to know what path it needs to run, so it takes a guess. When this guess is
 incorrect, the CPU discards the instructions previously read, and read the
 new instruction set for the correct path. This takes time and valuable clock
 cycles.</p>
+<p>UPDATE: According to the author of the CSAPP book, microprocessors are
+architected in a way to achive branch prediction success rates of about 90%.
+The author also provides an estimation of 15 to 30 clock cycles of wasted work
+when the branch prediction fails.</p>
 <h2>How does Instruction Pipelining work?</h2>
 <p>The CPU is composed of multiple processor units. Each processor unit performs
 an instruction such as adding two numbers, comparing two numbers, jumping to a

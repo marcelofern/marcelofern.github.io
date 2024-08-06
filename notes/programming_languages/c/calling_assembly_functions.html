@@ -79,6 +79,23 @@ will be returning to the C code after the <code>ret</code> instruction.</p>
 <li>rsp+8*2</li>
 <li><code>...</code></li>
 </ol>
+<h2>Callee-saved registers vs Caller-saved registers</h2>
+<p>The following registers are callee-saved, meaning that callee functions should
+not have altered the content of these registers at the point in which they
+return back to the caller. It is fine to change them and reset them to the
+original value though:</p>
+<ul>
+<li>rbx</li>
+<li>rbp</li>
+<li>r12</li>
+<li>r13</li>
+<li>r14</li>
+<li>r15</li>
+</ul>
+<p>All other registers except the stack pointer rsp are classified as caller-saved
+registers. This means that any function can modify them. If those registers
+mean anything to the caller, they must be saved. Otherwise, the callee is free
+to change them and so a bug may happen.</p>
 <h2>The sandbox</h2>
 <p>First off, when you call an assembly function from C, you need to know
 which registers will contain the arguments of the function call.</p>

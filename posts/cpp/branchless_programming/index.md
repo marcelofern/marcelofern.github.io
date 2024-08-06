@@ -2,7 +2,7 @@
 
 ```
 Created: 2023-08-22
-Updated: 2024-07-06
+Updated: 2024-07-28
 ```
 
 This article talks about high-level theoretical concepts of branchless
@@ -25,6 +25,11 @@ able to know what path it needs to run, so it takes a guess. When this guess is
 incorrect, the CPU discards the instructions previously read, and read the
 new instruction set for the correct path. This takes time and valuable clock
 cycles.
+
+UPDATE: According to the author of the CSAPP book, microprocessors are
+architected in a way to achive branch prediction success rates of about 90%.
+The author also provides an estimation of 15 to 30 clock cycles of wasted work
+when the branch prediction fails.
 
 ## How does Instruction Pipelining work?
 

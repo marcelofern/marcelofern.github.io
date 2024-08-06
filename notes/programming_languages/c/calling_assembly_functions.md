@@ -19,6 +19,25 @@ will be returning to the C code after the `ret` instruction.
 8. rsp+8*2
 9. `...`
 
+## Callee-saved registers vs Caller-saved registers
+
+The following registers are callee-saved, meaning that callee functions should
+not have altered the content of these registers at the point in which they
+return back to the caller. It is fine to change them and reset them to the
+original value though:
+
+- rbx
+- rbp
+- r12
+- r13
+- r14
+- r15
+
+All other registers except the stack pointer rsp are classified as caller-saved
+registers. This means that any function can modify them. If those registers
+mean anything to the caller, they must be saved. Otherwise, the callee is free
+to change them and so a bug may happen.
+
 ## The sandbox
 
 First off, when you call an assembly function from C, you need to know

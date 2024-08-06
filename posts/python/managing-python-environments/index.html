@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Managing Python Environments</h1>
+<pre><code>Created at: 2024-08-06
+</code></pre>
+<p>The ecosystem for managing Python environments is huge, and so is the number
+of tools that are used to manage these environments.</p>
+<p>We have: <code>pyenv</code>, <code>virtualenv</code>, <code>virtualenvwrapper</code>, <code>asdf</code>, <code>conda</code>,
+<code>anaconda</code>, <code>uv</code>, <code>poetry</code>, <code>pipenv</code> etc.</p>
+<p>It is very easy to make a mess on your local environment and this cartoon
+from xkcd sums it up well:</p>
+<p><img src="python_xkcd.png" alt="python_xkcd"></p>
+<p><a href="http://web.archive.org/web/20240716100839/https://xkcd.com/1987/">source</a></p>
+<p>The purpose of this post is to argue whether I need any of these tools when
+working on multiple Python projects with incompatible versions and
+dependencies.</p>
+<p>Mind you that I program for a living. Some of the knowledge and intentions
+behind the way I do things have been learned through trial and error over
+time. What is written here assumes that you too have a similar background.
+Otherwise it would be too difficult to explain everything from scratch.</p>
+<p>Also, I expect that you don't need convincing that using your global Python
+executable for everything is a bad idea, and that isolated virtual environments
+for each project is the best solution to avoid dependency headaches.</p>
+<h2>What Do These Tools Provide?</h2>
+<p>Every tool I cited above is a little bit different, but I will pick <code>pyenv</code> as
+an example since it is one of the tools with the smallest footprint.</p>
+<p><code>pyenv</code> let's you:</p>
+<ol>
+<li>Install a new Python version: <code>pyenv install 3.10.4</code></li>
+<li>Automatically pick an environment when you are in a folder:
+<code>pyenv local &lt;version&gt;</code></li>
+<li>A plugin framework that let's you add <code>virtualenv</code> among other tools.</li>
+<li>Auto completion of commands.</li>
+</ol>
+<p>This is pretty neat, but is it worth to install this tool made of 101,263 lines
+of code and data files (as per v2.4.9) just so that you have these commands?</p>
+<p>My answer is no. You are not going to need it and you are better off with
+the default tools (more on that later).</p>
+<p>There is also undesired behaviour that comes from the magic added by <code>pyenv</code>:</p>
+<ol>
+<li>Bash shims. A shim is merely a proxy command. If you add the <code>pyenv</code>
+collection of shims at the beginning of your $PATH variable, as in:<pre><code>$(pyenv root)/shims:/usr/local/bin:/usr/bin:/bin`
+</code></pre>
+These shims will intercept a whole bunch of Python commands (like <code>pip</code>) so
+that they automatically pick whatever version of Python you need for that
+directory.
+I am not a fan of magical tools, and I think that the potential mistakes
+that can be caused by this type of facility are not worth it.</li>
+<li>Python versions are hidden from you, which is another magical feature that
+makes it a little less ergonomic for you to control a particular
+environment.</li>
+</ol>
+<p>You might find that <code>pyenv</code> is actually useful for you after this short
+description. If that is the case, go for it!</p>
+<p>I personally am not a big fan of magical tools and I like to have control and
+understanding of how to fundamentally control my work environment as this is
+an important part of my job.</p>
+<p>I have also been surprised in the past numerous times by how easy it is to
+learn and use the basic tools available by the OS or the programming language
+itself, which has only added to my scepticism of magical tools actually adding
+value in exchange for their added cognitive load.</p>
+<p>I also mentioned at the top of this section that <code>pyenv</code> is one of the tools
+with the smallest footprint. That is true, other tools such as <code>conda</code>, <code>asdf</code>
+and, heck, <code>nix</code> are on a much higher level of abstraction, and to me are even
+less desirable if my task is to manage Python environments.</p>
+<p>There are also other caveats with such tools such as the fact that they change,
+grow bigger, and sometimes change their ways thus generating incompatibility
+with their earlier versions.</p>
+<p>It is not hard to find issues on those repositories where some conflicting
+dependency has broken the dependency resolver tool itself
+<a href="https://github.com/conda/conda/issues/12325">1</a>. If you are in a situation
+where you need a version management tool to manage your version management
+tool, things get complicated. It is a fact that software breaks, and if your
+environment management that is build upon high levels of abstraction has failed
+you, how will you fix this issue without knowing enough about this 100,000
+lines code repository?</p>
+<h2>What do I do then?</h2>
+<p>I am writing this article in 2024. Building Python from source is incredibly
+easy and fast, yet surprisingly very few people actually do it. Yes... Building
+from source! What a crazy idea.</p>
+<p>It is possible to download a specific Python version and set up a virtual
+environment using Python's own
+<a href="http://web.archive.org/web/20240731142400/https://docs.python.org/3/library/venv.html">venv</a>
+tool without any extra dependency whatsoever.</p>
+<p>Here's a short list of bash commands that download Python 3.11.5 and set a
+virtual environment for it:</p>
+<pre><code class="language-sh"># You'll be installing your Python binaries at $HOME/python_bin.
+mkdir -p $HOME/.python_bin/ &amp;&amp; cd $HOME/.python_bin/
+
+# Download the tar for the Python version you want.
+curl -O https://www.python.org/ftp/python/3.11.5/Python-3.11.5.tgz
+
+# Decompress and install it.
+tar -xzf Python-3.11.5.tgz &amp;&amp; cd Python-3.11.5
+./configure --prefix=/tmp/localpython/3.11.5 &amp;&amp; make &amp;&amp; make install
+
+# Create your environment anywhere you like.
+./$HOME/python_bin/Python-3.11.5/python -m venv my_env
+source my_env/bin/activate
+</code></pre>
+<p>That is it. Now you know how the whole process works (it is so easy) and you're
+using <code>venv</code> which was introduced to core Python in 3.3+. You can also play
+with compilation flags and build the binary with some extensions (but you don't
+have to!).</p>
+<p>You can run however many virtual environments you want from that binary, and
+put them anywhere you like. If you want extra convenience to activate that
+environment for a particular project, just create an alias:</p>
+<pre><code class="language-sh">alias myproj=&quot;/somewhere/my_env/bin/activate &amp;&amp; cd /somewhere/myproj&quot;
+</code></pre>
+<p>If you aren't using Python 3.3+, just swap <code>venv</code> for anything else that works
+for your version or heck, just directly use that Python executable for your
+project. Now that you know how it works, it is very easy to change it to
+your taste, and that's exactly what I wanted to show in this post.</p>
+<p>If you want some further ideas, this is the script I am using on my <code>bashrc</code>
+file.</p>
+<pre><code class="language-sh">install_python_version() {
+  # call this function with a version of Python
+  # like `install_python_version 3.11.9`.
+
+  # Clean up first
+  rm -rf /tmp/python-install
+
+  # This is where the different Python executables will be installed.
+  DIR=$HOME/.python_bin/python-$1
+  mkdir -p $DIR
+
+  # This is where temporary installation files will be available.
+  mkdir -p /tmp/python-install &amp;&amp; cd /tmp/python-install
+
+  # Download the python version
+  curl -O https://www.python.org/ftp/python/$1/Python-$1.tgz
+
+  tar -xzf Python-$1.tgz &amp;&amp; cd /tmp/python-install/Python-$1
+  ./configure --prefix=$DIR &amp;&amp; make &amp;&amp; make install
+
+  echo &quot;Now you can install your virtualenv:&quot;
+  echo &quot;$HOME/.python_bin/python-$1/bin/python3 -m venv /tmp/my_env&quot;
+}
+</code></pre>
+<p>You can invoke it from the shell with <code>install_python_version 3.11.5</code>.</p>
+<h2>But Compiling From Source Does Not Work On My Machine</h2>
+<p>It is true that the script above might not work verbatim for a particular class
+of hardware. But provided your hardware is supported by CPython itself, it
+should all work smoothly. If not, send me an email
+<code>marceelofernandes@gmail.com</code> and I can try to help you.</p>
+<p>The main goal here is to seed an idea that compiling from source is a real
+option, and that there's nothing to be afraid of when doing so. You get the
+binary, and decide where to put it and how to handle it.</p>
+</body>
+</html>

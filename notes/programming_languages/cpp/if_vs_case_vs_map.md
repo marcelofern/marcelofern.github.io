@@ -1,7 +1,23 @@
-March 06, 2023
+# if versus case versus map
+
+
+```
+Created at: 2023-03-06
+Updated at: 2024-07-29
+```
 
 Note 2024-03-23: I need to make this more agnostic by adapting it to C. Also
 remove the images in favour of listings.
+
+Note 2024-07-29: The following information from the CSAPP book (3rd) is
+relevant to this discussion:
+
+> The advantage of using a jump table over a long sequence of if-else
+> statements is that the time taken to perform the switch is independent of the
+> number of switch cases. Gcc selects the method of translating a switch
+> statement based on the number of cases and the sparsity of the case values.
+> Jump tables are used when there are a number of cases (e.g., four or more)
+> and they span a small range of values.
 
 ## The introduction
 

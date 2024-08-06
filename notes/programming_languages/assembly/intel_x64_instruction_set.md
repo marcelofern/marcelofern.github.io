@@ -936,7 +936,7 @@ No flags are affected.
 
 ### TEST
 
-Note: Prefer `BT` instead!
+Note: Prefer `BT` instead! `[Citation Needed]`.
 
 Useful for mask testing. It does the same job as `AND`, but without changing
 the value of the destination.
@@ -944,7 +944,8 @@ the value of the destination.
 If the ZF (zero flag) is set to 0, it means that the mask worked. If it's
 set to 1, the mask didn't work. It sounds a bit counter-intuitive.
 
-Special use: It can be used to check if the value of a register is zero:
+Special use: It can be used to check if the value of a register is zero,
+positive, or negative (signed flag/zero flag/carry flag).
 
 ```asm
   ; jump to L4 if esi is zero

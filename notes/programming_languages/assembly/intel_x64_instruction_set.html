@@ -765,12 +765,13 @@ preserved by Linux across a system call: r12, r13, r14, r15, rbx, rsp, and rbp.<
 Useful google term: &quot;system call table x64&quot;</p>
 <p>No flags are affected.</p>
 <h3>TEST</h3>
-<p>Note: Prefer <code>BT</code> instead!</p>
+<p>Note: Prefer <code>BT</code> instead! <code>[Citation Needed]</code>.</p>
 <p>Useful for mask testing. It does the same job as <code>AND</code>, but without changing
 the value of the destination.</p>
 <p>If the ZF (zero flag) is set to 0, it means that the mask worked. If it's
 set to 1, the mask didn't work. It sounds a bit counter-intuitive.</p>
-<p>Special use: It can be used to check if the value of a register is zero:</p>
+<p>Special use: It can be used to check if the value of a register is zero,
+positive, or negative (signed flag/zero flag/carry flag).</p>
 <pre><code class="language-asm">  ; jump to L4 if esi is zero
   test  esi, esi
   je  .L4
