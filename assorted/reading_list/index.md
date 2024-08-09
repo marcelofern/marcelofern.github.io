@@ -50,3 +50,7 @@ Godel, Escher, Bach: An Eternal Golden Braid - Douglas Hofstadter
 ## Philosophy
 
 The Parallax View - Slavoj Zizek
+
+## Management
+
+Peopleware - Tom Demarco & Tim Lister
