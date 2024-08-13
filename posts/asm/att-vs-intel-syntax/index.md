@@ -2,6 +2,7 @@
 
 ```
 Created at: 2024-07-24
+Updated at: 2024-08-13
 ```
 
 **TLDR**: Use the Intel syntax, but AT&T isn't that bad.
@@ -55,6 +56,19 @@ shlx rax, rbx, rdi  ; rax = rbx << rdi
 
 If that mode of thinking fits your brain well you probably won't see that as a
 problem. For me, I always have to "reverse think".
+
+**Update (2024-08-13)**: There is another counter argument. I've come to
+realise that ABI rules favour the Intel syntax. So for example the function:
+
+```c
+long sum(long foo, long bar);
+// foo -> %rdi
+// bar -> %rsi
+```
+
+`foo` is stored in rdi ("d" standing for destination), and `bar` is stored in
+rsi ("s" standing for source). The convention is to have the destination first
+then the source, just like in Intel syntax.
 
 ## AT&T is The Default on GCC, objdump, and GDB
 

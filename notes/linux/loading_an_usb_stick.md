@@ -19,5 +19,5 @@ cd /mnt/usb
 sudo umount /mnt/usb
 
 # and remove the file
-rm -rf /mnt/usb
+sudo rm -rf /mnt/usb
 ```

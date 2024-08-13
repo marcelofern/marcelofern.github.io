@@ -62,6 +62,7 @@
 <body>
 <h1>Which Assembly Syntax to Choose?</h1>
 <pre><code>Created at: 2024-07-24
+Updated at: 2024-08-13
 </code></pre>
 <p><strong>TLDR</strong>: Use the Intel syntax, but AT&amp;T isn't that bad.</p>
 <p>I usually prefer not to post content that is already easily searchable on the
@@ -100,6 +101,15 @@ shlx rax, rbx, rdi  ; rax = rbx &lt;&lt; rdi
 </code></pre>
 <p>If that mode of thinking fits your brain well you probably won't see that as a
 problem. For me, I always have to &quot;reverse think&quot;.</p>
+<p><strong>Update (2024-08-13)</strong>: There is another counter argument. I've come to
+realise that ABI rules favour the Intel syntax. So for example the function:</p>
+<pre><code class="language-c">long sum(long foo, long bar);
+// foo -&gt; %rdi
+// bar -&gt; %rsi
+</code></pre>
+<p><code>foo</code> is stored in rdi (&quot;d&quot; standing for destination), and <code>bar</code> is stored in
+rsi (&quot;s&quot; standing for source). The convention is to have the destination first
+then the source, just like in Intel syntax.</p>
 <h2>AT&amp;T is The Default on GCC, objdump, and GDB</h2>
 <p>This point isn't about syntax at all, but I often find tooling characteristics
 relevant when making an important choice and thus I can't ignore them. I spend
