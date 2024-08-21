@@ -25,6 +25,7 @@ Reading list resources:
 - Modern C - Jens Gustedt
 - SEI CERT C Coding Standard by Carnegie Mellon University's Confluence.
 - Embedded Systems with ARM Cortex-M Microcontrollers in Assembly Language and C.
+- Masterminds of Programming: Conversations with the Creators of Major Programming Languages.
 
 ## Security
 
