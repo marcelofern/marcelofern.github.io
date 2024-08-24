@@ -4,7 +4,6 @@ Also available via [RSS feed](https://marcelofern.com/feed).
 
 ---
 
-- [2024-08-20 The Dumbest Compiler Imaginable](posts/python/the-dumbest-compiler-imaginable/index.md)
 - [2024-08-06 Managing Python Environments](posts/python/managing-python-environments/index.md)
 - [2024-07-24 ATT vs Intel Syntax For Assembly](posts/asm/att-vs-intel-syntax/index.md)
 - [2024-06-08 mov edi, edi](posts/asm/mov_edi_edi/index.md)
