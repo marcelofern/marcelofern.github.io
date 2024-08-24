@@ -231,6 +231,142 @@ debugging.
 
 ---
 
+## Pypy
+
+Pypy only has a couple of special bytecodes on top of what CPython already has,
+and Pypy in general doesn't perform a lot of bytecode optimisations either.
+
+But there are two interesting opcodes that make a significant difference on a
+program's performance. For the following code:
+
+```py
+class Foo:
+    def bar(self, x: int, y: int) -> int:
+        return x + y
+
+
+foo = Foo()
+x = 1
+y = 2
+```
+
+Running this function call on the CPython interpreter:
+
+```python
+# Runs foo.bar(x, y) bytecode.
+dis.dis(lambda: foo.bar(x, y))
+```
+
+Gives me the bytecode:
+
+```
+LOAD_GLOBAL              0 (foo)
+LOAD_ATTR                3 (NULL|self + bar)
+LOAD_GLOBAL              4 (x)
+LOAD_GLOBAL              6 (y)
+CALL                     2
+RETURN_VALUE
+```
+
+
+Wheres in Pypy we have:
+
+```
+LOAD_GLOBAL              0 (foo)
+LOAD_METHOD              1 (bar)
+LOAD_GLOBAL              2 (x)
+LOAD_GLOBAL              3 (y)
+CALL_METHOD              2
+RETURN_VALUE
+```
+
+Both have 6 bytecode instructions each, but the first difference is that Pypy
+uses its special `LOAD_METHOD` opcode instead of a `LOAD_ATTR` instruction.
+
+The `LOAD_METHOD` pushes two values to the stack instead of one. It passes the
+unbounded Python function object (Foo.bar) and the object itself (foo).
+
+The `CALL_METHOD` (which received a parameter of N = 2) will pop the two
+variables from the stack (x, y) as well as the "self" argument for the
+unbounded function ("foo") and call `Foo.bar(self, x, y)`.
+
+To understand why this optimises the underlying code one must understand
+the difference between bound and unbound methods in Python.
+
+```python
+# Using the object.
+print(foo.bar)
+>> <bound method Foo.bar of <__main__.Foo object at 0x7646b4648bf0>>
+
+# Using the class.
+print(Foo.bar)
+>> <function Foo.bar at 0x7646b46972e0>
+```
+
+The first case where the function `bar` comes from an instantiated object is
+called "bounded", because that function is linked to the object and thus has a
+"self" variable bounded to it.
+
+The second case, where we use the `Foo` class, the function `bar` is not
+bounded as it didn't come from an instantiated object from `Foo` and does not
+have a `self` object in that case. Trying to call it will result in error:
+
+```python
+>>> Foo.bar(x=1, y=2)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: Foo.bar() missing 1 required positional argument: 'self'
+```
+
+However, you can do this:
+
+```python
+>>> Foo.bar(self=foo, x=1, y=2)
+3
+```
+
+So **why is the original LOAD_ATTR** instruction a problem?
+
+The problem comes from the performance penalty imposed by creating bounded
+methods and calling them.
+
+CPython creates bounded methods on demand. I.e., every time the bounded method
+is needed for the first time, it is initialised and allocated in memory right
+there.
+
+```
+>>> obj_1 = Foo()
+>>> obj_2 = Foo()
+>>>
+>>> obj_1.bar is obj_2.bar
+False
+>>> obj_1.bar == obj_2.bar
+False
+>>> obj_1.bar
+<bound method Foo.bar of <__main__.Foo object at 0x7646b49ebf80>>
+>>> obj_2.bar
+<bound method Foo.bar of <__main__.Foo object at 0x7646b49e8320>>
+```
+
+Note how the addresses of `obj_1.bar` and `obj_2.bar` are different. CPython
+will create instances of those bound methods for each object before it can call
+the bounded `.bar` function. However, Pypy will use the stack to cache the
+unbounded method, and call it with the "self" object that is stored in the
+stack already, so that there is no overhead of allocation and creation of
+bounded methods when an object function needs to be called. It operates
+similarly to `Foo.bar(self=obj, x=1, y=2)`.
+
+This strategy provides a considerable performance improvement for heavily OOP
+programs. According to Pypy:
+
+> Another optimization, or rather set of optimizations, that has a uniformly
+> good effect are the two ‘method optimizations’, i.e. the method cache and the
+> LOOKUP_METHOD and CALL_METHOD opcodes. On a heavily object-oriented benchmark
+> (richards) they combine to give a speed-up of nearly 50%, and even on the
+> extremely un-object-oriented pystone benchmark, the improvement is over 20%.
+
+[source](http://web.archive.org/web/20240222082516/https://doc.pypy.org/en/latest/interpreter-optimizations.html)
+
 ## Outro
 
 It is important to note that there have been many attempts to make Python

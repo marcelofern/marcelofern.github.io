@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+      text-align: justify;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>No Automatic Index on Foreign Keys</h1>
+<pre><code>Created at: 2024-08-22
+</code></pre>
+<p>Postgres does not automatically creates indexes for Foreign Keys.</p>
+<p><a href="http://web.archive.org/web/20240822020006/https://www.postgresql.org/message-id/472700FC.7040006%40reedyriver.com">This
+email</a>
+thread from the <code>psql-admin</code> reading list gives an example where adding an
+index for a FK is unnecessary:</p>
+<blockquote>
+<p>Whether or not you want to index non-identifying foreign keys is determined
+by the requirements of the database design.  For example, assume that we have
+a table that contains sales territories, which rarely change. We will use
+this table to create drop down lists that we will use to set territories.
+Now let's create a table for sales person and include an attribute for sales
+territory.  We will create a non-identifying foreign key relationship between
+this value and the sales territories and create proper constraints.  We will
+not index the column in the sales person table because the only thing that
+would use the index is the foreign key constraint and it will rarely fire and
+therefore the index is not worth the cost.</p>
+</blockquote>
+<p>But to not take anyone's word for it, you can run the following:</p>
+<pre><code class="language-sql">CREATE DATABASE sandbox_db;
+
+\c sandbox_db
+
+CREATE TABLE parent_table (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+CREATE TABLE child_table (
+    id SERIAL PRIMARY KEY,
+    parent_id INT,
+    description VARCHAR(255),
+    FOREIGN KEY (parent_id) REFERENCES parent_table(id)
+);
+
+-- Insert rows into parent_table
+INSERT INTO parent_table (name)
+VALUES
+('Parent 1'),
+('Parent 2'),
+('Parent 3');
+
+-- Insert rows into child_table
+INSERT INTO child_table (parent_id, description)
+VALUES
+(1, 'Child 1 of Parent 1'),
+(1, 'Child 2 of Parent 1'),
+(2, 'Child 1 of Parent 2'),
+(3, 'Child 1 of Parent 3');
+
+\d child_table
+
+-- No FK indexes here
+Indexes:
+    &quot;child_table_pkey&quot; PRIMARY KEY, btree (id)
+Foreign-key constraints:
+    &quot;child_table_parent_id_fkey&quot; FOREIGN KEY (parent_id) REFERENCES parent_table(id)
+
+-- Clean up
+DROP DATABASE sandbox_db;
+</code></pre>
+</body>
+</html>

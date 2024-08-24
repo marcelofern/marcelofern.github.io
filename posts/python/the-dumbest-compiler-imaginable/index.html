@@ -237,6 +237,107 @@ could generate the bytecode with different levels of optimisation as in
 <code>gcc</code>'s -O1, -O2, and -O3, thus using a lower level of optimisation when
 debugging.</p>
 <hr>
+<h2>Pypy</h2>
+<p>Pypy only has a couple of special bytecodes on top of what CPython already has,
+and Pypy in general doesn't perform a lot of bytecode optimisations either.</p>
+<p>But there are two interesting opcodes that make a significant difference on a
+program's performance. For the following code:</p>
+<pre><code class="language-py">class Foo:
+    def bar(self, x: int, y: int) -&gt; int:
+        return x + y
+
+
+foo = Foo()
+x = 1
+y = 2
+</code></pre>
+<p>Running this function call on the CPython interpreter:</p>
+<pre><code class="language-python"># Runs foo.bar(x, y) bytecode.
+dis.dis(lambda: foo.bar(x, y))
+</code></pre>
+<p>Gives me the bytecode:</p>
+<pre><code>LOAD_GLOBAL              0 (foo)
+LOAD_ATTR                3 (NULL|self + bar)
+LOAD_GLOBAL              4 (x)
+LOAD_GLOBAL              6 (y)
+CALL                     2
+RETURN_VALUE
+</code></pre>
+<p>Wheres in Pypy we have:</p>
+<pre><code>LOAD_GLOBAL              0 (foo)
+LOAD_METHOD              1 (bar)
+LOAD_GLOBAL              2 (x)
+LOAD_GLOBAL              3 (y)
+CALL_METHOD              2
+RETURN_VALUE
+</code></pre>
+<p>Both have 6 bytecode instructions each, but the first difference is that Pypy
+uses its special <code>LOAD_METHOD</code> opcode instead of a <code>LOAD_ATTR</code> instruction.</p>
+<p>The <code>LOAD_METHOD</code> pushes two values to the stack instead of one. It passes the
+unbounded Python function object (Foo.bar) and the object itself (foo).</p>
+<p>The <code>CALL_METHOD</code> (which received a parameter of N = 2) will pop the two
+variables from the stack (x, y) as well as the &quot;self&quot; argument for the
+unbounded function (&quot;foo&quot;) and call <code>Foo.bar(self, x, y)</code>.</p>
+<p>To understand why this optimises the underlying code one must understand
+the difference between bound and unbound methods in Python.</p>
+<pre><code class="language-python"># Using the object.
+print(foo.bar)
+&gt;&gt; &lt;bound method Foo.bar of &lt;__main__.Foo object at 0x7646b4648bf0&gt;&gt;
+
+# Using the class.
+print(Foo.bar)
+&gt;&gt; &lt;function Foo.bar at 0x7646b46972e0&gt;
+</code></pre>
+<p>The first case where the function <code>bar</code> comes from an instantiated object is
+called &quot;bounded&quot;, because that function is linked to the object and thus has a
+&quot;self&quot; variable bounded to it.</p>
+<p>The second case, where we use the <code>Foo</code> class, the function <code>bar</code> is not
+bounded as it didn't come from an instantiated object from <code>Foo</code> and does not
+have a <code>self</code> object in that case. Trying to call it will result in error:</p>
+<pre><code class="language-python">&gt;&gt;&gt; Foo.bar(x=1, y=2)
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+TypeError: Foo.bar() missing 1 required positional argument: 'self'
+</code></pre>
+<p>However, you can do this:</p>
+<pre><code class="language-python">&gt;&gt;&gt; Foo.bar(self=foo, x=1, y=2)
+3
+</code></pre>
+<p>So <strong>why is the original LOAD_ATTR</strong> instruction a problem?</p>
+<p>The problem comes from the performance penalty imposed by creating bounded
+methods and calling them.</p>
+<p>CPython creates bounded methods on demand. I.e., every time the bounded method
+is needed for the first time, it is initialised and allocated in memory right
+there.</p>
+<pre><code>&gt;&gt;&gt; obj_1 = Foo()
+&gt;&gt;&gt; obj_2 = Foo()
+&gt;&gt;&gt;
+&gt;&gt;&gt; obj_1.bar is obj_2.bar
+False
+&gt;&gt;&gt; obj_1.bar == obj_2.bar
+False
+&gt;&gt;&gt; obj_1.bar
+&lt;bound method Foo.bar of &lt;__main__.Foo object at 0x7646b49ebf80&gt;&gt;
+&gt;&gt;&gt; obj_2.bar
+&lt;bound method Foo.bar of &lt;__main__.Foo object at 0x7646b49e8320&gt;&gt;
+</code></pre>
+<p>Note how the addresses of <code>obj_1.bar</code> and <code>obj_2.bar</code> are different. CPython
+will create instances of those bound methods for each object before it can call
+the bounded <code>.bar</code> function. However, Pypy will use the stack to cache the
+unbounded method, and call it with the &quot;self&quot; object that is stored in the
+stack already, so that there is no overhead of allocation and creation of
+bounded methods when an object function needs to be called. It operates
+similarly to <code>Foo.bar(self=obj, x=1, y=2)</code>.</p>
+<p>This strategy provides a considerable performance improvement for heavily OOP
+programs. According to Pypy:</p>
+<blockquote>
+<p>Another optimization, or rather set of optimizations, that has a uniformly
+good effect are the two ‘method optimizations’, i.e. the method cache and the
+LOOKUP_METHOD and CALL_METHOD opcodes. On a heavily object-oriented benchmark
+(richards) they combine to give a speed-up of nearly 50%, and even on the
+extremely un-object-oriented pystone benchmark, the improvement is over 20%.</p>
+</blockquote>
+<p><a href="http://web.archive.org/web/20240222082516/https://doc.pypy.org/en/latest/interpreter-optimizations.html">source</a></p>
 <h2>Outro</h2>
 <p>It is important to note that there have been many attempts to make Python
 faster, many of which have failed [<a href="https://peps.python.org/pep-3146/">1</a>]
