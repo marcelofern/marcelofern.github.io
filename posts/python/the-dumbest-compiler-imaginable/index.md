@@ -269,7 +269,7 @@ RETURN_VALUE
 ```
 
 
-Wheres in Pypy we have:
+Whereas in Pypy we have:
 
 ```
 LOAD_GLOBAL              0 (foo)
@@ -308,8 +308,8 @@ called "bounded", because that function is linked to the object and thus has a
 "self" variable bounded to it.
 
 The second case, where we use the `Foo` class, the function `bar` is not
-bounded as it didn't come from an instantiated object from `Foo` and does not
-have a `self` object in that case. Trying to call it will result in error:
+bounded as it didn't come from an instantiated object and thus does not have a
+`self` object. Trying to call it will result in error:
 
 ```python
 >>> Foo.bar(x=1, y=2)
@@ -350,11 +350,11 @@ False
 
 Note how the addresses of `obj_1.bar` and `obj_2.bar` are different. CPython
 will create instances of those bound methods for each object before it can call
-the bounded `.bar` function. However, Pypy will use the stack to cache the
-unbounded method, and call it with the "self" object that is stored in the
-stack already, so that there is no overhead of allocation and creation of
-bounded methods when an object function needs to be called. It operates
-similarly to `Foo.bar(self=obj, x=1, y=2)`.
+the bounded `.bar` function (allocation on demand). However, Pypy will use the
+stack to cache the unbounded method, and call it with the "self" object that is
+stored in the stack already, so that there is no overhead of allocation and
+creation of bounded methods when an object function needs to be called. It
+operates similarly to `Foo.bar(self=obj, x=1, y=2)`.
 
 This strategy provides a considerable performance improvement for heavily OOP
 programs. According to Pypy:
@@ -380,7 +380,8 @@ aren't necessarily available in other Python interpreters (excluding some
 forks), rendering such libraries unusable.
 
 It might be too far to say that Python is a mono-implementation language, but
-it does feel like it. If a fork is successful it will be merged up-stream. If
-the interpreter itself is built without CPython's C-extensions in mind, it will
-not provide a rich ecosystem for all the performance-dependent 3rd-party libs
-out there.
+it does feel like it. If a fork is successful it may be merged up-stream
+instead of remaining a fork. If the interpreter itself is built without
+CPython's C-extensions in mind, it will not provide a rich ecosystem for all
+the performance-dependent 3rd-party libs out there and will thus probably be
+less used.
