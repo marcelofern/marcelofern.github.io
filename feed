@@ -10,7 +10,299 @@
     <uri>https://marcelofern.com</uri>
   </author>
   <id>tag:marcelofern.com,2024:/feed</id>
-<entry><title>Managing Python Environments</title><link href="https://www.marcelofern.com/python/managing-python-environments/index.html"/><id>tag:marcelofern.com,Created at: 2024-08-06:/python/managing-python-environments/index.html</id><content type="html">&lt;h1&gt;Managing Python Environments&lt;/h1&gt;
+<entry><title>The Dumbest Compiler Imaginable</title><link href="https://www.marcelofern.com/python/the-dumbest-compiler-imaginable/index.html"/><id>tag:marcelofern.com,Created at: 2024-08-20:/python/the-dumbest-compiler-imaginable/index.html</id><content type="html">&lt;h1&gt;The Dumbest Compiler Imaginable&lt;/h1&gt;
+&lt;pre&gt;&lt;code&gt;Created at: 2024-08-20
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Python is about having the simplest, dumbest compiler imaginable, and the
+official runtime semantics actively discourage cleverness in the compiler
+like parallelizing loops or turning recursions into loops.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;− Guido van Rossum (creator of Python). &lt;a href=&quot;https://books.google.co.nz/books?id=bIxWAgAAQBAJ&amp;amp;pg=PA26&amp;amp;lpg=PA26&amp;amp;dq=%22Python+is+about+having+the+simplest,+dumbest+compiler+imaginable.%22&amp;amp;source=bl&amp;amp;ots=2OfDoWX321&amp;amp;sig=ACfU3U32jKZBE3VkJ0gvkKbxRRgD0bnoRg&amp;amp;hl=en&amp;amp;sa=X&amp;amp;redir_esc=y#v=onepage&amp;amp;q=%22Python%20is%20about%20having%20the%20simplest%2C%20dumbest%20compiler%20imaginable.%22&amp;amp;f=false&quot;&gt;source&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;This might be a shocking statement to read for someone used to languages that
+compile to machine code directly like C, C++, Zig, Rust, etc.&lt;/p&gt;
+&lt;p&gt;The compiler is, usually, a major source of optimisation for human-written
+code, being capable of lexically analysing code and removing unnecessary
+computation.&lt;/p&gt;
+&lt;p&gt;This basically allows developers to write whatever code they think is the most
+readable and expressive, while handing over the work of optimising the actual
+code to the compiler.&lt;/p&gt;
+&lt;p&gt;A classic example in C is:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-c&quot;&gt;int foo() {
+  int bar1 = 42; // Unused variable.
+  int bar2 = 100;
+  return bar2;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Which when compiled with the most basic level of optimisation via &lt;code&gt;gcc -O1&lt;/code&gt;
+produces the following assembly code:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-asm&quot;&gt;foo:
+  mov  eax, 100
+  ret
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The function just returns the value 100. There is no use of the stack to
+store values, no load operation to fetch variables, and no other form of
+allocations. The compiler is able to reason that the code returns 100 and
+thus creates the machine code to do just that.&lt;/p&gt;
+&lt;p&gt;Compare this with the Python function below:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;def foo():
+    bar1 = 42
+    bar2 = 100
+    return bar2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Which returns the following bytecode via &lt;code&gt;dis.dis(foo)&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;LOAD_CONST               1 (42)
+STORE_FAST               0 (bar1)
+LOAD_CONST               2 (100)
+STORE_FAST               1 (bar2)
+LOAD_FAST                1 (bar2)
+RETURN_VALUE
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;bar1&lt;/code&gt; variable hasn&#x27;t been discarded, even though it hasn&#x27;t been used by
+the code. A full description of Python opcodes is provided in the official
+documentation
+&lt;a href=&quot;http://web.archive.org/web/20240820032050/https://docs.python.org/3/library/dis.html&quot;&gt;(source)&lt;/a&gt;,
+but basically the instructions above do:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;LOAD_CONST&lt;/strong&gt;: Pushes the value 42 onto the stack. The big switch case in
+CPython uses this underlying C code:&lt;pre&gt;&lt;code class=&quot;language-c&quot;&gt;        TARGET(LOAD_CONST) {
+            frame-&amp;gt;instr_ptr = next_instr;
+            next_instr += 1;
+            INSTRUCTION_STATS(LOAD_CONST);
+            _PyStackRef value;
+            value = PyStackRef_FromPyObjectNew(GETITEM(FRAME_CO_CONSTS, oparg));
+            stack_pointer[0] = value;
+            stack_pointer += 1;
+            assert(WITHIN_STACK_BOUNDS());
+            DISPATCH();
+        }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;STORE_FAST&lt;/strong&gt;: Pops the last value of the stack (42) into the local variable
+(bar1).&lt;pre&gt;&lt;code class=&quot;language-c&quot;&gt;      TARGET(STORE_FAST) {
+          frame-&amp;gt;instr_ptr = next_instr;
+          next_instr += 1;
+          INSTRUCTION_STATS(STORE_FAST);
+          _PyStackRef value;
+          value = stack_pointer[-1];
+          SETLOCAL(oparg, value);
+          stack_pointer += -1;
+          assert(WITHIN_STACK_BOUNDS());
+          DISPATCH();
+      }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LOAD_FAST&lt;/strong&gt;: Pushes a reference to bar2 onto the stack.&lt;pre&gt;&lt;code class=&quot;language-c&quot;&gt;      TARGET(LOAD_FAST) {
+          frame-&amp;gt;instr_ptr = next_instr;
+          next_instr += 1;
+          INSTRUCTION_STATS(LOAD_FAST);
+          _PyStackRef value;
+          assert(!PyStackRef_IsNull(GETLOCAL(oparg)));
+          value = PyStackRef_DUP(GETLOCAL(oparg));
+          stack_pointer[0] = value;
+          stack_pointer += 1;
+          assert(WITHIN_STACK_BOUNDS());
+          DISPATCH();
+      }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RETURN_VALUE&lt;/strong&gt;: pops the stack, returning the value (bar2) back to the
+caller. (C code is too long to add here).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Note that those operations aren&#x27;t light on CPU time nor on store/loads. But,
+that is Python, so there&#x27;s no much we can do there.&lt;/p&gt;
+&lt;p&gt;As comparison, this is what a function returning 100 would do:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;def foo():
+    return 100
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;RETURN_CONST             1 (100)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In theory, a bytecode optimiser could generate the disassembled version of our
+code above once it analysed the function to always return the same constant
+value. This type of optimisation is called &lt;a href=&quot;http://web.archive.org/web/20240820050751/https://en.wikipedia.org/wiki/Peephole_optimization&quot;&gt;Peephole
+Optimisation&lt;/a&gt;,
+a term coined back in 1965.&lt;/p&gt;
+&lt;p&gt;The problem of optimising the snippet above seems simple, but one immediate
+problem is Python&#x27;s dynamic-typed nature. It isn&#x27;t trivial to know whether an
+operation has been overloaded or not, but if we could tell the compiler
+&amp;quot;I haven&#x27;t overloaded anything for these classes&amp;quot; we could possibly have some
+nice optimisations.&lt;/p&gt;
+&lt;p&gt;An &lt;a href=&quot;https://legacy.python.org/workshops/1998-11/proceedings/papers/montanaro/montanaro.html&quot;&gt;interesting paper&lt;/a&gt; from 1998 has a lot to say about optimising Python bytecode.&lt;/p&gt;
+&lt;p&gt;For example, one snippet provided in the paper above talks about a common
+unpacking pattern:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;a,b,c = 1,2,3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Which in current versions of Python generates the bytecode:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;LOAD_CONST               0 ((1, 2, 3))
+UNPACK_SEQUENCE          3
+STORE_NAME               0 (a)
+STORE_NAME               1 (b)
+STORE_NAME               2 (c)
+RETURN_CONST             1 (None)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Which is less desirable than the code:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;a = 1
+b = 2
+c = 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Which skips the tuple allocation and unpacking overhead, dealing with variables
+directly stored in the stack:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;LOAD_CONST               0 (1)
+STORE_NAME               0 (a)
+LOAD_CONST               1 (2)
+STORE_NAME               1 (b)
+LOAD_CONST               2 (3)
+STORE_NAME               2 (c)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Interestingly, Python tuples are immutable, and thus can be loaded as
+constants. That&#x27;s why the LOAD_CONST opcode managed to load the three values
+in one chunk.&lt;/p&gt;
+&lt;p&gt;There are several other examples of optimisation opportunities, but the key
+question is: &lt;em&gt;Why isn&#x27;t CPython already doing those&lt;/em&gt;?&lt;/p&gt;
+&lt;p&gt;Guido&#x27;s quote provided at the top of this post isn&#x27;t sufficient to elucidate
+what perks we are getting from having an unoptimised bytecode compiler. One
+obvious one is maintainability. A dumb compiler is way easier to maintain and
+change than a smart compiler that optimises a lot.&lt;/p&gt;
+&lt;p&gt;I know that compiler experts will say that provided the right compiler
+architecture, pattern-matching optimisation becomes easy as such optimisations
+can be injected as &amp;quot;plugins&amp;quot;. Since I am not a compiler expert I have no
+way to validate this idea. All I have is Guido&#x27;s quote.&lt;/p&gt;
+&lt;p&gt;I am not particularly found on having simplicity on the compiler at the expense
+of all Python programs being slowed down because of it. But maybe if Python had
+an optimiser for bytecode, Python wouldn&#x27;t have existed in the first place.&lt;/p&gt;
+&lt;p&gt;It seems like the tides have been changing though as Python 3.13 will get a
+&lt;a href=&quot;http://web.archive.org/web/20240718182110/https://tonybaloney.github.io/posts/python-gets-a-jit.html&quot;&gt;JIT&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Another perk from a dumb compiler is debugging. Written Python code directly
+translates into bytecode, and thus we can do this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;def foo():
+    a = 10
+    breakpoint()
+    b = 20
+    return b
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the process of debugging we know that the variable &lt;code&gt;a&lt;/code&gt; is there and won&#x27;t
+be optimised away. However... This is a bit of a straw man argument as we
+could generate the bytecode with different levels of optimisation as in
+&lt;code&gt;gcc&lt;/code&gt;&#x27;s -O1, -O2, and -O3, thus using a lower level of optimisation when
+debugging.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Pypy&lt;/h2&gt;
+&lt;p&gt;Pypy only has a couple of special bytecodes on top of what CPython already has,
+and Pypy in general doesn&#x27;t perform a lot of bytecode optimisations either.&lt;/p&gt;
+&lt;p&gt;But there are two interesting opcodes that make a significant difference on a
+program&#x27;s performance. For the following code:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-py&quot;&gt;class Foo:
+    def bar(self, x: int, y: int) -&amp;gt; int:
+        return x + y
+
+
+foo = Foo()
+x = 1
+y = 2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Running this function call on the CPython interpreter:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;# Runs foo.bar(x, y) bytecode.
+dis.dis(lambda: foo.bar(x, y))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Gives me the bytecode:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;LOAD_GLOBAL              0 (foo)
+LOAD_ATTR                3 (NULL|self + bar)
+LOAD_GLOBAL              4 (x)
+LOAD_GLOBAL              6 (y)
+CALL                     2
+RETURN_VALUE
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Whereas in Pypy we have:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;LOAD_GLOBAL              0 (foo)
+LOAD_METHOD              1 (bar)
+LOAD_GLOBAL              2 (x)
+LOAD_GLOBAL              3 (y)
+CALL_METHOD              2
+RETURN_VALUE
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Both have 6 bytecode instructions each, but the first difference is that Pypy
+uses its special &lt;code&gt;LOAD_METHOD&lt;/code&gt; opcode instead of a &lt;code&gt;LOAD_ATTR&lt;/code&gt; instruction.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;LOAD_METHOD&lt;/code&gt; pushes two values to the stack instead of one. It passes the
+unbounded Python function object (Foo.bar) and the object itself (foo).&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;CALL_METHOD&lt;/code&gt; (which received a parameter of N = 2) will pop the two
+variables from the stack (x, y) as well as the &amp;quot;self&amp;quot; argument for the
+unbounded function (&amp;quot;foo&amp;quot;) and call &lt;code&gt;Foo.bar(self, x, y)&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;To understand why this optimises the underlying code one must understand
+the difference between bound and unbound methods in Python.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;# Using the object.
+print(foo.bar)
+&amp;gt;&amp;gt; &amp;lt;bound method Foo.bar of &amp;lt;__main__.Foo object at 0x7646b4648bf0&amp;gt;&amp;gt;
+
+# Using the class.
+print(Foo.bar)
+&amp;gt;&amp;gt; &amp;lt;function Foo.bar at 0x7646b46972e0&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The first case where the function &lt;code&gt;bar&lt;/code&gt; comes from an instantiated object is
+called &amp;quot;bounded&amp;quot;, because that function is linked to the object and thus has a
+&amp;quot;self&amp;quot; variable bounded to it.&lt;/p&gt;
+&lt;p&gt;The second case, where we use the &lt;code&gt;Foo&lt;/code&gt; class, the function &lt;code&gt;bar&lt;/code&gt; is not
+bounded as it didn&#x27;t come from an instantiated object and thus does not have a
+&lt;code&gt;self&lt;/code&gt; object. Trying to call it will result in error:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; Foo.bar(x=1, y=2)
+Traceback (most recent call last):
+  File &amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;, line 1, in &amp;lt;module&amp;gt;
+TypeError: Foo.bar() missing 1 required positional argument: &#x27;self&#x27;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, you can do this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; Foo.bar(self=foo, x=1, y=2)
+3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So &lt;strong&gt;why is the original LOAD_ATTR&lt;/strong&gt; instruction a problem?&lt;/p&gt;
+&lt;p&gt;The problem comes from the performance penalty imposed by creating bounded
+methods and calling them.&lt;/p&gt;
+&lt;p&gt;CPython creates bounded methods on demand. I.e., every time the bounded method
+is needed for the first time, it is initialised and allocated in memory right
+there.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; obj_1 = Foo()
+&amp;gt;&amp;gt;&amp;gt; obj_2 = Foo()
+&amp;gt;&amp;gt;&amp;gt;
+&amp;gt;&amp;gt;&amp;gt; obj_1.bar is obj_2.bar
+False
+&amp;gt;&amp;gt;&amp;gt; obj_1.bar == obj_2.bar
+False
+&amp;gt;&amp;gt;&amp;gt; obj_1.bar
+&amp;lt;bound method Foo.bar of &amp;lt;__main__.Foo object at 0x7646b49ebf80&amp;gt;&amp;gt;
+&amp;gt;&amp;gt;&amp;gt; obj_2.bar
+&amp;lt;bound method Foo.bar of &amp;lt;__main__.Foo object at 0x7646b49e8320&amp;gt;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note how the addresses of &lt;code&gt;obj_1.bar&lt;/code&gt; and &lt;code&gt;obj_2.bar&lt;/code&gt; are different. CPython
+will create instances of those bound methods for each object before it can call
+the bounded &lt;code&gt;.bar&lt;/code&gt; function (allocation on demand). However, Pypy will use the
+stack to cache the unbounded method, and call it with the &amp;quot;self&amp;quot; object that is
+stored in the stack already, so that there is no overhead of allocation and
+creation of bounded methods when an object function needs to be called. It
+operates similarly to &lt;code&gt;Foo.bar(self=obj, x=1, y=2)&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;This strategy provides a considerable performance improvement for heavily OOP
+programs. According to Pypy:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Another optimization, or rather set of optimizations, that has a uniformly
+good effect are the two ‘method optimizations’, i.e. the method cache and the
+LOOKUP_METHOD and CALL_METHOD opcodes. On a heavily object-oriented benchmark
+(richards) they combine to give a speed-up of nearly 50%, and even on the
+extremely un-object-oriented pystone benchmark, the improvement is over 20%.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;http://web.archive.org/web/20240222082516/https://doc.pypy.org/en/latest/interpreter-optimizations.html&quot;&gt;source&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;Outro&lt;/h2&gt;
+&lt;p&gt;It is important to note that there have been many attempts to make Python
+faster, many of which have failed [&lt;a href=&quot;https://peps.python.org/pep-3146/&quot;&gt;1&lt;/a&gt;]
+[&lt;a href=&quot;https://github.com/pyston/pyston&quot;&gt;2&lt;/a&gt;].&lt;/p&gt;
+&lt;p&gt;As much as it would be nice to have another Python interpreter fully JIT&#x27;ed and
+full of bytecode optimisations, in reality it is really hard to compete against
+CPython. Many 3rd-party libraries use CPython&#x27;s C-extensions directly, which
+aren&#x27;t necessarily available in other Python interpreters (excluding some
+forks), rendering such libraries unusable.&lt;/p&gt;
+&lt;p&gt;It might be too far to say that Python is a mono-implementation language, but
+it does feel like it. If a fork is successful it may be merged up-stream
+instead of remaining a fork. If the interpreter itself is built without
+CPython&#x27;s C-extensions in mind, it will not provide a rich ecosystem for all
+the performance-dependent 3rd-party libs out there and will thus probably be
+less used.&lt;/p&gt;</content><published>Created at: 2024-08-20T00:00:00Z</published><updated>T00:00:00Z</updated></entry><entry><title>Managing Python Environments</title><link href="https://www.marcelofern.com/python/managing-python-environments/index.html"/><id>tag:marcelofern.com,Created at: 2024-08-06:/python/managing-python-environments/index.html</id><content type="html">&lt;h1&gt;Managing Python Environments&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-08-06
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The ecosystem for managing Python environments is huge, and so is the number
