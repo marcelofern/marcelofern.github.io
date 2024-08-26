@@ -4,6 +4,7 @@ Also available via [RSS feed](https://marcelofern.com/feed).
 
 ---
 
+- 2024-08-26 [Why Is This Site Built With C](posts/c/why-is-this-site-built-with-c/index.md)
 - 2024-08-20 [The Dumbest Compiler Imaginable](posts/python/the-dumbest-compiler-imaginable/index.md)
 - 2024-08-06 [Managing Python Environments](posts/python/managing-python-environments/index.md)
 - 2024-07-24 [ATT vs Intel Syntax For Assembly](posts/asm/att-vs-intel-syntax/index.md)
