@@ -267,4 +267,5 @@ know will continue to work in the upcoming decades. There is virtually nothing
 that beats C compilers in that area.
 
 As much as Hugo looks satisfiable today, I'm under no illusions that it won't
-keep growing and changing.
+keep growing and changing in ways that would make me have to keep up with it
+every now and then.
