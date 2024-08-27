@@ -236,14 +236,14 @@ sys     0m0.091s
 This allows me completely flush the whole repo away and create it again from
 scratch in almost no time. I do not have to worry about creating specific
 logic to just re-parse files that have changed or anything fancy like that,
-which reduces the burden of maintenance and makes my script very small.
+which reduces the burden of maintenance and makes my script smaller.
 
 ## Outro
 
 One alternative to all of this is to use [Hugo](https://gohugo.io/). There is
 nothing inherently bad with Hugo. It is decently fast (written in Go) and it is
 easy to get going for a simple website. It is certainly better than some
-alternatives like [pelican](https://github.com/getpelican/pelican) which are
+alternatives like [pelican](https://github.com/getpelican/pelican) which is
 written in Python and thus slow to compile.
 
 However, Hugo doesn't particularly appeal to me because the framework seems
