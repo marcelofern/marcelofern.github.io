@@ -60,28 +60,25 @@
   <![endif]-->
 </head>
 <body>
-<h2>High-level computing</h2>
-<ul>
-<li><a href="databases/index.html">Databases</a></li>
-<li><a href="message_brokers/index.html">Message brokers</a></li>
-<li><a href="programming_languages/index.html">Programming languages</a></li>
-<li><a href="security/index.html">Security</a></li>
-<li><a href="linux/index.html">Linux</a></li>
-</ul>
-<h2>Low-level computing</h2>
-<ul>
-<li><a href="compilers/index.html">Compilers</a></li>
-<li><a href="computer_architecture/index.html">Computer architecture</a></li>
-<li><a href="embedded_development/index.html">Embedded development</a></li>
-</ul>
-<h2>Electronics</h2>
-<ul>
-<li><a href="components/index.html">Components</a></li>
-</ul>
-<h2>Etc.</h2>
-<ul>
-<li><a href="books/index.html">Notes on books</a></li>
-<li><a href="writing/index.html">Notes on writing</a></li>
-</ul>
+<h1>Using Vale To Write Prose</h1>
+<pre><code>Created at: 28-08-2024
+</code></pre>
+<p>According to GitHub, <a href="https://github.com/errata-ai/vale">Vale</a> is a
+command-line tool that brings code-like linting to prose.</p>
+<p>Installation can happen in the following steps:</p>
+<pre><code class="language-sh">function install_vale() {
+    mkdir -p /tmp/vale
+    cd /tmp/vale
+    wget https://github.com/errata-ai/vale/releases/download/v3.7.1/vale_3.7.1_Linux_64-bit.tar.gz
+    mkdir bin &amp;&amp; tar -xvzf vale_3.7.1_Linux_64-bit.tar.gz -C bin
+    sudo mv -f bin/vale /usr/bin/vale
+}
+
+install_vale
+</code></pre>
+<p>After that, call:</p>
+<pre><code class="language-sh">vale sync
+</code></pre>
+<p>This will look up my dotfiles for vale and install my required styles.</p>
 </body>
 </html>
