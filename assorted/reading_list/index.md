@@ -46,12 +46,16 @@ Reading list resources:
 
 ## Mathematical Logic
 
-Godel, Escher, Bach: An Eternal Golden Braid - Douglas Hofstadter
+- Godel, Escher, Bach: An Eternal Golden Braid - Douglas Hofstadter
 
 ## Philosophy
 
-The Parallax View - Slavoj Zizek
+- The Parallax View - Slavoj Zizek
 
 ## Management
 
-Peopleware - Tom Demarco & Tim Lister
+- Peopleware - Tom Demarco & Tim Lister
+
+## Personal Development
+
+- The Good Enough Job: Reclaiming Life from Work - Simone Stolzoff
