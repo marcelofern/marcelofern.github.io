@@ -17,24 +17,28 @@
 &lt;a href=&quot;http://web.archive.org/web/20171124021420/http://marcelonet.com/snippets/&quot;&gt;2017&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Most of what I have written features in the category of notes-to-self. Mostly
 on how to do A or B.&lt;/p&gt;
-&lt;p&gt;Only recently I&#x27;ve started polishing notes together and forming opinionated
-posts on specific topics.&lt;/p&gt;
+&lt;p&gt;Only recently I&#x27;ve started polishing notes together and forming posts on
+specific topics.&lt;/p&gt;
 &lt;p&gt;One thing I realised was preventing me of writing more frequently wasn&#x27;t
-the lack of ideas or motivation, but the trouble of having to deal with
-whatever website builder and platform I was using at the time.&lt;/p&gt;
-&lt;p&gt;My first website was built with Django and serviced by Nginx in a server hosted
-on Digital Ocean. Back then, GitHub pages didn&#x27;t exist and the canonical way
-was to rent a cheap Digital Ocean Ubuntu machine for about $5 USD/month and
-find a way to host your static. A common tool was Apache server, but I didn&#x27;t
-know anything about it, but I knew Django and off I went.&lt;/p&gt;
+the lack of ideas (or motivation), but the trouble of having to deal with
+the website builder and platform I was using at the time.&lt;/p&gt;
+&lt;p&gt;GitHub pages didn&#x27;t exist at the time and the canonical way was to have an
+Apache server running the website in some web provider. I didn&#x27;t know anything
+about Apache and the little I saw didn&#x27;t interest me, so I looked for an
+alternative.&lt;/p&gt;
+&lt;p&gt;I built my first website with Django (serviced by Nginx) in a server hosted on
+Digital Ocean. This is before the Droplets-era, so I had to rent an Ubuntu
+machine which costed $5.00 USD per month. That was a bit steep for a dev on a
+Brazilian salary considering I had to pay for other services too (registrar,
+email, etc).&lt;/p&gt;
 &lt;p&gt;I was highly motivated to post things as I was still fresh in the web
 development world and wanted to know how everything worked. I also had no idea
 what I was doing and wanted my own website to be a sandbox where I could try
 new things out.&lt;/p&gt;
 &lt;p&gt;That was my first mistake. Building a &amp;quot;static&amp;quot; website with Django is too
-cumbersome. You have to set up views, Jinja templates, run the server, get
-GitHub hooks for resetting the remote server in Digital Ocean when new commits
-are pushed, etc.&lt;/p&gt;
+cumbersome. You have to set up views, templates, run the server, get GitHub
+hooks for resetting the remote server in Digital Ocean when new commits are
+pushed, etc.&lt;/p&gt;
 &lt;p&gt;Once the romantic view of a newbie blog-poster faded away, handling the whole
 apparatus to publish a note took more time than writing the note itself.&lt;/p&gt;
 &lt;p&gt;At some point I had to make a switch before the website grew too big.&lt;/p&gt;
@@ -47,20 +51,20 @@ and GitHub handled the rest for me. That was a major improvement over the
 previous infrastructure. On top of that, I could do cool dynamic things with
 JavaScript being embedded and having the framework to interact with it.&lt;/p&gt;
 &lt;p&gt;But I only had one blog post where I needed fancy JavaScript tooling. Soon it
-became a pain to maintain the website again. Publishing posts involved writing
+became painful to maintain the website again. Publishing posts involved writing
 things in Vue and that was just not an ergonomic way to write regular prose.&lt;/p&gt;
 &lt;p&gt;Also the framework was a new technology, and maintainers were pushing updates
 that broke backwards compatibility. Handling versioning of Vue and Nuxt along
 with all their JavaScript dependencies was a big pain point and I had to give
 up at some point.&lt;/p&gt;
 &lt;h2&gt;Now&lt;/h2&gt;
-&lt;p&gt;Learning from these two past mistakes, I put a hard set of requirements for
+&lt;p&gt;Learning from these two past mistakes, I came up with a set of requirements for
 my next (and hopefully final) website:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Starting a post must be as easy as typing into a blank file.&lt;/li&gt;
 &lt;li&gt;The website must be statically generated. And Fast.&lt;/li&gt;
 &lt;li&gt;There should be little to none dependencies for generating the website.&lt;/li&gt;
-&lt;li&gt;It needs to last for the next 10 years.&lt;/li&gt;
+&lt;li&gt;It needs to last for at least the next 10 years.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;The first requirement is satisfied by writing using markdown files. Writing
 this blog post in Neovim looks like this:&lt;/p&gt;
@@ -72,12 +76,11 @@ files to html. I could either code this parser myself and have a beautiful
 static site generator with zero dependencies, or I can allow myself a single
 dependency.&lt;/p&gt;
 &lt;p&gt;The problem is that the move from zero dependencies to one dependency is huge.
-It is way bigger than going from 10 dependencies to 100 dependencies. It feels
-like getting a turmeric stain on a white shirt.&lt;/p&gt;
-&lt;p&gt;Here&#x27;s the thing though, writing a markdown parser isn&#x27;t the most trivial
+It feels way bigger than going from 10 dependencies to 100 dependencies.&lt;/p&gt;
+&lt;p&gt;The problem is that writing a markdown parser isn&#x27;t the most trivial
 enterprise. At the same time, the parser was the only dependency I needed to
-have. I managed to convince myself that a dependency was okay and then I
-moved on.&lt;/p&gt;
+have. I managed to convince myself that a dependency was okay and then I moved
+on.&lt;/p&gt;
 &lt;p&gt;My first instinct was to reach out to &lt;a href=&quot;https://pandoc.org/&quot;&gt;Pandoc&lt;/a&gt;. I did so
 and implemented a small shell script that could read my directory tree of
 markdown files and transpose them to html.&lt;/p&gt;
@@ -201,7 +204,7 @@ down, so my second requirement was not met.&lt;/p&gt;
 Total Download Size:    65.52 MiB
 Total Installed Size:  473.35 MiB
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;There are too many dependencies for me to trust this environment will be stable
+&lt;p&gt;There are too many dependencies for me to trust the environment will be stable
 for a long time. The last thing I want to do is deal with backward incompatible
 changes on my wee blog.&lt;/p&gt;
 &lt;p&gt;I looked for a better alternative and found
@@ -226,20 +229,21 @@ real    0m0.115s
 user    0m0.087s
 sys     0m0.091s
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This allows me completely flush the whole repo away and create it again from
+&lt;p&gt;This allows me to completely flush the whole repo away and create it from
 scratch in almost no time. I do not have to worry about creating specific
 logic to just re-parse files that have changed or anything fancy like that,
 which reduces the burden of maintenance and makes my script smaller and easier
 to reason about.&lt;/p&gt;
 &lt;p&gt;This result was way more reasonable than the amount of time Pandoc took to
-parse a mere amount of 87 markdown files.&lt;/p&gt;
+parse a mere amount of 87 markdown files, which was over the double-digit
+mark (of seconds).&lt;/p&gt;
 &lt;h2&gt;Outro&lt;/h2&gt;
 &lt;p&gt;One popular alternative of current days for this problem is
 &lt;a href=&quot;https://gohugo.io/&quot;&gt;Hugo&lt;/a&gt;. There is nothing inherently bad with Hugo. It is
 decently fast (written in Go) and it is easy to get going for a simple website.
-It is certainly better than some alternatives like
+It seems better than some alternatives like
 &lt;a href=&quot;https://github.com/getpelican/pelican&quot;&gt;pelican&lt;/a&gt; which is written in Python and
-thus will always be slow to parse the files.&lt;/p&gt;
+thus will be slower to parse md files.&lt;/p&gt;
 &lt;p&gt;However, Hugo doesn&#x27;t particularly appeal to me because the framework seems
 too big and opinionated for what I need:&lt;/p&gt;
 &lt;blockquote&gt;
@@ -253,12 +257,12 @@ content to be separated, e.g. for a website containing a blog and a podcast.&lt;
 &lt;p&gt;&lt;a href=&quot;http://web.archive.org/web/20240808001552/https://en.wikipedia.org/wiki/Hugo_(software)&quot;&gt;source&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;There&#x27;s a lot in there, so much so that big websites that need a lot of
 features (e.g. Smashing Magazine) are capable of relying heavily on Hugo.&lt;/p&gt;
-&lt;p&gt;Also as much as Hugo looks satisfiable today, I&#x27;m under no illusions that it
-won&#x27;t keep growing and changing in ways that would make me have to keep up with
-it every now and then.&lt;/p&gt;
-&lt;p&gt;I don&#x27;t need any of that. I just need a parser that performs a one-off job
-of parsing the given markdown file. There is no benefit of bringing a GC-based
-language into this type of problem.&lt;/p&gt;
+&lt;p&gt;Also as much as Hugo looks satisfiable today, I&#x27;m not expecting that it won&#x27;t
+keep growing and changing in ways that would make me have to keep up with it
+every now and then.&lt;/p&gt;
+&lt;p&gt;I just need a parser that performs a one-off job of parsing the given markdown
+file. There is no benefit of bringing a GC-based language into this type of
+problem.&lt;/p&gt;
 &lt;p&gt;I also wanted my website to use tech that I know will continue to work in the
 upcoming decades (my last requirement). There is virtually nothing that beats C
 compilers in that area as of today. For any new platform out there the first
@@ -266,7 +270,7 @@ thing that needs to happen is getting a C compiler built along with the
 standard library (which is probably the only standard lib of popular
 programming languages that fits in a &lt;a href=&quot;https://www.google.com/search?q=C+standard+library+P.J+Plauger&quot;&gt;commented book of 500
 pages&lt;/a&gt;...).
-Otherwise, nothing can be built with the platform. So I&#x27;m hoping this bet will
+Otherwise, nothing can run in the platform. So I&#x27;m hoping this bet will
 pay off.&lt;/p&gt;</content><published>Created at: 2024-08-26T00:00:00Z</published><updated>T00:00:00Z</updated></entry><entry><title>The Dumbest Compiler Imaginable</title><link href="https://www.marcelofern.com/python/the-dumbest-compiler-imaginable/index.html"/><id>tag:marcelofern.com,Created at: 2024-08-20:/python/the-dumbest-compiler-imaginable/index.html</id><content type="html">&lt;h1&gt;The Dumbest Compiler Imaginable&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-08-20
 &lt;/code&gt;&lt;/pre&gt;

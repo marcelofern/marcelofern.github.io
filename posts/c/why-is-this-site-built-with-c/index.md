@@ -11,18 +11,23 @@ I've been writing about **things** on a personal website since
 Most of what I have written features in the category of notes-to-self. Mostly
 on how to do A or B.
 
-Only recently I've started polishing notes together and forming opinionated
-posts on specific topics.
+Only recently I've started polishing notes together and forming posts on
+specific topics.
 
 One thing I realised was preventing me of writing more frequently wasn't
-the lack of ideas or motivation, but the trouble of having to deal with
-whatever website builder and platform I was using at the time.
+the lack of ideas (or motivation), but the trouble of having to deal with
+the website builder and platform I was using at the time.
 
-My first website was built with Django and serviced by Nginx in a server hosted
-on Digital Ocean. Back then, GitHub pages didn't exist and the canonical way
-was to rent a cheap Digital Ocean Ubuntu machine for about $5 USD/month and
-find a way to host your static. A common tool was Apache server, but I didn't
-know anything about it, but I knew Django and off I went.
+GitHub pages didn't exist at the time and the canonical way was to have an
+Apache server running the website in some web provider. I didn't know anything
+about Apache and the little I saw didn't interest me, so I looked for an
+alternative.
+
+I built my first website with Django (serviced by Nginx) in a server hosted on
+Digital Ocean. This is before the Droplets-era, so I had to rent an Ubuntu
+machine which costed $5.00 USD per month. That was a bit steep for a dev on a
+Brazilian salary considering I had to pay for other services too (registrar,
+email, etc).
 
 I was highly motivated to post things as I was still fresh in the web
 development world and wanted to know how everything worked. I also had no idea
@@ -30,9 +35,9 @@ what I was doing and wanted my own website to be a sandbox where I could try
 new things out.
 
 That was my first mistake. Building a "static" website with Django is too
-cumbersome. You have to set up views, Jinja templates, run the server, get
-GitHub hooks for resetting the remote server in Digital Ocean when new commits
-are pushed, etc.
+cumbersome. You have to set up views, templates, run the server, get GitHub
+hooks for resetting the remote server in Digital Ocean when new commits are
+pushed, etc.
 
 Once the romantic view of a newbie blog-poster faded away, handling the whole
 apparatus to publish a note took more time than writing the note itself.
@@ -50,7 +55,7 @@ previous infrastructure. On top of that, I could do cool dynamic things with
 JavaScript being embedded and having the framework to interact with it.
 
 But I only had one blog post where I needed fancy JavaScript tooling. Soon it
-became a pain to maintain the website again. Publishing posts involved writing
+became painful to maintain the website again. Publishing posts involved writing
 things in Vue and that was just not an ergonomic way to write regular prose.
 
 Also the framework was a new technology, and maintainers were pushing updates
@@ -60,13 +65,13 @@ up at some point.
 
 ## Now
 
-Learning from these two past mistakes, I put a hard set of requirements for
+Learning from these two past mistakes, I came up with a set of requirements for
 my next (and hopefully final) website:
 
 1. Starting a post must be as easy as typing into a blank file.
 2. The website must be statically generated. And Fast.
 3. There should be little to none dependencies for generating the website.
-4. It needs to last for the next 10 years.
+4. It needs to last for at least the next 10 years.
 
 The first requirement is satisfied by writing using markdown files. Writing
 this blog post in Neovim looks like this:
@@ -82,13 +87,12 @@ static site generator with zero dependencies, or I can allow myself a single
 dependency.
 
 The problem is that the move from zero dependencies to one dependency is huge.
-It is way bigger than going from 10 dependencies to 100 dependencies. It feels
-like getting a turmeric stain on a white shirt.
+It feels way bigger than going from 10 dependencies to 100 dependencies.
 
-Here's the thing though, writing a markdown parser isn't the most trivial
+The problem is that writing a markdown parser isn't the most trivial
 enterprise. At the same time, the parser was the only dependency I needed to
-have. I managed to convince myself that a dependency was okay and then I
-moved on.
+have. I managed to convince myself that a dependency was okay and then I moved
+on.
 
 My first instinct was to reach out to [Pandoc](https://pandoc.org/). I did so
 and implemented a small shell script that could read my directory tree of
@@ -220,7 +224,7 @@ Total Download Size:    65.52 MiB
 Total Installed Size:  473.35 MiB
 ```
 
-There are too many dependencies for me to trust this environment will be stable
+There are too many dependencies for me to trust the environment will be stable
 for a long time. The last thing I want to do is deal with backward incompatible
 changes on my wee blog.
 
@@ -252,23 +256,24 @@ user    0m0.087s
 sys     0m0.091s
 ```
 
-This allows me completely flush the whole repo away and create it again from
+This allows me to completely flush the whole repo away and create it from
 scratch in almost no time. I do not have to worry about creating specific
 logic to just re-parse files that have changed or anything fancy like that,
 which reduces the burden of maintenance and makes my script smaller and easier
 to reason about.
 
 This result was way more reasonable than the amount of time Pandoc took to
-parse a mere amount of 87 markdown files.
+parse a mere amount of 87 markdown files, which was over the double-digit
+mark (of seconds).
 
 ## Outro
 
 One popular alternative of current days for this problem is
 [Hugo](https://gohugo.io/). There is nothing inherently bad with Hugo. It is
 decently fast (written in Go) and it is easy to get going for a simple website.
-It is certainly better than some alternatives like
+It seems better than some alternatives like
 [pelican](https://github.com/getpelican/pelican) which is written in Python and
-thus will always be slow to parse the files.
+thus will be slower to parse md files.
 
 However, Hugo doesn't particularly appeal to me because the framework seems
 too big and opinionated for what I need:
@@ -285,13 +290,13 @@ too big and opinionated for what I need:
 There's a lot in there, so much so that big websites that need a lot of
 features (e.g. Smashing Magazine) are capable of relying heavily on Hugo.
 
-Also as much as Hugo looks satisfiable today, I'm under no illusions that it
-won't keep growing and changing in ways that would make me have to keep up with
-it every now and then.
+Also as much as Hugo looks satisfiable today, I'm not expecting that it won't
+keep growing and changing in ways that would make me have to keep up with it
+every now and then.
 
-I don't need any of that. I just need a parser that performs a one-off job
-of parsing the given markdown file. There is no benefit of bringing a GC-based
-language into this type of problem.
+I just need a parser that performs a one-off job of parsing the given markdown
+file. There is no benefit of bringing a GC-based language into this type of
+problem.
 
 I also wanted my website to use tech that I know will continue to work in the
 upcoming decades (my last requirement). There is virtually nothing that beats C
@@ -300,5 +305,5 @@ thing that needs to happen is getting a C compiler built along with the
 standard library (which is probably the only standard lib of popular
 programming languages that fits in a [commented book of 500
 pages](https://www.google.com/search?q=C+standard+library+P.J+Plauger)...).
-Otherwise, nothing can be built with the platform. So I'm hoping this bet will
+Otherwise, nothing can run in the platform. So I'm hoping this bet will
 pay off.
