@@ -44,8 +44,9 @@ ones in this list to be good enough to be shared with the public.
 
 - Bier, Jonathan - The Blocksize War
 - Collins, Michael and Price, Matthew - The Story of Christianity.
-- Reader's Digest - Jesus and His Times.
 - Kerninghan, Brian - UNIX A History and a Memoir ([review](assorted/library/unix-a-history-and-a-memoir/index.md))
+- Miller, Chris - Chip War ([review](assorted/library/chip-war/index.md))
+- Reader's Digest - Jesus and His Times.
 
 ## Finances
 
@@ -90,5 +91,5 @@ ones in this list to be good enough to be shared with the public.
 
 ## Management
 
-- Meyer, Erin - The Culture Map. ([review](assorted/library/culture-map/index.md))
 - DeMarco, Tom - Peopleware. ([review](assorted/library/peopleware/index.md))
+- Meyer, Erin - The Culture Map. ([review](assorted/library/culture-map/index.md))

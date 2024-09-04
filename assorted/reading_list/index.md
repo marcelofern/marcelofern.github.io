@@ -44,6 +44,7 @@ Reading list resources:
 ## Learning
 
 - Get Better at Anything, Scott Young
+- Pedagogy of the Opressed, Paulo Freire
 
 ## Mathematical Logic
 
@@ -60,3 +61,17 @@ Reading list resources:
 ## Personal Development
 
 - The Good Enough Job: Reclaiming Life from Work - Simone Stolzoff
+
+## Conference Articles
+
+- ACM/IEEE International Conference on Software Engineering
+  - https://doi.org:10.1145/1134285.1134355 (462 citations)
+  - https://doi.org/10.1145/1134285.1134303 (167 citations) - Feature oriented refactoring.
+  - https://doi.org/10.1145/1134285.1134309 (151 citations) - Backwards-compatible array bounds checking for C with very low overhead
+  - https://doi.org/10.1145/1134285.1134336 (734 citations) - Who should fix this bug?
+
+- IEEE Transactions on Software Engineering
+  - https://ieeexplore.ieee.org/document/10160171 - Decomposition of Monolith Applications Into Microservices Architectures
+- Journal of Systems and Software
+- Proceedings of the ACM on Programming Languages
+- [More](https://scholar.google.com/citations?view_op=top_venues&hl=en&vq=eng_softwaresystems)
