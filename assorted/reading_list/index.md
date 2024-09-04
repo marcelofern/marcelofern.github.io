@@ -16,7 +16,7 @@ Reading list resources:
 ## Computer Systems
 
 - Computer System a Programmer's Approach - Bryant O'Hallaron
-- The Practice of Programming - Brian Kerninghan & Rob Pike
+- ~The Practice of Programming - Brian Kerninghan & Rob Pike~
 - The UNIX programming environment - Brian K. & Rob Pike
 - C Interfaces and Implementations - David Hanson
 
@@ -38,7 +38,8 @@ Reading list resources:
 
 ## Design
 
-- Ruined by design - Mike Monteiro
+- ~Ruined by design - Mike Monteiro~
+- Notes On The Synthesis of Form - Christopher Alexander
 
 ## Learning
 
@@ -54,7 +55,7 @@ Reading list resources:
 
 ## Management
 
-- Peopleware - Tom Demarco & Tim Lister
+- ~Peopleware - Tom Demarco & Tim Lister~
 
 ## Personal Development
 
