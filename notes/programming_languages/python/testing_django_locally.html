@@ -104,13 +104,15 @@ DEFAULT_AUTO_FIELD = &quot;django.db.models.AutoField&quot;
 USE_TZ = False
 </code></pre>
 <p>Now you can run the tests.</p>
-<pre><code class="language-sh">DJANGO_SETTINGS_MODULE=test_postgres --parallel=1 ./runtests.py postgres_tests
+<pre><code class="language-sh">DJANGO_SETTINGS_MODULE=test_postgres ./runtests.py --parallel=1 postgres_tests
 </code></pre>
 <p>The flag <code>--parallel=1</code> is only necessary if you have breakpoints and you want
 to step through them. Otherwise, you'd have a failure when running multiple
 processes at the same time.</p>
 <p>You can also run just one particular test like this:</p>
 <pre><code class="language-sh">DJANGO_SETTINGS_MODULE=test_postgres ./runtests.py --debug-sql --parallel=1 postgres_tests.test_indexes.SchemaTests.test_trigram_op_class_gin_index
+
+DJANGO_SETTINGS_MODULE=test_postgres ./runtests.py --debug-sql --parallel=1 schema.tests.SchemaTests.test_unique
 </code></pre>
 <p>The <code>debug-sql</code> is usually helpful too.</p>
 </body>

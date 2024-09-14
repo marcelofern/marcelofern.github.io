@@ -80,6 +80,7 @@ ones in this list to be good enough to be shared with the public.
 - Tolkien, J. R. R. - The Lord of The Rings Trilogy.
 
 ## Health
+
 - Walker, Matthew - Why We Sleep. ([review](assorted/library/why-we-sleep/index.md))
 
 ## General Technology
@@ -93,3 +94,7 @@ ones in this list to be good enough to be shared with the public.
 
 - DeMarco, Tom - Peopleware. ([review](assorted/library/peopleware/index.md))
 - Meyer, Erin - The Culture Map. ([review](assorted/library/culture-map/index.md))
+
+## Pedagogy
+
+- Freire, Paulo - Pedagogy of The Oppressed. ([review](assorted/library/pedagogy-of-the-oppressed/index.md)

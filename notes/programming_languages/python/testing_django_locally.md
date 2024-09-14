@@ -55,7 +55,7 @@ USE_TZ = False
 Now you can run the tests.
 
 ```sh
-DJANGO_SETTINGS_MODULE=test_postgres --parallel=1 ./runtests.py postgres_tests
+DJANGO_SETTINGS_MODULE=test_postgres ./runtests.py --parallel=1 postgres_tests
 ```
 
 The flag `--parallel=1` is only necessary if you have breakpoints and you want
@@ -66,6 +66,8 @@ You can also run just one particular test like this:
 
 ```sh
 DJANGO_SETTINGS_MODULE=test_postgres ./runtests.py --debug-sql --parallel=1 postgres_tests.test_indexes.SchemaTests.test_trigram_op_class_gin_index
+
+DJANGO_SETTINGS_MODULE=test_postgres ./runtests.py --debug-sql --parallel=1 schema.tests.SchemaTests.test_unique
 ```
 
 The `debug-sql` is usually helpful too.

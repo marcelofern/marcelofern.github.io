@@ -5,6 +5,7 @@
 - [Programming languages](programming_languages/index.md)
 - [Security](security/index.md)
 - [Linux](linux/index.md)
+- [Version Control](version_control/index.md)
 
 ## Low-level computing
 
