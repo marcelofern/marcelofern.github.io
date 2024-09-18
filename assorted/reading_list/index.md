@@ -46,9 +46,10 @@ Reading list resources:
 - Get Better at Anything, Scott Young
 - Pedagogy of the Opressed, Paulo Freire
 
-## Mathematical Logic
+## Mathematics
 
 - Godel, Escher, Bach: An Eternal Golden Braid - Douglas Hofstadter
+- Lockhart, Paul - Measurement
 
 ## Philosophy
 
