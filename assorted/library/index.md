@@ -97,4 +97,8 @@ ones in this list to be good enough to be shared with the public.
 
 ## Pedagogy
 
-- Freire, Paulo - Pedagogy of The Oppressed. ([review](assorted/library/pedagogy-of-the-oppressed/index.md)
+- Freire, Paulo - Pedagogy of The Oppressed. ([review](assorted/library/pedagogy-of-the-oppressed/index.md))
+
+## Music
+
+- Peters, Jonathan - Music Theory ([review](assorted/library/music-theory/index.md))
