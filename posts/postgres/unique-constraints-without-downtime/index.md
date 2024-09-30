@@ -1,7 +1,7 @@
-# Unique Constraints Without Downtime
+# Postgres Unique Constraints Without Downtime
 
 ```
-Created at: 2024-09-25
+Created at: 2024-10-01
 ```
 
 The syntax for adding a unique constraint in Postgres is as follow:
@@ -16,7 +16,7 @@ This constraint will prevent multiple rows of having the same value stored in
 their `foo` columns.
 
 However, this operation acquires an `ACCESS EXCLUSIVE` lock, blocking all reads
-and writes to the table which may cause downtime in your system.
+and writes to the table which may cause downtime.
 
 If you are adding a unique constraint to a large table, the amount of time
 spent to create the constraint might be prohibitive.
@@ -32,8 +32,8 @@ Creating this index on the background while holding an `ACCESS EXCLUSIVE` is
 the problem we are trying to avoid.
 
 What we actually want to do is **create the index first**, and CONCURRENTLY,
-so that when we add the constraint to the table, it can use the already
-existing index and run in no time.
+so that when we add the constraint to the table, the table can use the already
+existing index. This will make the subsequent `ALTER TABLE` run much faster.
 
 If you have the following table:
 
@@ -54,11 +54,29 @@ CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS unique_int_field_idx
 ON example_table (int_field);
 ```
 
-Note: If you are using any value of `lock_timeout` that is not zero, you have
-to set it to zero before you create the index. This will prevent leaving an
-invalid index behind because the operation timed out.
+Side Note 1: If you are using any value of `lock_timeout` that is not zero, you
+have to set it to zero before you create the index. This will prevent leaving
+an invalid index behind if the operation times out.
 
-Once this command finished, you can add the constraint USING the index
+Side Note 2: You cannot use a partial index here. Postgres allows the creation
+of partial unique indexes, but it does not allow the creation of partial unique
+constraint. The documentation states
+[source](https://web.archive.org/web/20240928225017/https://www.postgresql.org/docs/current/ddl-constraints.html):
+
+>  A uniqueness restriction covering only some rows cannot be written as a
+>  unique constraint, but it is possible to enforce such a restriction by
+>  creating a unique partial index.
+
+If you try to use a partial index to create a unique constraint, Postgres will
+raise the following error:
+```
+ERROR:  "unique_int_field_idx" is a partial index
+```
+
+Therefore, if you need a partial unique restriction, just keep your index. It
+will be enough.
+
+Once this command finished, you can add the new constraint USING the index
 above:
 
 ```sql
@@ -108,22 +126,29 @@ interpreted.
 
 The differences remaining are:
 
-- Constraints can be deferred
+- Constraints can be deferred.
 - Indexes can be partial, which is useful if uniqueness is restricted to a
   subset of data. You **cannot** add a table constraint from a partial index.
-  Make sure your index wasn't created with "WHERE ..."
+  Make sure your index wasn't created with "WHERE ...".
 - If you care about the SQL standard, constraints are part of it, whereas
   indexes aren't (they're an implementation detail).
 - External tools that care about uniqueness being defined through constraints
-  might care about it.
+  might care about it and not work properly if the constraint isn't defined on
+  the schema.
 
 ## Timing Different Approaches
 
-The Python script below, times how long it takes to add a constraint using two
+The Python script below times how long it takes to add a constraint using two
 approaches:
 
 - ALTER TABLE **without** a pre-existing index.
 - ALTER TABLE **with** a pre-existing index.
+
+Note: These results were taken from a **local** database without any
+concurrency.
+
+TLDR: Creating an index concurrently first, and then using it to create the
+constraint takes a little longer in total, but is a much safer approach.
 
 First, the results in, and then the script:
 
