@@ -1325,7 +1325,7 @@ recommendation is to learn both syntaxes, and if you don&#x27;t use assembly tha
 often just keep a cheatsheet handy so that you can quickly navigate between the
 discrepancies.&lt;/p&gt;</content><published>2024-07-24T00:00:00Z</published><updated>2024-08-13T00:00:00Z</updated></entry><entry><title>mov edi, edi</title><link href="https://www.marcelofern.com/asm/mov_edi_edi/index.html"/><id>tag:marcelofern.com,2024-06-08:/asm/mov_edi_edi/index.html</id><content type="html">&lt;h1&gt;mov edi, edi&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-06-08
-Updated at: 2024-07-26
+Updated at: 2024-07-27
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;I had a surprise today when I saw the instruction &lt;code&gt;mov edi, edi&lt;/code&gt; as the first
 instruction of a function call.&lt;/p&gt;
@@ -1434,7 +1434,7 @@ that casting per-se does not clean up unused bits of a 64bit register. That
 could happen if a 64 bit integer was casted down to a 32 bit one.&lt;/p&gt;
 &lt;p&gt;Again, this is very much based on my own understanding on how assembly works in
 my platform, if you think that I got something wrong please send me an email at
-marceelofernandes@gmail.com.&lt;/p&gt;</content><published>2024-06-08T00:00:00Z</published><updated>2024-07-26T00:00:00Z</updated></entry><entry><title>Goodbye ZSH</title><link href="https://www.marcelofern.com/linux/goodbye_zsh/index.html"/><id>tag:marcelofern.com,2024-05-08:/linux/goodbye_zsh/index.html</id><content type="html">&lt;h1&gt;Goodbye ZSH&lt;/h1&gt;
+marceelofernandes@gmail.com.&lt;/p&gt;</content><published>2024-06-08T00:00:00Z</published><updated>2024-07-27T00:00:00Z</updated></entry><entry><title>Goodbye ZSH</title><link href="https://www.marcelofern.com/linux/goodbye_zsh/index.html"/><id>tag:marcelofern.com,2024-05-08:/linux/goodbye_zsh/index.html</id><content type="html">&lt;h1&gt;Goodbye ZSH&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created: 2024-05-08
 Updated: 2024-07-06
 &lt;/code&gt;&lt;/pre&gt;

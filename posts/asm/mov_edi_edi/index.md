@@ -2,7 +2,7 @@
 
 ```
 Created at: 2024-06-08
-Updated at: 2024-07-26
+Updated at: 2024-07-27
 ```
 
 I had a surprise today when I saw the instruction `mov edi, edi` as the first
