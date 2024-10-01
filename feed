@@ -10,7 +10,7 @@
     <uri>https://marcelofern.com</uri>
   </author>
   <id>tag:marcelofern.com,2024:/feed</id>
-<entry><title>Postgres Unique Constraints Without Downtime</title><link href="https://www.marcelofern.com/postgres/unique-constraints-without-downtime/index.html"/><id>tag:marcelofern.com,2024-10-01:/postgres/unique-constraints-without-downtime/index.html</id><content type="html">&lt;h1&gt;Postgres Unique Constraints Without Downtime&lt;/h1&gt;
+<entry><title>Postgres Unique Constraints Without Downtime</title><link href="https://www.marcelofern.com/posts/postgres/unique-constraints-without-downtime/index.html"/><id>tag:marcelofern.com,2024-10-01:/postgres/unique-constraints-without-downtime/index.html</id><content type="html">&lt;h1&gt;Postgres Unique Constraints Without Downtime&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-10-01
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The syntax for adding a unique constraint in Postgres is as follow:&lt;/p&gt;
@@ -364,7 +364,7 @@ table_sizes = [
     1_000_000_000,
 ]
 run_tests(table_sizes)
-&lt;/code&gt;&lt;/pre&gt;</content><published>2024-10-01T00:00:00Z</published><updated>2024-10-01T00:00:00Z</updated></entry><entry><title>Why Is This Site Built With C</title><link href="https://www.marcelofern.com/c/why-is-this-site-built-with-c/index.html"/><id>tag:marcelofern.com,2024-08-26:/c/why-is-this-site-built-with-c/index.html</id><content type="html">&lt;h1&gt;Why Is This Site Built With C&lt;/h1&gt;
+&lt;/code&gt;&lt;/pre&gt;</content><published>2024-10-01T00:00:00Z</published><updated>2024-10-01T00:00:00Z</updated></entry><entry><title>Why Is This Site Built With C</title><link href="https://www.marcelofern.com/posts/c/why-is-this-site-built-with-c/index.html"/><id>tag:marcelofern.com,2024-08-26:/c/why-is-this-site-built-with-c/index.html</id><content type="html">&lt;h1&gt;Why Is This Site Built With C&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-08-26
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;I&#x27;ve been writing about &lt;strong&gt;things&lt;/strong&gt; on a personal website since
@@ -625,7 +625,7 @@ standard library (which is probably the only standard lib of popular
 programming languages that fits in a &lt;a href=&quot;https://www.google.com/search?q=C+standard+library+P.J+Plauger&quot;&gt;commented book of 500
 pages&lt;/a&gt;...).
 Otherwise, nothing can run in the platform. So I&#x27;m hoping this bet will
-pay off.&lt;/p&gt;</content><published>2024-08-26T00:00:00Z</published><updated>2024-08-26T00:00:00Z</updated></entry><entry><title>The Dumbest Compiler Imaginable</title><link href="https://www.marcelofern.com/python/the-dumbest-compiler-imaginable/index.html"/><id>tag:marcelofern.com,2024-08-20:/python/the-dumbest-compiler-imaginable/index.html</id><content type="html">&lt;h1&gt;The Dumbest Compiler Imaginable&lt;/h1&gt;
+pay off.&lt;/p&gt;</content><published>2024-08-26T00:00:00Z</published><updated>2024-08-26T00:00:00Z</updated></entry><entry><title>The Dumbest Compiler Imaginable</title><link href="https://www.marcelofern.com/posts/python/the-dumbest-compiler-imaginable/index.html"/><id>tag:marcelofern.com,2024-08-20:/python/the-dumbest-compiler-imaginable/index.html</id><content type="html">&lt;h1&gt;The Dumbest Compiler Imaginable&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-08-20
 &lt;/code&gt;&lt;/pre&gt;
 &lt;blockquote&gt;
@@ -917,7 +917,7 @@ it does feel like it. If a fork is successful it may be merged up-stream
 instead of remaining a fork. If the interpreter itself is built without
 CPython&#x27;s C-extensions in mind, it will not provide a rich ecosystem for all
 the performance-dependent 3rd-party libs out there and will thus probably be
-less used.&lt;/p&gt;</content><published>2024-08-20T00:00:00Z</published><updated>2024-08-20T00:00:00Z</updated></entry><entry><title>Managing Python Environments</title><link href="https://www.marcelofern.com/python/managing-python-environments/index.html"/><id>tag:marcelofern.com,2024-08-06:/python/managing-python-environments/index.html</id><content type="html">&lt;h1&gt;Managing Python Environments&lt;/h1&gt;
+less used.&lt;/p&gt;</content><published>2024-08-20T00:00:00Z</published><updated>2024-08-20T00:00:00Z</updated></entry><entry><title>Managing Python Environments</title><link href="https://www.marcelofern.com/posts/python/managing-python-environments/index.html"/><id>tag:marcelofern.com,2024-08-06:/python/managing-python-environments/index.html</id><content type="html">&lt;h1&gt;Managing Python Environments&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-08-06
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The ecosystem for managing Python environments is huge, and so is the number
@@ -1140,7 +1140,7 @@ customisation, I have to step out of the manager or understand how the manager
 works so that I can apply the particular building flags I want.&lt;/p&gt;
 &lt;p&gt;This is also a problem in a rolling release system like Arch Linux, as
 installing multiple versions of the same dependency will point you towards some
-form of virtualisation (using docker, for example) or building from source.&lt;/p&gt;</content><published>2024-08-06T00:00:00Z</published><updated>2024-08-06T00:00:00Z</updated></entry><entry><title>Which Assembly Syntax to Choose?</title><link href="https://www.marcelofern.com/asm/att-vs-intel-syntax/index.html"/><id>tag:marcelofern.com,2024-07-24:/asm/att-vs-intel-syntax/index.html</id><content type="html">&lt;h1&gt;Which Assembly Syntax to Choose?&lt;/h1&gt;
+form of virtualisation (using docker, for example) or building from source.&lt;/p&gt;</content><published>2024-08-06T00:00:00Z</published><updated>2024-08-06T00:00:00Z</updated></entry><entry><title>Which Assembly Syntax to Choose?</title><link href="https://www.marcelofern.com/posts/asm/att-vs-intel-syntax/index.html"/><id>tag:marcelofern.com,2024-07-24:/asm/att-vs-intel-syntax/index.html</id><content type="html">&lt;h1&gt;Which Assembly Syntax to Choose?&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-07-24
 Updated at: 2024-08-13
 &lt;/code&gt;&lt;/pre&gt;
@@ -1323,7 +1323,7 @@ Intel.&lt;/p&gt;
 &lt;p&gt;But considering that you will likely come across both when &lt;em&gt;reading&lt;/em&gt; code, my
 recommendation is to learn both syntaxes, and if you don&#x27;t use assembly that
 often just keep a cheatsheet handy so that you can quickly navigate between the
-discrepancies.&lt;/p&gt;</content><published>2024-07-24T00:00:00Z</published><updated>2024-08-13T00:00:00Z</updated></entry><entry><title>mov edi, edi</title><link href="https://www.marcelofern.com/asm/mov_edi_edi/index.html"/><id>tag:marcelofern.com,2024-06-08:/asm/mov_edi_edi/index.html</id><content type="html">&lt;h1&gt;mov edi, edi&lt;/h1&gt;
+discrepancies.&lt;/p&gt;</content><published>2024-07-24T00:00:00Z</published><updated>2024-08-13T00:00:00Z</updated></entry><entry><title>mov edi, edi</title><link href="https://www.marcelofern.com/posts/asm/mov_edi_edi/index.html"/><id>tag:marcelofern.com,2024-06-08:/asm/mov_edi_edi/index.html</id><content type="html">&lt;h1&gt;mov edi, edi&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-06-08
 Updated at: 2024-07-27
 &lt;/code&gt;&lt;/pre&gt;
@@ -1434,7 +1434,7 @@ that casting per-se does not clean up unused bits of a 64bit register. That
 could happen if a 64 bit integer was casted down to a 32 bit one.&lt;/p&gt;
 &lt;p&gt;Again, this is very much based on my own understanding on how assembly works in
 my platform, if you think that I got something wrong please send me an email at
-marceelofernandes@gmail.com.&lt;/p&gt;</content><published>2024-06-08T00:00:00Z</published><updated>2024-07-27T00:00:00Z</updated></entry><entry><title>Goodbye ZSH</title><link href="https://www.marcelofern.com/linux/goodbye_zsh/index.html"/><id>tag:marcelofern.com,2024-05-08:/linux/goodbye_zsh/index.html</id><content type="html">&lt;h1&gt;Goodbye ZSH&lt;/h1&gt;
+marceelofernandes@gmail.com.&lt;/p&gt;</content><published>2024-06-08T00:00:00Z</published><updated>2024-07-27T00:00:00Z</updated></entry><entry><title>Goodbye ZSH</title><link href="https://www.marcelofern.com/posts/linux/goodbye_zsh/index.html"/><id>tag:marcelofern.com,2024-05-08:/linux/goodbye_zsh/index.html</id><content type="html">&lt;h1&gt;Goodbye ZSH&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created: 2024-05-08
 Updated: 2024-07-06
 &lt;/code&gt;&lt;/pre&gt;
@@ -1584,7 +1584,7 @@ technology for something better (or just pick the boring tech that has always
 been there to begin with).&lt;/p&gt;
 &lt;p&gt;I have no plans to go more basic and further switch to &lt;code&gt;sh&lt;/code&gt; at this stage, but
 I will be looking at &lt;code&gt;dash&lt;/code&gt; next to get the sweet performance enhancements and
-something that is more POSIX compliant than bash.&lt;/p&gt;</content><published>2024-05-08T00:00:00Z</published><updated>2024-07-06T00:00:00Z</updated></entry><entry><title>Branchless Programming Experiments in C++ and Python</title><link href="https://www.marcelofern.com/cpp/branchless_programming/index.html"/><id>tag:marcelofern.com,2023-08-22:/cpp/branchless_programming/index.html</id><content type="html">&lt;h1&gt;Branchless Programming Experiments in C++ and Python&lt;/h1&gt;
+something that is more POSIX compliant than bash.&lt;/p&gt;</content><published>2024-05-08T00:00:00Z</published><updated>2024-07-06T00:00:00Z</updated></entry><entry><title>Branchless Programming Experiments in C++ and Python</title><link href="https://www.marcelofern.com/posts/cpp/branchless_programming/index.html"/><id>tag:marcelofern.com,2023-08-22:/cpp/branchless_programming/index.html</id><content type="html">&lt;h1&gt;Branchless Programming Experiments in C++ and Python&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created: 2023-08-22
 Updated: 2024-07-28
 &lt;/code&gt;&lt;/pre&gt;
@@ -1877,7 +1877,7 @@ someone tried to optimise int summation &lt;a href=&quot;https://github.com/pyth
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In conclusion this kind of branchless optimisation does not quite work with
 Python. However, due to time, I haven&#x27;t really analysed other branchless
-techniques that are superior in many situations like bit masking.&lt;/p&gt;</content><published>2023-08-22T00:00:00Z</published><updated>2024-07-28T00:00:00Z</updated></entry><entry><title>A Critique of SOLID</title><link href="https://www.marcelofern.com/software-design/a-critique-of-solid/index.html"/><id>tag:marcelofern.com,2023-04-15:/software-design/a-critique-of-solid/index.html</id><content type="html">&lt;h1&gt;A Critique of SOLID&lt;/h1&gt;
+techniques that are superior in many situations like bit masking.&lt;/p&gt;</content><published>2023-08-22T00:00:00Z</published><updated>2024-07-28T00:00:00Z</updated></entry><entry><title>A Critique of SOLID</title><link href="https://www.marcelofern.com/posts/software-design/a-critique-of-solid/index.html"/><id>tag:marcelofern.com,2023-04-15:/software-design/a-critique-of-solid/index.html</id><content type="html">&lt;h1&gt;A Critique of SOLID&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created: 2023-04-15
 Updated: 2024-07-06
 &lt;/code&gt;&lt;/pre&gt;
@@ -2327,7 +2327,7 @@ nowadays have scars to prove that.&lt;/p&gt;
 though I don&#x27;t agree with them fully. It is easy to look back on the past and
 point fingers about decisions that don&#x27;t apply to the present. I think that
 overall the popularity of SOLID and the outcome of having more people thinking
-about designs and their own set of principles is a positive thing.&lt;/p&gt;</content><published>2023-04-15T00:00:00Z</published><updated>2024-07-06T00:00:00Z</updated></entry><entry><title>Linux Rice</title><link href="https://www.marcelofern.com/linux/rice/index.html"/><id>tag:marcelofern.com,2020-08-30:/linux/rice/index.html</id><content type="html">&lt;h1&gt;Linux Rice&lt;/h1&gt;
+about designs and their own set of principles is a positive thing.&lt;/p&gt;</content><published>2023-04-15T00:00:00Z</published><updated>2024-07-06T00:00:00Z</updated></entry><entry><title>Linux Rice</title><link href="https://www.marcelofern.com/posts/linux/rice/index.html"/><id>tag:marcelofern.com,2020-08-30:/linux/rice/index.html</id><content type="html">&lt;h1&gt;Linux Rice&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created: 2020-08-30
 Updated: 2024-07-06
 &lt;/code&gt;&lt;/pre&gt;
