@@ -7,13 +7,12 @@ Created at: 2024-09-18
 I have been managing people for the past 3 years at my current job. This is
 not extensive experience and I still see myself as a junior manager at best.
 
-As I reflect on my journey so far, the idea is to talk through some lessons I
-learnt from managing other developers and on reoccurring patterns I have
-observed.
+As I reflect on my journey so far, I talk through some lessons I learnt from
+managing other developers and on reoccurring patterns I have observed.
 
-Now, a post about management is not cringe enough unless there is a "top list"
-of advice for other managers that summarises my current thinking. The one I
-could come up with is composed of 5 **must's**.
+Now, a post about management is not cringe enough unless there is an "advice
+top list" that summarises my current thinking. The one I could come up with is
+composed of 5 **must's**.
 
 1. You must facilitate.
 2. You must take an active interest in the development of your reports.
@@ -22,7 +21,7 @@ could come up with is composed of 5 **must's**.
 5. You must keep an open mind about your own management skills.
 
 Note: Having innate charisma would be of great help as it would make it easier
-to perform some of these points. However, the typical nerd type is not usually
+to perform most of these points. However, the typical nerdy type is not usually
 charismatic. We need to work harder on it. More on that later.
 
 ## You Must Facilitate
@@ -30,7 +29,7 @@ charismatic. We need to work harder on it. More on that later.
 > “The manager’s function is not to make people work, but to make it possible
 > for people to work.”
 
-Being promoted to manager performing well as a developer is a regular
+Being promoted to manager after performing well as a developer is a regular
 occurrence in many companies. Another regular occurrence is for a former
 developer to not be good at managing their peers.
 
@@ -45,7 +44,7 @@ seem to regularly feature on the good-developer skill set.
 My first challenge stepping into the role was to manage my own conflicts of
 interest and lack of guidance and experience on how to manage other developers.
 
-I wanted to continue developing my coding skills as I deemed my
+I wanted to continue progressing on my coding skills as I deemed my
 individual-contributor skills more important than management and leadership.
 
 That meant that I wasn't facilitating much. The lack of leadership and
@@ -55,8 +54,11 @@ Once that team grew to about ~7 developers the situation became unsustainable.
 
 I wasn't having enough quality time to spend on important coding tasks because
 I was constantly spending time on management duties. At the same time I wasn't
-helping to unblock my team's work as well as I could, since I spent too much
+helping to unblock my team's work as well as I could since I spent too much
 time coding.
+
+By my sheer luck the team was independent enough to perform well even without
+strong management guidance. That could equally have been disastrous.
 
 I had to step back and rethink my approach to balance facilitation with my
 coding responsibilities. Being **proactive** about facilitating helped me save
@@ -75,10 +77,10 @@ The easiest kinds of facilitation are the ones defined as a technical problem
 posed by the product being developed. For example, the product manager asks for
 a feature but the details aren't clear enough for a developer to jump on the
 task. You pop a meeting with the product manager and the client, and together
-you clear up requirements so that a developer is not stuck in a place they
-don't want to be with vague requirements and lack of direction.
+you clear up requirements so that a developer is not stuck with vague
+requirements and lack of direction.
 
-The goal in these situations isn't to trace the design for the solution (the
+The goal in these situations isn't to detail the design for the solution (the
 developer will do that), but to make sure requirements are understood and that
 there is a definition of what "done" means in the context of that task.
 
@@ -99,12 +101,13 @@ unlimited leave, team rotation, mental-health days, external mediation, etc.
 My only general observation is to treat the situation with compassion and
 empathy. In the end of the day a manager will be dealing with people-problems
 frequently. In the eyes of the person being troubled, their problems are going
-to be concerning than what they may be comfortable telling you. You are at the
-risk of miss-characterising the problem if you don't handle it well. There is
-no point on trying to play a hard hand by being the authoritarian boss that
-dictates solutions or does not take the time to care and understand "it's your
-job, just do it!". This almost always goes wrong and makes the manager lose the
-respect of their team.
+to be more concerning than what they may be comfortable telling you. You are at
+the risk of miss-characterising the problem if you don't handle it well.
+
+There is no point on trying to play a hard hand by being the authoritarian boss
+that dictates solutions or does not take the time to care and understand "it's
+your job, just do it!". This almost always goes wrong and makes the manager
+lose the respect of their team.
 
 ## You Must Take An Active Interest In The Development Of Your Reports
 
@@ -120,12 +123,10 @@ stage, goals, and personality. But there is a meta step here too. Both you and
 the report need to be willing to learn and improve together for that
 relationship to work and those questions to be answered. It's not just about
 the report's growth but also the manager's willingness to evolve in response to
-their team's needs
+their team's needs.
 
 In the best manager-managed relationships I've had **both** people were
-learning together what they needed from and what they could provide to each
-other. I didn't understand for a very long time that this dynamic was what
-nurtured the environment for a great relationship.
+learning together what they needed from each other and what they could provide.
 
 To use an analogy from pedagogy theory:
 
@@ -133,13 +134,13 @@ To use an analogy from pedagogy theory:
 > cease to exist and a new term emerges: teacher-student with
 > students-teachers. The teacher is no longer merely the-one-who-teaches, but
 > one who is himself taught in dialogue with the students, who in turn while
-> being taught also teach. They be-come jointly responsible for a process in
+> being taught also teach. They become jointly responsible for a process in
 > which all grow − Paulo Freire.
 
 Having a manager that allows themselves to not know but are comfortable asking
 dumb questions is a **great thing**. I have had managers on the other side of
 the spectrum who pretended to be acquainted with things they had no clue about
-because they were insecure of showing a potential shortcoming to their reports.
+because they were insecure of showing potential shortcomings to their reports.
 This is a **bad thing**.
 
 It is difficult to provide quality help to develop a report's career if the
@@ -160,18 +161,22 @@ If you came across this sort of advice below in the past, I recommend you
 > administrative and procedural obstacles. By definition, the manager is not a
 > peer and so can’t be part of the peer group. (Peopleware).
 
-Of course there are exceptions where the manager cannot be part of the team.
-For example, a project may be so novel that no one except the few reports deep
-in the weeds can actively contribute to the advancement of that project.
+That is not to say that there aren't exceptions where the manager cannot be
+part of the team. For example, a project may be so novel that no one except the
+few reports deep in the weeds can actively contribute to the advancement of
+that project.
+
+This problem also seem to occur the higher up the management chain
+you go. It must be difficult for the manager-of-managers to stay on top of each
+manager's team work.
 
 However, this does not mean that the manager shouldn't do their best to
 understand the project as much as possible even if it is just to have support
 when collateral damage happens.
 
 It is hard to take an active interest in someone without getting to know them.
-So make sure to invest on that relationship and situate yourself within the
-company so that you can provide active support for your team. The earlier the
-better. It takes time to build trust.
+Making sure to invest in the relationship early the better as it takes time to
+build trust.
 
 ## You Must Listen
 
@@ -232,14 +237,15 @@ getting paid enough?". [panem et
 circenses](https://en.wikipedia.org/wiki/Bread_and_circuses)
 
 One of the best kinds of recognition is the financial one, specially when that
-financial offer is made proactively from the manager's side before "official"
-raise ceremonies take place.
+financial acknowledgement is made proactively from the manager side before
+"official" raise ceremonies take place.
 
 It is incredible that in certain places salary raises only happen once a year,
 and if you missed the date but got a lot of responsibility on your back, you
 need to perform the role for a year without financial recognition. It is very
 hard to be a manager in such companies as you don't have freedom to *really*
-manage your team.
+manage your team. Having been on that type of company before (but not on the
+management side), it was very frustrating.
 
 ## You must keep an open mind about your management skills.
 
@@ -254,7 +260,7 @@ Managing is hard, and there is so much material out there that isn't necessary
 relevant or particularly useful to **your** situation.
 
 From that, it is easy to grow cynical that "no one can teach management", but
-that is also not a helpful way of seeing things. I bet your reports would raise
+that is also not a helpful way to see things. I bet your reports would raise
 their eyebrows if you said that to them.
 
 Material on how to manage **creative workers** like software developers seems
@@ -267,12 +273,13 @@ to the business. Of course you should be able to tell whether someone is
 performing to the level of their role, but overall impact is a harder thing to
 measure.
 
-All that said, I **do** think that improving is possible, but it is a different
-art than improving technical skills.
+All that said, I **do** think that improving is possible, but it is a much
+distinct art than improving technical skills.
 
 Managing also takes a different source of energy than coding. If you are not a
 real people person you have to be prepared to spend more time and energy being
-a manager. This can be frustrating at times.
+a manager. Quite frankly, it's already very hard to keep on top of these "5
+musts", specially as the number of reports goes up.
 
 The final advice here is to keep an open mind. Check the literature and try and
 read some books on management. Read other posts like this one about what other
@@ -283,6 +290,7 @@ Some recommendations for reading:
 - The Culture Map (Erin Meyer)
 - Peopleware (Tom DeMarco)
 - Ruined by Design (Mike Monteiro)
+- The Manager's Path (Camille Fournier)
 
 
 ## Closing Remarks

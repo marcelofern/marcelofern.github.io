@@ -67,10 +67,10 @@
 ADD CONSTRAINT &quot;unique_constraint_on_foo&quot;
 UNIQUE (&quot;foo&quot;);
 </code></pre>
-<p>This constraint will prevent multiple rows of having the same value stored in
-their <code>foo</code> columns.</p>
+<p>This constraint will prevent multiple rows having the same value stored in
+the <code>foo</code> column.</p>
 <p>However, this operation acquires an <code>ACCESS EXCLUSIVE</code> lock, blocking all reads
-and writes to the table which may cause downtime.</p>
+and writes to the table until it's finished.</p>
 <p>If you are adding a unique constraint to a large table, the amount of time
 spent to create the constraint might be prohibitive.</p>
 <h2>How To Safely Add a Unique Constraint Without Downtime</h2>
@@ -81,9 +81,9 @@ primary key is defined for a table.</p>
 </blockquote>
 <p>Creating this index on the background while holding an <code>ACCESS EXCLUSIVE</code> is
 the problem we are trying to avoid.</p>
-<p>What we actually want to do is <strong>create the index first</strong>, and CONCURRENTLY,
-so that when we add the constraint to the table, the table can use the already
-existing index. This will make the subsequent <code>ALTER TABLE</code> run much faster.</p>
+<p>What we want to do is <strong>create the index first</strong>, and <strong>CONCURRENTLY</strong>, so that
+when we add the constraint to the table, the table can use the already existing
+index. This will make the subsequent <code>ALTER TABLE</code> much faster to run.</p>
 <p>If you have the following table:</p>
 <pre><code class="language-sql">CREATE TABLE example_table (
     id SERIAL PRIMARY KEY,
@@ -99,7 +99,7 @@ ON example_table (int_field);
 </code></pre>
 <p>Side Note 1: If you are using any value of <code>lock_timeout</code> that is not zero, you
 have to set it to zero before you create the index. This will prevent leaving
-an invalid index behind if the operation times out.</p>
+an invalid index behind if the operation fails due to a time out.</p>
 <p>Side Note 2: You cannot use a partial index here. Postgres allows the creation
 of partial unique indexes, but it does not allow the creation of partial unique
 constraint. The documentation states

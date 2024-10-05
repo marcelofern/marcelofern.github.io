@@ -12,11 +12,11 @@ ADD CONSTRAINT "unique_constraint_on_foo"
 UNIQUE ("foo");
 ```
 
-This constraint will prevent multiple rows of having the same value stored in
-their `foo` columns.
+This constraint will prevent multiple rows having the same value stored in
+the `foo` column.
 
 However, this operation acquires an `ACCESS EXCLUSIVE` lock, blocking all reads
-and writes to the table which may cause downtime.
+and writes to the table until it's finished.
 
 If you are adding a unique constraint to a large table, the amount of time
 spent to create the constraint might be prohibitive.
@@ -31,9 +31,9 @@ From the Postgres documentation:
 Creating this index on the background while holding an `ACCESS EXCLUSIVE` is
 the problem we are trying to avoid.
 
-What we actually want to do is **create the index first**, and CONCURRENTLY,
-so that when we add the constraint to the table, the table can use the already
-existing index. This will make the subsequent `ALTER TABLE` run much faster.
+What we want to do is **create the index first**, and **CONCURRENTLY**, so that
+when we add the constraint to the table, the table can use the already existing
+index. This will make the subsequent `ALTER TABLE` much faster to run.
 
 If you have the following table:
 
@@ -56,7 +56,7 @@ ON example_table (int_field);
 
 Side Note 1: If you are using any value of `lock_timeout` that is not zero, you
 have to set it to zero before you create the index. This will prevent leaving
-an invalid index behind if the operation times out.
+an invalid index behind if the operation fails due to a time out.
 
 Side Note 2: You cannot use a partial index here. Postgres allows the creation
 of partial unique indexes, but it does not allow the creation of partial unique
