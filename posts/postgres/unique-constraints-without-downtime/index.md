@@ -2,6 +2,7 @@
 
 ```
 Created at: 2024-10-01
+Updated at: 2024-10-08
 ```
 
 The syntax for adding a unique constraint in Postgres is as follow:
@@ -82,21 +83,16 @@ above:
 ```sql
 SET lock_timeout '10s'
 
-BEGIN;
-
 ALTER TABLE example_table
 ADD CONSTRAINT unique_int_field UNIQUE USING INDEX unique_int_field_idx;
-
-COMMIT;
 ```
 
 The operation above takes virtually no time.
 
-Note: I have reset lock_timeouts to a reasonable value (10s) and started a
-transaction to add the constraint to the table. This is a safeguard. If there
-is a long-running transaction that would block the ALTER TABLE statement, which
-in turn would block all reads and writes, the statement will time out instead
-of causing a potential outage.
+Note: I have reset lock_timeouts to a reasonable value (10s). This is a
+safeguard. If there is a long-running transaction that would block the ALTER
+TABLE statement, which in turn would block all reads and writes, the statement
+will time out instead of causing a potential outage.
 
 ## Why not just use the index for constraint validation?
 

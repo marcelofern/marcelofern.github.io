@@ -61,6 +61,7 @@
 <body>
 <h1>Postgres Unique Constraints Without Downtime</h1>
 <pre><code>Created at: 2024-10-01
+Updated at: 2024-10-08
 </code></pre>
 <p>The syntax for adding a unique constraint in Postgres is as follow:</p>
 <pre><code class="language-sql">ALTER TABLE &quot;table_name&quot;
@@ -119,19 +120,14 @@ will be enough.</p>
 above:</p>
 <pre><code class="language-sql">SET lock_timeout '10s'
 
-BEGIN;
-
 ALTER TABLE example_table
 ADD CONSTRAINT unique_int_field UNIQUE USING INDEX unique_int_field_idx;
-
-COMMIT;
 </code></pre>
 <p>The operation above takes virtually no time.</p>
-<p>Note: I have reset lock_timeouts to a reasonable value (10s) and started a
-transaction to add the constraint to the table. This is a safeguard. If there
-is a long-running transaction that would block the ALTER TABLE statement, which
-in turn would block all reads and writes, the statement will time out instead
-of causing a potential outage.</p>
+<p>Note: I have reset lock_timeouts to a reasonable value (10s). This is a
+safeguard. If there is a long-running transaction that would block the ALTER
+TABLE statement, which in turn would block all reads and writes, the statement
+will time out instead of causing a potential outage.</p>
 <h2>Why not just use the index for constraint validation?</h2>
 <p>Both the unique index and constraint raise the same error when an insert
 attempt fails: &quot;duplicate key value violates unique constraint.&quot;</p>
