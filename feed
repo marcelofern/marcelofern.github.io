@@ -10,7 +10,252 @@
     <uri>https://marcelofern.com</uri>
   </author>
   <id>tag:marcelofern.com,2024:/feed</id>
-<entry><title>Postgres Unique Constraints Without Downtime</title><link href="https://www.marcelofern.com/posts/postgres/unique-constraints-without-downtime/index.html"/><id>tag:marcelofern.com,2024-10-01:/postgres/unique-constraints-without-downtime/index.html</id><content type="html">&lt;h1&gt;Postgres Unique Constraints Without Downtime&lt;/h1&gt;
+<entry><title>On Git Commit Messages</title><link href="https://www.marcelofern.com/posts/git/on-commit-messages/index.html"/><id>tag:marcelofern.com,2024-10-05:/git/on-commit-messages/index.html</id><content type="html">&lt;h1&gt;On Git Commit Messages&lt;/h1&gt;
+&lt;pre&gt;&lt;code&gt;Created at: 2024-10-05
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;There are two web pages that provide a great summary on Git Commits best
+practice.&lt;/p&gt;
+&lt;p&gt;I recommend reading them before going through the rest of this post:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://web.archive.org/web/20241003132241/https://wiki.openstack.org/wiki/GitCommitMessages&quot;&gt;Git Commit Good Practice - OpenStack&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://web.archive.org/web/20240930112522/https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html&quot;&gt;Tim Pope&#x27;s note about commit messages&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Those articles are &amp;quot;old&amp;quot;. One is from 2008 and the other is from 2014. This
+means that the following occasional comment pops up now and then:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;It&#x27;s 2024, do we &lt;strong&gt;really&lt;/strong&gt; have to restrict ourselves to 72-long commit
+titles? I think it&#x27;s acceptable to simply:&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;git -m &amp;quot;ISSUE:1234X Add date of birth, salary, ethnicity, pronouns, height (in centimetres), salary text fields, and more, to the request loan submit form for Chameleon MVP.&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;We also have so many good tools around git that make it easier to see the
+changes and the diffs. We can also link to rich context on JIRA and Asana,
+why are we focusing so much on terminal limitations?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;We are agile and always fix forward. We never have use for the old bits of
+git like git bisect, git revert, or even git log... What do these do
+again?!...&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Given that I have little to contribute to the excellent content in the
+articles above, I&#x27;ll limit my contribution to talking about the reason these
+posts have aged so well.&lt;/p&gt;
+&lt;h2&gt;A Disclaimer&lt;/h2&gt;
+&lt;p&gt;Learning a tool like git takes time. To make the most of git, one needs to
+learn it well. The same way there are programmers who debug exclusively with
+&lt;code&gt;print()&lt;/code&gt;, there are programmers who only use three git commands: &lt;code&gt;pull&lt;/code&gt;,
+&lt;code&gt;commit&lt;/code&gt;, and &lt;code&gt;push&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;That is fine. You can go a long way without ever needing more advanced git
+commands (or debugging tools). That also means, however, that the
+justifications behind good-practice advice will be harder to understand. I will
+try to make those clearer in this post even if you don&#x27;t go beyond these three
+git commands.&lt;/p&gt;
+&lt;p&gt;The tragedy of it all, however, is that not knowing those advanced use cases
+before creating a repository might jeopardise the ability of advanced users to
+take advantage of good commit etiquette.&lt;/p&gt;
+&lt;p&gt;Some code bases have a &amp;quot;before good commits&amp;quot; and &amp;quot;after good commits&amp;quot;. The
+&amp;quot;before&amp;quot; is usually a dark place we don&#x27;t like to go.&lt;/p&gt;
+&lt;p&gt;Make up your reasons wisely and trust the advice of people who have been there
+before and learned the hard lessons.&lt;/p&gt;
+&lt;h2&gt;The Summary&lt;/h2&gt;
+&lt;p&gt;Before going into the reasons why the advice from those posts is still sound,
+here is a very short summary of the two articles above:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Do not mix two unrelated functional changes in the same commit&lt;/strong&gt;: It&#x27;s hard
+to catch flaws during review when changes are mixed together. If the commit
+needs to be reverted, the two changes need to be untangled first. Similarly,
+it is harder to bisect and find which change created a bug if multiple
+functional changes are included in a commit.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Do not assume the reviewer uses the same tools as you&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Do not assume the reviewer has access to an external website&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;These provide justification for seemingly arbitrary content on the linked blog
+posts such as &lt;em&gt;&amp;quot;commit titles should be no longer than 50 characters and commit
+bodies no longer than 72 characters&amp;quot;.&lt;/em&gt;&lt;/p&gt;
+&lt;h2&gt;Do not mix two unrelated functional changes in the same commit&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;So commit messages to me are almost as important as the code change itself.
+Sometimes the code change is so obvious that no message is really required,
+but that is very very rare. And so one of the things I hope developers are
+thinking about, the people who are actually writing code, is not just the
+code itself, but explaining why the code does something, and why some change
+was needed. Because that then in turn helps the managerial side of the
+equation, where if you can explain your code to me, I will trust the code...&lt;/p&gt;
+&lt;p&gt;Linus Torvalds.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Let&#x27;s start with a &lt;strong&gt;bad&lt;/strong&gt; example:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;commit e5b18b256c0f4f5d369c62785248632075790867 (HEAD -&amp;gt; master)
+Author: John Doe &amp;lt;john.doe@gmail.com&amp;gt;
+Date:   Sat Oct 5 18:33:21 2024 +1300
+
+    Revamp customer profile page
+
+    This commit:
+
+      - Refactor ResetPassword form UI to reuse textbox component.
+      - Add an index to the &amp;quot;users&amp;quot; table to lookup emails faster.
+      - Apply compression to user&#x27;s uploaded profile pictures.
+      - Change hash algorithm for profile picture names.
+      - Fix broken layout on mobile devices using landscape format.
+      - Add a new canary flag to control &amp;quot;Under Maintanence&amp;quot; banner.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Although John Doe&#x27;s commit title evokes the idea that there&#x27;s only one thing
+happening, a closer look at the commit description reveals that there are
+many unrelated changes sneaking in at the same time.&lt;/p&gt;
+&lt;p&gt;Why is this bad? Let&#x27;s start with a simple example.&lt;/p&gt;
+&lt;p&gt;Suppose the third change has a bug:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;&amp;quot;Apply compression to user&#x27;s uploaded profile pictures&amp;quot;&lt;/em&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;code&gt;profile_update.c&lt;/code&gt; file where all the operations for updating a user&#x27;s
+profile live has a code-path that crashes the server.&lt;/p&gt;
+&lt;p&gt;Naturally you want to revert that commit. But in the meanwhile John&#x27;s colleague
+Mary has changed one of the UI layout files that John&#x27;s commit had also touched
+as part of an unrelated change:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;commit 85cf1a1501a2062dbc9310d6b598dcf72e284cbc (HEAD -&amp;gt; master)
+Author: Mary Silva &amp;lt;mary.silva@gmail.com&amp;gt;
+Date:   Sat Oct 6 20:45:40 2024 +1300
+
+    Upgrade profile page UI layout
+
+    This commit:
+
+      - Move css classes to the new file &amp;quot;user_layout.css&amp;quot;.
+      - Refactor text boxes to use the same css style.
+      - Remove unreacheable (dead) JavaScript code.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now you can&#x27;t revert John&#x27;s commit because you got a conflict.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git revert e5b18b256c0f4f5d369c62785248632075790867
+
+CONFLICT (modify/delete): README.md deleted in (empty tree) and modified in
+HEAD.  Version HEAD of README.md left in tree.
+
+error: could not revert e5b18b2... Revamp customer profile page
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The bug in the &lt;code&gt;profile_update.c&lt;/code&gt; file has nothing to do with the UI layout in
+the profile page.&lt;/p&gt;
+&lt;p&gt;When John added all of those unrelated changes in a single commit, his
+commit became a &lt;strong&gt;conflict magnet&lt;/strong&gt;. Conflict magnet commits are very hard to
+revert.&lt;/p&gt;
+&lt;h3&gt;Bisecting&lt;/h3&gt;
+&lt;p&gt;In this case we already knew that John&#x27;s commit introduced a bug, but what if
+we didn&#x27;t? &lt;code&gt;git bisect&lt;/code&gt; is a git tool built for finding &lt;strong&gt;where&lt;/strong&gt; a bug was
+introduced.&lt;/p&gt;
+&lt;p&gt;To use &lt;code&gt;git bisect&lt;/code&gt; you give it two arguments: A &amp;quot;bad&amp;quot; commit that is known to
+&lt;strong&gt;contain&lt;/strong&gt; the bug (even if not introduced by that commit itself), and a
+&amp;quot;good&amp;quot; commit that is known to be before the bug was introduced.&lt;/p&gt;
+&lt;p&gt;The short version of what bisect does is: Bisect will pick a commit between
+the &amp;quot;bad&amp;quot; and &amp;quot;good&amp;quot; one and ask you whether it&#x27;s good or bad. It is up to you
+to decide.&lt;/p&gt;
+&lt;p&gt;How you do that depends on the project, you might run the test suite with a
+test that reproduces the bug, or simply look at the diff changes. In each
+iteration, &lt;code&gt;git bisect&lt;/code&gt; shrinks the search window until John&#x27;s offending commit
+is found.&lt;/p&gt;
+&lt;p&gt;Inevitably you find John&#x27;s commit. However, the commit has two changes in the
+same &lt;code&gt;profile_update.c&lt;/code&gt; file that causes the bug.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;  - Apply compression to user&#x27;s uploaded profile pictures.
+  - Change hash algorithm for profile picture names.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So which of the changes is the bad one?&lt;/p&gt;
+&lt;p&gt;That question might not be trivial to answer. It might be hard to untangle
+which change actually broke the code. Specially if the compression algorithm
+and the hash algorithm use the same underling routines.&lt;/p&gt;
+&lt;h3&gt;Function evolutions&lt;/h3&gt;
+&lt;p&gt;Another tool that can&#x27;t be used as well if multiple changes are present in the
+same commit is &lt;code&gt;git log -L&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;git log -L :&amp;lt;funcname&amp;gt;:&amp;lt;file_name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;By running the command above, git will display a diff with all the commits
+that touched that function in the past.&lt;/p&gt;
+&lt;p&gt;This presents a way to see the &amp;quot;evolution&amp;quot; of a function over time.&lt;/p&gt;
+&lt;p&gt;You want commits to be split so that you can see which individual patches
+changed that function.&lt;/p&gt;
+&lt;p&gt;Having a single commit with too much noise makes that more difficult to
+understand &lt;strong&gt;why&lt;/strong&gt; that function changed.&lt;/p&gt;
+&lt;p&gt;If you are not convinced yet, there are many more git tools that are affected
+by non-atomic commits. Check the list below and see if may you use any of the
+following:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git blame&lt;/code&gt;: Atomic commits give you the direct answer to: &amp;quot;Why was this
+change made?&amp;quot;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git rebase&lt;/code&gt;: For rebasing, dropping changes, re-editing commit messages, or
+adding fix-ups.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git cherry-pick&lt;/code&gt;: For applying a specific commit from one branch to another.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git diff&lt;/code&gt;: For seeing one change at a time.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It&#x27;s reasonable to conclude that one commit per functional change is still
+relevant today.&lt;/p&gt;
+&lt;h2&gt;Do not assume the reviewer uses the same tools as you&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Word-wrapping is a property of the text. And the tool you use to
+visualize things cannot know. End result: you do word-wrapping at the
+only stage where you can do it, namely when writing it. Not when
+showing it.&lt;/p&gt;
+&lt;p&gt;Some things should not be word-wrapped. They may be some kind of
+quoted text - long compiler error messages, oops reports, whatever.
+Things that have a certain specific format.&lt;/p&gt;
+&lt;p&gt;The tool displaying the thing can&#x27;t know. The person writing the
+commit message can. End result: you&#x27;d better do word-wrapping at
+commit time, because that&#x27;s the only time you know the difference.&lt;/p&gt;
+&lt;p&gt;(And the rule is not 80 characters, because you do want to allow the
+standard indentation from git log, and you do want to leave some room
+for quoting).&lt;/p&gt;
+&lt;p&gt;Linus Torvalds&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;This is what a long commit looks like with the default pager (&lt;code&gt;less&lt;/code&gt; on most
+*nix systems).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;long_commit.png&quot; alt=&quot;long_commit.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Those white arrows at the right-hand side show where the text was truncated.&lt;/p&gt;
+&lt;p&gt;Although &lt;code&gt;less&lt;/code&gt; supports wrapping text, it may not be on by default depending
+on how your OS came configured.&lt;/p&gt;
+&lt;p&gt;Every command that takes the commit summary (top line) truncate and become
+unreadable. More examples of such commands are found on Tim Pope&#x27;s &lt;a href=&quot;http://web.archive.org/web/20240930112522/https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html&quot;&gt;blog
+post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;There isn&#x27;t much I can add here. I think that it is important to have good
+writing skills for both commit titles and commit messages with the goal of
+keeping them succinct and informative at the same time. You can see for
+yourself how nice &lt;a href=&quot;https://github.com/torvalds/linux/commits/master/&quot;&gt;Linux&#x27;s kernel git
+log&lt;/a&gt; reads for inspiration.&lt;/p&gt;
+&lt;p&gt;The kernel has a &lt;a href=&quot;https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=bc7938deaca7f474918c41a0372a410049bd4e13#n664&quot;&gt;restrictive line-length
+limit&lt;/a&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;the &lt;code&gt;summary&lt;/code&gt; must be no more than 70-75 characters.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;No text gets wrapped or truncated, and everything is nice and in &lt;em&gt;good&lt;/em&gt; style.&lt;/p&gt;
+&lt;p&gt;It is true that there is no strong evidence about what the &amp;quot;ideal&amp;quot; line-length
+&lt;strong&gt;for coding&lt;/strong&gt; is. But we know that number for &lt;strong&gt;human-readable text&lt;/strong&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Research has led to recommendations that line length should not exceed about
+70 characters per line. The reason behind this finding is that both very
+short and very long lines slow down reading by interrupting the normal
+pattern of eye movements and movements throughout the text.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.researchgate.net/publication/234578707_Optimal_Line_Length_in_Reading--A_Literature_Review&quot;&gt;source&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Throw no stones! We are talking about &lt;strong&gt;human-readable&lt;/strong&gt;, i.e., text like
+books, magazines, papers, &lt;strong&gt;and git logs!!!&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;As Linus has explained on the quote at the top of this section, the &lt;strong&gt;writer&lt;/strong&gt;
+is responsible for wrapping the text because the &lt;em&gt;pager&lt;/em&gt; tool might not be able
+to do it for the &lt;strong&gt;reader&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;The default pager (&lt;code&gt;less&lt;/code&gt;) is not the only tool that truncates instead of
+wrapping, even in 2024 we haven&#x27;t found the magic solution for perfect
+text-wrapping yet.&lt;/p&gt;
+&lt;p&gt;Even GitHub truncates long commit titles to 72 characters. Be mindful of that
+when committing long titles and messages.&lt;/p&gt;
+&lt;h2&gt;Do not assume the reviewer has access to an external website&lt;/h2&gt;
+&lt;p&gt;I worked for a company that used to use GitHub for issue tracking as well as
+repository hosting. Many of our commit messages merely pointed at GitHub links
+and had no description at all.&lt;/p&gt;
+&lt;p&gt;It was sad to see the company getting acquired and the parent company moving to
+BitBucket while deleting the old GitHub account.&lt;/p&gt;
+&lt;p&gt;It is OK to link to GitHub, Jira, Asana, etc., but the most important thing is
+to &lt;strong&gt;make sure&lt;/strong&gt; the commit message has everything you need in it so that you
+don&#x27;t depend on external services.&lt;/p&gt;
+&lt;h2&gt;Outro&lt;/h2&gt;
+&lt;p&gt;Linus on Tim Pope&#x27;s post:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;linus_on_tpope.png&quot; alt=&quot;linus_on_tpope.png&quot;&gt;&lt;/p&gt;
+&lt;h2&gt;Further Reading&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/torvalds/linux/pull/17&quot;&gt;https://github.com/torvalds/linux/pull/17&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><published>2024-10-05T00:00:00Z</published><updated>2024-10-05T00:00:00Z</updated></entry><entry><title>Postgres Unique Constraints Without Downtime</title><link href="https://www.marcelofern.com/posts/postgres/unique-constraints-without-downtime/index.html"/><id>tag:marcelofern.com,2024-10-01:/postgres/unique-constraints-without-downtime/index.html</id><content type="html">&lt;h1&gt;Postgres Unique Constraints Without Downtime&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-10-01
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The syntax for adding a unique constraint in Postgres is as follow:&lt;/p&gt;
@@ -18,10 +263,10 @@
 ADD CONSTRAINT &amp;quot;unique_constraint_on_foo&amp;quot;
 UNIQUE (&amp;quot;foo&amp;quot;);
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This constraint will prevent multiple rows of having the same value stored in
-their &lt;code&gt;foo&lt;/code&gt; columns.&lt;/p&gt;
+&lt;p&gt;This constraint will prevent multiple rows having the same value stored in
+the &lt;code&gt;foo&lt;/code&gt; column.&lt;/p&gt;
 &lt;p&gt;However, this operation acquires an &lt;code&gt;ACCESS EXCLUSIVE&lt;/code&gt; lock, blocking all reads
-and writes to the table which may cause downtime.&lt;/p&gt;
+and writes to the table until it&#x27;s finished.&lt;/p&gt;
 &lt;p&gt;If you are adding a unique constraint to a large table, the amount of time
 spent to create the constraint might be prohibitive.&lt;/p&gt;
 &lt;h2&gt;How To Safely Add a Unique Constraint Without Downtime&lt;/h2&gt;
@@ -32,9 +277,9 @@ primary key is defined for a table.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Creating this index on the background while holding an &lt;code&gt;ACCESS EXCLUSIVE&lt;/code&gt; is
 the problem we are trying to avoid.&lt;/p&gt;
-&lt;p&gt;What we actually want to do is &lt;strong&gt;create the index first&lt;/strong&gt;, and CONCURRENTLY,
-so that when we add the constraint to the table, the table can use the already
-existing index. This will make the subsequent &lt;code&gt;ALTER TABLE&lt;/code&gt; run much faster.&lt;/p&gt;
+&lt;p&gt;What we want to do is &lt;strong&gt;create the index first&lt;/strong&gt;, and &lt;strong&gt;CONCURRENTLY&lt;/strong&gt;, so that
+when we add the constraint to the table, the table can use the already existing
+index. This will make the subsequent &lt;code&gt;ALTER TABLE&lt;/code&gt; much faster to run.&lt;/p&gt;
 &lt;p&gt;If you have the following table:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;CREATE TABLE example_table (
     id SERIAL PRIMARY KEY,
@@ -50,7 +295,7 @@ ON example_table (int_field);
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Side Note 1: If you are using any value of &lt;code&gt;lock_timeout&lt;/code&gt; that is not zero, you
 have to set it to zero before you create the index. This will prevent leaving
-an invalid index behind if the operation times out.&lt;/p&gt;
+an invalid index behind if the operation fails due to a time out.&lt;/p&gt;
 &lt;p&gt;Side Note 2: You cannot use a partial index here. Postgres allows the creation
 of partial unique indexes, but it does not allow the creation of partial unique
 constraint. The documentation states
