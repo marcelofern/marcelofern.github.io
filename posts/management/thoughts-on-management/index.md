@@ -271,10 +271,7 @@ year. If you missed the date but got a lot of responsibility on your back,
 you need to perform the role for a year without financial recognition.
 
 It is very hard to be a manager in such companies as you don't have freedom to
-*really* manage your team. Having been on that type of company before (but not
-on the management side), it was very frustrating. I don't think I would ever
-accept a management role on these types of places as I would be setting myself
-up for failure.
+*really* manage your team.
 
 ## You must keep an open mind about your management skills
 
