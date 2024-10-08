@@ -4,6 +4,7 @@ Also available via [RSS feed](https://marcelofern.com/feed).
 
 ---
 
+- 2024-10-08 [Thoughts on 3 years of management](posts/management/thoughts-on-management/index.md)
 - 2024-10-05 [On Commit Messages](posts/git/on-commit-messages/index.md)
 - 2024-10-01 [Postgres Unique Constraints Without Downtime](posts/postgres/unique-constraints-without-downtime/index.md)
 - 2024-08-26 [Why Is This Site Built With C](posts/c/why-is-this-site-built-with-c/index.md)

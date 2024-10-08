@@ -1,7 +1,7 @@
 # Thoughts on 3 years of management
 
 ```
-Created at: 2024-09-18
+Created at: 2024-10-08
 ```
 
 I've been managing for the past 3 years at my current job. This is not
@@ -28,7 +28,7 @@ to work harder on it. More on that later.
 ## You Must Facilitate
 
 > “The manager’s function is not to make people work, but to make it possible
-> for people to work.”
+> for people to work.” (Peopleware)
 
 Being promoted to manager after performing well as a developer is a regular
 occurrence in many companies. Another regular occurrence is for a former
