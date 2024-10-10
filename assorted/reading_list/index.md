@@ -58,6 +58,7 @@ Reading list resources:
 ## Management
 
 - ~Peopleware - Tom Demarco & Tim Lister~
+- Radical Candor - Kim Scott
 
 ## Personal Development
 

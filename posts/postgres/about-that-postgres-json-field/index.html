@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>About That Postgres Json Field</h1>
+<pre><code>Created at: 2024-10-10
+</code></pre>
+<p>The json type was introduced in Postgres 9.2. Since then, the json type has
+gone through multiple enhancements, including the addition of the jsonb type
+(9.4).</p>
+<blockquote>
+<p>Because the json type stores an exact copy of the input text, it will
+preserve semantically-insignificant white space between tokens, as well as
+the order of keys within json objects. Also, if a json object within the
+value contains the same key more than once, all the key/value pairs are kept.
+(The processing functions consider the last value as the operative one.) By
+contrast, jsonb does not preserve white space, does not preserve the order of
+object keys, and does not keep duplicate object keys. If duplicate keys are
+specified in the input, only the last value is kept.
+<a href="http://web.archive.org/web/20241007081857/https://www.postgresql.org/docs/15/datatype-json.html">source</a></p>
+</blockquote>
+<p>This sounds great, but there are downsides to storing json fields
+(specially big ones) in Postgres.</p>
+<p>The degradation of some database functions grows linearly as a function of
+the json size.</p>
+<p>To analyse this behaviour, I set up a sandbox script. The script creates <strong>a
+table with 500,000 rows</strong>, <strong>with varying sizes of json fields</strong> and runs
+common operations against it.</p>
+<p>The script and the data are included verbatim at the bottom of this post.</p>
+<h2>VACUUM</h2>
+<p><img src="vacuum.png" alt="vacuum.png"></p>
+<p>VACUUM becomes more resource-intensive for tables with large json’s.  Each
+dead tuple linked to a large json field adds to the overhead.</p>
+<p>This makes VACUUM run longer. Possibly delaying other maintenance tasks or
+DDLs.</p>
+<h2>INSERTS</h2>
+<p><img src="inserts.png" alt="inserts.png"></p>
+<h2>UPDATES</h2>
+<p><img src="updates.png" alt="updates.png"></p>
+<h2>SELECT (queries)</h2>
+<p><img src="queries.png" alt="queries.png"></p>
+<p>Big json fields can degrade query performance. Tables with such fields
+take longer to read from disk and use more storage when cached in memory.</p>
+<p>This makes querying these tables less efficient. SELECTs have to do more work
+to scan the same amount of data.</p>
+<p>If the json field doesn’t exceed a particular threshold (~2KB) it won’t be
+stored in a toast table. Instead, it will be stored inline on the page.</p>
+<p>If a table doesn't have a high ratio of HOT updates, the volume of dead
+rows will increase. This further affects performance.</p>
+<h2>Considerations</h2>
+<p>Consider omitting the json field from your SELECT queries when applicable. This
+will remove the overhead added by querying and decoding the data from the TOAST
+table.</p>
+<p>If you don't update the json data after it has been stored, consider a
+different type of storage. One option is storing the data on a bucket like S3.</p>
+<p>Buckets can be a good option if you are satisfied with the following
+trade-offs:</p>
+<pre><code>| Factor                   | Keep json in PostgreSQL                  | Move json to S3                              |
+|--------------------------|------------------------------------------|----------------------------------------------|
+| Database size            | Increases database size                  | Keeps DB lean; reduces size                  |
+| Performance              | json querying is slower for large fields | Keeps queries fast; json retrieved separately|
+| Cost                     | Higher storage costs                     | Cheaper for large; unstructured data         |
+| Atomicity &amp; Transactions | Full transactional consistency           | No transactional guarantees                  |
+| Querying                 | Direct SQL querying on json              | No direct querying                           |
+| Simplicity               | All data in one place                    | Separate management of S3 and DB             |
+| Access Latency           | Low-latency access                       | Potential latency in fetching from S3        |
+</code></pre>
+<h2>Inspecting the TOAST table</h2>
+<p>You can find the name of a toast table with this query:</p>
+<pre><code>SELECT
+    c.relname AS main_table,
+    t.relname AS toast_table
+FROM
+    pg_class c
+JOIN
+    pg_class t ON c.reltoastrelid = t.oid
+WHERE
+    c.relname = 'my_table';
+</code></pre>
+<p>After you find the name of that toast_table, you can query the <code>pg_toast</code>
+schema to find stats about the toast table (assuming the toast table name is
+pg_toast_4532686):</p>
+<pre><code>SELECT *
+FROM pg_stat_all_tables
+WHERE relid = 'pg_toast.pg_toast_4532686'::regclass;
+</code></pre>
+<p>And you can query its rows as a regular table:</p>
+<pre><code>SELECT *
+FROM pg_toast.pg_toast_4532686 LIMIT 100;
+</code></pre>
+<h2>The benchmark script</h2>
+<pre><code class="language-python">import psycopg2
+import time
+import os
+import json
+import random
+import string
+
+&quot;&quot;&quot;
+This code creates a benchmark for Postgres tables with
+json fields.
+
+For a table with NUM_OF_ROWS, for each value of JSON_SIZE_IN_BYTES:
+
+- Check how long it takes to update PERCENTAGE rows in the table.
+- Check how long it takes to insert PERCENTAGE rows in the table.
+- Without vacuuming yet, check the average time to query NUM_QUERIES. There
+  will be dead tuples impacting the performance from the operations above.
+- Check how long it takes to vacuum.
+
+&quot;&quot;&quot;
+
+NUM_OF_ROWS = 500_000
+
+JSON_SIZE_IN_BYTES = [
+    10,
+    100,
+    200,
+    500,
+    1000,
+    3_000,
+    5_000,
+    10_000,
+    15_000,
+    20_000,
+    40_000,
+]
+PERCENTAGE = 0.1
+
+NUM_QUERIES = 10_000
+QUERY_LIMIT = 500
+
+
+def get_cursor_and_connection():
+    # Update connection details as per your PostgreSQL setup
+    conn = psycopg2.connect(
+        dbname=&quot;test_db&quot;,
+        user=&quot;postgres&quot;,
+        password=&quot;postgres&quot;,
+        host=&quot;localhost&quot;,
+        port=&quot;5441&quot;,
+    )
+    conn.autocommit = True
+    return conn.cursor(), conn
+
+
+def vacuum_table(cursor):
+    print(&quot;- Vacuuming json_bench...&quot;)
+    start_time = time.time()
+    cursor.execute(&quot;VACUUM ANALYZE json_bench;&quot;)
+    duration = time.time() - start_time
+    print(f&quot;- Vacuum took: {duration:.2f} seconds.&quot;)
+    return duration
+
+
+def create_table(cursor):
+    print(&quot;- Creating table...&quot;)
+    cursor.execute(&quot;&quot;&quot;
+        -- Idempotency for convenience.
+        DROP TABLE IF EXISTS json_bench;
+        CREATE TABLE json_bench (
+            id SERIAL PRIMARY KEY,
+            json_field JSONB
+        );
+
+        -- Disable autovacuum to not interfere with results.
+        ALTER TABLE json_bench
+        SET (autovacuum_enabled = false);
+
+        -- Make sure the json field will be toasted at 2kb
+        -- and compressed too.
+        ALTER TABLE json_bench
+        ALTER COLUMN json_field
+        SET STORAGE EXTENDED;
+
+        -- The default toast threshold is 2kb (comp time)
+        -- #define TOAST_TUPLE_THRESHOLD 2048
+    &quot;&quot;&quot;)
+
+
+def generate_json(json_size_in_bytes):
+    return json.dumps(
+        {
+            &quot;data&quot;: &quot;&quot;.join(
+                random.choices(
+                    string.ascii_letters + string.digits, k=json_size_in_bytes
+                )
+            )
+        }
+    )
+
+
+def populate_table(cursor, json_size_in_bytes):
+    print(f&quot;- Populating table with {NUM_OF_ROWS:,} rows...&quot;)
+
+    json_data = generate_json(json_size_in_bytes)
+    json_rows = [(json_data,) for _ in range(NUM_OF_ROWS)]
+
+    start_time = time.time()
+    cursor.executemany(&quot;INSERT INTO json_bench (json_field) VALUES (%s);&quot;, json_rows)
+    duration = time.time() - start_time
+
+    print(f&quot;- Populating took: {duration:.2f} seconds.&quot;)
+    return duration
+
+
+def update_data(cursor, json_size_in_bytes):
+    &quot;&quot;&quot;
+    This will generate some dead rows.
+    &quot;&quot;&quot;
+    update_count = int(PERCENTAGE * NUM_OF_ROWS)
+    print(f&quot;- Updating {update_count:,} rows...&quot;)
+
+    json_data = generate_json(json_size_in_bytes)
+
+    update_query = &quot;&quot;&quot;
+    UPDATE json_bench
+    SET json_field = %s
+    WHERE id IN (
+        SELECT id
+        FROM json_bench
+        ORDER BY id DESC
+        LIMIT %s
+    );
+    &quot;&quot;&quot;
+
+    start_time = time.time()
+    cursor.execute(update_query, (json_data, update_count))
+    duration = time.time() - start_time
+
+    print(f&quot;- Update took: {duration:.2f} seconds.&quot;)
+    return duration
+
+
+def insert_data(cursor, json_size_in_bytes):
+    insertion_count = int(PERCENTAGE * NUM_OF_ROWS)
+    print(f&quot;- Inserting {insertion_count:,} rows into the table...&quot;)
+
+    json_data = generate_json(json_size_in_bytes)
+    json_rows = [(json_data,) for _ in range(insertion_count)]
+
+    start_time = time.time()
+    cursor.executemany(&quot;INSERT INTO json_bench (json_field) VALUES (%s);&quot;, json_rows)
+    duration = time.time() - start_time
+
+    print(f&quot;- Insertion took: {duration:.2f} seconds.&quot;)
+    return duration
+
+
+def benchmark_queries(cursor):
+    print(f&quot;- Bench marking {NUM_QUERIES:,} queries against the table...&quot;)
+    start_time = time.time()
+
+    for _ in range(NUM_QUERIES):
+        cursor.execute(
+            f&quot;SELECT * FROM json_bench ORDER BY RANDOM() LIMIT {QUERY_LIMIT};&quot;
+        )
+        cursor.fetchall()
+
+    duration = time.time() - start_time
+    print(f&quot;- Average query time: {(duration/NUM_QUERIES):.5f} seconds.&quot;)
+    return duration / NUM_QUERIES
+
+
+def clear_cache():
+    print(&quot;- Clearing cache by restarting docker container...&quot;)
+    os.system(&quot;docker restart postgres15&quot;)
+    print(&quot;- sleeping for 10s&quot;)
+    time.sleep(10)
+
+
+def query_dead_tuples(cursor):
+    cursor.execute(
+        &quot;SELECT n_dead_tup FROM pg_stat_user_tables WHERE relname = 'json_bench';&quot;
+    )
+    print(f&quot;- There are {cursor.fetchone()[0]} dead tuples...&quot;)
+
+
+def query_hot_updates(cursor):
+    cursor.execute(
+        &quot;SELECT n_dead_tup FROM pg_stat_user_tables WHERE relname = 'json_bench';&quot;
+    )
+    cursor.execute(
+        &quot;&quot;&quot;
+        SELECT n_tup_hot_upd
+        FROM pg_stat_user_tables
+        WHERE relname = 'json_bench';
+        &quot;&quot;&quot;
+    )
+    print(f&quot;- There were {cursor.fetchone()[0]} hot updates...&quot;)
+
+
+def run_tests():
+    results = {}
+    print(
+        f&quot;\nReport details:\n&quot;
+        f&quot;  - rows in the table: {NUM_OF_ROWS:,}\n&quot;
+        f&quot;  - percentage of updates and inserts: {PERCENTAGE*100:.2f}%\n&quot;
+        f&quot;  - number of queries to benchmark: {NUM_QUERIES:,} with limit {QUERY_LIMIT:,}&quot;
+    )
+
+    for json_size in JSON_SIZE_IN_BYTES:
+        print(f&quot;\nRunning tests with json's of {json_size:,} bytes...&quot;)
+
+        # Get a cursor to run queries.
+        cursor, conn = get_cursor_and_connection()
+
+        # Create the table and insert data.
+        create_table(cursor)
+        populate_table(cursor, json_size)
+
+        # Vacuum so there are no dead rows.
+        vacuum_table(cursor)
+
+        # Update PERCENTAGE new rows to create some dead rows
+        # for a more realistic scenario.
+        update_duration = update_data(cursor, json_size)
+        query_dead_tuples(cursor)
+        query_hot_updates(cursor)
+
+        # Insert PERCENTAGE new rows while we have dead rows
+        insert_duration = insert_data(cursor, json_size)
+        query_dead_tuples(cursor)
+        query_hot_updates(cursor)
+
+        # With the dead rows, check the query performance
+        query_avg_duration = benchmark_queries(cursor)
+
+        # Check how long vacuuming the dead rows takes
+        vacuum_duration = vacuum_table(cursor)
+
+        # Clear OS cache and get a new cursor
+        clear_cache()
+        cursor, conn = get_cursor_and_connection()
+
+        results[json_size] = {
+            &quot;update_duration&quot;: update_duration,
+            &quot;insert_duration&quot;: insert_duration,
+            &quot;query_avg_duration&quot;: query_avg_duration,
+            &quot;vacuum_duration&quot;: vacuum_duration,
+        }
+
+    cursor.close()
+    conn.close()
+
+    # Print final results
+    print(&quot;\nFinal Results:&quot;)
+    for json_size, times in results.items():
+        print(f&quot;json size: {json_size:,} bytes&quot;)
+        print(f&quot; - Update duration: {times['update_duration']:.2f} seconds&quot;)
+        print(f&quot; - Insert duration: {times['insert_duration']:.2f} seconds&quot;)
+        print(f&quot; - Query AVG duration: {times['query_avg_duration']:.5f} seconds&quot;)
+        print(f&quot; - Vacuum duration: {times['vacuum_duration']:.2f} seconds&quot;)
+
+
+run_tests()
+</code></pre>
+<h2>The results in CSV format</h2>
+<pre><code>json_length,update_time,insert_time,avg_query_time,vacuum_time
+10,0.22,41.2,0.0689,0.08
+100,0.22,40.29,0.07287,0.1
+200,0.24,40.73,0.07694,0.16
+500,0.35,42.35,0.12824,0.2
+1000,0.51,46.06,0.13995,0.36
+3000,1.65,71.18,0.10875,2.4
+5000,2.17,59.36,0.10136,3.57
+10000,9.67,62.27,0.15999,10.67
+15000,8.77,91.57,0.16642,16.69
+20000,12.7,111.92,0.22364,20.71
+40000,28.16,184.93,0.32687,35.98
+</code></pre>
+<h2>The machine that ran the tests</h2>
+<pre><code>[~] neofetch
+                   -`                    x@archlinux
+                  .o+`                   -----------
+                 `ooo/                   OS: Arch Linux x86_64
+                `+oooo:                  Host: 20W0005AAU ThinkPad T14 Gen 2i
+               `+oooooo:                 Kernel: 6.6.52-1-lts
+               -+oooooo+:                Uptime: 3 days, 8 hours, 27 mins
+             `/:-:++oooo+:               Packages: 1273 (pacman)
+            `/++++/+++++++:              Shell: bash 5.2.37
+           `/++++++++++++++:             Resolution: 1920x1080, 1920x1080
+          `/+++ooooooooooooo/`           WM: i3
+         ./ooosssso++osssssso+`          Theme: Adwaita [GTK2/3]
+        .oossssso-````/ossssss+`         Icons: Adwaita [GTK2/3]
+       -osssssso.      :ssssssso.        Terminal: alacritty
+      :osssssss/        osssso+++.       Terminal Font: LiterationMono Nerd Font
+     /ossssssss/        +ssssooo/-       CPU: 11th Gen Intel i5-1135G7 (8) @ 4.200GHz
+   `/ossssso+/:-        -:/+osssso+-     GPU: Intel TigerLake-LP GT2 [Iris Xe Graphics]
+  `+sso+:-`                 `.-/+oso:    Memory: 6629MiB / 15717MiB
+ `++:.                           `-/+/
+</code></pre>
+</body>
+</html>
