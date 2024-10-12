@@ -19,6 +19,7 @@ Reading list resources:
 - ~The Practice of Programming - Brian Kerninghan & Rob Pike~
 - The UNIX programming environment - Brian K. & Rob Pike
 - C Interfaces and Implementations - David Hanson
+- Working Effectively with Legacy Code - Michael C. Feathers
 
 ## Programming Languages
 
