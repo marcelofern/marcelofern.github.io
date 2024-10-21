@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>/proc</h1>
+<pre><code>Created at: 2024-10-21
+</code></pre>
+<p>The <code>/proc</code> folder is a file-system interface for kernel statistics.</p>
+<p>Some monitoring tools like <code>top</code> extract the statistics from these files in
+order to show an overview of what processes are consuming what.</p>
+<pre><code>$ ls /proc
+1/    180/  2233/  3203/  44561/  534758/  568383/  603/    83/  key-users
+100/  181/  2250/  3216/  44625/  54/      568575/  604/    830/ kmsg
+</code></pre>
+<p>Each folder above represents a process.</p>
+<pre><code>$ ls /proc/162
+arch_status         cwd@               map_files/  oom_score_adj  stack
+attr/               environ            maps        pagemap        stat
+autogroup           exe@               mem         personality    statm
+auxv                fd/                mountinfo   projid_map     status
+cgroup              fdinfo/            mounts      root@          syscall
+clear_refs          gid_map            mountstats  sched          task/
+cmdline             io                 net/        schedstat      timens_offsets
+comm                ksm_merging_pages  ns/         sessionid      timers
+coredump_filter     ksm_stat           numa_maps   setgroups      timerslack_ns
+cpu_resctrl_groups  limits             oom_adj     smaps          uid_map
+cpuset              loginuid           oom_score   smaps_rollup   wchan
+</code></pre>
+<ul>
+<li>cmdline - arguments used to start program.</li>
+<li>stat - process statistics (used by top).</li>
+<li>cwd - current working directory for the process.</li>
+<li>environ - environment variables inside the process (zero-delimited).</li>
+<li>fd/ - directory containing open file descriptors for the process.</li>
+<li>exe - symbolic link to process executable.</li>
+<li>maps - memory mapping of the process.</li>
+<li>mem - virtual memory of the process.</li>
+</ul>
+<p>The list of files available will depend on the kernel version and CONFIG
+options.</p>
+<p>The <code>/proc</code> folder also provides general statistics about the kernel.
+For example:</p>
+<ul>
+<li>/proc/cpuinfo - informations about CPU</li>
+<li>/proc/meminfo - information about the physical memory</li>
+<li>/proc/vmstat - information about the virtual memory</li>
+<li>...</li>
+</ul>
+<p>These can be found with: <code>cd /proc; ls -Fd [a-z]*</code></p>
+<pre><code>$ cd /proc; ls -Fd [a-z]*
+acpi/       dma             keys         mtrr          sysrq-trigger
+asound/     driver/         key-users    net@          sysvipc/
+bootconfig  dynamic_debug/  kmsg         pagetypeinfo  thread-self@
+buddyinfo   execdomains     kpagecgroup  partitions    timer_list
+bus/        fb              kpagecount   pressure/     tty/
+cgroups     filesystems     kpageflags   schedstat     uptime
+cmdline     fs/             loadavg      scsi/         version
+config.gz   interrupts      locks        self@         vmallocinfo
+consoles    iomem           meminfo      slabinfo      vmstat
+cpuinfo     ioports         misc         softirqs      zoneinfo
+crypto      irq/            modules      stat
+devices     kallsyms        mounts@      swaps
+diskstats   kcore           mtd          sys/
+</code></pre>
+<p>You can also write to certain <code>/proc</code> files to change kernel variables.</p>
+<h2>References</h2>
+<ul>
+<li>proc(5) man page.</li>
+<li><a href="https://docs.kernel.org/filesystems/proc.html">linux official docs on /proc</a></li>
+</ul>
+</body>
+</html>

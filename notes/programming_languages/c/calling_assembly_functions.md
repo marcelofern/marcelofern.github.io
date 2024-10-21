@@ -2,7 +2,7 @@ February 24th, 2024
 
 ## TLDR
 
-The order of arguments is passed as such:
+The order of arguments is passed in the following registers:
 
 1. rdi
 2. rsi
@@ -12,7 +12,7 @@ The order of arguments is passed as such:
 6. r9
 
 If the assembly function takes more than 6 arguments, the remaining ones
-will be on $rsp+8. This is because $rsp+0 stores the value of rip that will
+will be on $rsp+8. This is because $rsp+0 stores the value of rip that
 will be returning to the C code after the `ret` instruction.
 
 7. rsp+8

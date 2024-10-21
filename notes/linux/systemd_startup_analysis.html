@@ -59,18 +59,35 @@
   <![endif]-->
 </head>
 <body>
-<h1>GCC</h1>
-<h2>Debugging</h2>
-<ul>
-<li><a href="0g.html">-0g</a></li>
-</ul>
-<h2>Compiling</h2>
-<ul>
-<li><a href="c_flag.html">-c for skipping the linker</a></li>
-</ul>
-<h2>Profiling</h2>
-<ul>
-<li><a href="pg.html">-pg</a></li>
-</ul>
+<h1>Systemd Startup Analysis</h1>
+<pre><code>Created at: 2024-10-20
+</code></pre>
+<p>In general there are many options to analyse systemd startup time.
+It is useful to read the man page of the system-analyze command itself:</p>
+<pre><code class="language-sh">man systemd-analyze
+</code></pre>
+<h2>Analysing startup time:</h2>
+<pre><code>[~] systemd-analyze
+Startup finished in 8.986s (firmware) + 5.000s (loader) + 1min 39.128s (kernel) + 10.669s (userspace) = 2min 3.785s
+graphical.target reached after 10.669s in userspace.
+</code></pre>
+<h2>Critical-chain</h2>
+<pre><code>[~] systemd-analyze critical-chain
+The time when unit became active or started is printed after the &quot;@&quot; character.
+The time the unit took to start is printed after the &quot;+&quot; character.
+
+graphical.target @10.669s
+└─multi-user.target @10.669s
+  └─docker.service @8.888s +1.780s
+    └─network-online.target @8.886s
+      └─NetworkManager-wait-online.service @3.461s +5.423s
+        └─NetworkManager.service @2.415s +1.044s
+          └─basic.target @2.414s
+            └─dbus-broker.service @2.386s +26ms
+              └─dbus.socket @2.355s
+                └─sysinit.target @2.353s
+                  └─systemd-resolved.service @2.279s +74ms
+                    └─run-credentials-systemd\x2dresolved.service.mount @2.742s
+</code></pre>
 </body>
 </html>

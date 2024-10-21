@@ -26,7 +26,7 @@ Reading list resources:
 - Modern C - Jens Gustedt
 - SEI CERT C Coding Standard by Carnegie Mellon University's Confluence.
 - Embedded Systems with ARM Cortex-M Microcontrollers in Assembly Language and C.
-- Masterminds of Programming: Conversations with the Creators of Major Programming Languages.
+- ~Masterminds of Programming: Conversations with the Creators of Major Programming Languages.~
 
 ## Security
 
@@ -45,7 +45,7 @@ Reading list resources:
 ## Learning
 
 - Get Better at Anything, Scott Young
-- Pedagogy of the Opressed, Paulo Freire
+- ~Pedagogy of the Opressed, Paulo Freire~
 
 ## Mathematics
 
@@ -63,7 +63,7 @@ Reading list resources:
 
 ## Personal Development
 
-- The Good Enough Job: Reclaiming Life from Work - Simone Stolzoff
+- ~The Good Enough Job: Reclaiming Life from Work - Simone Stolzoff~
 
 ## Conference Articles
 

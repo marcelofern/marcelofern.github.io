@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Calling C Functions</h1>
+<pre><code>Created at: 2024-10-20
+</code></pre>
+<h2>TLDR</h2>
+<p>The order of arguments to the C function is passed in the following registers:</p>
+<ol>
+<li>rdi</li>
+<li>rsi</li>
+<li>rdx</li>
+<li>rcx</li>
+<li>r8</li>
+<li>r9</li>
+</ol>
+<p>If the C function takes more than 6 arguments, the remaining ones
+will be on $rsp+8. This is because $rsp+0 stores the value of rip that
+will be returning to the assembly code after the <code>return</code> instruction.</p>
+<p>The following registers are callee-saved, meaning that callee functions should
+not have altered the content of these registers at the point in which they
+return back to the caller. It is fine to change them and reset them to the
+original value though:</p>
+<ul>
+<li>rbx</li>
+<li>rbp</li>
+<li>r12</li>
+<li>r13</li>
+<li>r14</li>
+<li>r15</li>
+</ul>
+<p>All other registers except the stack pointer rsp are classified as caller-saved
+registers. This means that any function can modify them. If those registers
+mean anything to the assembly caller, they must be saved. Otherwise, the callee
+is free to change them and so a bug may happen.</p>
+<h2>Code</h2>
+<p>Given the following C function:</p>
+<pre><code class="language-c">// gcc -c foo.c -o foo.o
+int foo(
+    int a,
+    int b,
+    int c,
+    int d,
+    int e,
+    int f,
+    int g,
+    int h,
+    int i,
+    int j,
+    int k,
+    int l,
+    int m
+) {
+  return a-b+c-d+e-f+g-h+i-j+k-l+m;
+}
+</code></pre>
+<p>And the following assembly code:</p>
+<pre><code class="language-asm">; nasm -f elf64 call_foo.asm -o call_foo.o
+
+section .data
+section .text
+    global main         ; Entry point for the program
+    extern foo            ; Declare the C function
+
+main:
+    ; Prepare arguments for foo
+    mov rdi, 1           ; a = 1
+    mov rsi, 2           ; b = 2
+    mov rdx, 3           ; c = 3
+    mov rcx, 4           ; d = 4
+    mov r8, 5            ; e = 5
+    mov r9, 6            ; f = 6
+    ; Remaining arguments (g to m) go on the stack
+    push 7               ; g = 7
+    push 8               ; h = 8
+    push 9               ; i = 9
+    push 10              ; j = 10
+    push 11              ; k = 11
+    push 12              ; l = 12
+    push 13              ; m = 13
+
+    ; Call the foo function
+    call foo
+
+    ; Cleanup stack (13 arguments total)
+    add rsp, 104         ; Clean up 13 * 8 bytes (for 64-bit architecture)
+
+    ; Exit the program
+    mov rax, 60          ; syscall: exit
+    xor rdi, rdi         ; status: 0
+    syscall
+</code></pre>
+<p>Now we compile both files into an executable:</p>
+<pre><code class="language-sh">gcc -Og -O0 call_foo.o foo.o -o call_foo
+</code></pre>
+<p>We can then run gdb against the executable, the value of rax is <strong>7</strong>.
+This is what we expected: <code>1-2+3-4+5-6+7-8+9-10+11-12+13 == 7</code>.</p>
+<p>Checking the <code>foo</code> function in assembly we have:</p>
+<pre><code class="language-asm">foo:
+  push  rbp
+  mov  rbp, rsp
+  mov  DWORD PTR -4[rbp], edi
+  mov  DWORD PTR -8[rbp], esi
+  mov  DWORD PTR -12[rbp], edx
+  mov  DWORD PTR -16[rbp], ecx
+  mov  DWORD PTR -20[rbp], r8d
+  mov  DWORD PTR -24[rbp], r9d
+  mov  eax, DWORD PTR -4[rbp]
+  sub  eax, DWORD PTR -8[rbp]
+  mov  edx, eax
+  mov  eax, DWORD PTR -12[rbp]
+  add  eax, edx
+  sub  eax, DWORD PTR -16[rbp]
+  mov  edx, eax
+  mov  eax, DWORD PTR -20[rbp]
+  add  eax, edx
+  sub  eax, DWORD PTR -24[rbp]
+  mov  edx, eax
+  mov  eax, DWORD PTR 16[rbp]
+  add  eax, edx
+  sub  eax, DWORD PTR 24[rbp]
+  mov  edx, eax
+  mov  eax, DWORD PTR 32[rbp]
+  add  eax, edx
+  sub  eax, DWORD PTR 40[rbp]
+  mov  edx, eax
+  mov  eax, DWORD PTR 48[rbp]
+  add  eax, edx
+  sub  eax, DWORD PTR 56[rbp]
+  mov  edx, eax
+  mov  eax, DWORD PTR 64[rbp]
+  add  eax, edx
+  pop  rbp
+  ret
+</code></pre>
+</body>
+</html>

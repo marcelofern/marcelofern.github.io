@@ -9,6 +9,7 @@ ones in this list to be good enough to be shared with the public.
 - Duntemann, Jeff - x64 Assembly Language Step-by-step. ([notes](assorted/library/x64-assembly-language/index.md))
 - Flanagan, David - JavaScript, the definitive guide. ([notes](assorted/library/javascript-the-definitive-guide/index.md))
 - Fowler, Martin - Refactoring ([review](assorted/library/refactoring/index.md))
+- Gregg, Brendan - Systems Performance ([review](assorted/library/systems-performance/index.md))
 - Hunt, Andrew and Thomas, David - Pragmatic Programmer. ([review](assorted/library/pragmatic-programmer/index.md))
 - Ierusalimschy Roberto - Programming in Lua. ([notes](assorted/library/programming-in-lua/index.md))
 - Kernighan, Brian and Pike, Rob - The Practice of Programming. ([review](assorted/library/the-practice-of-programming/index.md))

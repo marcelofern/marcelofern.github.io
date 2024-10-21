@@ -61,7 +61,7 @@
 <body>
 <p>February 24th, 2024</p>
 <h2>TLDR</h2>
-<p>The order of arguments is passed as such:</p>
+<p>The order of arguments is passed in the following registers:</p>
 <ol>
 <li>rdi</li>
 <li>rsi</li>
@@ -71,7 +71,7 @@
 <li>r9</li>
 </ol>
 <p>If the assembly function takes more than 6 arguments, the remaining ones
-will be on $rsp+8. This is because $rsp+0 stores the value of rip that will
+will be on $rsp+8. This is because $rsp+0 stores the value of rip that
 will be returning to the C code after the <code>ret</code> instruction.</p>
 <ol start="7">
 <li>rsp+8</li>
