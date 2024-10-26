@@ -21,3 +21,15 @@
 
 - [`lock_timeout`](databases/lock_timeout.md)
 - [Locks cheatsheet](databases/locks_cheatsheet.md)
+
+## Testing
+
+- [Postgres Docker Container](databases/postgres_docker_container.md)
+
+## Performance
+
+- [OR queries](databases/or_queries.md)
+
+## Internals
+
+- [Profiling Postgres](databases/profiling_postgres.md)

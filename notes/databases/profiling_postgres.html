@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Profiling Postgres</h1>
+<pre><code>Created at: 2024-10-24
+</code></pre>
+<p>This post is about profiling Postgres <strong>on Linux</strong>. The profiling tools used
+here are not OS agnostic. Alternatives for BSD and MacOs may exist.</p>
+<p>The main goal is to check what happens when a Postgres query is triggered.</p>
+<h2>Building Postgres From Source</h2>
+<p>I prefer to build from source whenever possible. This practice allows me to
+better control compilation flags that are useful for profiling.</p>
+<p>Besides that, if I am running multiple different versions of Postgres locally,
+I don't have to mingle with my Linux package manager or resort to using Docker.</p>
+<p>The authoritative guide to installing Postgres from source can be found in
+the official <a href="https://www.postgresql.org/docs/current/installation.html">documentation</a>.</p>
+<p>What comes below is <em>my own way of installing Postgres</em>, which is done in a
+particular way so that I can profile and trace underlying functionality in a
+practical way.</p>
+<h2>Getting The Source Code</h2>
+<p>Go to Postgres' <a href="https://www.postgresql.org/ftp/source/">ftp server in this link </a>
+and grab the version of Postgres you are interested in.</p>
+<p>Aim for the file with the <code>.bz2</code> extension, and decompress it like this:</p>
+<pre><code class="language-sh">tar xf postgresql-version.tar.bz2
+</code></pre>
+<p>This will create a new folder <code>postgresql-version</code> in your current directory
+with the source code.</p>
+<h2>Configure</h2>
+<p>In the source directory, there is a bash script called <code>./configure</code>.</p>
+<pre><code class="language-sh">VERSION=15
+PREFIX=&quot;$(pwd)/build&quot;
+
+./configure \
+    CC='gcc' \
+    CFLAGS=&quot;-fno-omit-frame-pointer -ggdb&quot; \
+    --prefix=${PREFIX} \
+    --with-pgport=54${VERSION} \
+    --enable-debug
+</code></pre>
+<p>Flags:</p>
+<ul>
+<li><code>--prefix</code>: The default configuration installs Postgres on
+<strong>/usr/local/pgsql</strong>. I plan to have multiple versions of Postgres running,
+so I want to change the folder where I'll install each of them. I prefer
+to use a &quot;build&quot; folder so that both source and build live in the same
+directory.</li>
+<li><code>--with-pgport</code>: The default port is 5432, but again, since I am running
+multiple Postgres versions, I usually use 54${version_number} in this case my
+version is 15, so 5415. This makes it easier for me to know which version a
+service runs just by looking at the port number. It also makes it easier to
+run multiple versions at the same time.</li>
+<li><code>--enable-debug</code>: I want debug symbols. When using GCC as a compiler this
+doesn't affect performance too badly.</li>
+<li><code>--enable-profiling</code>: This is for use with GNU gprof. Upon exit, a subfolder
+will be created with a <code>gmon.out</code> file containing the results of the
+profiler. I am not using this at the moment as I haven't been lucky to get
+gprof to work yet - In either case, <code>perf</code> is better.</li>
+<li><code>CFLAGS</code>: These options allow support for capturing the whole user-space call
+stack.</li>
+</ul>
+<p>The option <code>-fno-omit-frame-pointer</code> is necessary because the profiler may be
+using a frame pointer-based approach for reading the stack. This may come with
+an ~1% performance cost. From the Systems Performance book (Gregg):</p>
+<blockquote>
+<p>Incomplete stack traces are unfortunately common, and are usually caused by a
+confluence of two factors: 1) the observability tool using a frame
+pointer-based approach for reading the stack trace, and 2) the target binary
+not reserving a register (RBP on x86) for the frame pointer, instead reusing
+it as a general-purpose register as a compiler performance optimisation. The
+observability tool reads this register expecting it to be a frame pointer,
+but in fact it could now contain anything: numbers, object address, pointers
+to strings, etc. The observability tool tries to resolve this number in the
+symbol table and, if it is lucky, it doesn't find it and can print
+&quot;[unknown]&quot;. If it is unlucky, that random number resolves to an unrelated
+symbol, and now the printed stack trace has a function name that is wrong,
+confusing you, the end user.</p>
+</blockquote>
+<p>Note that the tool I am going to use (<code>perf(1)</code>) supports DWARF-based stack
+walking, which is not stack-based. So we could skip this flag. But for the sake
+of being able to use other tools later if needed, we'll compile with frame
+pointers optimisation disabled anyway.</p>
+<h2>Make</h2>
+<p>I use <code>bear</code> here so that I can get a <code>compile_commands.json</code> file after
+running <code>make</code>. This is for my clangd LSP. It allows me to have jump to
+definitions and the likes when I need to look at source code.</p>
+<pre><code class="language-sh"># Remove existing file if it exists.
+rm -f src/compile_commands.json build
+
+# `make` will take a bit of time to finish.
+bear --output src/compile_commands.json -- make
+make install
+</code></pre>
+<h2>Initialising and starting the server</h2>
+<pre><code class="language-sh">VERSION=15
+PORT=&quot;54${VERSION}&quot;
+DBNAME=postgres${VERSION}
+
+# This will initialise configuration for the database.
+build/bin/initdb -D build/data
+
+# Add our specific port to the configuration file.
+# The step above doesn't do that.
+echo &quot;port = 54${VERSION}&quot; &gt;&gt; build/data/postgresql.conf
+
+# This initialises the database server.
+build/bin/pg_ctl -D build/data -l logfile start
+
+# Create the default db &quot;postgres${VERSION}&quot;.
+build/bin/createdb --port=${PORT} ${DBNAME}
+
+# Add handy scripts so that I don't have to rememeber these
+# commands from the top of my head.
+echo &quot;rm -f logfile &amp;&amp; build/bin/pg_ctl -D build/data -l logfile start&quot; &gt; server_start.sh
+echo &quot;build/bin/pg_ctl -D build/data stop&quot; &gt; server_stop.sh
+echo &quot;build/bin/psql --port=${PORT} --dbname=${DBNAME} \$@&quot; &gt; psql.sh
+
+chmod +x server_start.sh
+chmod +x server_stop.sh
+chmod +x psql.sh
+
+# I often find it a good idea to initialise a git repository. If I need to
+# alter the code, I can track my changes if I need to revert or submit a patch.
+git init
+
+cat &lt;&lt;EOF &gt; .gitignore
+build/
+src/.cache/
+logfile
+perf.data
+perf.data.old
+EOF
+
+git add .
+git commit -m &quot;Initial Commit&quot;
+</code></pre>
+<h2>Profiling with perf</h2>
+<p>This is my summarised version of two much completer pages:</p>
+<ul>
+<li><a href="https://wiki.postgresql.org/wiki/Profiling_with_perf">Postgres wiki</a></li>
+<li><a href="https://web.archive.org/web/20220814090539/https://www.2ndquadrant.com/en/blog/tracing-postgresql-perf/">blog post</a>.</li>
+</ul>
+<p><code>perf record</code> runs a command and records its profile into <code>perf.data</code>.</p>
+<p>Flags:</p>
+<ul>
+<li><code>-a</code>: System-wide collection from all CPUs (this is the default).</li>
+<li><code>-g</code>: Records both kernel space and user space call-graph.</li>
+<li><code>-s</code>: Records per-thread event counts.</li>
+<li><code>-p</code>: Records events on existing process ID.</li>
+<li><code>--call-graph</code>: using the <code>dwarf</code> option instead of <code>fp</code> (frame pointer)
+means we don't have to worry about <code>--fomit-frame-pointer</code>.</li>
+</ul>
+<pre><code class="language-sh"># Allow use of almost all events by all users.
+# This will be reset if you reboot your computer.
+sudo sysctl -w kernel.perf_event_paranoid=-1
+
+# Run psql to grab the process id.
+# Use this query:
+# select pg_backend_pid();
+./psql.sh
+
+# You now must run this in another shell!
+PID=1759458
+perf record -a -g -s --call-graph dwarf -p ${PID}
+
+# Then print the report. This will look at perf.data in the current directory.
+# You can use + to expand the stack trace.
+perf report -n
+</code></pre>
+<h2>Example</h2>
+<p>What happens when we are dropping a unique constraint in Postgres?</p>
+<pre><code class="language-sql">-- Table with a single integer field.
+DROP TABLE IF EXISTS example_table;
+CREATE TABLE example_table (
+    id SERIAL PRIMARY KEY,
+    int_field INTEGER
+);
+
+-- Add the constraint with a name of our choice.
+ALTER TABLE example_table
+ADD CONSTRAINT unique_int_field UNIQUE (int_field);
+
+-- Insert 20,000,000 rows.
+INSERT INTO example_table (int_field)
+SELECT generate_series(1, 20000000);
+
+VACUUM FULL;
+VACUUM ANALYZE;
+
+-- Insert an extra 900,000 rows that will be made into dead tuples.
+INSERT INTO example_table (int_field)
+SELECT generate_series(20000001, 20900000);
+
+-- Make the dead tuples
+UPDATE example_table
+SET int_field = int_field + 10000000
+WHERE int_field &gt; 20000000;
+
+-- Check number of dead rows, it should be about 900,000
+SELECT n_dead_tup FROM pg_stat_user_tables WHERE relname = 'example_table';
+
+-- Print the process id.
+select pg_backend_pid();
+</code></pre>
+<p>Open a new terminal, and start the profiler:</p>
+<pre><code class="language-sh">PID=110540
+#perf record -a -g -s --call-graph dwarf -p ${PID}
+perf record -a -s --call-graph dwarf -p ${PID}
+</code></pre>
+<p>Back on the psql shell, drop the constraint and then close the psql process to
+stop profiling:</p>
+<pre><code class="language-sql">ALTER TABLE example_table
+DROP CONSTRAINT unique_int_field;
+</code></pre>
+<p>Open the report for quick inspection:</p>
+<pre><code class="language-sh">perf report -n
+</code></pre>
+<p><img src="perf_drop_constraint.png" alt="perf_drop_constraint.png"></p>
+<p>Another way of seeing the profile is via flamegraph.</p>
+<pre><code class="language-sh">git clone --depth 1 https://github.com/brendangregg/FlameGraph
+mv FlameGraph build
+FLAME=&quot;build/FlameGraph&quot;
+
+mkdir ${FLAME}/out
+perf script --header &gt; ${FLAME}/out.stacks
+
+${FLAME}/stackcollapse-perf.pl &lt; ${FLAME}/out.stacks &gt; ${FLAME}/collapsed.txt
+${FLAME}/flamegraph.pl --hash ${FLAME}/collapsed.txt &gt; ${FLAME}/out.svg
+
+$BROWSER ${FLAME}/out.svg
+</code></pre>
+<p><img src="perf_drop_constraint_flame.png" alt="perf_drop_constraint_flame.png"></p>
+<h2>Analysis</h2>
+<p>Dropping the constraint itself is very quick. It only involves updating the
+catalogue. However, the place that takes a lot of time is in committing the
+transaction.</p>
+<p>The <code>mdunlink</code> function is a function that helps manage relations that reside
+on magnetic disk. In this case, the constraint is backed by an index, and this
+index needs to be deleted. Ultimately this function will call truncate(1) with
+zero (removing it).</p>
+</body>
+</html>

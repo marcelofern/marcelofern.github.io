@@ -59,40 +59,38 @@
   <![endif]-->
 </head>
 <body>
-<h1>Postgres</h1>
-<h2>Constraints</h2>
+<h1>Postgres Docker Container</h1>
+<pre><code>Created at: 2024-10-22
+</code></pre>
+<p>Here is a command for running a throw-away postgres container:</p>
+<pre><code class="language-sh">HOST_PORT=5400
+VERSION=15
+PASSWORD=postgres
+TEST_NAME=my_sweet_test
+CONTAINER_NAME=postgres_${VERSION}_${TEST_NAME}
+VOLUME_NAME=${CONTAINER_NAME}_data
+
+# Get the container image.
+docker pull postgres:$VERSION
+
+# Run the actual container
+docker run \
+    --name ${CONTAINER_NAME} \
+    -e POSTGRES_PASSWORD=${PASSWORD} \
+    -d -p ${HOST_PORT}:5432 \
+    -v ${VOLUME_NAME}:/var/lib/postgresql/data \
+    --shm-size=4g \
+    postgres:$VERSION
+</code></pre>
 <ul>
-<li><a href="set_constraints.html">SET CONSTRAINTS</a></li>
-<li><a href="set_not_null.html">SET NOT NULL</a></li>
+<li>I always need to pick a different port so that my test container doesn't
+overlap with whatever Postgres container I am running for work.</li>
+<li>Make sure to add a generous shm size otherwise your container might run out
+of space if you are storing a lot of data there.</li>
 </ul>
-<h2>Indexing</h2>
-<ul>
-<li><a href="indexing_for_like.html">Indexing for LIKE</a></li>
-<li><a href="concurrent_index_during_vacuum.html">Concurrent index during vacuum</a></li>
-<li><a href="postgres_brin_index.html">Postgres BRIN index</a></li>
-<li><a href="no_automatic_index_on_fks.html">No Automatic Index on FKs</a></li>
-<li><a href="drop_index_concurrently.html">DROP INDEX CONCURRENTLY</a></li>
-</ul>
-<h2>Planning</h2>
-<ul>
-<li><a href="a-psql-planner-primmer.html">A PSQL Planner Primer</a></li>
-</ul>
-<h2>Locks</h2>
-<ul>
-<li><a href="lock_timeout.html"><code>lock_timeout</code></a></li>
-<li><a href="locks_cheatsheet.html">Locks cheatsheet</a></li>
-</ul>
-<h2>Testing</h2>
-<ul>
-<li><a href="postgres_docker_container.html">Postgres Docker Container</a></li>
-</ul>
-<h2>Performance</h2>
-<ul>
-<li><a href="or_queries.html">OR queries</a></li>
-</ul>
-<h2>Internals</h2>
-<ul>
-<li><a href="profiling_postgres.html">Profiling Postgres</a></li>
-</ul>
+<p>To stop and remove everything:</p>
+<pre><code class="language-sh">docker stop $CONTAINER_NAME
+docker rm -v $CONTAINER_NAME
+</code></pre>
 </body>
 </html>
