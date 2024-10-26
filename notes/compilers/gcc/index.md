@@ -11,3 +11,7 @@
 ## Profiling
 
 - [-pg](compilers/gcc/pg.md)
+
+## Optimisations
+
+- [__builtin_expect](compilers/gcc/__builtin_expect.md)
