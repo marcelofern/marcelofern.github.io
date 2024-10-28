@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>EXCLUDE USING</h1>
+<pre><code>Created at: 2024-10-27
+</code></pre>
+<h2>Definition</h2>
+<blockquote>
+<p>The EXCLUDE clause defines an exclusion constraint, which guarantees that if
+any two rows are compared on the specified column(s) or expression(s) using
+the specified operator(s), not all of these comparisons will return TRUE. If
+all of the specified operators test for equality, this is equivalent to a
+UNIQUE constraint, although an ordinary unique constraint will be faster.
+However, exclusion constraints can specify constraints that are more general
+than simple equality. For example, you can specify a constraint that no two
+rows in the table contain overlapping circles (see Section 8.8) by using the
+&amp;&amp; operator. The operator(s) are required to be commutative.</p>
+</blockquote>
+<pre><code class="language-sql">CREATE TABLE circles (
+    c circle,
+    EXCLUDE USING gist (c WITH &amp;&amp;)
+);
+</code></pre>
+<p><a href="https://www.postgresql.org/docs/15/ddl-constraints.html#DDL-CONSTRAINTS-EXCLUSION">source</a></p>
+<h2>Internals</h2>
+<p>The following script creates a sandbox for testing an exclusion constraint.</p>
+<pre><code class="language-sql">CREATE DATABASE exclusion_test_db;
+-- then connect via \c exclusion_test_db;
+
+-- Postgres requires a GIST index for exclusion constraints.
+CREATE EXTENSION IF NOT EXISTS btree_gist;
+
+DROP TABLE IF EXISTS bookings;
+CREATE TABLE bookings (
+    id SERIAL PRIMARY KEY,
+    resource_id INT NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL
+);
+
+-- Add 100,000 rows to the table
+INSERT INTO bookings (resource_id, start_date, end_date)
+SELECT
+    generate_series(1, 100000) AS resource_id,
+    '2024-01-01'::DATE AS start_date,
+    '2024-01-10'::DATE AS end_date;
+
+VACUUM ANALYZE bookings;
+
+-- Can't book the same resource_id in overlapping dates.
+ALTER TABLE bookings
+ADD CONSTRAINT no_date_overlap_for_resource_id
+EXCLUDE USING gist (
+    resource_id WITH =,
+    daterange(start_date, end_date, '[]') WITH &amp;&amp;
+);
+</code></pre>
+<p>The creation of this constraint happens in two stages:</p>
+<ul>
+<li>A GIST index is created by Postgres.</li>
+<li>Postgres uses this index to backup the constraint.</li>
+</ul>
+<p>Most of the time is spent on the index creation.</p>
+<p><img src="perf_exclusion_gist.png" alt="perf_exclusion_gist.png"></p>
+<p>Compare this with creating a unique constraint:</p>
+<pre><code class="language-sql">ALTER TABLE bookings
+ADD CONSTRAINT &quot;unique_resource_id&quot;
+UNIQUE (&quot;resource_id&quot;);
+</code></pre>
+<p><img src="perf_unique_index.png" alt="perf_unique_index.png"></p>
+<p>Note that in this case the <code>IndexCheckExclusion</code> is not called. The code says:</p>
+<pre><code class="language-c">    /*
+     * In src/backend/catalog/index.c
+     *
+     * If it's for an exclusion constraint, make a second pass over the heap
+     * to verify that the constraint is satisfied.  We must not do this until
+     * the index is fully valid.  (Broken HOT chains shouldn't matter, though;
+     * see comments for IndexCheckExclusion.)
+     */
+    if (indexInfo-&gt;ii_ExclusionOps != NULL)
+        IndexCheckExclusion(heapRelation, indexRelation, indexInfo);
+</code></pre>
+<p>My question is: Could this second pass over the heap happen another time? It
+takes a considerable amount of time (1/3 of the ATExecAddIndex execution in my
+machine).</p>
+<p>What I'd like to do is:</p>
+<ol>
+<li>Create the gist index first, CONCURRENTLY.</li>
+<li>Use the existing index to create the constraint, at which point we'd call
+IndexCheckExclusion and perform this second pass.</li>
+</ol>
+<p>For example, when a unique constraint is created from an existing index, we
+first need to create the index:</p>
+<pre><code class="language-sql">CREATE UNIQUE INDEX unique_resource_id ON bookings (resource_id);
+</code></pre>
+<p>Which produces:</p>
+<p><img src="perf_add_index.png" alt="perf_add_index.png"></p>
+<p>Alternatively, if I had used <code>CONCURRENTLY</code>:</p>
+<p><img src="perf_unique_index_concurrently.png" alt="perf_unique_index_concurrently.png"></p>
+<p>Followed by an ALTER TABLE ... USING INDEX</p>
+<pre><code class="language-sql">ALTER TABLE bookings
+ADD CONSTRAINT unique_resource_id UNIQUE USING INDEX unique_resource_id;
+</code></pre>
+<p><img src="perf_unique_constraint_idx.png" alt="perf_unique_constraint_idx.png"></p>
+<p>You can see that the operation <code>ATExecAddIndexConstraint</code> is called. The only
+type of index this operation accepts is a unique one:</p>
+<pre><code class="language-c">    /* In src/backend/commands/tablecmds.c */
+    /* this should have been checked at parse time */
+    if (!indexInfo-&gt;ii_Unique)
+        elog(ERROR, &quot;index \&quot;%s\&quot; is not unique&quot;, indexName);
+
+
+    /* Note we currently don't support EXCLUSION constraints here */
+    if (stmt-&gt;primary)
+        constraintType = CONSTRAINT_PRIMARY;
+    else
+        constraintType = CONSTRAINT_UNIQUE;
+</code></pre>
+<p>Why is an EXCLUSION constraint not supported? I can't find the real explanation
+in the commit that added those <a href="https://github.com/postgres/postgres/commit/88452d5ba6b3e8ad49133ac1a660ce0725710f8c">changes</a></p>
+<p>I started a proposal in the mail list <a href="https://www.postgresql.org/message-id/CAM2F1VO6ymp%2BGGZQxDxAQvftTiqmux%2Br%2BBEpR71fZ7_2gaaPEA%40mail.gmail.com">here</a></p>
+</body>
+</html>

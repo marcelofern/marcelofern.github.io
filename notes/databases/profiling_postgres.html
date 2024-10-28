@@ -148,6 +148,13 @@ rm -f src/compile_commands.json build
 bear --output src/compile_commands.json -- make
 make install
 </code></pre>
+<h2>Optional (extensions)</h2>
+<p>If you need to install extensions, like <code>btree_gist</code>:</p>
+<pre><code class="language-sh"># Extensions are added under `contrib`.
+cd contrib/btree_gist
+make &amp;&amp; make install
+cd ../..
+</code></pre>
 <h2>Initialising and starting the server</h2>
 <pre><code class="language-sh">VERSION=15
 PORT=&quot;54${VERSION}&quot;
@@ -217,7 +224,7 @@ sudo sysctl -w kernel.perf_event_paranoid=-1
 ./psql.sh
 
 # You now must run this in another shell!
-PID=1759458
+PID=220177
 perf record -a -g -s --call-graph dwarf -p ${PID}
 
 # Then print the report. This will look at perf.data in the current directory.

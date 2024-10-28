@@ -4,6 +4,7 @@
 
 - [SET CONSTRAINTS](databases/set_constraints.md)
 - [SET NOT NULL](databases/set_not_null.md)
+- [EXCLUDE USING](databases/exclude_using.md)
 
 ## Indexing
 
