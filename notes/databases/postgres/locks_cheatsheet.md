@@ -10,7 +10,7 @@ What types of locks can impact each other:
 | ACCESS SHARE      |              |           |          |                   |       |                |      | X           | SELECT                                               |
 | ROW SHARE         |              |           |          |                   |       |                | X    | X           | SELECT FOR UPDATE/SHARE                              |
 | ROW EXCL          |              |           |          |                   | X     | X              | X    | X           | INSERT/UPDATE/DELETE                                 |
-| SHARE UPDATE EXCL |              |           |          | X                 | X     | X              | X    | X           | VACUUM/CREATE INDEX CONCURRENTLY                     |
+| SHARE UPDATE EXCL |              |           |          | X                 | X     | X              | X    | X           | VACUUM/CREATE INDEX CONCURRENTLY/VALIDATE CONSTRAINT |
 | SHARE             |              |           | X        | X                 |       | X              | X    | X           | CREATE INDEX                                         |
 | SHARE ROW EXCL    |              |           | X        | X                 | X     | X              | X    | X           | CREATE TRIGGER/ADD FOREIGN KEY                       |
 | EXCL              |              | X         | X        | X                 | X     | X              | X    | X           | REFRESH MATVIEW CONCURRENTLY                         |

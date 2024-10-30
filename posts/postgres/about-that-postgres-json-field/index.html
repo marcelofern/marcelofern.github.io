@@ -139,11 +139,11 @@ schema to find stats about the toast table (assuming the toast table name is
 pg_toast_4532686):</p>
 <pre><code>SELECT *
 FROM pg_stat_all_tables
-WHERE relid = 'pg_toast.pg_toast_4532686'::regclass;
+WHERE relid = 'pg_toast.pg_toast_24683'::regclass;
 </code></pre>
 <p>And you can query its rows as a regular table:</p>
 <pre><code>SELECT *
-FROM pg_toast.pg_toast_4532686 LIMIT 100;
+FROM pg_toast.pg_toast_24683 LIMIT 100;
 </code></pre>
 <h2>The benchmark script</h2>
 <pre><code class="language-python">import psycopg2

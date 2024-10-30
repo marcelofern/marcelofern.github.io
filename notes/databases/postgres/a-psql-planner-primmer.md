@@ -171,6 +171,37 @@ decide to optimise for one over another. For example, when a query is tagged
 with `LIMIT 1` or `EXISTS`, it only needs to fetch one row, and it makes more
 sense to optimise by start-up cost than total cost.
 
+## Buffers
+
+Another useful parameter to `EXPLAIN` is `BUFFERS`.
+
+A buffer is a virtual representation of data that is stored in disk.
+According to the docs, `BUFFERS` will:
+
+> Include information on buffer usage. Specifically, include the number of
+> shared blocks hit, read, dirtied, and written, the number of local blocks
+> hit, read, dirtied, and written, the number of temp blocks read and written,
+> and the time spent reading and writing data file blocks, local blocks and
+> temporary file blocks (in milliseconds) if track_io_timing is enabled. A hit
+> means that a read was avoided because the block was found already in cache
+> when needed. Shared blocks contain data from regular tables and indexes;
+> local blocks contain data from temporary tables and indexes; while temporary
+> blocks contain short-term working data used in sorts, hashes, Materialize
+> plan nodes, and similar cases. The number of blocks dirtied indicates the
+> number of previously unmodified blocks that were changed by this query; while
+> the number of blocks written indicates the number of previously-dirtied
+> blocks evicted from cache by this backend during query processing. The number
+> of blocks shown for an upper-level node includes those used by all its child
+> nodes. In text format, only non-zero values are printed. This parameter
+> defaults to FALSE.
+
+This parameter will allows us to have an idea of how much IO work Postgres will
+do. Each buffers has, usually, 8KiB of data.
+
+[Here's](http://web.archive.org/web/20240229223746/https://postgres.ai/blog/20220106-explain-analyze-needs-buffers-to-improve-the-postgres-query-optimization-process)
+a good post about the BUFFERS option
+
+
 ## Caveats
 
 Planning relies heavily on the pg_statistic table. This table needs to be
@@ -179,7 +210,7 @@ enabling the autovacuum daemon.
 
 Note that if the table changed a lot in a short period of time, in a way that
 changes haven't been acknowledged via autovacuum, you'll need to manually
-vacuum the table.
+vacuum the table to address the potential dead tuples.
 
 ## "Hinting" the planner to chose a specific plan
 

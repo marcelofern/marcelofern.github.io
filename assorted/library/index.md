@@ -69,6 +69,7 @@ ones in this list to be good enough to be shared with the public.
 - Dostoevsky, Fyodor - Brothers Karamazov ([review](assorted/library/brothers-karamazov/index.md))
 - Dostoevsky, Fyodor - Crime and Punishment ([review](assorted/library/crime-and-punishment/index.md))
 - Egan, Greg - Permutation City.
+- Fitzgerald, Scott -  The Great Gatsby.
 - Herbert, Frank - Dune.
 - Herbert, Frank - Dune Messiah. ([review](assorted/library/dune-messiah/index.md))
 - Herbert, Frank - Children of Dune.

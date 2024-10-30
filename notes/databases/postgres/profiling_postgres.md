@@ -244,7 +244,15 @@ SELECT n_dead_tup FROM pg_stat_user_tables WHERE relname = 'example_table';
 select pg_backend_pid();
 ```
 
-Open a new terminal, and start the profiler:
+Note, if you already have something running on that psql shell, another way
+of grabbing that pid is to open a new shell and run:
+
+```sql
+select pid, query from pg_stat_activity
+where application_name = 'psql' and pid != pg_backend_pid();
+```
+
+Now open a new terminal, and start the profiler:
 
 ```sh
 PID=110540

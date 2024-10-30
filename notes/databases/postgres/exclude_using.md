@@ -122,14 +122,12 @@ Alternatively, if I had used `CONCURRENTLY`:
 
 ![perf_unique_index_concurrently.png](perf_unique_index_concurrently.png)
 
-
 Followed by an ALTER TABLE ... USING INDEX
 
 ```sql
 ALTER TABLE bookings
 ADD CONSTRAINT unique_resource_id UNIQUE USING INDEX unique_resource_id;
 ```
-
 
 ![perf_unique_constraint_idx.png](perf_unique_constraint_idx.png)
 

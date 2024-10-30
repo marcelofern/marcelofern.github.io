@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>FKs Without Downtime</h1>
+<pre><code>Created at: 2024-10-29
+</code></pre>
+<p>In order to create a foreign key in an existing table without downtime, a few
+extra operations are necessary to ensure no application downtime will be
+caused.</p>
+<h2>Setting up the environment</h2>
+<p>We need a schema and a table with some rows:</p>
+<pre><code class="language-sql">CREATE DATABASE fk_test_db;
+-- If using psql, connect to that db:
+-- \c fk_test_db
+
+DROP TABLE IF EXISTS foo;
+CREATE TABLE foo (
+    id SERIAL PRIMARY KEY,
+    int_field INT NOT NULL
+);
+INSERT INTO foo (int_field)
+SELECT generate_series(1, 1000000) AS int_field;
+
+DROP TABLE IF EXISTS bar;
+CREATE TABLE bar (
+    id SERIAL PRIMARY KEY,
+    int_field INT NOT NULL
+);
+INSERT INTO bar (int_field)
+SELECT generate_series(1, 1000000) AS int_field;
+
+VACUUM ANALYZE foo;
+VACUUM ANALYZE bar;
+</code></pre>
+<h2>1. Add the field</h2>
+<p>Assume we want to add a foreign key in <code>foo</code> that points to a row in <code>bar</code>.</p>
+<pre><code class="language-sql">ALTER TABLE foo ADD COLUMN bar_id BIGINT NULL;
+</code></pre>
+<h2>2. Add an index for lookup</h2>
+<p>Before we can add the constraint, we need an index to lookup the bar_id field.</p>
+<pre><code class="language-sql">SET lock_timeout TO '0';
+CREATE INDEX CONCURRENTLY IF NOT EXISTS foo_bar_fk ON foo (bar_id);
+</code></pre>
+<p>This is important because as soon as the constraint is created, any deletion
+on the <code>bar</code> table will need to look into <code>foo</code> to verify what to do next, like
+cascading deletions.</p>
+<p>I've debugged postgres source code, and the <code>RI_Fkey_restrict_del</code> trigger
+ultimately calls <code>ri_restrict</code> which triggers the following query to check
+that <code>foo</code> has a FK to the soon-to-be-deleted bar</p>
+<pre><code class="language-sql">-- x is my local user
+SELECT 1 FROM ONLY &quot;public&quot;.&quot;foo&quot; x
+WHERE $1 OPERATOR(pg_catalog.=) &quot;bar_id&quot;
+FOR KEY SHARE OF x
+</code></pre>
+<p>The same happens when trying to change the <code>id</code> of an existing <code>bar</code> row.</p>
+<h2>3. Add the constraint in INVALID mode.</h2>
+<p>This will make the constraint only act on new inserts and updates on the table.
+Existing rows (potentially violated by containing fks of rows that don't exist
+any more in the referenced table), won't be checked unless they're being
+updated.</p>
+<pre><code class="language-sql">ALTER TABLE foo
+ADD CONSTRAINT fk_bar FOREIGN KEY (bar_id)
+REFERENCES bar (id)
+DEFERRABLE INITIALLY DEFERRED
+NOT VALID;
+</code></pre>
+<p>Postgres implementation calls <code>ATController</code> (alter table controller) which
+skips the operation <code>ATRewriteTables</code> and will only call <code>ATRewriteCatalogs</code>.
+This means that <code>RI_Initial_Check</code> is never called:</p>
+<pre><code class="language-c">/*
+ * RI_Initial_Check -
+ *
+ * Check an entire table for non-matching values using a single query.
+ * This is not a trigger procedure, but is called during ALTER TABLE
+ * ADD FOREIGN KEY to validate the initial table contents.
+ */
+</code></pre>
+<p>Note:</p>
+<ul>
+<li>DEFERRED INITIALLY DEFERRED means the constraint won't be checked until the
+end of the transaction. If necessary, This behaviour can be changed on an
+transaction-per-transaction basis (via <code>SET CONSTRAINTS</code>).</li>
+</ul>
+<p>Note: <code>ON DELETE RESTRICT</code> can be used here, otherwise <code>NO ACTION</code> is the
+default.</p>
+<blockquote>
+<p>Restricting and cascading deletes are the two most common options. RESTRICT
+prevents deletion of a referenced row. NO ACTION means that if any
+referencing rows still exist when the constraint is checked, an error is
+raised; this is the default behavior if you do not specify anything. (The
+essential difference between these two choices is that NO ACTION allows the
+check to be deferred until later in the transaction, whereas RESTRICT does
+not.)</p>
+</blockquote>
+<p>That means if you do this:</p>
+<pre><code class="language-sql">INSERT INTO foo (int_field, bar_id) values (1, 42);
+DELETE FROM bar WHERE id = 42;
+</code></pre>
+<p>You'll get:</p>
+<pre><code>ERROR:  update or delete on table &quot;bar&quot; violates foreign key constraint &quot;fk_bar&quot; on table &quot;foo&quot;
+DETAIL:  Key (id)=(42) is still referenced from table &quot;foo&quot;.
+</code></pre>
+<h2>Validate The Constraint</h2>
+<p>Provided there are no invalid entries in foo, i.e., no rows in foo point to
+fks in bar that don't exist, you can validate the constraint:</p>
+<pre><code class="language-sql">ALTER TABLE foo VALIDATE CONSTRAINT fk_bar;
+</code></pre>
+<p>This will call <code>RI_Initial_Check</code>, but with a weaker lock (share update excl)
+called from <code>validateForeignKeyConstraint</code>.</p>
+</body>
+</html>

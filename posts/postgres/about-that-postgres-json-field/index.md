@@ -112,14 +112,14 @@ pg_toast_4532686):
 ```
 SELECT *
 FROM pg_stat_all_tables
-WHERE relid = 'pg_toast.pg_toast_4532686'::regclass;
+WHERE relid = 'pg_toast.pg_toast_24683'::regclass;
 ```
 
 And you can query its rows as a regular table:
 
 ```
 SELECT *
-FROM pg_toast.pg_toast_4532686 LIMIT 100;
+FROM pg_toast.pg_toast_24683 LIMIT 100;
 ```
 
 ## The benchmark script

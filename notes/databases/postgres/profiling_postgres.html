@@ -266,7 +266,12 @@ SELECT n_dead_tup FROM pg_stat_user_tables WHERE relname = 'example_table';
 -- Print the process id.
 select pg_backend_pid();
 </code></pre>
-<p>Open a new terminal, and start the profiler:</p>
+<p>Note, if you already have something running on that psql shell, another way
+of grabbing that pid is to open a new shell and run:</p>
+<pre><code class="language-sql">select pid, query from pg_stat_activity
+where application_name = 'psql' and pid != pg_backend_pid();
+</code></pre>
+<p>Now open a new terminal, and start the profiler:</p>
 <pre><code class="language-sh">PID=110540
 #perf record -a -g -s --call-graph dwarf -p ${PID}
 perf record -a -s --call-graph dwarf -p ${PID}

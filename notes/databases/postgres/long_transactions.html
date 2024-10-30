@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Long Transactions</h1>
+<h2>Definition</h2>
+<blockquote>
+<p>&quot;Long-running&quot; is a relative term, and, of course, its meaning depends on
+particular situation. Usually, in heavily-loaded systems – say ~10^5 TPS
+including RO queries and ~10^3 of XID-consuming TPS (writes) – we consider
+transactions running longer than 30-60 seconds to be long. This can be
+translated to 30-60k dead tuples accumulated in a table in the worst case –
+in the case when all transactions during that time frame produced 1 dead
+tuple. Of course, this is a very, very rough assumption, but this can give an
+idea about the scale and helps define &quot;threshold&quot; to support the meaning of
+the &quot;long-running transaction&quot; term. <a href="notes/https://github.com/postgres-ai/postgres-howtos/blob/main/0030_how_to_deal_with_long-running_transactions_oltp.html">source</a></p>
+</blockquote>
+<h2>Why are they bad</h2>
+<p>In the context of a web application, long-running transactions can be dangerous
+for two reasons:</p>
+<ul>
+<li>Blocking: A lock acquired during a transaction will only be released when
+the transaction finishes. This can be dangerous even in cases where the lock
+acquired is the weakest one possible: AccessShareLock. This is the case when
+a DDL is blocked by this lock, and in turn blocks other queries that need to
+run.</li>
+<li>Autovacuum: Dead tuples that have been created after the long-running
+transaction started cannot be reclaimed by autovacuum. A high number of
+dead tuples in a table can seriously affect the performance of queries
+against that table.</li>
+</ul>
+<h2>How to prevent them</h2>
+<p>When using Postgres 17 or higher, you can se the transaction_timeout value:</p>
+<pre><code class="language-sql">SET transaction_timeout TO '30s';
+</code></pre>
+<p>Otherwise, you can achieve something close to that with two parameters:</p>
+<ol>
+<li><code>statement_timeout</code>: If you have a web application and pages that take more
+than 30s to load time out, 30s might be a good value for this parameter. You
+might need to have a higher value for batch tasks, which can be controlled
+via user roles.</li>
+<li><code>idle_in_transaction_session_timeout</code>: Terminate any session that has been
+idle (that is, waiting for a client query) within an open transaction for
+longer than the specified amount of time. This should also be set to a low
+value like 15-30 seconds for a web application.</li>
+</ol>
+<p>Note that even with these two parameters, it's not a guarantee that no
+long-running queries will show up. The following could happen:</p>
+<ul>
+<li>The value of <code>statement_timeou</code> is set to 30s, and
+<code>idle_in_transaction_session_timeout</code> is set to 15s.</li>
+<li>A transaction is opened.</li>
+<li>A query runs and takes 29 seconds.</li>
+<li>It is idle for 14s.</li>
+<li>Another query runs and takes 29 seconds.</li>
+<li>It is idle for 14s.</li>
+<li>... so on so forth.</li>
+</ul>
+<p>Other alternatives include:</p>
+<ul>
+<li>A cronjob that runs a long-running transaction &quot;killer&quot;.</li>
+<li>Add the limit in the application side if you can.</li>
+</ul>
+<h2>Showing low-running transactions:</h2>
+<pre><code class="language-sql">select clock_timestamp() - xact_start, *
+from pg_stat_activity
+where clock_timestamp() - xact_start &gt; interval '1 minute'
+order by clock_timestamp() - xact_start desc;
+</code></pre>
+<p>You can also sample the queries for this long-running transaction to show what
+they were doing:</p>
+<pre><code class="language-sh">while sleep 1; do
+  psql -XAtc &quot;
+      copy (
+        with samples as (
+          select
+            clock_timestamp(),
+            clock_timestamp() - xact_start as xact_duration,
+            *
+          from pg_stat_activity
+        )
+        select *
+        from samples
+        where xact_duration &gt; interval '1 minute'
+        order by xact_duration desc
+      ) to stdout delimiter ',' csv
+    &quot; 2&gt;&amp;1 \
+  | tee -a long_tx_$(date +%Y%m%d).log.csv
+done
+</code></pre>
+</body>
+</html>
