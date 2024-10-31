@@ -21,8 +21,8 @@ existing constraint.
 -- This check will only be applied to new or modified rows, existing rows
 -- won't be validated because of the NOT VALID clause.
 ALTER TABLE foo
-  ADD CONSTRAINT foo_not_null
-  CHECK (bar1 IS NOT NULL) NOT VALID;
+ADD CONSTRAINT foo_not_null
+CHECK (bar1 IS NOT NULL) NOT VALID;
 
 -- The below performs a sequential scan, but without an exclusive lock.
 -- Concurrent sessions can read/write.
@@ -40,5 +40,6 @@ ALTER TABLE foo VALIDATE CONSTRAINT foo_not_null;
 ALTER TABLE foo ALTER COLUMN bar1 SET NOT NULL;
 
 -- The CHECK constraint has fulfilled its obligation and can now departure.
+-- This takes an ACCESS EXCLUSIVE lock, but should run very fast.
 ALTER TABLE foo DROP CONSTRAINT foo_not_null;
 ```

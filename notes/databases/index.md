@@ -27,6 +27,7 @@
 
 - [`lock_timeout`](databases/postgres/lock_timeout.md)
 - [Locks cheatsheet](databases/postgres/locks_cheatsheet.md)
+- [Print lock for query](databases/postgres/print_lock_for_query.md)
 
 ## Testing
 

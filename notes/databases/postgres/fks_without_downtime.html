@@ -94,15 +94,20 @@ VACUUM ANALYZE bar;
 <p>Assume we want to add a foreign key in <code>foo</code> that points to a row in <code>bar</code>.</p>
 <pre><code class="language-sql">ALTER TABLE foo ADD COLUMN bar_id BIGINT NULL;
 </code></pre>
+<p>This operation takes an ACCESS EXCLUSIVE LOCK, but for a very short duration.
+Adding a nullable field in Postgres doesn't require a full table scan starting
+on version 11.</p>
 <h2>2. Add an index for lookup</h2>
-<p>Before we can add the constraint, we need an index to lookup the bar_id field.</p>
+<p>Before we can add the constraint, we need an index to look the bar_id field up.</p>
 <pre><code class="language-sql">SET lock_timeout TO '0';
 CREATE INDEX CONCURRENTLY IF NOT EXISTS foo_bar_fk ON foo (bar_id);
 </code></pre>
+<p>This operation takes an ShareUpdateExclusiveLock. It won't block reads or
+writes on the table.</p>
 <p>This is important because as soon as the constraint is created, any deletion
 on the <code>bar</code> table will need to look into <code>foo</code> to verify what to do next, like
-cascading deletions.</p>
-<p>I've debugged postgres source code, and the <code>RI_Fkey_restrict_del</code> trigger
+cascading deletions (ON DELETE / ON UPDATE ...).</p>
+<p>I've debugged Postgres source code, and the <code>RI_Fkey_restrict_del</code> trigger
 ultimately calls <code>ri_restrict</code> which triggers the following query to check
 that <code>foo</code> has a FK to the soon-to-be-deleted bar</p>
 <pre><code class="language-sql">-- x is my local user
@@ -122,6 +127,10 @@ REFERENCES bar (id)
 DEFERRABLE INITIALLY DEFERRED
 NOT VALID;
 </code></pre>
+<p>This operation will take a ShareRowExclusive lock on <strong>both</strong> the foo table
+and the bar table. This will not block reads, but it will block insert,
+updates, and deletes. This will only happen for a short time, as this operation
+won't need to scan the whole table.</p>
 <p>Postgres implementation calls <code>ATController</code> (alter table controller) which
 skips the operation <code>ATRewriteTables</code> and will only call <code>ATRewriteCatalogs</code>.
 This means that <code>RI_Initial_Check</code> is never called:</p>
@@ -158,12 +167,45 @@ DELETE FROM bar WHERE id = 42;
 <pre><code>ERROR:  update or delete on table &quot;bar&quot; violates foreign key constraint &quot;fk_bar&quot; on table &quot;foo&quot;
 DETAIL:  Key (id)=(42) is still referenced from table &quot;foo&quot;.
 </code></pre>
-<h2>Validate The Constraint</h2>
+<h2>4. Validate The Constraint</h2>
 <p>Provided there are no invalid entries in foo, i.e., no rows in foo point to
 fks in bar that don't exist, you can validate the constraint:</p>
 <pre><code class="language-sql">ALTER TABLE foo VALIDATE CONSTRAINT fk_bar;
 </code></pre>
+<p>This query will take a ShareUpdateExclusive lock on the foo table (does
+not block reads nor writes), and a RowShare lock on the bar table (does
+not block reads nor writes).</p>
 <p>This will call <code>RI_Initial_Check</code>, but with a weaker lock (share update excl)
 called from <code>validateForeignKeyConstraint</code>.</p>
+<h2>5. OPTIONAL: Set a NOT NULL constraint</h2>
+<p>It might be that you never want the bar_id field to be null. In this case
+there are a few extra steps you need to perform:</p>
+<pre><code class="language-sql">-- The below still requires ACCESS EXCLUSIVE lock, but doesn't require a full
+-- table scan.
+-- This check will only be applied to new or modified rows, existing rows
+-- won't be validated because of the NOT VALID clause.
+ALTER TABLE foo
+ADD CONSTRAINT bar_id_not_null
+CHECK (bar_id IS NOT NULL) NOT VALID;
+
+-- The below performs a sequential scan, but without an exclusive lock.
+-- Concurrent sessions can read/write.
+-- The operation will require a SHARE UPDATE EXCLUSIVE lock, which will block
+-- only other schema changes and the VACUUM operation.
+-- This may take a long time, but the operation is idempotent once the
+--  constraint is marked as valid.
+ALTER TABLE foo VALIDATE CONSTRAINT bar_id_not_null;
+
+-- Requires ACCESS EXCLUSIVE LOCK, but foo_not_null proves that there is no
+-- NULL in this column and a full table scan is not required. Therefore, the
+-- ALTER TABLE command should be fast.
+-- If you are not on Postgres &gt;=12, you should skip this as it will take a lot
+-- of time, and the current CHECK constraint might be good enough.
+ALTER TABLE foo ALTER COLUMN bar_id SET NOT NULL;
+
+-- The CHECK constraint has fulfilled its obligation and can now departure.
+-- This takes an ACCESS EXCLUSIVE lock, but should run very fast.
+ALTER TABLE foo DROP CONSTRAINT bar_id_not_null;
+</code></pre>
 </body>
 </html>
