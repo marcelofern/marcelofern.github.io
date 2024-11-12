@@ -100,8 +100,9 @@ DDLs.</p>
 take longer to read from disk and use more storage when cached in memory.</p>
 <p>This makes querying these tables less efficient. SELECTs have to do more work
 to scan the same amount of data.</p>
-<p>If the json field doesn’t exceed a particular threshold (~2KB) it won’t be
-stored in a toast table. Instead, it will be stored inline on the page.</p>
+<p>If the json field doesn’t exceed a particular threshold (2KB default but can be
+configurable on a table-per-table basis with <code>CREATE TABLE ... WITH (toast_tuple_target=128)</code>) it won’t be stored in a toast table. Instead, it
+will be stored inline on the page.</p>
 <p>If a table doesn't have a high ratio of HOT updates, the volume of dead
 rows will increase. This further affects performance.</p>
 <h2>Considerations</h2>
@@ -124,7 +125,7 @@ trade-offs:</p>
 </code></pre>
 <h2>Inspecting the TOAST table</h2>
 <p>You can find the name of a toast table with this query:</p>
-<pre><code>SELECT
+<pre><code class="language-sql">SELECT
     c.relname AS main_table,
     t.relname AS toast_table
 FROM
@@ -137,14 +138,39 @@ WHERE
 <p>After you find the name of that toast_table, you can query the <code>pg_toast</code>
 schema to find stats about the toast table (assuming the toast table name is
 pg_toast_4532686):</p>
-<pre><code>SELECT *
+<pre><code class="language-sql">SELECT *
 FROM pg_stat_all_tables
 WHERE relid = 'pg_toast.pg_toast_24683'::regclass;
 </code></pre>
+<p>You can also see the size of each id and its associated chunks:</p>
+<pre><code class="language-sql">SELECT
+    chunk_id,
+    COUNT(*) as chunks,
+    pg_size_pretty(sum(octet_length(chunk_data)::bigint))
+FROM pg_toast.pg_toast_340484
+GROUP BY 1 ORDER BY 1;
+</code></pre>
+<p>And the size of the toast table in comparison to the table itself.</p>
+<pre><code class="language-sql">SELECT
+    c1.relname,
+    pg_size_pretty(pg_relation_size(c1.relname::regclass)) AS size,
+    c2.relname AS toast_relname,
+    pg_size_pretty(pg_relation_size(('pg_toast.' || c2.relname)::regclass)) AS toast_size
+FROM
+    pg_class c1
+    JOIN pg_class c2 ON c1.reltoastrelid = c2.oid
+WHERE
+    c1.relkind = 'r'
+    AND c1.relname = 'table_name';
+</code></pre>
 <p>And you can query its rows as a regular table:</p>
-<pre><code>SELECT *
+<pre><code class="language-sql">SELECT *
 FROM pg_toast.pg_toast_24683 LIMIT 100;
 </code></pre>
+<p>For more on toast follow these links:</p>
+<ul>
+<li><a href="https://hakibenita.com/sql-medium-text-performance">blog post hakibenita</a></li>
+</ul>
 <h2>The benchmark script</h2>
 <pre><code class="language-python">import psycopg2
 import time

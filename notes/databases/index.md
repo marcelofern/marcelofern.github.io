@@ -10,6 +10,7 @@
 
 - [FKs without downtime](databases/postgres/fks_without_downtime.md)
 - [Long Transactions](databases/postgres/long_transactions.md)
+- [DEFAULT](databases/postgres/default.md)
 
 ## Indexing
 
@@ -39,5 +40,10 @@
 
 ## Internals
 
+- [Building From Source](databases/postgres/building_from_source.md)
 - [Profiling Postgres](databases/postgres/profiling_postgres.md)
 - [Debugging Postgres](databases/postgres/debugging_postgres.md)
+
+## Extensions
+
+- [pg_repack](databases/postgres/pg_repack.md)
