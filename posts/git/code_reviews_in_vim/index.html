@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Code Reviews In Vim</h1>
+<pre><code>Created at: 2024-11-21
+</code></pre>
+<p>A common way of reviewing code today is by performing the review using the
+repository host UI (GitHub, GitLab, etc.).</p>
+<p>I have done that for awhile, and I still do it when code changes are trivial.</p>
+<p>&quot;Trivial&quot; means I don't need to play with the branch locally first to have
+confidence the changes are correct.</p>
+<p>However, often I will work with code that is hard to &quot;only see&quot; and feel
+confident it does the right thing.</p>
+<p>For more complex cases, having the branch locally allows me to inspect and
+alter the code better than I can using the repository host UI.</p>
+<h2>Fetching</h2>
+<p>The first step is to get the branch locally:</p>
+<pre><code class="language-sh">git fetch origin branch_name &amp;&amp; git checkout branch_name
+</code></pre>
+<p>You can simplify this command and skip to <code>git checkout</code> if you always fetch
+the entire remote (which I don't do because it takes too much space/time).</p>
+<h2>Showing the commits</h2>
+<p>The next step is to find exactly which commits the new branch includes.</p>
+<pre><code class="language-sh">git log -p master..HEAD
+</code></pre>
+<p>This command basically means &quot;show me all the commits that this branch (HEAD)
+introduced since it diverged from master&quot;.</p>
+<p>This effectively shows the commits created by the branch author and nothing
+else.</p>
+<p>The <code>-p</code> (patches) includes the diffs for each commit in the result. I skip
+this sometimes if I am visualising the patches in a different way.</p>
+<p>When in Vim, I use the vim-fugitive plugin. Running the same command through
+the plugin wrapper gives me a quick-fix window containing the commits from the
+pull request.</p>
+<p>Running <code>:Gclog master..HEAD</code> looks like this:</p>
+<p><img src="gclog.png" alt="gclog.png"></p>
+<p>Now I can quickly navigate between commits to see what's changed.</p>
+<p>If you are using a different tool but still want to see the commit changes in
+your editor, you can try:</p>
+<pre><code class="language-sh">git show &lt;commit_hash&gt;
+</code></pre>
+<h2>Checking Out Each Commit</h2>
+<p>I currently work on codebases that use atomic commits.
+This essentially means that for each commit:</p>
+<ol>
+<li>The test suite must fully pass.</li>
+<li>The integrity of the codebase isn't in jeopardy (no half-done changes
+between commits).</li>
+<li>The codebase is in a deployable state.</li>
+<li>A commit explains a single change, not multiple.</li>
+</ol>
+<p>For example, a commit title &quot;Change X <strong>and</strong> Y&quot; is an indication that the
+commit isn't atomic. Multiple things are changing in the same commit.</p>
+<p>Having atomic commits means that I can code-review a Pull Request
+commit-by-commit.</p>
+<p>Of course there are many more benefits of this practice. For example, I can use
+<code>git blame</code> effectively. No change will be part of a 40-commits rebased
+branch with lack of detailed explanation in the commit description.</p>
+<p>So after I have run <code>git log -p master..HEAD</code>, I will go through each commit
+and perform:</p>
+<pre><code class="language-sh"># Checkout the relevant commit I want to play with
+git checkout &lt;commit hash&gt;
+</code></pre>
+<p>If I have messed things up, I can just check the reflog and go back to the
+place where I got the branch from.</p>
+<pre><code class="language-sh"># List the &quot;reference logs&quot; to find the record when the tip of the branch
+# reference changed.
+
+git reflog
+
+# Now go back to the hash representing the time I checked the branch at the
+# first time. It will look something like:
+# 43c0eb3 HEAD@{3}: checkout: moving from main to my_branch
+
+git checkout 43c0eb3
+</code></pre>
+<h2>Taking Notes</h2>
+<p>If I am reviewing a complicated branch, I will usually open a new file in the
+<code>/tmp/</code> folder to take some notes in.</p>
+<p>There isn't anything fancy about that. It comes from the principle of wanting
+to have vim-editing capabilities when writing down a comment on a pull request.</p>
+<p>Often, I will write code blocks in reply to a commit anyway, so editing
+comments in vim makes it easier to edit the comment than say, the GitHub UI.</p>
+<p>Note: There are ways to embed vim into a browser nowadays, but it often feels
+strange. I prefer to not use an embedded vim.</p>
+</body>
+</html>

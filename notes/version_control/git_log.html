@@ -59,29 +59,29 @@
   <![endif]-->
 </head>
 <body>
-<h1>Linux</h1>
-<ul>
-<li><a href="proc.html">/proc</a></li>
-<li><a href="systemd_startup_analysis.html">systemd startup analysis</a></li>
-<li><a href="perf_analysis_in_60_sec.html">performance analysis in 60 seconds</a></li>
-<li><a href="arch_linux_installation.html">arch linux installation</a></li>
-<li><a href="disabling_suspended_mode.html">disabling suspended mode</a></li>
-<li><a href="loading_an_usb_stick.html">loading an usb stick</a></li>
-<li><a href="downgrading_arch_package.html">downgrading arch package</a></li>
-<li><a href="downloading_kindle_highlights.html">downloading kindle highlights</a></li>
-</ul>
-<h2>CPU Monitoring Tools</h2>
-<p>The tools that provide a higher overview (though last detailed) are listed
-first.</p>
-<ul>
-<li><a href="cpu_monitoring_tools/uptime.html">uptime</a></li>
-<li><a href="cpu_monitoring_tools/vmstat.html">vmstat</a></li>
-<li><a href="cpu_monitoring_tools/mpstat.html">mpstat</a></li>
-<li><a href="cpu_monitoring_tools/sar.html">sar</a></li>
-<li><a href="cpu_monitoring_tools/ps.html">ps</a></li>
-<li><a href="cpu_monitoring_tools/top.html">top</a></li>
-<li><a href="cpu_monitoring_tools/perf.html">perf</a></li>
-<li><a href="cpu_monitoring_tools/bpftrace.html">bpftrace</a></li>
-</ul>
+<h1>git log</h1>
+<pre><code>Created at: 2024-11-24
+</code></pre>
+<p>Most of the below is taken from gittutorial man page:</p>
+<p>Many Git commands also take sets of commits, which can be specified in a number
+of ways. Here are some examples with git log:</p>
+<pre><code class="language-sh">$ git log v2.5..v2.6            # commits between v2.5 and v2.6
+$ git log v2.5..                # commits since v2.5
+$ git log --since=&quot;2 weeks ago&quot; # commits from the last 2 weeks
+$ git log v2.5.. Makefile       # commits since v2.5 which modify
+                                # Makefile
+$ git log v4.7..v4.8 tests/     # commits between v4.7 and v4.8
+                                # which modify the tests/ folder
+</code></pre>
+<p>You can also give git log a &quot;range&quot; of commits where the first is not
+necessarily an ancestor of the second; for example, if the tips of the branches
+stable and master diverged from a common commit some time ago, then</p>
+<pre><code class="language-sh">$ git log stable..master
+</code></pre>
+<p>will list commits made in the master branch but not in the stable branch, while</p>
+<pre><code>$ git log master..stable
+</code></pre>
+<p>will show the list of commits made on the stable branch but not the master
+branch.</p>
 </body>
 </html>

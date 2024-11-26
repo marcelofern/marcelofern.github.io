@@ -1,11 +1,12 @@
-# Profiling Postgres
+# Profiling Postgres On Linux
 
 ```
 Created at: 2024-10-24
 ```
 
 This post is about profiling Postgres **on Linux**. The profiling tools used
-here are not OS agnostic. Alternatives for BSD and MacOs may exist.
+here are not OS agnostic. Alternatives for BSD and MacOs may exist. I have
+written a separated note for Mac, so check that out if you are interested.
 
 The main goal is to check what happens when a Postgres query is triggered.
 
@@ -100,7 +101,6 @@ Now open a new terminal, and start the profiler:
 
 ```sh
 PID=110540
-#perf record -a -g -s --call-graph dwarf -p ${PID}
 perf record -a -s --call-graph dwarf -p ${PID}
 ```
 

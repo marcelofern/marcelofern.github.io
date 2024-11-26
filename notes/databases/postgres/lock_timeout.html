@@ -63,7 +63,12 @@
 <h1>Definition</h1>
 <p>How long to wait until the lock is acquired before cancelling the statement.</p>
 <p>Note: Emphasis on the fact that the <code>lock_timeout</code> setting doesn't affect how
-long the lock is held, only how long it's allowed to take to acquire it.</p>
+long the lock is held, only how long the transaction is allowed wait in order
+to acquire it.</p>
+<p>Note 2: The timeout counter starts when the transaction joins the queue of
+locks. So if there are 3 transactions waiting to acquire the same lock, the
+4th one wouldn't wait until all 3 transactions are completed before the lock
+timeout counter starts.</p>
 <pre><code class="language-sql">// sets the lock for the whole session
 SET lock_timeout = '1s';
 

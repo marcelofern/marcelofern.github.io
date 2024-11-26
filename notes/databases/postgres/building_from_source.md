@@ -32,6 +32,15 @@ tar xf postgresql-version.tar.bz2
 This will create a new folder `postgresql-version` in your current directory
 with the source code.
 
+## Step 0 (for macOs users only - skip if on Linux)
+
+Run these commands first, so that your homebrew libraries
+
+```sh
+export CPPFLAGS="-I/opt/homebrew/include"
+export LDFLAGS="-L/opt/homebrew/lib"
+```
+
 ## Configure
 
 In the source directory, there is a bash script called `./configure`.
@@ -68,10 +77,6 @@ Flags:
   gprof to work yet - In either case, `perf` is better.
 - `CFLAGS`: These options allow support for capturing the whole user-space call
   stack.
-
-Note MacOs users:
-- You might want to disable icu if you get an error during the config step!
-  The script will tell you which command to run to skip icu.
 
 The option `-fno-omit-frame-pointer` is necessary because the profiler may be
 using a frame pointer-based approach for reading the stack. This may come with
@@ -119,6 +124,28 @@ If you need to install extensions, like `btree_gist`:
 cd contrib/btree_gist
 make && make install
 cd ../..
+```
+
+If you want to install all extensions just:
+
+```sh
+cd contrib
+
+# Loop through each folder in the current directory and run
+# make && make install
+for dir in */; do
+    echo "Entering directory: $dir"
+    cd "$dir"
+    echo "Running make in $dir..."
+    make > /dev/null 2>&1
+    if [ $? -eq 0 ]; then  # Check if make was successful
+        echo "Running make install in $dir..."
+        make install > /dev/null 2>&1
+    else
+        echo -e "\033[31m--> \033[0m Make failed in $dir. Skipping make install."
+    fi
+    cd ..
+done
 ```
 
 ## Initialising and starting the server

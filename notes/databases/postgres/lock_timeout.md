@@ -5,7 +5,13 @@ January 30, 2024
 How long to wait until the lock is acquired before cancelling the statement.
 
 Note: Emphasis on the fact that the `lock_timeout` setting doesn't affect how
-long the lock is held, only how long it's allowed to take to acquire it.
+long the lock is held, only how long the transaction is allowed wait in order
+to acquire it.
+
+Note 2: The timeout counter starts when the transaction joins the queue of
+locks. So if there are 3 transactions waiting to acquire the same lock, the
+4th one wouldn't wait until all 3 transactions are completed before the lock
+timeout counter starts.
 
 ```sql
 // sets the lock for the whole session

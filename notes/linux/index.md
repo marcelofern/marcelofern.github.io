@@ -20,3 +20,5 @@ first.
 - [sar](linux/cpu_monitoring_tools/sar.md)
 - [ps](linux/cpu_monitoring_tools/ps.md)
 - [top](linux/cpu_monitoring_tools/top.md)
+- [perf](linux/cpu_monitoring_tools/perf.md)
+- [bpftrace](linux/cpu_monitoring_tools/bpftrace.md)

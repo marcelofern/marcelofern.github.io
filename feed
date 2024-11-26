@@ -10,7 +10,88 @@
     <uri>https://marcelofern.com</uri>
   </author>
   <id>tag:marcelofern.com,2024:/feed</id>
-<entry><title>About That Postgres Json Field</title><link href="https://www.marcelofern.com/posts/postgres/about-that-postgres-json-field/index.html"/><id>tag:marcelofern.com,2024-10-10:/postgres/about-that-postgres-json-field/index.html</id><content type="html">&lt;h1&gt;About That Postgres Json Field&lt;/h1&gt;
+<entry><title>Code Reviews In Vim</title><link href="https://www.marcelofern.com/posts/git/code_reviews_in_vim/index.html"/><id>tag:marcelofern.com,2024-11-21:/git/code_reviews_in_vim/index.html</id><content type="html">&lt;h1&gt;Code Reviews In Vim&lt;/h1&gt;
+&lt;pre&gt;&lt;code&gt;Created at: 2024-11-21
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A common way of reviewing code today is by performing the review using the
+repository host UI (GitHub, GitLab, etc.).&lt;/p&gt;
+&lt;p&gt;I have done that for awhile, and I still do it when code changes are trivial.&lt;/p&gt;
+&lt;p&gt;&amp;quot;Trivial&amp;quot; means I don&#x27;t need to play with the branch locally first to have
+confidence the changes are correct.&lt;/p&gt;
+&lt;p&gt;However, often I will work with code that is hard to &amp;quot;only see&amp;quot; and feel
+confident it does the right thing.&lt;/p&gt;
+&lt;p&gt;For more complex cases, having the branch locally allows me to inspect and
+alter the code better than I can using the repository host UI.&lt;/p&gt;
+&lt;h2&gt;Fetching&lt;/h2&gt;
+&lt;p&gt;The first step is to get the branch locally:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;git fetch origin branch_name &amp;amp;&amp;amp; git checkout branch_name
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can simplify this command and skip to &lt;code&gt;git checkout&lt;/code&gt; if you always fetch
+the entire remote (which I don&#x27;t do because it takes too much space/time).&lt;/p&gt;
+&lt;h2&gt;Showing the commits&lt;/h2&gt;
+&lt;p&gt;The next step is to find exactly which commits the new branch includes.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;git log -p master..HEAD
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This command basically means &amp;quot;show me all the commits that this branch (HEAD)
+introduced since it diverged from master&amp;quot;.&lt;/p&gt;
+&lt;p&gt;This effectively shows the commits created by the branch author and nothing
+else.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;-p&lt;/code&gt; (patches) includes the diffs for each commit in the result. I skip
+this sometimes if I am visualising the patches in a different way.&lt;/p&gt;
+&lt;p&gt;When in Vim, I use the vim-fugitive plugin. Running the same command through
+the plugin wrapper gives me a quick-fix window containing the commits from the
+pull request.&lt;/p&gt;
+&lt;p&gt;Running &lt;code&gt;:Gclog master..HEAD&lt;/code&gt; looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;gclog.png&quot; alt=&quot;gclog.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Now I can quickly navigate between commits to see what&#x27;s changed.&lt;/p&gt;
+&lt;p&gt;If you are using a different tool but still want to see the commit changes in
+your editor, you can try:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;git show &amp;lt;commit_hash&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Checking Out Each Commit&lt;/h2&gt;
+&lt;p&gt;I currently work on codebases that use atomic commits.
+This essentially means that for each commit:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The test suite must fully pass.&lt;/li&gt;
+&lt;li&gt;The integrity of the codebase isn&#x27;t in jeopardy (no half-done changes
+between commits).&lt;/li&gt;
+&lt;li&gt;The codebase is in a deployable state.&lt;/li&gt;
+&lt;li&gt;A commit explains a single change, not multiple.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;For example, a commit title &amp;quot;Change X &lt;strong&gt;and&lt;/strong&gt; Y&amp;quot; is an indication that the
+commit isn&#x27;t atomic. Multiple things are changing in the same commit.&lt;/p&gt;
+&lt;p&gt;Having atomic commits means that I can code-review a Pull Request
+commit-by-commit.&lt;/p&gt;
+&lt;p&gt;Of course there are many more benefits of this practice. For example, I can use
+&lt;code&gt;git blame&lt;/code&gt; effectively. No change will be part of a 40-commits rebased
+branch with lack of detailed explanation in the commit description.&lt;/p&gt;
+&lt;p&gt;So after I have run &lt;code&gt;git log -p master..HEAD&lt;/code&gt;, I will go through each commit
+and perform:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;# Checkout the relevant commit I want to play with
+git checkout &amp;lt;commit hash&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If I have messed things up, I can just check the reflog and go back to the
+place where I got the branch from.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sh&quot;&gt;# List the &amp;quot;reference logs&amp;quot; to find the record when the tip of the branch
+# reference changed.
+
+git reflog
+
+# Now go back to the hash representing the time I checked the branch at the
+# first time. It will look something like:
+# 43c0eb3 HEAD@{3}: checkout: moving from main to my_branch
+
+git checkout 43c0eb3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Taking Notes&lt;/h2&gt;
+&lt;p&gt;If I am reviewing a complicated branch, I will usually open a new file in the
+&lt;code&gt;/tmp/&lt;/code&gt; folder to take some notes in.&lt;/p&gt;
+&lt;p&gt;There isn&#x27;t anything fancy about that. It comes from the principle of wanting
+to have vim-editing capabilities when writing down a comment on a pull request.&lt;/p&gt;
+&lt;p&gt;Often, I will write code blocks in reply to a commit anyway, so editing
+comments in vim makes it easier to edit the comment than say, the GitHub UI.&lt;/p&gt;
+&lt;p&gt;Note: There are ways to embed vim into a browser nowadays, but it often feels
+strange. I prefer to not use an embedded vim.&lt;/p&gt;</content><published>2024-11-21T00:00:00Z</published><updated>2024-11-21T00:00:00Z</updated></entry><entry><title>About That Postgres Json Field</title><link href="https://www.marcelofern.com/posts/postgres/about-that-postgres-json-field/index.html"/><id>tag:marcelofern.com,2024-10-10:/postgres/about-that-postgres-json-field/index.html</id><content type="html">&lt;h1&gt;About That Postgres Json Field&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-10-10
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The json type was introduced in Postgres 9.2. Since then, the json type has
@@ -51,8 +132,9 @@ DDLs.&lt;/p&gt;
 take longer to read from disk and use more storage when cached in memory.&lt;/p&gt;
 &lt;p&gt;This makes querying these tables less efficient. SELECTs have to do more work
 to scan the same amount of data.&lt;/p&gt;
-&lt;p&gt;If the json field doesn’t exceed a particular threshold (~2KB) it won’t be
-stored in a toast table. Instead, it will be stored inline on the page.&lt;/p&gt;
+&lt;p&gt;If the json field doesn’t exceed a particular threshold (2KB default but can be
+configurable on a table-per-table basis with &lt;code&gt;CREATE TABLE ... WITH (toast_tuple_target=128)&lt;/code&gt;) it won’t be stored in a toast table. Instead, it
+will be stored inline on the page.&lt;/p&gt;
 &lt;p&gt;If a table doesn&#x27;t have a high ratio of HOT updates, the volume of dead
 rows will increase. This further affects performance.&lt;/p&gt;
 &lt;h2&gt;Considerations&lt;/h2&gt;
@@ -75,7 +157,7 @@ trade-offs:&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Inspecting the TOAST table&lt;/h2&gt;
 &lt;p&gt;You can find the name of a toast table with this query:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SELECT
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT
     c.relname AS main_table,
     t.relname AS toast_table
 FROM
@@ -88,14 +170,39 @@ WHERE
 &lt;p&gt;After you find the name of that toast_table, you can query the &lt;code&gt;pg_toast&lt;/code&gt;
 schema to find stats about the toast table (assuming the toast table name is
 pg_toast_4532686):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SELECT *
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT *
 FROM pg_stat_all_tables
-WHERE relid = &#x27;pg_toast.pg_toast_4532686&#x27;::regclass;
+WHERE relid = &#x27;pg_toast.pg_toast_24683&#x27;::regclass;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can also see the size of each id and its associated chunks:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT
+    chunk_id,
+    COUNT(*) as chunks,
+    pg_size_pretty(sum(octet_length(chunk_data)::bigint))
+FROM pg_toast.pg_toast_340484
+GROUP BY 1 ORDER BY 1;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And the size of the toast table in comparison to the table itself.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT
+    c1.relname,
+    pg_size_pretty(pg_relation_size(c1.relname::regclass)) AS size,
+    c2.relname AS toast_relname,
+    pg_size_pretty(pg_relation_size((&#x27;pg_toast.&#x27; || c2.relname)::regclass)) AS toast_size
+FROM
+    pg_class c1
+    JOIN pg_class c2 ON c1.reltoastrelid = c2.oid
+WHERE
+    c1.relkind = &#x27;r&#x27;
+    AND c1.relname = &#x27;table_name&#x27;;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;And you can query its rows as a regular table:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SELECT *
-FROM pg_toast.pg_toast_4532686 LIMIT 100;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT *
+FROM pg_toast.pg_toast_24683 LIMIT 100;
 &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For more on toast follow these links:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://hakibenita.com/sql-medium-text-performance&quot;&gt;blog post hakibenita&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2&gt;The benchmark script&lt;/h2&gt;
 &lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;import psycopg2
 import time

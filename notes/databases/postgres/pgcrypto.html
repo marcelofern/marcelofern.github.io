@@ -59,29 +59,20 @@
   <![endif]-->
 </head>
 <body>
-<h1>Linux</h1>
-<ul>
-<li><a href="proc.html">/proc</a></li>
-<li><a href="systemd_startup_analysis.html">systemd startup analysis</a></li>
-<li><a href="perf_analysis_in_60_sec.html">performance analysis in 60 seconds</a></li>
-<li><a href="arch_linux_installation.html">arch linux installation</a></li>
-<li><a href="disabling_suspended_mode.html">disabling suspended mode</a></li>
-<li><a href="loading_an_usb_stick.html">loading an usb stick</a></li>
-<li><a href="downgrading_arch_package.html">downgrading arch package</a></li>
-<li><a href="downloading_kindle_highlights.html">downloading kindle highlights</a></li>
-</ul>
-<h2>CPU Monitoring Tools</h2>
-<p>The tools that provide a higher overview (though last detailed) are listed
-first.</p>
-<ul>
-<li><a href="cpu_monitoring_tools/uptime.html">uptime</a></li>
-<li><a href="cpu_monitoring_tools/vmstat.html">vmstat</a></li>
-<li><a href="cpu_monitoring_tools/mpstat.html">mpstat</a></li>
-<li><a href="cpu_monitoring_tools/sar.html">sar</a></li>
-<li><a href="cpu_monitoring_tools/ps.html">ps</a></li>
-<li><a href="cpu_monitoring_tools/top.html">top</a></li>
-<li><a href="cpu_monitoring_tools/perf.html">perf</a></li>
-<li><a href="cpu_monitoring_tools/bpftrace.html">bpftrace</a></li>
-</ul>
+<h1>pgcrypto</h1>
+<pre><code>Created at: 2024-11-14
+</code></pre>
+<h2>Building From Source</h2>
+<p>If you installed postgres from source, you'll have a folder called &quot;contrib&quot;.
+This is where the <code>pgcrypto</code> extension lives.</p>
+<pre><code>cd contrib/pgcrypto
+make &amp;&amp; make install
+</code></pre>
+<h2>MacOs users only:</h2>
+<p>Make sure you are linking homebrew (follow my note for installing postgres from
+source), and if you have error about missing symbols, add the following at the
+end of the <code>gcc</code> command:</p>
+<pre><code class="language-sh">gcc -Wall ... -lz -lssl -lcrypto
+</code></pre>
 </body>
 </html>

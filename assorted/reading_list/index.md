@@ -81,4 +81,5 @@ Reading list resources:
 
 ## Health
 
-- The 21 Former Doctor Secrets
+- The 21 Former Doctor Secrets.
+- Bad Therapy: Why Kids aren't growing up.

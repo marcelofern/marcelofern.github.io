@@ -59,11 +59,12 @@
   <![endif]-->
 </head>
 <body>
-<h1>Profiling Postgres</h1>
+<h1>Profiling Postgres On Linux</h1>
 <pre><code>Created at: 2024-10-24
 </code></pre>
 <p>This post is about profiling Postgres <strong>on Linux</strong>. The profiling tools used
-here are not OS agnostic. Alternatives for BSD and MacOs may exist.</p>
+here are not OS agnostic. Alternatives for BSD and MacOs may exist. I have
+written a separated note for Mac, so check that out if you are interested.</p>
 <p>The main goal is to check what happens when a Postgres query is triggered.</p>
 <h2>Building Postgres From Source</h2>
 <p>Follow my note called &quot;Building From Source&quot;.</p>
@@ -142,7 +143,6 @@ where application_name = 'psql' and pid != pg_backend_pid();
 </code></pre>
 <p>Now open a new terminal, and start the profiler:</p>
 <pre><code class="language-sh">PID=110540
-#perf record -a -g -s --call-graph dwarf -p ${PID}
 perf record -a -s --call-graph dwarf -p ${PID}
 </code></pre>
 <p>Back on the psql shell, drop the constraint and then close the psql process to
