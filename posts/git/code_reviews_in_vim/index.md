@@ -121,4 +121,3 @@ comments in vim makes it easier to edit the comment than say, the GitHub UI.
 
 Note: There are ways to embed vim into a browser nowadays, but it often feels
 strange. I prefer to not use an embedded vim.
-

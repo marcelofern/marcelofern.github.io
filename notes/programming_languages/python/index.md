@@ -4,6 +4,7 @@
 - [`iterator`](programming_languages/python/django_orm_iterator.md)
 - [Migration state and operation](programming_languages/python/migration_state_and_operation.md)
 - [Testing django locally](programming_languages/python/testing_django_locally.md)
+- [default on Model Field](programming_languages/python/django/default_on_model_field.md)
 
 ## internals
 
