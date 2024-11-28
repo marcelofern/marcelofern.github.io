@@ -72,7 +72,15 @@ initialising the model field.
 If you aren't and you want a database DEFAULT for data-integrity purposes, you
 will have to use `SeparateDatabaseAndState`.
 
-## Outro
+## Outro: Table Rewrites
+
+Adding the column with a DEFAULT and then dropping the DEFAULT does not execute
+a table rewrite.
+
+All the existing rows will be set with the DEFAULT, and new rows will be
+required to pass a value.
+
+## Outro: Callable Defaults
 
 This is legal:
 
