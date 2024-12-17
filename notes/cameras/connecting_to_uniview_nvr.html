@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Connecting to Uniview NVR</h1>
+<pre><code>Created at: 2024-14-12
+</code></pre>
+<h2>Install arp-scan</h2>
+<pre><code class="language-sh">yay arp-scan
+</code></pre>
+<h2>Find the interface if ip addr</h2>
+<pre><code class="language-sh">ip addr
+
+# 1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+#     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+#     inet 127.0.0.1/8 scope host lo
+#        valid_lft forever preferred_lft forever
+#     inet6 ::1/128 scope host noprefixroute
+#        valid_lft forever preferred_lft forever
+# 2: enp0s31f6: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc fq_codel state DOWN group default qlen 1000
+#     link/ether 98:fa:9b:5d:3b:fb brd ff:ff:ff:ff:ff:ff
+# 4: wlan0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default qlen 1000
+#     link/ether d4:d2:52:38:50:2c brd ff:ff:ff:ff:ff:ff
+#     inet 192.168.68.110/24 brd 192.168.68.255 scope global dynamic noprefixroute wlan0
+#        valid_lft 6525sec preferred_lft 6525sec
+#     inet6 fe80::282f:1538:8c5d:adc/64 scope link noprefixroute
+#        valid_lft forever preferred_lft forever
+</code></pre>
+<h2>Run arp-scan</h2>
+<pre><code class="language-sh">sudo arp-scan --interface=wlan0 --localnet
+# 192.168.68.103  48:ea:63:9d:ed:59       Zhejiang Uniview Technologies Co., Ltd.
+</code></pre>
+<h2>Open your browser with that ip address</h2>
+<ol>
+<li>The browser version only works on Windows.</li>
+<li>If it's the first time you're connecting, the user/pass will be the
+default. Google the name of your device and &quot;default user&quot;</li>
+</ol>
+</body>
+</html>

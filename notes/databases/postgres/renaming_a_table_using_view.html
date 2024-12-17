@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Renaming A Table Using View</h1>
+<pre><code>Created at: 2024-12-11
+</code></pre>
+<p>Modern applications usually run schema changes <em>before</em> they deploy the code
+that uses the new schema changes.</p>
+<p>In a situation where blue/green deployment is happening, you might need to
+keep both names for a time-window while the schema changes and deploys are
+happening.</p>
+<p>You can use an updatable VIEW for this. So for example:</p>
+<pre><code class="language-sql">BEGIN;
+
+ALTER TABLE foo RENAME TO new_foo;
+
+CREATE VIEW foo AS SELECT * FROM new_foo;
+
+COMMIT;
+</code></pre>
+<h2>Note 1: This works for both reads and writes</h2>
+<blockquote>
+<p>Simple views are automatically updatable: the system will allow INSERT,
+UPDATE and DELETE statements to be used on the view in the same way as on a
+regular table. A view is automatically updatable if it satisfies all of the
+following conditions:
+(...)</p>
+<ul>
+<li>All columns in the view's select list must be simple references to columns
+of the underlying relation. They cannot be expressions, literals or
+functions. System columns cannot be referenced, either.</li>
+</ul>
+</blockquote>
+<p>It doesn't matter if the table:</p>
+<ul>
+<li>has a trigger</li>
+<li>has a constraint</li>
+</ul>
+<p>It will all work properly. For example:</p>
+<pre><code class="language-sql">DROP VIEW IF EXISTS foo_view;
+DROP TABLE IF EXISTS foo;
+DROP TABLE IF EXISTS foo_log;
+
+CREATE TABLE foo (id SERIAL, bar INT);
+CREATE VIEW foo_view AS SELECT * FROM foo;
+CREATE TABLE foo_log (
+    id SERIAL,
+    foo_id INT,
+    action TEXT,
+    log_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Add a trigger function.
+CREATE OR REPLACE FUNCTION log_foo_insert() 
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO foo_log(foo_id, action) 
+    VALUES (NEW.id, 'INSERT');
+    RETURN NEW;
+END;
+$$
+ LANGUAGE plpgsql;
+
+-- And a trigger itself.
+CREATE TRIGGER after_insert_foo
+AFTER INSERT ON foo
+FOR EACH ROW
+EXECUTE FUNCTION log_foo_insert();
+
+-- Create a constraint
+ALTER TABLE foo ADD CONSTRAINT bar_is_positive CHECK (bar &gt;= 0);
+
+-- Insert data into foo
+INSERT INTO foo (bar) SELECT generate_series(1, 10000);
+
+-- Test an insert that goes through normally.
+-- Also verify that both the table and the view return the same row.
+-- Also verify that the log table 
+INSERT INTO foo (bar) VALUES (42);
+INSERT INTO foo_view (bar) VALUES (43);
+SELECT * FROM foo ORDER BY id DESC limit 2;
+SELECT * FROM foo_view ORDER BY id DESC limit 2;
+SELECT * FROM foo_log ORDER BY id DESC limit 2;
+-- Test an insert that fails due to a constraint check.
+INSERT INTO foo (bar) VALUES (-1);
+INSERT INTO foo_view (bar) VALUES (-1);
+--&gt; ERROR:  new row for relation &quot;foo&quot; violates check constraint &quot;bar_is_positive&quot;
+--&gt; DETAIL:  Failing row contains (10003, -1).
+
+-- Test an update that goes through normally.
+UPDATE foo SET bar = 777 WHERE bar = 42;
+UPDATE foo_view SET bar = 7777777 WHERE bar = 43;
+SELECT * FROM foo ORDER BY id DESC limit 2;
+SELECT * FROM foo_view ORDER BY id DESC limit 2;
+SELECT * FROM foo_log ORDER BY id DESC limit 2;
+-- Test an update that fails due to a constraint check.
+UPDATE foo SET bar = -1 WHERE bar = 777;
+UPDATE foo SET bar = -1 WHERE bar = 7777777;
+ERROR:  new row for relation &quot;foo&quot; violates check constraint &quot;bar_is_positive&quot;
+DETAIL:  Failing row contains (43, -1).
+
+-- Test a delete that goes through.
+DELETE FROM foo WHERE bar = 777;
+DELETE FROM foo_view WHERE bar = 7777777;
+SELECT * FROM foo ORDER BY id DESC limit 2;
+SELECT * FROM foo_view ORDER BY id DESC limit 2;
+SELECT * FROM foo_log ORDER BY id DESC limit 2;
+
+-- Create an index to verify that both plans for the view and table
+-- are updated to use it.
+CREATE INDEX bar_idx ON foo (bar);
+EXPLAIN (analyze, timing off, costs off) SELECT bar FROM foo WHERE bar = 10000;
+--                           QUERY PLAN
+-- --------------------------------------------------------------
+--  Index Only Scan using bar_idx on foo (actual rows=1 loops=1)
+--    Index Cond: (bar = 10000)
+--    Heap Fetches: 1
+--  Planning Time: 0.278 ms
+--  Execution Time: 0.528 ms
+-- (5 rows)
+EXPLAIN (analyze, timing off, costs off) SELECT bar FROM foo_view WHERE bar = 10000;
+--                           QUERY PLAN
+-- --------------------------------------------------------------
+--  Index Only Scan using bar_idx on foo (actual rows=1 loops=1)
+--    Index Cond: (bar = 10000)
+--    Heap Fetches: 1
+--  Planning Time: 0.266 ms
+--  Execution Time: 0.068 ms
+-- (5 rows)
+
+-- Adding a column messes up with the assumptions.
+-- The view can't see this new column.
+ALTER TABLE foo ADD COLUMN baz INT DEFAULT 42;
+SELECT * FROM foo ORDER BY id DESC limit 2;
+-- The baz column can't be seen from this view.
+SELECT * FROM foo_view ORDER BY id DESC limit 2;
+-- Inserting won't work
+INSERT INTO foo_view (bar, baz) VALUES (42, 24);
+-- ERROR:  column &quot;baz&quot; of relation &quot;foo_view&quot; does not exist
+-- LINE 1: INSERT INTO foo_view (bar, baz) VALUES (42, 24);
+--
+-- However, inserting just bar is fine, as the underlying table
+-- has a default value
+INSERT INTO foo_view (bar) VALUES (42);
+
+-- If the table had a new field without default, you'd be stuck:
+ALTER TABLE foo ALTER COLUMN baz DROP DEFAULT;
+ALTER TABLE foo ALTER COLUMN baz SET NOT NULL;
+INSERT INTO foo_view (bar) VALUES (42);
+-- ERROR:  null value in column &quot;baz&quot; of relation &quot;foo&quot; violates not-null constraint
+-- DETAIL:  Failing row contains (10006, 42, null).
+</code></pre>
+<h2>Note 2: The transaction does not scan the table while holding an AccessExclusive lock</h2>
+<p>The <code>CREATE VIEW foo AS SELECT * FROM new_foo;</code> command is super fast no matter
+the size of the table.</p>
+<p>For example, inject some data in that table:</p>
+<pre><code class="language-sql">SET client_min_messages=debug1;
+
+DROP TABLE IF EXISTS foo;
+CREATE TABLE foo (id SERIAL, val int);
+
+INSERT INTO foo (val) SELECT generate_series(1, 100000);
+</code></pre>
+<p>Now open a transaction to perform the alterations</p>
+<pre><code class="language-sql">BEGIN;
+
+-- Takes an AccessExclusiveLock
+ALTER TABLE foo RENAME TO new_foo;
+
+-- Takes an AccessShareLock
+CREATE VIEW foo AS SELECT * FROM new_foo;
+
+-- Query to check the locks held from a separated psql shell
+SELECT
+    l.locktype,
+    l.mode,
+    l.granted,
+    l.relation,
+    c.relname,
+    a.query,
+    now() - a.backend_start AS lock_duration
+FROM
+    pg_locks l
+JOIN
+    pg_stat_activity a ON l.pid = a.pid
+JOIN
+    pg_class c ON c.oid = l.relation
+WHERE
+    a.pid != pg_backend_pid();
+
+ROLLBACK;
+</code></pre>
+<p>You'll see both the AccessExclusiveLock and AccessShareLock being acquired.</p>
+<p>Finally, this script below performs a basic benchmark to see how well this
+performs as the size of tables increase:</p>
+<pre><code class="language-python">import time
+import psycopg2
+
+# Change these before running locally.
+DB_NAME = &quot;rename_view&quot;
+USER = &quot;marcelo.fernandes&quot;
+PASSWORD = &quot;&quot;
+HOST = &quot;localhost&quot;
+PORT = 5415
+NUM_OF_ROWS = [
+    1_000,
+    100_000,
+    1_000_000,
+    10_000_000,
+]
+
+
+def get_cursor_and_connection():
+    conn = psycopg2.connect(
+        dbname=DB_NAME,
+        user=USER,
+        password=PASSWORD,
+        host=HOST,
+        port=PORT,
+    )
+    conn.autocommit = True
+    return conn.cursor(), conn
+
+
+def create_table(cursor):
+    print(&quot;- Creating table...&quot;)
+    cursor.execute(&quot;&quot;&quot;
+        DROP VIEW IF EXISTS foo_view;
+        DROP TABLE IF EXISTS foo;
+        DROP TABLE IF EXISTS new_foo;
+        CREATE TABLE foo (
+            id SERIAL PRIMARY KEY,
+            bar int
+        );
+        -- Disable autovacuum to not interfere with results.
+        ALTER TABLE foo SET (autovacuum_enabled = false);
+
+        CREATE INDEX foo_bar_idx ON foo (bar);
+    &quot;&quot;&quot;)
+
+
+def vacuum_tables(cursor):
+    print(&quot;- Vacuuming foo table...&quot;)
+    start_time = time.time()
+    cursor.execute(&quot;VACUUM ANALYZE foo;&quot;)
+    duration = time.time() - start_time
+    print(f&quot;- Vacuum (foo) took: {duration:.2f} seconds.&quot;)
+
+
+def populate_table(cursor, num_of_rows):
+    print(&quot;- Populating (foo) table...&quot;)
+    start_time = time.time()
+    cursor.execute(f&quot;INSERT INTO foo (bar) SELECT generate_series(1, {num_of_rows});&quot;)
+    duration = time.time() - start_time
+    print(f&quot;- Populating (foo) took: {duration:.2f} seconds.&quot;)
+
+
+def benchmark_rename(cursor):
+    print(&quot;- Benchmarking rename...&quot;)
+    start_time = time.time()
+    cursor.execute(&quot;begin;&quot;)
+    cursor.execute(&quot;alter table foo rename to new_foo;&quot;)
+    cursor.execute(&quot;create view foo_view as select * from new_foo;&quot;)
+    cursor.execute(&quot;commit;&quot;)
+    duration = time.time() - start_time
+    print(f&quot;- benchmarking took: {duration:.2f} seconds.&quot;)
+
+
+def run_tests():
+    print(&quot;\nReport details:\n&quot;)
+    cursor, conn = get_cursor_and_connection()
+
+    for num_of_rows in NUM_OF_ROWS:
+        print(f&quot;\n- **Bench mark for {num_of_rows} rows**&quot;)
+        print(&quot;---------------------------------------&quot;)
+        create_table(cursor)
+        populate_table(cursor, num_of_rows)
+        vacuum_tables(cursor)
+        benchmark_rename(cursor)
+
+    cursor.close()
+    conn.close()
+
+
+if __name__ == &quot;__main__&quot;:
+    run_tests()
+</code></pre>
+<p>The results are:</p>
+<pre><code>Report details:
+
+
+- **Bench mark for 1000 rows**
+---------------------------------------
+- Creating table...
+- Populating (foo) table...
+- Populating (foo) took: 0.01 seconds.
+- Vacuuming foo table...
+- Vacuum (foo) took: 0.00 seconds.
+- Benchmarking rename...
+- benchmarking took: 0.00 seconds.
+
+- **Bench mark for 100000 rows**
+---------------------------------------
+- Creating table...
+- Populating (foo) table...
+- Populating (foo) took: 0.57 seconds.
+- Vacuuming foo table...
+- Vacuum (foo) took: 0.02 seconds.
+- Benchmarking rename...
+- benchmarking took: 0.00 seconds.
+
+- **Bench mark for 1000000 rows**
+---------------------------------------
+- Creating table...
+- Populating (foo) table...
+- Populating (foo) took: 5.10 seconds.
+- Vacuuming foo table...
+- Vacuum (foo) took: 0.11 seconds.
+- Benchmarking rename...
+- benchmarking took: 0.00 seconds.
+
+- **Bench mark for 10000000 rows**
+---------------------------------------
+- Creating table...
+- Populating (foo) table...
+- Populating (foo) took: 50.87 seconds.
+- Vacuuming foo table...
+- Vacuum (foo) took: 1.04 seconds.
+- Benchmarking rename...
+- benchmarking took: 0.00 seconds.
+</code></pre>
+<h2>Outro</h2>
+<ul>
+<li><a href="https://brandur.org/fragments/postgres-table-rename">extra resource</a></li>
+</ul>
+</body>
+</html>

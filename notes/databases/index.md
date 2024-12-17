@@ -8,9 +8,13 @@
 
 ## Outages
 
-- [FKs without downtime](databases/postgres/fks_without_downtime.md)
+- [FKs Without Downtime](databases/postgres/fks_without_downtime.md)
 - [Long Transactions](databases/postgres/long_transactions.md)
 - [DEFAULT](databases/postgres/default.md)
+- [Drop Column With Index](databases/postgres/drop_column_with_index.md)
+- [CHECK Constraints without Downtime](databases/postgres/check_constraints_without_downtime.md)
+- [Is This DDL Going To Rewrite The Table?](databases/postgres/is_this_ddl_going_to_rewrite_the_table.md)
+- [Renaming A Table Using VIEW](databases/postgres/renaming_a_table_using_view.md)
 
 ## Indexing
 
@@ -19,6 +23,7 @@
 - [Postgres BRIN index](databases/postgres/postgres_brin_index.md)
 - [No Automatic Index on FKs](databases/postgres/no_automatic_index_on_fks.md)
 - [DROP INDEX CONCURRENTLY](databases/postgres/drop_index_concurrently.md)
+- [Composed index vs denormalised column index](databases/postgres/composed_index_vs_denormalised_column_index.md)
 
 ## Planning
 
@@ -29,6 +34,8 @@
 - [`lock_timeout`](databases/postgres/lock_timeout.md)
 - [Locks cheatsheet](databases/postgres/locks_cheatsheet.md)
 - [Print lock for query](databases/postgres/print_lock_for_query.md)
+- [Deadlock Demonstration](databases/postgres/deadlock_demonstration.md)
+- [Advisory Lock](databases/postgres/advisory_lock.md)
 
 ## Testing
 
@@ -37,6 +44,7 @@
 ## Performance
 
 - [OR queries](databases/postgres/or_queries.md)
+- [JSON filtering vs text casting](databases/postgres/json_filtering_vs_text_casting.md)
 
 ## Internals
 
@@ -53,3 +61,8 @@
 ## Transactions
 
 - [Transaction Isolation](databases/postgres/transaction_isolation.md)
+
+
+## PSQL
+
+- [A Basic psql Workflow](databases/postgres/psql/a_basic_psql_workflow.md)

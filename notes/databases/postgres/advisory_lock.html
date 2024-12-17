@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Advisory Lock</h1>
+<pre><code>Created at: 2024-12-05
+</code></pre>
+<p>From the docs:</p>
+<blockquote>
+<p>PostgreSQL provides a means for creating locks that have application-defined
+meanings. These are called advisory locks, because the system does not
+enforce their use — it is up to the application to use them correctly.
+Advisory locks can be useful for locking strategies that are an awkward fit
+for the MVCC model.</p>
+</blockquote>
+<blockquote>
+<p>For example, a common use of advisory locks is to emulate pessimistic locking
+strategies typical of so-called “flat file” data management systems. While a
+flag stored in a table could be used for the same purpose, advisory locks are
+faster, avoid table bloat, and are automatically cleaned up by the server at
+the end of the session.</p>
+</blockquote>
+<blockquote>
+<p>There are two ways to acquire an advisory lock in PostgreSQL: at session
+level or at transaction level. Unlike standard lock requests, session-level
+advisory lock requests do not honor transaction semantics: a lock acquired
+during a transaction that is later rolled back will still be held following
+the rollback. Transaction-level lock requests, on the other hand, behave more
+like regular lock requests: they are automatically released at the end of the
+transaction, and there is no explicit unlock operation. This behavior is
+often more convenient than the session-level behavior for short-term usage of
+an advisory lock. Session-level and transaction-level lock requests for the
+same advisory lock identifier will block each other in the expected way</p>
+</blockquote>
+<h2>Gotchas</h2>
+<pre><code class="language-sql">SELECT pg_advisory_lock(id) FROM foo WHERE id = 12345; -- ok
+SELECT pg_advisory_lock(id) FROM foo WHERE id &gt; 12345 LIMIT 100; -- danger!
+SELECT pg_advisory_lock(q.id) FROM
+(
+  SELECT id FROM foo WHERE id &gt; 12345 LIMIT 100
+) q; -- ok
+</code></pre>
+<p>The second form is dangerous because the LIMIT is not guaranteed to be applied
+before the locking function is executed. This might cause some locks to be
+acquired that the application was not expecting, and hence would fail to
+release (until it ends the session).</p>
+<pre><code class="language-sql">-- session-level advisory lock
+SELECT pg_advisory_lock(1234);
+-- session-level advisory lock, but return immediately if lock is already
+-- acquired.
+SELECT pg_try_advisory_lock(1234);
+-- Release the lock explicitly (optional, as it will automatically release when
+-- the session ends)
+SELECT pg_advisory_unlock(1234);
+
+-- exclusive transaction-level advisory lock. No unlock option available.
+-- Docs say &quot;there is no provision for manual release&quot;.
+SELECT pg_advisory_xact_lock(1234);
+</code></pre>
+<h2>Finding advisory locks acquired by your process id</h2>
+<p>If you need to know if the application code already acquired the advisory lock
+you are after, you can perform this query:</p>
+<pre><code class="language-sql">BEGIN;
+
+SELECT pg_advisory_xact_lock(-8732361555977846743);
+-- This is the same as the above in 32bit.
+SELECT pg_advisory_xact_lock(1302970409);
+-- This is the max 32 bit
+SELECT pg_advisory_xact_lock(4294967295);
+-- This is the max 32 bit + 1
+SELECT pg_advisory_xact_lock(4294967296);
+
+SELECT * FROM pg_locks
+WHERE (
+    locktype = 'advisory'
+    AND classid = (-8732361555977846743 &gt;&gt; 32)
+    -- 4294967295 is 0xFFFFFFFF because our id is too large to fit in 32bits
+    AND objid = (-8732361555977846743 &amp; 4294967295)
+    AND pid != pg_backend_pid()
+);
+
+-- This doesn't work, the transformation needs to be done in the application
+-- code
+SELECT * FROM pg_locks
+WHERE (
+    locktype = 'advisory'
+    AND classid = (4294967296 &gt;&gt; 32)
+    AND objid = (4294967296 &amp; 4294967295)
+    AND pid != pg_backend_pid()
+);
+
+SELECT pg_advisory_xact_lock(1302970409);
+ROLLBACK;
+</code></pre>
+<p>In python:</p>
+<pre><code class="language-py">with transaction.atomic():
+    with connection.cursor() as cursor:
+        lock_id = 4294967296
+        high_part = lock_id &gt;&gt; 32
+        low_part = lock_id &amp; 0xFFFFFFFF
+        query = (
+            &quot;&quot;&quot;
+            -- This is the max 32 bit + 1
+            SELECT pg_advisory_xact_lock(4294967296);
+            SELECT pg_advisory_xact_lock(4294967295);
+            &quot;&quot;&quot;
+        )
+        cursor.execute(query)
+        lock_query = (
+            f&quot;SELECT * FROM pg_locks WHERE locktype = 'advisory' &quot;
+            f&quot;AND classid = {high_part} &quot;
+            f&quot;AND objid = {low_part} &quot;
+            f&quot;AND pid = pg_backend_pid()&quot;
+        )
+        print(lock_query)
+        cursor.execute(lock_query)
+        print(cursor.fetchall())
+</code></pre>
+<h2>Script for testing advisory session locks:</h2>
+<pre><code class="language-py">import time
+import psycopg2
+
+# Change these before running locally.
+DB_NAME = &quot;advisory_lock&quot;
+USER = &quot;marcelo.fernandes&quot;
+PASSWORD = &quot;&quot;
+HOST = &quot;localhost&quot;
+PORT = 5415
+
+
+def get_cursor_and_connection():
+    conn = psycopg2.connect(
+        dbname=DB_NAME,
+        user=USER,
+        password=PASSWORD,
+        host=HOST,
+        port=PORT,
+    )
+    conn.autocommit = True
+    return conn.cursor(), conn
+
+
+def maybe_get_advisory_session_lock(cursor):
+    print(&quot;- Acquiring advisory lock...&quot;)
+    cursor.execute(&quot;SELECT pg_try_advisory_lock(12345);&quot;)
+    result = cursor.fetchone()[0]
+    print(f&quot;- result: {result}&quot;)
+    if result is True:
+        time.sleep(60)
+        return
+    assert result is False
+
+
+def run():
+    cursor, conn = get_cursor_and_connection()
+    maybe_get_advisory_session_lock(cursor)
+    cursor.close()
+    conn.close()
+
+
+if __name__ == &quot;__main__&quot;:
+    run()
+</code></pre>
+</body>
+</html>

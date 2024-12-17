@@ -17,6 +17,11 @@
 ## Electronics
 
 - [Components](components/index.md)
+- [Cameras](cameras/index.md)
+
+## Hardware
+
+- [Tools](hardware_tools/index.md)
 
 ## Etc.
 

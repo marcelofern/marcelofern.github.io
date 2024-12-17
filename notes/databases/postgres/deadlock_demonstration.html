@@ -59,35 +59,34 @@
   <![endif]-->
 </head>
 <body>
-<h2>High-level computing</h2>
-<ul>
-<li><a href="databases/index.html">Databases</a></li>
-<li><a href="message_brokers/index.html">Message brokers</a></li>
-<li><a href="programming_languages/index.html">Programming languages</a></li>
-<li><a href="security/index.html">Security</a></li>
-<li><a href="linux/index.html">Linux</a></li>
-<li><a href="macos/index.html">MacOs</a></li>
-<li><a href="version_control/index.html">Version Control</a></li>
-</ul>
-<h2>Low-level computing</h2>
-<ul>
-<li><a href="compilers/index.html">Compilers</a></li>
-<li><a href="computer_architecture/index.html">Computer architecture</a></li>
-<li><a href="embedded_development/index.html">Embedded development</a></li>
-</ul>
-<h2>Electronics</h2>
-<ul>
-<li><a href="components/index.html">Components</a></li>
-<li><a href="cameras/index.html">Cameras</a></li>
-</ul>
-<h2>Hardware</h2>
-<ul>
-<li><a href="hardware_tools/index.html">Tools</a></li>
-</ul>
-<h2>Etc.</h2>
-<ul>
-<li><a href="books/index.html">Notes on books</a></li>
-<li><a href="writing/index.html">Notes on writing</a></li>
-</ul>
+<h1>Deadlock Demonstration</h1>
+<pre><code>Created at: 2024-12-05
+</code></pre>
+<p>Given the following table:</p>
+<pre><code class="language-sql">DROP TABLE IF EXISTS foo;
+CREATE TABLE foo (id SERIAL, val integer UNIQUE);
+
+INSERT INTO foo (val) SELECT generate_series(1, 1000);
+</code></pre>
+<p>Open two psql shells, let's call them A and B.</p>
+<p>on A perform:</p>
+<pre><code class="language-sql">BEGIN;
+SELECT * FROM foo WHERE val = 1 FOR UPDATE;
+</code></pre>
+<p>And on B perform:</p>
+<pre><code class="language-sql">BEGIN;
+SELECT * FROM foo WHERE val = 2 FOR UPDATE;
+</code></pre>
+<p>Go back to A and perform:</p>
+<pre><code class="language-sql">UPDATE foo SET val = 42 WHERE val = 2
+</code></pre>
+<p>And go back to B and perform:</p>
+<pre><code class="language-sql">UPDATE foo SET val = 777 WHERE val = 1
+</code></pre>
+<p>You should see an error like:</p>
+<pre><code>ERROR:  deadlock detected
+DETAIL:  Process 49152 waits for ShareLock on transaction 74166; blocked by process 51444.
+Process 51444 waits for ShareLock on transaction 74165; blocked by process 49152.
+</code></pre>
 </body>
 </html>

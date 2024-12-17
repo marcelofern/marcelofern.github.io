@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>CHECK constraints without downtime</h1>
+<pre><code>Created at: 2024-12-09
+</code></pre>
+<p>The following ddl is used to add a check constraint on an existing table:</p>
+<pre><code class="language-sql">ALTER TABLE foo ADD CONSTRAINT bar_not_negative CHECK (bar &gt;= 0);
+</code></pre>
+<p>However, this operation can be dangerous and create an outage on your app.</p>
+<p>For example, imagine the following schema:</p>
+<pre><code class="language-sql">DROP TABLE IF EXISTS foo;
+CREATE TABLE foo (id SERIAL, bar int);
+
+-- Add a bit of data
+INSERT INTO foo (bar) SELECT generate_series(1, 10000);
+</code></pre>
+<p>Now in a transaction, add the following CHECK constraint:</p>
+<pre><code class="language-sql">-- Get debug information
+SET client_min_messages=debug1;
+BEGIN;
+ALTER TABLE foo ADD CONSTRAINT bar_not_negative CHECK (bar &gt;= 0);
+
+-- Just leave the transaction open for now.
+</code></pre>
+<p>Now let's see which locks this transaction is holding by opening another psql
+shell and executing:</p>
+<pre><code class="language-sql">SELECT
+    l.locktype,
+    l.mode,
+    l.granted,
+    l.relation,
+    c.relname,
+    a.query,
+    now() - a.backend_start AS lock_duration
+FROM
+    pg_locks l
+JOIN
+    pg_stat_activity a ON l.pid = a.pid
+JOIN
+    pg_class c ON c.oid = l.relation
+WHERE
+    -- change it to the pid of the psql shell executing the ALTER TABLE.
+    a.pid = 21665;
+</code></pre>
+<pre><code> locktype |        mode         | granted | relation | relname |
+----------+---------------------+---------+----------+---------+
+ relation | AccessExclusiveLock | t       |  2007262 | foo     |
+</code></pre>
+<p>An AccessExclusiveLock will block all reads and writes on the table while the
+constraint is being added. It's the highest level of locking in Postgres.</p>
+<p>You'll also see that Postgres printed:</p>
+<pre><code>DEBUG:  verifying table &quot;foo&quot;
+</code></pre>
+<p>This means that Postgres is going through the whole table to check for any
+existing violation of the CHECK constraint. And it does that while holding an
+Access Exclusive lock.</p>
+<h2>A better way</h2>
+<p>First create a NOT VALID constraint</p>
+<pre><code class="language-sql">BEGIN;
+ALTER TABLE foo ADD CONSTRAINT bar_not_negative CHECK (bar &gt;= 0) NOT VALID;
+</code></pre>
+<p>You'll notice that postgres didn't print <code>verifying table &quot;foo&quot;</code>. That is
+because it doesn't have too. The constraint will only be enforced for new
+writes.</p>
+<p>Note that this operation still holds an AccessExclusiveLock, but because it
+doesn't need to verify the whole table, it runs very fast.</p>
+<p>Then, you can validate the constraint in a separated step:</p>
+<pre><code class="language-sql">ALTER TABLE foo VALIDATE CONSTRAINT bar_not_negative;
+</code></pre>
+<p>This time Postgres will print <code>verifying table &quot;foo&quot;</code>, but it will only acquire
+a ShareUpdateExclusiveLock in this case, which won't block any reads or writes
+on that table.</p>
+</body>
+</html>

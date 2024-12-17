@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>JSON Filtering Versus Text Casting</h1>
+<pre><code>Created at: 2024-12-06
+</code></pre>
+<p>Which is faster:</p>
+<pre><code class="language-sql">SELECT *
+FROM json_table
+WHERE params-&gt;&gt;'unique_id' = '0000000001';
+</code></pre>
+<p>Or:</p>
+<pre><code class="language-sql">SELECT *
+FROM json_table
+WHERE params::text like '%0000000001%';
+</code></pre>
+<p>Let's benchmark it.</p>
+<h2>Create the database</h2>
+<pre><code class="language-sql">CREATE DATABASE json_test;
+</code></pre>
+<h2>Run this python script</h2>
+<pre><code class="language-py">import time
+import re
+import random
+import psycopg2
+
+# Change these before running locally.
+DB_NAME = &quot;json_test&quot;
+USER = &quot;marcelo.fernandes&quot;
+PASSWORD = &quot;&quot;
+HOST = &quot;localhost&quot;
+PORT = 5415
+NUM_OF_ROWS = 10_000_000
+INSERT_ROWS_PER_BATCH = 1000_000
+NUM_OF_QUERIES = 30_000
+
+# Uncomment these on local dev for tests to run fast.
+# NUM_OF_ROWS = 10_000
+# INSERT_ROWS_PER_BATCH = 1000
+# NUM_OF_QUERIES = 1
+
+
+def get_cursor_and_connection():
+    conn = psycopg2.connect(
+        dbname=DB_NAME,
+        user=USER,
+        password=PASSWORD,
+        host=HOST,
+        port=PORT,
+    )
+    conn.autocommit = True
+    return conn.cursor(), conn
+
+
+def create_table(cursor):
+    print(&quot;- Creating normalised table...&quot;)
+    cursor.execute(&quot;&quot;&quot;
+        -- Idempotency for convenience.
+        DROP TABLE IF EXISTS json_test;
+        CREATE TABLE json_test (
+            id SERIAL PRIMARY KEY,
+            params jsonb
+        );
+        -- Disable autovacuum to not interfere with results.
+        ALTER TABLE json_test SET (autovacuum_enabled = false);
+    &quot;&quot;&quot;)
+
+
+def vacuum_table(cursor):
+    print(&quot;- Vacuuming table...&quot;)
+    start_time = time.time()
+    cursor.execute(&quot;VACUUM ANALYZE json_test;&quot;)
+    duration = time.time() - start_time
+    print(f&quot;- Vacuum took: {duration:.2f} seconds.&quot;)
+
+
+def populate_table(cursor):
+    print(&quot;- Populating table...&quot;)
+    start_time = time.time()
+    for batch in range(int(NUM_OF_ROWS / INSERT_ROWS_PER_BATCH)):
+        rows = []
+        for i in range(INSERT_ROWS_PER_BATCH):
+            val = i + (batch * INSERT_ROWS_PER_BATCH)
+            json_val = str({&quot;unique_id&quot;: str(val).zfill(10)})
+            json_val = json_val.replace(&quot;'&quot;, '&quot;')
+            rows.append(f&quot;('{json_val}')&quot;)
+
+        values = &quot;, &quot;.join(rows)
+        cursor.execute(f&quot;INSERT INTO json_test (params) VALUES {values};&quot;)
+    duration = time.time() - start_time
+    print(f&quot;- Populating took: {duration:.2f} seconds.&quot;)
+
+
+def benchmark_json_queries(cursor, values):
+    print(
+        f&quot;- Benchmarking {NUM_OF_QUERIES:,} filtered queries against json_test table...&quot;
+    )
+    explain_outputs = []
+
+    for i in range(NUM_OF_QUERIES):
+        val = str(values[i]).zfill(10)
+        query = f&quot;SELECT params FROM json_test where params-&gt;&gt;'unique_id' = '{val}' AND id={values[i]} LIMIT 1;&quot;
+        cursor.execute(f&quot;EXPLAIN (ANALYSE, BUFFERS, costs off, summary off) {query}&quot;)
+        explain_outputs.append(cursor.fetchall())
+    print_explain_info(explain_outputs)
+
+
+def benchmark_cast_queries(cursor, values):
+    print(
+        f&quot;- Benchmarking {NUM_OF_QUERIES:,} casted queries against json_test table...&quot;
+    )
+    explain_outputs = []
+
+    for i in range(NUM_OF_QUERIES):
+        val = str(values[i]).zfill(10)
+        query = f&quot;SELECT params FROM json_test where params::text like '%{val}%' and id={values[i]} LIMIT 1;&quot;
+        cursor.execute(f&quot;EXPLAIN (ANALYSE, BUFFERS, costs off, summary off) {query}&quot;)
+        explain_outputs.append(cursor.fetchall())
+    print_explain_info(explain_outputs)
+
+
+def print_explain_info(explain_outputs):
+    shared_hit = 0
+    shared_read = 0
+    shared_written = 0
+    total_timing = (0, 0)
+
+    for explain_output in explain_outputs:
+        found_buffers = False
+        for line in explain_output:
+            line = line[0]
+            if line.startswith(&quot;  Buffers:&quot;) and found_buffers is False:
+                found_buffers = True
+                # Look for buffer stats in the output using regular expressions
+                match = re.search(r&quot;shared hit=(\d+)&quot;, line)
+                if match:
+                    shared_hit += int(match.group(1))
+                match = re.search(r&quot;read=(\d+)&quot;, line)
+                if match:
+                    shared_read += int(match.group(1))
+                match = re.search(r&quot;written=(\d+)&quot;, line)
+                if match:
+                    shared_written += int(match.group(1))
+
+        timing = explain_output[0][0].split(&quot;actual time=&quot;)[1].split(&quot; &quot;)[0].split(&quot;..&quot;)
+        total_timing = (
+            total_timing[0] + float(timing[0]),
+            total_timing[1] + float(timing[1]),
+        )
+
+    size = len(explain_outputs)
+    print(f&quot;  - average timing = {total_timing[0]/size}..{total_timing[1]/size}&quot;)
+    print(f&quot;  - average buffers hit {shared_hit/size}&quot;)
+    print(f&quot;  - average buffers read {shared_read/size}&quot;)
+    print(f&quot;  - average buffers written {shared_written/size}&quot;)
+
+
+def run_tests():
+    print(
+        f&quot;\nReport details:\n&quot;
+        f&quot;  - rows in each table: {NUM_OF_ROWS:,}\n&quot;
+        f&quot;  - number of queries to benchmark: {NUM_OF_QUERIES:,}\n&quot;
+    )
+    cursor, conn = get_cursor_and_connection()
+
+    create_table(cursor)
+    populate_table(cursor)
+    vacuum_table(cursor)
+
+    query_values = [random.randint(0, NUM_OF_ROWS) for _ in range(NUM_OF_QUERIES)]
+    # Run a first time just to warm the cache
+    benchmark_json_queries(cursor, query_values)
+    # Then run both twice to see if results approximate
+    benchmark_json_queries(cursor, query_values)
+    benchmark_json_queries(cursor, query_values)
+    benchmark_cast_queries(cursor, query_values)
+    benchmark_cast_queries(cursor, query_values)
+
+    cursor.close()
+    conn.close()
+
+
+if __name__ == &quot;__main__&quot;:
+    run_tests()
+</code></pre>
+<p>My results on a Mac M3 were:</p>
+<pre><code>Report details:
+  - rows in each table: 10,000,000
+  - number of queries to benchmark: 30,000
+
+- Creating normalised table...
+- Populating table...
+- Populating took: 65.19 seconds.
+- Vacuuming table...
+- Vacuum took: 1.11 seconds.
+- Benchmarking 30,000 filtered queries against json_test table...
+  - average timing = 0.0612612333333632..0.061360566666695864
+  - average buffers hit 2.366033333333333
+  - average buffers read 1.6339666666666666
+  - average buffers written 0.47733333333333333
+- Benchmarking 30,000 filtered queries against json_test table...
+  - average timing = 0.006311566666667494..0.006429833333334426
+  - average buffers hit 2.3832666666666666
+  - average buffers read 1.6167333333333334
+  - average buffers written 0.0
+- Benchmarking 30,000 filtered queries against json_test table...
+  - average timing = 0.006281566666667511..0.006394300000001098
+  - average buffers hit 2.3860333333333332
+  - average buffers read 1.6139666666666668
+  - average buffers written 0.0
+- Benchmarking 30,000 casted queries against json_test table...
+  - average timing = 0.006742533333335034..0.006844266666668509
+  - average buffers hit 2.3859666666666666
+  - average buffers read 1.6140333333333334
+  - average buffers written 0.0
+- Benchmarking 30,000 casted queries against json_test table...
+  - average timing = 0.006723433333335083..0.0068289666666686245
+  - average buffers hit 2.3852333333333333
+  - average buffers read 1.6147666666666667
+  - average buffers written 0.0
+</code></pre>
+<h2>Profiling</h2>
+<pre><code class="language-sql">SELECT * FROM json_test
+WHERE id=10000000 AND params-&gt;&gt;'unique_id' = '0009999999' LIMIT 1;
+</code></pre>
+<p>Versus</p>
+<pre><code class="language-sql">SELECT * FROM json_test
+WHERE id=10000000 AND params::text like '%0009999999%' LIMIT 1;
+</code></pre>
+<p>I couldn't find any significant differences.</p>
+</body>
+</html>
