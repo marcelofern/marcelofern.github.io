@@ -175,6 +175,8 @@ for dir in */; do
     fi
     cd ..
 done
+
+cd ..
 </code></pre>
 <h2>Initialising and starting the server</h2>
 <pre><code class="language-sh">VERSION=15
@@ -198,7 +200,7 @@ build/bin/createdb --port=${PORT} ${DBNAME}
 # commands from the top of my head.
 echo &quot;rm -f logfile &amp;&amp; build/bin/pg_ctl -D build/data -l logfile start&quot; &gt; server_start.sh
 echo &quot;build/bin/pg_ctl -D build/data stop&quot; &gt; server_stop.sh
-echo &quot;build/bin/psql --port=${PORT} --dbname=${DBNAME} \$@&quot; &gt; psql.sh
+echo &quot;build/bin/psql -E -e --port=${PORT} --dbname=${DBNAME} \&quot;\$@\&quot;&quot; &gt; psql.sh
 
 chmod +x server_start.sh
 chmod +x server_stop.sh

@@ -12,7 +12,7 @@
 - [Long Transactions](databases/postgres/long_transactions.md)
 - [DEFAULT](databases/postgres/default.md)
 - [Drop Column With Index](databases/postgres/drop_column_with_index.md)
-- [CHECK Constraints without Downtime](databases/postgres/check_constraints_without_downtime.md)
+- [CHECK Constraints Without Downtime](databases/postgres/check_constraints_without_downtime.md)
 - [Is This DDL Going To Rewrite The Table?](databases/postgres/is_this_ddl_going_to_rewrite_the_table.md)
 - [Renaming A Table Using VIEW](databases/postgres/renaming_a_table_using_view.md)
 
@@ -24,6 +24,7 @@
 - [No Automatic Index on FKs](databases/postgres/no_automatic_index_on_fks.md)
 - [DROP INDEX CONCURRENTLY](databases/postgres/drop_index_concurrently.md)
 - [Composed index vs denormalised column index](databases/postgres/composed_index_vs_denormalised_column_index.md)
+- [REINDEX CONCURRENTLY](databases/postgres/indexes/reindex_concurrently.md)
 
 ## Planning
 
@@ -45,6 +46,7 @@
 
 - [OR queries](databases/postgres/or_queries.md)
 - [JSON filtering vs text casting](databases/postgres/json_filtering_vs_text_casting.md)
+- [Table bloat](databases/postgres/performance/table_bloat.md)
 
 ## Internals
 
@@ -61,7 +63,6 @@
 ## Transactions
 
 - [Transaction Isolation](databases/postgres/transaction_isolation.md)
-
 
 ## PSQL
 

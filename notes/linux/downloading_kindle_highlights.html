@@ -84,5 +84,15 @@ sudo rm -rf /mnt/kindle
 </code></pre>
 </li>
 </ol>
+<h2>Putting it all together</h2>
+<pre><code class="language-sh">DEVICE=/dev/sda
+sudo mkdir /mnt/kindle
+sudo mount $DEVICE /mnt/kindle
+cd /mnt/kindle/documents
+cp 'My Clippings.txt' ~/Downloads/my_clippings.txt
+cd ~
+sudo umount /mnt/kindle
+sudo rm -rf /mnt/kindle
+</code></pre>
 </body>
 </html>

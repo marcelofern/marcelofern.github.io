@@ -87,6 +87,8 @@ unnecessarily large number of pages, creating performance bottlenecks.
 <a href="https://hexacluster.ai/postgresql/rebuilding-tables-online-using-pg_repack-in-postgresql/">source</a></p>
 </blockquote>
 <p>The problem with VACUUM FULL is that it blocks reads and writes.</p>
+<p>An article worth reading is Amazon's &quot;Reducing bloat in tables and indexes with
+pg_repac <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.pg_repack.html">source</a></p>
 <h2>Requirements</h2>
 <ul>
 <li>To ensure efficient performance, the target table should possess either a

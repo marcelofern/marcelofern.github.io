@@ -86,6 +86,9 @@ Notes:
 ~/workspace/scripts/dotfiles.sh install
 ```
 
+Note: Change the `open_github_file.lua` plugin to include the prefix to
+exclude.
+
 ## Change default shell to bash
 
 MacOs comes with zsh by default, which isn't a great shell.

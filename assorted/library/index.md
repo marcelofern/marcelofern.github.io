@@ -93,10 +93,11 @@ ones in this list to be good enough to be shared with the public.
 - Stallman, Richard - Free as in freedom ([review](assorted/library/free-as-in-freedom/index.md))
 - Torvalds, Linus - Just for Fun ([review](assorted/library/just-for-fun/index.md))
 
-## Management
+## Management/Business
 
 - DeMarco, Tom - Peopleware. ([review](assorted/library/peopleware/index.md))
 - Meyer, Erin - The Culture Map. ([review](assorted/library/culture-map/index.md))
+- Voss, Chris - Never Split The Difference. ([review](assorted/library/never-split-the-difference/index.md))
 
 ## Pedagogy
 

@@ -32,6 +32,9 @@ Here is what it is capable of doing:
 
 The problem with VACUUM FULL is that it blocks reads and writes.
 
+An article worth reading is Amazon's "Reducing bloat in tables and indexes with
+pg_repac [source](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.pg_repack.html)
+
 ## Requirements
 
 - To ensure efficient performance, the target table should possess either a

@@ -28,3 +28,16 @@ Created at: 2024-09-04
    sudo umount /mnt/kindle
    sudo rm -rf /mnt/kindle
    ```
+
+## Putting it all together
+
+```sh
+DEVICE=/dev/sda
+sudo mkdir /mnt/kindle
+sudo mount $DEVICE /mnt/kindle
+cd /mnt/kindle/documents
+cp 'My Clippings.txt' ~/Downloads/my_clippings.txt
+cd ~
+sudo umount /mnt/kindle
+sudo rm -rf /mnt/kindle
+```
