@@ -84,6 +84,7 @@ ones in this list to be good enough to be shared with the public.
 
 ## Health
 
+- Brewer, Judson - Unwinding Anxiety ([review](assorted/library/unwinding-anxiety/index.md))
 - Walker, Matthew - Why We Sleep. ([review](assorted/library/why-we-sleep/index.md))
 
 ## General Technology

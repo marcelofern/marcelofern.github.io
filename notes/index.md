@@ -22,6 +22,7 @@
 ## Hardware
 
 - [Tools](hardware_tools/index.md)
+- [House Building](house_building/index.md)
 
 ## Etc.
 

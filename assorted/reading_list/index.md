@@ -20,6 +20,8 @@ Reading list resources:
 - The UNIX programming environment - Brian K. & Rob Pike
 - C Interfaces and Implementations - David Hanson
 - Working Effectively with Legacy Code - Michael C. Feathers
+- Understanding The Digital World - Brian Kerninghan
+- Coders at work - Peter Seibel
 
 ## Programming Languages
 
