@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Day 1</h1>
+<pre><code>Created at 2025-01-12
+</code></pre>
+<p>I am starting today with &quot;Appendix A: Math Review&quot; because I am almost sure
+that my maths are rusty.</p>
+<p>By order of importance (most important at the top), the relevant mathematical
+skills to be able to navigate this book are:</p>
+<ol>
+<li>Algebra</li>
+<li>Trigonometry</li>
+<li>Complex numbers</li>
+<li>Derivatives</li>
+</ol>
+<h2>Trigonometry - Exponentials - Logarithms</h2>
+<p>Trigonometry:</p>
+<pre><code>ax² + bx + c = 0
+x = (-b ± √(b² - 4ac)) / 2a
+</code></pre>
+<p>Sine and cosine:</p>
+<pre><code>sin(x±y) = sin(x)cos(y) ∓ cos(x)sin(y)
+
+cos(x±y) = cos(x)cos(y) ∓ sin(x)sin(y)
+
+sin(2x) = 2sin(x)cos(x)
+
+cos(x)cos(y) = ½[cos(x+y) + cos(x-y)]
+
+cos(x)sin(y) = ½[sin(x+y) - sin(x-y)]
+
+sin(x)sin(y) = ½[cos(x-y) - cos(x+y)]
+</code></pre>
+<p>Exponentials:</p>
+<pre><code>e^(x+y) = e^x * e^y
+
+e^(x-y) = e^x / e^y
+
+x^(a/b) = (x^a)^(-b)
+</code></pre>
+<p>Base (e) logs:</p>
+<pre><code>e^(log x) = x
+
+log(xy) = log(x) + log(y)
+
+log(x/y) = log(x) - log(y)
+
+log(x^n) = nlog(x)
+
+log(e^x) = x
+
+log(x) = 2.3log(base 10)(x)
+
+a^x = e^(xlog(a))
+</code></pre>
+<h2>Complex Numbers</h2>
+<p>Representation:</p>
+<pre><code>A complex number:
+N  = a + ib
+
+Complex conjugate (note the *):
+N* = a - ib
+
+Real part:
+N = R⌉(N)
+
+Imaginary part:
+N = I↕(N)
+
+Magnitude or Modulus:
+|N| = |a + ib| = √(NN*) = √[(a + ib)(a - ib)] = √(a²+b²)
+
+As x, y pairs on the imaginary pane
+a + ib ↔ (a,b)
+
+As polar coordinates:
+a + ib ↔ r ∠ Θ
+Where:
+r = |N| = √(a²+b²)
+Θ = tan-¹(b/a)
+Therefore:
+N = r*e^(iΘ)
+
+Converting from polar to rectangular form:
+r*e^(iΘ) = rcos(Θ) + irsin(Θ)
+
+When dealing with circuits and signals, the angular argument Θ often takes the
+form of an evolving wave:
+Θ = ωt = 2πft
+V(t) = R⌉(V*e^(iwt) = Vcos(wt)
+</code></pre>
+<p>Tips:</p>
+<ol>
+<li>The magnitude of the product of two imaginary numbers is the product of each
+of their magnitudes.</li>
+<li>Complex numbers can be added, subtracted, multiplied, etc., just like real
+numbers.</li>
+<li>Polar form is handy when complex numbers have to be multiplied or divided.
+For multiplication, you just multiply their magnitudes and add their angles.
+For division, you just divide their magnitudes and subtract their angles).</li>
+<li>Electrical engineers usually swap <code>i</code> for <code>j</code> to not confuse <code>i</code> with
+current.</li>
+</ol>
+</body>
+</html>

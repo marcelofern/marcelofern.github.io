@@ -14,3 +14,7 @@
 # Soups
 
 - [pumpkin soup](assorted/food_recipes/pumpkin_soup.md)
+
+# Mexican
+
+- [nachos](assorted/food_recipes/nachos.md)

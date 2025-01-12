@@ -7,6 +7,7 @@
 - [Linux](linux/index.md)
 - [MacOs](macos/index.md)
 - [Version Control](version_control/index.md)
+- [Text Editors](text_editors/index.md)
 
 ## Low-level computing
 
