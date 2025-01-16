@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Day 2</h1>
+<pre><code>Created at: 2025-01-13
+</code></pre>
+<h2>Definition: Functions</h2>
+<p>A function is a formula that gives a value:</p>
+<pre><code>y = f(x); ∀ x (for each x)
+</code></pre>
+<p>The function should be single valued. Meaning it gives a single value of y for
+each x.</p>
+<h2>Definition: Derivative</h2>
+<p>The derivative of y with respect to x is written as:</p>
+<pre><code>δy/δx (&quot;dee y, dee x&quot;)
+</code></pre>
+<p>It represents the slope of the graph of y versus x. The derivative is itself a
+function, given that it has a value for each point, representing the tangent
+to the curve on the graph at that point.</p>
+<h2>Deriviative of common functions</h2>
+<ul>
+<li><code>a</code> is a constant</li>
+</ul>
+<pre><code>(δ/δx)a = 0
+
+(δ/δx)ax = a
+
+(δ/δx)ax = a
+
+(δ/δx)ax^n = anx^(n-1)
+
+(δ/δx)sin(ax) = acos(ax)
+
+(δ/δx)cos(ax) = -asin(ax)
+
+(δ/δx)e^(ax) = ae^(ax)
+
+(δ/δx)log(x) = 1/x
+</code></pre>
+<h2>Rules for combining derivatives</h2>
+<ul>
+<li><code>u</code> and <code>v</code> are arbitrary functions of x</li>
+</ul>
+<pre><code>(δ/δx)a*u(x) = a(δ/δx)u(x) -&gt; pull out the constant
+
+(δ/δx)(u + v) = (δ/δx)u + (δ/δx)v
+
+(δ/δx)u*v = u(δ/δx)v + v(δ/δx)u -&gt; product rule
+
+(δ/δx)(u/v) = [v(δ/δx)u - u(δ/δx)v] / v²
+
+(δ/δx)log(u) = [(δ/δx)u] / u
+
+(δ/δx){u[v(x)]} = (δu/δv) * (δv/δx) -&gt; chain rule
+</code></pre>
+<h2>Chain rule example</h2>
+<pre><code>(δ/δx)e^(-x²)
+
+Function = e^(-x²)
+I.e      = e^(v(x))
+I.e      = u(v(x))
+
+Where:
+u(v) = e^(v)
+v(x) = -x²
+
+According to the chain rule:
+(δ/δx){u[v(x)]} = (δu/δv) * (δv/δx)
+
+We have that:
+(δu/δv) = e^(v)
+(δv/δx) = -2x
+
+Result: -2x*e^(-x²)
+</code></pre>
+<h2>Product rule example</h2>
+<pre><code>(δ/δx)xe^(x)
+
+Function = xe^(x)
+I.e      = v(x) = x
+I.e      = u(x) = e^(x)
+
+According to the product rule:
+(δ/δx)u*v = u(δ/δx)v + v(δ/δx)u
+
+We have that:
+(δ/δx)v = 1
+(δ/δx)u = e^(x)
+
+Result: e^(x) + xe^(x)
+</code></pre>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>How Postgres Implements Foreign Keys</h1>
+<pre><code>Created at: 2025-01-10
+</code></pre>
+<p>In order to implement foreign keys, Postgres creates 2 triggers in the
+referring table and 2 triggers in the referenced table</p>
+<h2>Referring Table Triggers</h2>
+<ul>
+<li><code>AFTER INSERT</code> and <code>AFTER UPDATE</code> row-level triggers. Such triggers verify
+the new row containing non-null foreign key field in the referring table
+points to an existing row in the referenced table.</li>
+</ul>
+<h2>Referred Table Triggers</h2>
+<ul>
+<li><code>AFTER UPDATE</code> and <code>AFTER DELETE</code> row-level triggers. Such triggers verify
+that UPDATEs and DELETEs don't culminate in invalid links in the referring
+table. If &quot;CASCADING&quot; it will also delete the orphaned row in the referring
+table.</li>
+</ul>
+<h2>Seeing The Code For The Triggers</h2>
+<p>Psql doesn't show them. But we can find them through the <code>pg_trigger</code> table.</p>
+<pre><code class="language-sql">SELECT tgname AS trigger_name,
+       tgisinternal AS internal,
+       CASE WHEN tgtype &amp; 2 = 2 THEN 'BEFORE ' ELSE 'AFTER ' END ||
+       CASE tgtype &amp; 60
+          WHEN 4  THEN 'INSERT'
+          WHEN 8  THEN 'DELETE'
+          WHEN 16 THEN 'UPDATE'
+          ELSE '?'
+       END ||
+       ' FOR EACH ' ||
+       CASE WHEN tgtype &amp; 1 = 1 THEN 'ROW' ELSE 'STATEMENT' END
+          AS firing_conditions
+FROM pg_trigger
+WHERE tgrelid = '&lt;table_name&gt;'::regclass;
+</code></pre>
+<p>The result should show the trigger names and their firing conditions:</p>
+<pre><code>          trigger_name          | internal |     firing_conditions
+--------------------------------+----------+---------------------------
+ RI_ConstraintTrigger_a_2044997 | t        | AFTER DELETE FOR EACH ROW
+ RI_ConstraintTrigger_a_2044998 | t        | AFTER UPDATE FOR EACH ROW
+ RI_ConstraintTrigger_c_2044999 | t        | AFTER INSERT FOR EACH ROW
+ RI_ConstraintTrigger_c_2045000 | t        | AFTER UPDATE FOR EACH ROW
+</code></pre>
+<p>The <code>_a_</code> stands for action constraints, which are created in the referred
+table. <a href="https://github.com/postgres/postgres/blob/bebe9040388bb2292585eab712fe4d29a71843fb/src/backend/commands/tablecmds.c#L12692">source code</a></p>
+<p>The <code>_c_</code> stands for the &quot;check&quot; constraints, which are created in the
+referring table. <a href="https://github.com/postgres/postgres/blob/bebe9040388bb2292585eab712fe4d29a71843fb/src/backend/commands/tablecmds.c#L12629">source
+code</a></p>
+<h2>Side note about using cascade to drop the column</h2>
+<p>If you try to drop a column that is used as foreign key by another table,
+you'll see an error when not using CASCADE (default is RESTRICT):</p>
+<pre><code class="language-sql">BEGIN;
+
+CREATE TABLE refered (id serial, int_field int unique);
+CREATE TABLE referencing (id serial);
+
+ALTER TABLE &quot;referencing&quot; ADD COLUMN &quot;refered_int_field&quot; int NULL
+CONSTRAINT &quot;delete_this_soon&quot;
+REFERENCES &quot;refered&quot;(&quot;int_field&quot;)
+DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE refered DROP COLUMN int_field RESTRICT;
+
+ROLLBACK;
+</code></pre>
+<pre><code>ERROR:  cannot drop column int_field of table refered because other objects
+depend on it.
+
+DETAIL:  constraint delete_this_soon on table referencing depends on column
+int_field of table refered
+
+HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+</code></pre>
+</body>
+</html>

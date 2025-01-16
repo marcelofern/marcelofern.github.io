@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Day 4</h1>
+<pre><code>Created at: 2025-01-15
+</code></pre>
+<p>Today I'm finally starting chapter 1!</p>
+<p>I have a degree in Electrical Engineering, but I've finished that a while ago
+and am probably rusty. No bad in getting a refresher.</p>
+<h2>Interesting Quotes</h2>
+<blockquote>
+<p>A mid-century computer (the IBM 650) cost $300,000, weighed 2.7 tons, and
+contained 126 lamps on its control panel; in an amusing reversal, a
+contemporary energy-efficient lamp contains a computer of greater capability
+within its (physical) base, and costs about $10.</p>
+</blockquote>
+<blockquote>
+<p>It is often the case that the panel controls and cabinet hardware of an
+instrument cost more than the electronics inside.</p>
+</blockquote>
+<h2>Voltage</h2>
+<p><strong>Intuitive Explanation</strong>: What you apply to a circuit to make currents flow.</p>
+<p><strong>Enhanced Definition</strong>: The voltage between two points is the cost in energy
+(work) to move positive charge from a more negative point (lower potential) to
+a more positive point (higher potential). Equivalently, the energy released
+when a unit charge moves &quot;downhill&quot; from the higher potential to the lower.</p>
+<p><strong>Symbols</strong>: Often denoted by <em>V</em>, sometimes by <em>E</em>.</p>
+<p><strong>Nicknames</strong>: Potential Difference or Electromotive Force.</p>
+<p><strong>Unit of Measure</strong>: Volt (V)</p>
+<h2>Current</h2>
+<p><strong>Symbol</strong>: <em>I</em></p>
+<p><strong>Definition</strong>: The rate of flow of electric charge past a point.</p>
+<p><strong>Unit of Measure</strong>: Ampere (or amp).</p>
+<p><strong>Fun fact</strong>: A current of 1 amp equals a flow of 1 coulomb (6*10^18 electrons)
+of charge per second.</p>
+<p><strong>Conventions</strong>: In a circuit, current flows from a more positive point to a
+more negative one, even though the actual electron flow is in the opposite
+direction!</p>
+<h2>Important Rules</h2>
+<ol>
+<li><p>Kirchhoff's current law (KCL): The sum of currents into a point in a circuit
+equals the sum of the currents out. Such a point is often referred to as a
+node.</p>
+</li>
+<li><p>Kirchhoff's voltage law (KVL): Parallel connections have the same voltage
+across them. This also means that the sum of the voltage drops around any
+closed circuit is zero.</p>
+</li>
+<li><p>The power (energy per unit time) consumed by a circuit device is:
+<code>P = VI</code>.</p>
+<ul>
+<li>P is in watts.</li>
+<li>A 55W bulb connected at 220V plug has 0.25 amps through it.</li>
+<li>When dealing with periodic signals, P=VI deal with <em>average power</em>.</li>
+</ul>
+</li>
+<li><p>Ohm's law: <code>R = V/I</code>.</p>
+</li>
+</ol>
+<h2>Resistors</h2>
+<pre><code>R(series) = R1 + R2
+
+R(parallel) = (R1*R2) / (R1 + R2)
+
+Alternatively...
+
+R(parallel) = 1 / (1/R1 + 1/R2)
+</code></pre>
+<p>Tip: By parallelising resistors you <strong>always get a smaller resistance</strong>.</p>
+<p>Trivia:</p>
+<ul>
+<li><p>Usually made of some conducting stuff (carbon, thin metal, carbon film, wire of
+poor conductivity...) and characterised by its resistance:</p>
+</li>
+<li><p>Most frequent resistors come in values from 1Ω to 10MΩ.</p>
+</li>
+<li><p>Also characterised by how much power they can <em>safely</em> dissipate. Usually
+around 1/4W or 1/8W</p>
+</li>
+</ul>
+<h2>Exercises</h2>
+<blockquote>
+<p>1.1 You have a 5k resistor and a 10k resistor. What is their combined
+resistance (a) in series and (b) in parallel?</p>
+</blockquote>
+<p>(a): 15k
+(b): 50k/15k = 3.333k</p>
+<blockquote>
+<p>1.2 If you place a 1 ohm resistor across a 12 volt car battery, how much power
+will it dissipate?</p>
+</blockquote>
+<p>P = VI
+V = 12V
+I = V/R = 12A
+P = 144W</p>
+<blockquote>
+<p>1.3 Prove the formulas for series and parallel resistors.</p>
+</blockquote>
+<p>Given that:</p>
+<ol>
+<li>Kirchhoff's voltage law (KVL): Parallel connections have the same voltage
+across them. This also means that the sum of the voltage drops around any
+closed circuit is zero.</li>
+<li>Kirchhoff's current law (KCL): The sum of currents into a point in a circuit
+equals the sum of the currents out. Such a point is often referred to as a
+node.</li>
+<li>Ohm's law: <code>R = V/I</code>.</li>
+</ol>
+<p>Imagine a circuit that has one voltage source and two resistors, all connected
+in series. Where:</p>
+<pre><code>- V1         = voltage across R1.
+- V2         = voltage across R2.
+- I1         = current across R1.
+- I2         = current across R2.
+- V          = power supply.
+- R(series)  = resulting resistance of the circuit in series.
+- I          = corrent through power supply.
+</code></pre>
+<p>From 1., <code>V = V1 + V2</code>
+From 2., <code>I1 = I2 = V</code>
+From 3., <code>R(series) = V/I</code></p>
+<p>From ohm's law:</p>
+<pre><code>V1 = R1 * I1 = R1 * I
+V2 = R2 * I2 = R2 * I
+
+V = R1 * I + R2 * I
+R(series) = V/I = (R1 * I + R2 * I)/I
+
+Therefore
+R(series) = R1 + R2
+</code></pre>
+<p>Now for the parallel case let's imagine that V, R1, and R2 are connected in
+parallel.</p>
+<p>From 1., <code>V = V1 = V2</code>
+From 2., <code>I = I1 + I2</code>
+From 3., <code>R(parallel) = V/I</code></p>
+<pre><code>I1 = V1/R1 = V/R1
+I2 = V2/R2 = V/R2
+
+R(parallel) = V/I = V/(V/R1 + V/R2)
+
+Therefore
+R(parallel) = 1/(R1 + R2)
+</code></pre>
+</body>
+</html>

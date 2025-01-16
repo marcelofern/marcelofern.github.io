@@ -28,7 +28,10 @@ JOIN
 JOIN
     pg_class c ON c.oid = l.relation
 WHERE
-    a.pid = 21665;
+    -- Get a pid with SELECT pg_backend_pid();
+    -- or with
+    -- SELECT pid, query, state, backend_start FROM pg_stat_activity WHERE state = 'active';
+    a.pid = 777;
 ```
 
 That will give you a result like this:

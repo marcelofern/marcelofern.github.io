@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Replication Slots Blocking VACUUM</h1>
+<pre><code>Created at: 2025-01-14
+</code></pre>
+<h2>What Are Replication Slots</h2>
+<blockquote>
+<p>Replication slots provide an automated way to ensure that the master does not
+remove WAL segments until they have been received by all standbys, and that
+the master does not remove rows which could cause a recovery conflict even
+when the standby is disconnected.
+<a href="https://www.postgresql.org/docs/9.4/warm-standby.html#STREAMING-REPLICATION-SLOTS">source</a></p>
+</blockquote>
+<p>In other words, replication slots keep WAL logs even when replicas (standbys)
+get disconnected from master. This implies the master knows when replicas go
+offline and holds onto the necessary WAL logs.</p>
+<p>Once the replicas come back online, the WAL files are decoded and sent to the
+replicas.</p>
+<p>This feature was introduced in Postgres v9.4 to better enhance replication.
+In previous versions, the <code>wal_keep_segment</code> had to be set to a high enough
+value to keep the replica from lagging behind the master too much.</p>
+<p>Setting this value to the correct number was tricky. Pick a value that is too
+high and you have storage space problems in the <code>pg_wal</code> directory, pick a low
+value and if insufficient you'd see an error like this instead:</p>
+<blockquote>
+<p>ERROR: requested WAL segment 005004430000129A00020041 has already been removed</p>
+</blockquote>
+<h2>Why Can This Affect VACUUM</h2>
+<p>In another part of the documentation, this note is written:</p>
+<blockquote>
+<p>Note: Replication slots persist across crashes and know nothing about the
+state of their consumer(s). They will prevent removal of required resources
+even when there is no connection using them. This consumes storage because
+neither required WAL nor required rows from the system catalogs can be
+removed by VACUUM as long as they are required by a replication slot. So if a
+slot is no longer required it should be dropped.</p>
+</blockquote>
+<p>This means that a replication slot will block vacuums, potentially for a long
+time.</p>
+<h2>Finding Replication Slots</h2>
+<p>Query the pg_replication_slots table.</p>
+<pre><code>select * from pg_replication_slots ;
+ slot_name |   plugin    | slot_type | datoid |database| temporary | active | active_pid | xmin | catalog_xmin | restart_lsn | confirmed_flush_lsn | wal_status | safe_wal_size | two_phase
+1234123444 | db_decoding | logical   |  16403 | my_db  | f         | f      |            |      |   1058047009 | A4/105C418  | A4/1190DE8          | lost       |               | f
+1235999999 | db_decoding | logical   |  16403 | my_db  | f         | f      |            |      |   1157663725 | B9/206BB508 | B9/2070B0F0         | lost       |               | f
+</code></pre>
+<h2>Dropping Replication Slots</h2>
+<p>After dropping a replication slot, VACUUM should resume:</p>
+<pre><code class="language-sql">select pg_drop_replication_slot(‘ocean’);
+</code></pre>
+<h2>Creating Replication Slots</h2>
+<pre><code class="language-sql">select pg_create_physical_replication_slot(‘ocean’);
+</code></pre>
+<h2>Outro</h2>
+<p>Useful links:</p>
+<ul>
+<li>https://hevodata.com/learn/postgresql-replication-slots/</li>
+</ul>
+</body>
+</html>

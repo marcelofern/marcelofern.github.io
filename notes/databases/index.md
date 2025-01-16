@@ -13,6 +13,7 @@
 - [DEFAULT](databases/postgres/outages/default.md)
 - [Drop Column With Index](databases/postgres/outages/drop_column_with_index.md)
 - [CHECK Constraints Without Downtime](databases/postgres/outages/check_constraints_without_downtime.md)
+- [UNIQUE Constraints Without Downtime](databases/postgres/outages/unique_constraints_without_downtime.md)
 - [Is This DDL Going To Rewrite The Table?](databases/postgres/outages/is_this_ddl_going_to_rewrite_the_table.md)
 - [Renaming A Table Using VIEW](databases/postgres/outages/renaming_a_table_using_view.md)
 
@@ -47,6 +48,7 @@
 - [OR queries](databases/postgres/performance/or_queries.md)
 - [JSON filtering vs text casting](databases/postgres/performance/json_filtering_vs_text_casting.md)
 - [Table bloat](databases/postgres/performance/table_bloat.md)
+- [Slow ORDER BY and LIMIT](databases/postgres/performance/slow_order_by_and_limit.md)
 
 ## Internals
 
@@ -54,6 +56,11 @@
 - [Profiling Postgres On Linux](databases/postgres/internals/profiling_postgres_on_linux.md)
 - [Profiling Postgres On Mac](databases/postgres/internals/profiling_postgres_on_mac.md)
 - [Debugging Postgres](databases/postgres/internals/debugging_postgres.md)
+- [How Postgres Implements Foreign Keys](databases/postgres/internals/how_postgres_implements_foreign_keys.md)
+
+## Disk
+
+- [How table data is stored in disk](databases/postgres/disk/how_table_data_is_stored_in_disk.md)
 
 ## Extensions
 
@@ -67,3 +74,12 @@
 ## PSQL
 
 - [A Basic psql Workflow](databases/postgres/psql/a_basic_psql_workflow.md)
+
+## Vacuum
+
+- [VACUUM Phases](databases/postgres/vacuum/vacuum_phases.md)
+- [Replication slots blocking VACUUM](databases/postgres/vacuum/replication_slots_blocking_vacuum.md)
+
+## Documentation
+
+- [Postgres Documentation Syntax](databases/postgres/documentation/postgres_documentation_syntax.md)

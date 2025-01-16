@@ -1,0 +1,168 @@
+# Day 4
+
+```
+Created at: 2025-01-15
+```
+
+Today I'm finally starting chapter 1!
+
+I have a degree in Electrical Engineering, but I've finished that a while ago
+and am probably rusty. No bad in getting a refresher.
+
+## Interesting Quotes
+
+> A mid-century computer (the IBM 650) cost $300,000, weighed 2.7 tons, and
+> contained 126 lamps on its control panel; in an amusing reversal, a
+> contemporary energy-efficient lamp contains a computer of greater capability
+> within its (physical) base, and costs about $10.
+
+> It is often the case that the panel controls and cabinet hardware of an
+> instrument cost more than the electronics inside.
+
+## Voltage
+
+**Intuitive Explanation**: What you apply to a circuit to make currents flow.
+
+**Enhanced Definition**: The voltage between two points is the cost in energy
+(work) to move positive charge from a more negative point (lower potential) to
+a more positive point (higher potential). Equivalently, the energy released
+when a unit charge moves "downhill" from the higher potential to the lower.
+
+**Symbols**: Often denoted by *V*, sometimes by *E*.
+
+**Nicknames**: Potential Difference or Electromotive Force.
+
+**Unit of Measure**: Volt (V)
+
+## Current
+
+**Symbol**: *I*
+
+**Definition**: The rate of flow of electric charge past a point.
+
+**Unit of Measure**: Ampere (or amp).
+
+**Fun fact**: A current of 1 amp equals a flow of 1 coulomb (6*10^18 electrons)
+of charge per second.
+
+**Conventions**: In a circuit, current flows from a more positive point to a
+more negative one, even though the actual electron flow is in the opposite
+direction!
+
+## Important Rules
+
+1. Kirchhoff's current law (KCL): The sum of currents into a point in a circuit
+   equals the sum of the currents out. Such a point is often referred to as a
+   node.
+
+2. Kirchhoff's voltage law (KVL): Parallel connections have the same voltage
+   across them. This also means that the sum of the voltage drops around any
+   closed circuit is zero.
+
+3. The power (energy per unit time) consumed by a circuit device is:
+   `P = VI`.
+   - P is in watts.
+   - A 55W bulb connected at 220V plug has 0.25 amps through it.
+   - When dealing with periodic signals, P=VI deal with _average power_.
+
+4. Ohm's law: `R = V/I`.
+
+## Resistors
+
+```
+R(series) = R1 + R2
+
+R(parallel) = (R1*R2) / (R1 + R2)
+
+Alternatively...
+
+R(parallel) = 1 / (1/R1 + 1/R2)
+```
+
+Tip: By parallelising resistors you **always get a smaller resistance**.
+
+
+Trivia:
+
+- Usually made of some conducting stuff (carbon, thin metal, carbon film, wire of
+poor conductivity...) and characterised by its resistance:
+
+- Most frequent resistors come in values from 1Ω to 10MΩ.
+
+- Also characterised by how much power they can *safely* dissipate. Usually
+  around 1/4W or 1/8W
+
+## Exercises
+
+> 1.1 You have a 5k resistor and a 10k resistor. What is their combined
+> resistance (a) in series and (b) in parallel?
+
+(a): 15k
+(b): 50k/15k = 3.333k
+
+> 1.2 If you place a 1 ohm resistor across a 12 volt car battery, how much power
+> will it dissipate?
+
+P = VI
+V = 12V
+I = V/R = 12A
+P = 144W
+
+> 1.3 Prove the formulas for series and parallel resistors.
+
+Given that:
+
+1. Kirchhoff's voltage law (KVL): Parallel connections have the same voltage
+   across them. This also means that the sum of the voltage drops around any
+   closed circuit is zero.
+2. Kirchhoff's current law (KCL): The sum of currents into a point in a circuit
+   equals the sum of the currents out. Such a point is often referred to as a
+   node.
+3. Ohm's law: `R = V/I`.
+
+Imagine a circuit that has one voltage source and two resistors, all connected
+in series. Where:
+
+```
+- V1         = voltage across R1.
+- V2         = voltage across R2.
+- I1         = current across R1.
+- I2         = current across R2.
+- V          = power supply.
+- R(series)  = resulting resistance of the circuit in series.
+- I          = corrent through power supply.
+```
+
+From 1., `V = V1 + V2`
+From 2., `I1 = I2 = V`
+From 3., `R(series) = V/I`
+
+From ohm's law:
+
+```
+V1 = R1 * I1 = R1 * I
+V2 = R2 * I2 = R2 * I
+
+V = R1 * I + R2 * I
+R(series) = V/I = (R1 * I + R2 * I)/I
+
+Therefore
+R(series) = R1 + R2
+```
+
+Now for the parallel case let's imagine that V, R1, and R2 are connected in
+parallel.
+
+From 1., `V = V1 = V2`
+From 2., `I = I1 + I2`
+From 3., `R(parallel) = V/I`
+
+```
+I1 = V1/R1 = V/R1
+I2 = V2/R2 = V/R2
+
+R(parallel) = V/I = V/(V/R1 + V/R2)
+
+Therefore
+R(parallel) = 1/(R1 + R2)
+```

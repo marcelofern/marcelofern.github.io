@@ -76,6 +76,10 @@ third class is always IMMEDIATE and is not affected by the SET CONSTRAINTS
 command. The first two classes start every transaction in the indicated mode,
 but their behavior can be changed within a transaction by SET CONSTRAINTS.</p>
 </blockquote>
+<p>Note: NOT DEFERRABLE means we can't change the deferrability of the constraint
+inside a particular transaction.</p>
+<p>Note: Constraints are NOT DEFERRABLE INITIALLY IMMEDIATE by default in
+PostgreSQL</p>
 <h2>Surprise!</h2>
 <blockquote>
 <p>When SET CONSTRAINTS changes the mode of a constraint from DEFERRED to

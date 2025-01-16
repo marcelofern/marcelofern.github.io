@@ -17,6 +17,12 @@ SET CONSTRAINTS — set constraint check timing for the current transaction
 > command. The first two classes start every transaction in the indicated mode,
 > but their behavior can be changed within a transaction by SET CONSTRAINTS.
 
+Note: NOT DEFERRABLE means we can't change the deferrability of the constraint
+inside a particular transaction.
+
+Note: Constraints are NOT DEFERRABLE INITIALLY IMMEDIATE by default in
+PostgreSQL
+
 ## Surprise!
 
 > When SET CONSTRAINTS changes the mode of a constraint from DEFERRED to

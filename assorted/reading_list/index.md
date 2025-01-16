@@ -1,6 +1,7 @@
 Reading list resources:
  - [www.doradolist.com](www.doradolist.com)
  - [reddit r/eebooks](https://www.reddit.com/r/eebooks/)
+ - [https://standardebooks.org](https://standardebooks.org)
 
 ## Digital Circuits
 
@@ -16,7 +17,6 @@ Reading list resources:
 ## Computer Systems
 
 - Computer System a Programmer's Approach - Bryant O'Hallaron
-- ~The Practice of Programming - Brian Kerninghan & Rob Pike~
 - The UNIX programming environment - Brian K. & Rob Pike
 - C Interfaces and Implementations - David Hanson
 - Working Effectively with Legacy Code - Michael C. Feathers
@@ -28,7 +28,6 @@ Reading list resources:
 - Modern C - Jens Gustedt
 - SEI CERT C Coding Standard by Carnegie Mellon University's Confluence.
 - Embedded Systems with ARM Cortex-M Microcontrollers in Assembly Language and C.
-- ~Masterminds of Programming: Conversations with the Creators of Major Programming Languages.~
 
 ## Security
 
@@ -41,13 +40,11 @@ Reading list resources:
 
 ## Design
 
-- ~Ruined by design - Mike Monteiro~
 - Notes On The Synthesis of Form - Christopher Alexander
 
 ## Learning
 
 - Get Better at Anything, Scott Young
-- ~Pedagogy of the Opressed, Paulo Freire~
 
 ## Mathematics
 
@@ -60,8 +57,8 @@ Reading list resources:
 
 ## Management
 
-- ~Peopleware - Tom Demarco & Tim Lister~
 - Radical Candor - Kim Scott
+- Powerful (Intl): Building a Culture of Freedom and Responsibility 
 
 ## Personal Development
 
