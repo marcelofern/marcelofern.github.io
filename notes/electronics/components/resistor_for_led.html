@@ -59,21 +59,36 @@
   <![endif]-->
 </head>
 <body>
-<h2>Languages</h2>
+<h1>Resistor for LED</h1>
+<pre><code>Created at: 2024-04-29
+</code></pre>
+<p>From a LED's datasheet, you will find two attributes:</p>
 <ul>
-<li><a href="assembly/index.html">Assembly</a></li>
-<li><a href="c/index.html">C</a></li>
-<li><a href="cpp/index.html">Cpp</a></li>
-<li><a href="python/index.html">Python</a></li>
-<li><a href="scheme/index.html">Scheme</a></li>
-<li><a href="lua/index.html">Lua</a></li>
+<li><p>Forward voltage <code>Vf</code>. Typically 2V-3V.</p>
+</li>
+<li><p>Forward current <code>If</code>. Typically 10mA - 30mA.</p>
+</li>
+<li><p><a href="http://web.archive.org/web/20231001211621/https://www.lumex.com/datasheet/SSL-LX5093ID">example datasheet</a></p>
+</li>
 </ul>
-<h2>Theory</h2>
+<p>You want to avoid any current above the value of <code>If</code> to make sure your LED
+does not burn. For that, you will need a resistor connected <strong>in series</strong>.</p>
+<p>In terms of minimum current to pass through the LED for indoor use,
+high-efficiency LEDs can light up with as little as 1 mA.</p>
+<p>So the equation to find a resistor is basically:</p>
+<blockquote>
+<p>R = (Vin - Vf) / (If)</p>
+</blockquote>
+<p>For common values of <code>Vin</code> = 5V, <code>Vf</code> = 2V, and <code>If</code> = 20mA:</p>
+<blockquote>
+<p>R = (5 - 2) / (0.02)
+R = 150 Ohms</p>
+</blockquote>
+<p>With lower voltages you will need less resistance, and with higher voltages you
+will need higher resistances.</p>
+<h2>Reading resources</h2>
 <ul>
-<li><a href="scopes.html">Scopes</a></li>
-<li><a href="tail_call.html">Tail call</a></li>
-<li><a href="higher_order_function.html">Higher-order function</a></li>
-<li><a href="first_class_citizen.html">First-class citizen</a></li>
+<li><a href="http://web.archive.org/web/20240422070418/https://en.wikipedia.org/wiki/LED_circuit">parallel LEDs?</a></li>
 </ul>
 </body>
 </html>

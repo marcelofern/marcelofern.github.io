@@ -62,8 +62,8 @@
 <h1>Renaming A Table Using View</h1>
 <pre><code>Created at: 2024-12-11
 </code></pre>
-<p>Modern applications usually run schema changes <em>before</em> they deploy the code
-that uses the new schema changes.</p>
+<p>Modern applications usually run schema changes <em>before</em> they fully deploy the
+code that uses the new schema changes across all servers.</p>
 <p>In a situation where blue/green deployment is happening, you might need to
 keep both names for a time-window while the schema changes and deploys are
 happening.</p>
@@ -94,7 +94,7 @@ functions. System columns cannot be referenced, either.</li>
 <li>has a trigger</li>
 <li>has a constraint</li>
 </ul>
-<p>It will all work properly. For example:</p>
+<p>The view will work properly. For example:</p>
 <pre><code class="language-sql">DROP VIEW IF EXISTS foo_view;
 DROP TABLE IF EXISTS foo;
 DROP TABLE IF EXISTS foo_log;

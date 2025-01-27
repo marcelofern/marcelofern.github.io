@@ -44,6 +44,26 @@ defaults write com.apple.dock autohide-delay -float 1000 && killall Dock
 defaults write com.apple.dock no-bouncing -bool TRUE && killall Dock
 ```
 
+## Get rid of annoying hot corners
+
+On a terminal:
+
+```sh
+defaults write com.apple.dock wvous-tl-corner -int 0
+defaults write com.apple.dock wvous-tr-corner -int 0
+defaults write com.apple.dock wvous-bl-corner -int 0
+defaults write com.apple.dock wvous-br-corner -int 0
+killall Dock
+```
+
+**If that didn't work, go through the GUI**
+
+Step 1. Click on the Apple Menu.
+Step 2. Go to "System Settings".
+Step 3. Click on "Desktop & Dock".
+Step 4. Choose "Hot Corners" at the bottom.
+Setp 5. Set every corner to a dash `-` which does nothing.
+
 ## Install Alacritty
 
 1. Go to the website and install it.

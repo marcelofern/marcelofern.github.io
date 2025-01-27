@@ -1,4 +1,8 @@
-2024-04-29
+# Resistor for LED
+
+```
+Created at: 2024-04-29
+```
 
 From a LED's datasheet, you will find two attributes:
 

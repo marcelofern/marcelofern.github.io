@@ -4,8 +4,8 @@
 Created at: 2024-12-11
 ```
 
-Modern applications usually run schema changes *before* they deploy the code
-that uses the new schema changes.
+Modern applications usually run schema changes *before* they fully deploy the
+code that uses the new schema changes across all servers.
 
 In a situation where blue/green deployment is happening, you might need to
 keep both names for a time-window while the schema changes and deploys are
@@ -39,7 +39,7 @@ It doesn't matter if the table:
 - has a trigger
 - has a constraint
 
-It will all work properly. For example:
+The view will work properly. For example:
 
 ```sql
 DROP VIEW IF EXISTS foo_view;
@@ -155,8 +155,6 @@ INSERT INTO foo_view (bar) VALUES (42);
 -- ERROR:  null value in column "baz" of relation "foo" violates not-null constraint
 -- DETAIL:  Failing row contains (10006, 42, null).
 ```
-
-
 
 
 ## Note 2: The transaction does not scan the table while holding an AccessExclusive lock

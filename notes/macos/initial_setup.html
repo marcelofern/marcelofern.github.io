@@ -98,6 +98,20 @@ problem of having a brew dependency mismatching a system dependency.</li>
 defaults write com.apple.dock autohide-delay -float 1000 &amp;&amp; killall Dock
 defaults write com.apple.dock no-bouncing -bool TRUE &amp;&amp; killall Dock
 </code></pre>
+<h2>Get rid of annoying hot corners</h2>
+<p>On a terminal:</p>
+<pre><code class="language-sh">defaults write com.apple.dock wvous-tl-corner -int 0
+defaults write com.apple.dock wvous-tr-corner -int 0
+defaults write com.apple.dock wvous-bl-corner -int 0
+defaults write com.apple.dock wvous-br-corner -int 0
+killall Dock
+</code></pre>
+<p><strong>If that didn't work, go through the GUI</strong></p>
+<p>Step 1. Click on the Apple Menu.
+Step 2. Go to &quot;System Settings&quot;.
+Step 3. Click on &quot;Desktop &amp; Dock&quot;.
+Step 4. Choose &quot;Hot Corners&quot; at the bottom.
+Setp 5. Set every corner to a dash <code>-</code> which does nothing.</p>
 <h2>Install Alacritty</h2>
 <ol>
 <li>Go to the website and install it.</li>

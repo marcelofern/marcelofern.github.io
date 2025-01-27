@@ -5,6 +5,7 @@
 - [Cpp](programming_languages/cpp/index.md)
 - [Python](programming_languages/python/index.md)
 - [Scheme](programming_languages/scheme/index.md)
+- [Lua](programming_languages/lua/index.md)
 
 ## Theory
 

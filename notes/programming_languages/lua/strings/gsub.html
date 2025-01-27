@@ -59,21 +59,14 @@
   <![endif]-->
 </head>
 <body>
-<h2>Languages</h2>
-<ul>
-<li><a href="assembly/index.html">Assembly</a></li>
-<li><a href="c/index.html">C</a></li>
-<li><a href="cpp/index.html">Cpp</a></li>
-<li><a href="python/index.html">Python</a></li>
-<li><a href="scheme/index.html">Scheme</a></li>
-<li><a href="lua/index.html">Lua</a></li>
-</ul>
-<h2>Theory</h2>
-<ul>
-<li><a href="scopes.html">Scopes</a></li>
-<li><a href="tail_call.html">Tail call</a></li>
-<li><a href="higher_order_function.html">Higher-order function</a></li>
-<li><a href="first_class_citizen.html">First-class citizen</a></li>
-</ul>
+<h1>gsub</h1>
+<pre><code>Created at: 2025-01-27
+</code></pre>
+<p>Official docs: <a href="https://www.lua.org/pil/20.1.html">https://www.lua.org/pil/20.1.html</a>.</p>
+<h2>Gotchas</h2>
+<pre><code class="language-lua">-- Remember to escape the patterns before using it with gsub if you want to
+-- perform something closer to a literal string replacement.
+prefix_to_ignore = prefix_to_ignore:gsub(&quot;([%.%-%/%_])&quot;, &quot;%%%1&quot;)
+</code></pre>
 </body>
 </html>

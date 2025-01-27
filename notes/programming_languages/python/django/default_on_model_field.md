@@ -64,6 +64,17 @@ same ddl. Perhaps for consistency.
 I don't find Django's behaviour very useful, as most times what I really want
 is for the default to be set on the database level.
 
+## Context 2
+
+When operating on a NOT NULL field, the first SQL below populates all existing
+rows with the DEFAULT, whereas the second one drops the constraint so that the
+application (django) can control the default values.
+
+```sql
+ALTER TABLE "foo" ADD COLUMN "my_field" integer DEFAULT 42 NOT NULL;
+ALTER TABLE "foo" ALTER COLUMN "my_field" DROP DEFAULT;
+```
+
 ## Fix
 
 If you are using Django > 5.0 you can use the new `db_default` argument when
@@ -101,3 +112,19 @@ COMMIT;
 ```
 
 Except that every time I call "sqlmigrate" the DEFAULT value is different.
+
+## Outro: Green/Blue Deployment problems
+
+If:
+
+- You migrate first, and then deploy code to new servers.
+- AND: the migration has a NOT NULL constraint.
+
+Then:
+
+The old servers with the old Django code won't know that the field has an
+application-level defined value. Plus, the field is not nullable. You will see
+an error "Column foo cannot be NULL.".
+
+In this case it's best to use a nullable field to start, and then remove that
+constraint once all servers are using the new code.

@@ -14,16 +14,13 @@
 - [Compilers](compilers/index.md)
 - [Computer architecture](computer_architecture/index.md)
 - [Embedded development](embedded_development/index.md)
-
-## Electronics
-
-- [Components](components/index.md)
-- [Cameras](cameras/index.md)
+- [Electronics](electronics/index.md)
 
 ## Hardware
 
 - [Tools](hardware_tools/index.md)
 - [House Building](house_building/index.md)
+- [Cameras](cameras/index.md)
 
 ## Etc.
 
