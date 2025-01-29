@@ -155,8 +155,9 @@ git clone git@github.com:reorg/pg_repack.git
 cd pg_repack
 git checkout tags/ver_$REPACK_VERSION
 
-# PG repack needs to know where `pg_config` is.
-PG_CONFIG=$POSTGRES_DIR/build/bin/pg_config make
+# PG repack needs to know where `pg_config` is. Remove the &quot;bear&quot; part if you
+# don't want a compile_commands.json file at the end.
+PG_CONFIG=$POSTGRES_DIR/build/bin/pg_config bear --output compile_commands.json -- make
 PG_CONFIG=$POSTGRES_DIR/build/bin/pg_config make install
 
 # To use the binary (command line) copy it to the postgres directory so that
@@ -312,5 +313,16 @@ LOG: (query) SELECT pg_advisory_unlock($1, CAST(-2147483648 + $2::bigint AS inte
 LOG:    (param:0) = 16185446
 LOG:    (param:1) = 17176
 </code></pre>
+<h2>Going deeper, what does the pg_repack binary actually do?</h2>
+<p>The best way to understand this is by reading through the code of the <code>main</code>
+function that gets executed when the binary runs. The code can be accessed
+<a href="https://github.com/reorg/pg_repack/blob/a4b9b33e488a2e1585b26c9425824ada88c84a2f/bin/pg_repack.c#L300-L300">here</a>.</p>
+<p>Straight away, this function uses the <code>pgut</code> library a lot. This library
+originated in <code>pg_reorg</code>. The commit that added it into <code>pg_repack</code> (574b6dc2)
+only states &quot;Support PGXS&quot;.</p>
+<p>In summary:</p>
+<ol>
+<li></li>
+</ol>
 </body>
 </html>

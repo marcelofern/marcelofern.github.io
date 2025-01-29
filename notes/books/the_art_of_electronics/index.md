@@ -26,6 +26,8 @@ Complementary reading:
 
 - [day 4: Beginning Chapter 1](books/the_art_of_electronics/day_4.md)
 - [day 5: More on Resistors](books/the_art_of_electronics/day_5.md)
+- [day 6: Voltage Dividers](books/the_art_of_electronics/day_6.md)
+- [day 7: Thevenin Theorem](books/the_art_of_electronics/day_7.md)
 
 Complementary reading:
 - [ ] Appendix D (Thevenin's Theorem proof).

@@ -44,7 +44,7 @@ regularly feature on the good-developer skill set as much as they should.
 
 I did not have guidance and mentorship once I became a manager. On top of that,
 I wanted to keep coding at the same pace as before. This situation made it
-harder for me to manage my own conflicts of interested between coding and
+harder for me to manage my own conflicts of interest between coding and
 managing.
 
 That meant that I wasn't facilitating much. The lack of leadership and

@@ -66,6 +66,7 @@
 
 - [pg_repack](databases/postgres/extensions/pg_repack.md)
 - [pgcrypto](databases/postgres/extensions/pgcrypto.md)
+- [how extensions are created](databases/postgres/extensions/how_extensions_are_created.md)
 
 ## Transactions
 

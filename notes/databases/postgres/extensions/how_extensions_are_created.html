@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>How Extensions Are Created</h1>
+<pre><code>Created at: 2025-01-28
+</code></pre>
+<h2>Basics</h2>
+<p>To start a new extension you need at least:</p>
+<ul>
+<li>A script file to create the objects necessary for the extension.</li>
+<li>A control file specifying some properties of the extension.</li>
+</ul>
+<p>If the extensions has C code:</p>
+<ul>
+<li>A shared library file into which the C code has been built.</li>
+</ul>
+<h2>Benefits Of Extension vs Loose Scripts</h2>
+<ol>
+<li><p>Postgres understands extensions. So, for example, you can drop all objects
+related to an extension by having a <code>DROP EXTENSION</code>. This avoids having to
+maintain a separated &quot;uninstall&quot; script.</p>
+</li>
+<li><p><code>pg_dump</code> knows to not dump individual member objects of the extension. It
+will just include a <code>CREATE EXTENSION</code> command in dumps. This simplifies
+migration to a new version of the extension that may contain different
+objects than the old version.</p>
+</li>
+<li><p>Postgres does not let individual objects of extensions to be dropped unless
+the whole extension (and therefore all objects) are dropped.</p>
+</li>
+<li><p>When upgrading an extension from version X to version Y, if the only changes
+were that an object was created and another has been modified, the extension
+author can provide an update script that just performs these alterations.
+The <code>ALTER EXTENSION UPDATE</code> command can then be used to apply these changes
+and track which version of the extension is actually installed in a given
+database.</p>
+</li>
+</ol>
+<h2>Control file</h2>
+<p>The control file must:</p>
+<ul>
+<li>be named as the extension plus the suffix <code>.control</code>.</li>
+<li>be placed in the <code>SHAREDIR/extension</code> directory inside the local Postgres
+installation. <code>pg_config --sharedir</code> will tell you what the SHAREDIR is. For
+example:<pre><code>[postgres15] build/bin/pg_config --sharedir
+/Users/marcelo.fernandes/workspace/postgres15/build/share
+</code></pre>
+</li>
+</ul>
+<p>For example, this is the contents of the <code>pg_repack.control</code> file:</p>
+<pre><code># pg_repack extension
+comment = 'Reorganize tables in PostgreSQL databases with minimal locks'
+default_version = '1.5.1'
+module_pathname = '$libdir/pg_repack'
+relocatable = false
+</code></pre>
+<ul>
+<li><p><code>module_pathname</code>: The value of this parameter will be substituted for each
+occurrence of <code>MODULE_PATHNAME</code> in the script file(s). If it is not set, no
+substitution is made. Typically, this is set to <code>$libdir/shared_library_name</code>
+and then MODULE_PATHNAME is used in CREATE FUNCTION commands for C-language
+functions, so that the script files do not need to hard-wire the name of the
+shared library. The <code>$libdir</code> variable can be obtained via <code>pg_config --libdir</code>. In my case it returns:
+<code>/Users/marcelo.fernandes/workspace/postgres15/build/lib</code></p>
+</li>
+<li><p><code>relocatable</code>: An extension is relocatable if it is possible to move its
+contained objects into a different schema after initial creation of the
+extension. The default is false, i.e., the extension is not relocatable.</p>
+</li>
+</ul>
+<p>A list of available keys for the control file is available
+<a href="https://www.postgresql.org/docs/current/extend-extensions.html">here</a>. There
+aren't many, only 11.</p>
+<h2>Script File</h2>
+<p>The script file:</p>
+<ul>
+<li>must follow the naming pattern <code>extension--version.sql</code> (for example,
+<code>bar--1.0.sql</code> for version 1.0 of extension bar)</li>
+<li>must by default, be placed on the <code>SHAREDIR/extension</code> directory of the local
+build. In my case <code>build/share/extension</code>. The control file might decide to
+specify a different location for the script file though.</li>
+<li>can contain any SQL commands. Except the transaction control ones
+(BEGIN/COMMIT) and commands that can't be executed inside a transaction block
+like VACUUM. This is because script files are implicitly executed within a
+transaction.</li>
+</ul>
+<p>For example, this is the script file for <code>pg_repac--1.5.1.sql</code>:</p>
+<pre><code class="language-sql">CREATE SCHEMA repack;
+
+CREATE FUNCTION repack.version() RETURNS text AS
+'MODULE_PATHNAME', 'repack_version'
+LANGUAGE C IMMUTABLE STRICT;
+
+CREATE FUNCTION repack.version_sql() RETURNS text AS
+$$SELECT 'pg_repack 1.5.1'::text$$
+LANGUAGE SQL IMMUTABLE STRICT;
+
+-- omitted ~300 lines
+</code></pre>
+<h2>Gotchas</h2>
+<blockquote>
+<p>Also, while you can change the definition of an extension member object (for
+example, via CREATE OR REPLACE FUNCTION for a function), bear in mind that
+the modified definition will not be dumped by pg_dump. Such a change is
+usually only sensible if you concurrently make the same change in the
+extension's script file. (But there are special provisions for tables
+containing configuration data; see Section 36.17.3.) In production
+situations, it's generally better to create an extension update script to
+perform changes to extension member objects.</p>
+</blockquote>
+<h2>Resources</h2>
+<ul>
+<li><p><a href="https://www.postgresql.org/docs/current/extend-extensions.html">https://www.postgresql.org/docs/current/extend-extensions.html</a></p>
+</li>
+<li><p><a href="https://www.postgresql.org/docs/current/extend-pgxs.html">https://www.postgresql.org/docs/current/extend-pgxs.html</a></p>
+</li>
+<li><p><a href="notes/https://github.com/IshaanAdarsh/Postgres-extension-tutorial/blob/main/SGML/intro_and_toc.html">notes/https://github.com/IshaanAdarsh/Postgres-extension-tutorial/blob/main/SGML/intro_and_toc.html</a></p>
+</li>
+</ul>
+</body>
+</html>
