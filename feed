@@ -10,7 +10,133 @@
     <uri>https://marcelofern.com</uri>
   </author>
   <id>tag:marcelofern.com,2024:/feed</id>
-<entry><title>Code Reviews In Vim</title><link href="https://www.marcelofern.com/posts/git/code_reviews_in_vim/index.html"/><id>tag:marcelofern.com,2024-11-21:/git/code_reviews_in_vim/index.html</id><content type="html">&lt;h1&gt;Code Reviews In Vim&lt;/h1&gt;
+<entry><title>Should you not use Postgres varchar(n) by default?</title><link href="https://www.marcelofern.com/posts/postgres/should_you_not_use_varchar_n/index.html"/><id>tag:marcelofern.com,2025-02-01:/postgres/should_you_not_use_varchar_n/index.html</id><content type="html">&lt;h1&gt;Should you not use Postgres varchar(n) by default?&lt;/h1&gt;
+&lt;pre&gt;&lt;code&gt;Created at: 2025-02-01
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The Postgres wiki has a page called &lt;a href=&quot;https://wiki.postgresql.org/wiki/Don%27t_Do_This#Don.27t_use_varchar.28n.29_by_default&quot;&gt;&amp;quot;Don&#x27;t Do
+This&amp;quot;&lt;/a&gt;
+where general good practices are discussed.&lt;/p&gt;
+&lt;p&gt;Amongst them, there is a session titled: &lt;strong&gt;&amp;quot;Don&#x27;t use varchar(n) by default&amp;quot;&lt;/strong&gt;
+which is copied verbatim below:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Why not?&lt;/strong&gt;
+varchar(n) is a variable width text field that will throw an error if you try
+and insert a string longer than n characters (not bytes) into it.&lt;/p&gt;
+&lt;p&gt;varchar (without the (n)) or text are similar, but without the length limit.
+If you insert the same string into the three field types they will take up
+exactly the same amount of space, and you won&#x27;t be able to measure any
+difference in performance.&lt;/p&gt;
+&lt;p&gt;If what you really need is a text field with an length limit then varchar(n)
+is great, but if you pick an arbitrary length and choose varchar(20) for a
+surname field you&#x27;re risking production errors in the future when Hubert
+Blaine Wolfe­schlegel­stein­hausen­berger­dorff signs up for service.&lt;/p&gt;
+&lt;p&gt;Some databases don&#x27;t have a type that can hold arbitrary long text, or if
+they do it&#x27;s not as convenient or efficient or well-supported as varchar(n).
+Users from those databases will often use something like varchar(255) when
+what they really want is text.&lt;/p&gt;
+&lt;p&gt;If you need to constrain the value in a field you probably need something
+more specific than a maximum length - maybe a minimum length too, or a
+limited set of characters - and a check constraint can do all of those things
+as well as a maximum string length.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;When should you?&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;When you want to, really. If what you want is a text field that will throw an
+error if you insert too long a string into it, and you don&#x27;t want to use an
+explicit check constraint then varchar(n) is a perfectly good type. Just
+don&#x27;t use it automatically without thinking about it.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Also, the varchar type is in the SQL standard, unlike the text type, so it
+might be the best choice for writing super-portable applications.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The reasons for using &lt;code&gt;varchar&lt;/code&gt; (without the (n)) are compelling:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;No performance penalties.&lt;/li&gt;
+&lt;li&gt;Reduced risk of errors if you misrepresented the size of the data.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;What the wiki doesn&#x27;t do a good job of, is steelmanning the downsides of the
+approach it directs towards, namely: &lt;strong&gt;using varchar by default&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Let&#x27;s go over them.&lt;/p&gt;
+&lt;h2&gt;Denial-of-Service (DoS) via Uncontrolled Data Insertion&lt;/h2&gt;
+&lt;p&gt;If you choose a bare &lt;code&gt;varchar&lt;/code&gt; for your surname field, you&#x27;ll need validation
+somewhere in the application to ensure this field doesn&#x27;t become a vector for
+attacks.&lt;/p&gt;
+&lt;p&gt;If a malicious party finds this free-text field without an upper-limit
+validation, they can perform database stuffing by storing enormous volume of
+data in the database, ending on a DoS attack.&lt;/p&gt;
+&lt;p&gt;Even if the application pre-validates the data before storing it, this level
+of validation is much weaker as a guarantee of data integrity than delegating
+the job to the database. The database is excellent for data integrity
+guarantees, application code is not.&lt;/p&gt;
+&lt;p&gt;Most services have hard constraints on such inputs. For example, the below is
+the limit for names on Twitter:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;_img_twitter_limits.png&quot; alt=&quot;_img_twitter_limits.png&quot;&gt;&lt;/p&gt;
+&lt;h2&gt;Storing free-text in a database may not be a good idea&lt;/h2&gt;
+&lt;p&gt;Databases are optimised for structured data. There are better alternatives for
+storing free-text like S3, CDNs, or even just a dump static file server.&lt;/p&gt;
+&lt;p&gt;Having large free-text fields stored on a table will reduce the performance of
+the server, at the minimum you have the overhead of a TOAST table for some
+large rows, but also you are slowing down many db maintenance activities and
+backup tasks for data that you might not always need to have at hand.&lt;/p&gt;
+&lt;h2&gt;Increasing the size of a varchar(n) is not a problem&lt;/h2&gt;
+&lt;p&gt;Performing an ALTER TABLE to pump the value of &lt;code&gt;n&lt;/code&gt; up is a catalogue-only
+operation and won&#x27;t culminate in a database outage.&lt;/p&gt;
+&lt;p&gt;Of course, at that point you might have had a few angry customers complaining
+about errors in the application. You have to ponderate if this is worth over
+the risks of having a DoS via Uncontrolled Data Insertion attack instead.&lt;/p&gt;
+&lt;p&gt;There is a real problem though if you want to &lt;strong&gt;decrease&lt;/strong&gt; the value of &lt;code&gt;n&lt;/code&gt;.
+This will rewrite the table:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;-- This will tell you if a table is being re-written.
+SET client_min_messages=debug1;
+
+DROP TABLE IF EXISTS test;
+
+CREATE TABLE test (id SERIAL PRIMARY KEY, str varchar(6));
+
+INSERT INTO test (str) SELECT generate_series(1, 1000);
+
+-- Increasing the value of `n`, no problem here.
+ALTER TABLE test ALTER COLUMN str TYPE varchar(7);
+
+-- Also completely removing `n`, no problem!
+-- Caveat: this will trigger a potential &amp;quot;building_index&amp;quot; operation for the
+-- TOAST table.
+ALTER TABLE test ALTER COLUMN str TYPE varchar;
+
+-- Decreasing the value of `n`. This is a risky operation!
+ALTER TABLE test ALTER COLUMN str TYPE varchar(4);
+-- DEBUG:  rewriting table &amp;quot;test&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I haven&#x27;t seen cases of having to reduce the value of &lt;code&gt;n&lt;/code&gt; before in production.&lt;/p&gt;
+&lt;p&gt;But even then, there is a way to set a lower upper bound without downtime
+via check constraints:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;-- [OPTIONAL] you can promote the field to a bare varchar first
+ALTER TABLE test ALTER COLUMN str TYPE varchar;
+
+-- Add a NOT VALID constraint, so that it does not scan the table while holding
+-- an AccessExclusive Lock.
+ALTER TABLE test
+ADD CONSTRAINT chk_str_length CHECK (LENGTH(str) &amp;lt;= 4)
+NOT VALID;
+
+-- This will only acquire a ShareUpdateExclusiveLock
+ALTER TABLE test VALIDATE CONSTRAINT chk_str_length;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that the check constraint performance may be slower than the native
+&lt;code&gt;varchar(n)&lt;/code&gt; check due to the function evaluations behind performing a
+constraint check.&lt;/p&gt;
+&lt;h2&gt;Conclusions&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Think thoroughly about upper/lower bounds of your data before creating a
+field.&lt;/li&gt;
+&lt;li&gt;Ponderate between the risks of having length-limit errors versus a potential
+DDoS attack surface.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Do not&lt;/strong&gt; reach out for free-text fields by default. Unless you are always
+adding a CHECK CONSTRAINT to sanitise input limits.&lt;/li&gt;
+&lt;/ul&gt;</content><published>2025-02-01T00:00:00Z</published><updated>2025-02-01T00:00:00Z</updated></entry><entry><title>Code Reviews In Vim</title><link href="https://www.marcelofern.com/posts/git/code_reviews_in_vim/index.html"/><id>tag:marcelofern.com,2024-11-21:/git/code_reviews_in_vim/index.html</id><content type="html">&lt;h1&gt;Code Reviews In Vim&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-11-21
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;A common way of reviewing code today is by performing the review using the
@@ -540,7 +666,7 @@ developer and to be a good manager is narrow. Facilitation skills do not
 regularly feature on the good-developer skill set as much as they should.&lt;/p&gt;
 &lt;p&gt;I did not have guidance and mentorship once I became a manager. On top of that,
 I wanted to keep coding at the same pace as before. This situation made it
-harder for me to manage my own conflicts of interested between coding and
+harder for me to manage my own conflicts of interest between coding and
 managing.&lt;/p&gt;
 &lt;p&gt;That meant that I wasn&#x27;t facilitating much. The lack of leadership and
 direction quickly hampered the development of one of my teams.&lt;/p&gt;

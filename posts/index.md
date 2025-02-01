@@ -4,6 +4,7 @@ Also available via [RSS feed](https://marcelofern.com/feed).
 
 ---
 
+- 2025-02-01 [Should you not use Postgres varchar(n) by default?](posts/postgres/should_you_not_use_varchar_n/index.md)
 - 2024-11-21 [Code Reviews In Vim](posts/git/code_reviews_in_vim/index.md)
 - 2024-10-10 [About that Postgres json field](posts/postgres/about-that-postgres-json-field/index.md)
 - 2024-10-08 [Thoughts on 3 years of management](posts/management/thoughts-on-management/index.md)

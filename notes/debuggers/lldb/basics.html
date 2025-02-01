@@ -59,35 +59,59 @@
   <![endif]-->
 </head>
 <body>
-<h2>High-level computing</h2>
-<ul>
-<li><a href="databases/index.html">Databases</a></li>
-<li><a href="message_brokers/index.html">Message brokers</a></li>
-<li><a href="programming_languages/index.html">Programming languages</a></li>
-<li><a href="security/index.html">Security</a></li>
-<li><a href="linux/index.html">Linux</a></li>
-<li><a href="macos/index.html">MacOs</a></li>
-<li><a href="version_control/index.html">Version Control</a></li>
-<li><a href="text_editors/index.html">Text Editors</a></li>
-</ul>
-<h2>Low-level computing</h2>
-<ul>
-<li><a href="compilers/index.html">Compilers</a></li>
-<li><a href="debuggers/index.html">Debuggers</a></li>
-<li><a href="computer_architecture/index.html">Computer architecture</a></li>
-<li><a href="embedded_development/index.html">Embedded development</a></li>
-<li><a href="electronics/index.html">Electronics</a></li>
-</ul>
-<h2>Hardware</h2>
-<ul>
-<li><a href="hardware_tools/index.html">Tools</a></li>
-<li><a href="house_building/index.html">House Building</a></li>
-<li><a href="cameras/index.html">Cameras</a></li>
-</ul>
-<h2>Etc.</h2>
-<ul>
-<li><a href="books/index.html">Notes on books</a></li>
-<li><a href="writing/index.html">Notes on writing</a></li>
-</ul>
+<h1>LLDB Basics</h1>
+<pre><code>Created at: 2025-01-30
+</code></pre>
+<h2>Start a Program</h2>
+<pre><code class="language-sh">lldb &lt;name_of_the_program&gt;
+</code></pre>
+<p>Then</p>
+<pre><code>(lldb) run &lt;program args here. Same as if running the program normally&gt;
+</code></pre>
+<h2>Getting help</h2>
+<p>Just type in <code>help</code> in lldb</p>
+<pre><code>(lldb) help
+</code></pre>
+<h2>Useful commands</h2>
+<pre><code># Sets a breakpoint on the label &quot;foo&quot;
+(lldb) b foo
+
+# See the backtrace (i.e., where you came from)
+(lldb) bt
+
+# Show more code (downwards)
+(lldb) l
+
+# Show more code (upwards)
+(lldb) l -
+
+# Show back the code where you were after using `l` too much:
+(lldb) f
+
+# Finish the current stack frame. This goes to the end of the function.
+(lldb) finish
+
+# Step through the code, and into calls.
+(lldb) s
+
+# Source-level single step, skips calls.
+(lldb) n
+
+# Run a shell command on the host
+(lldb) shell ls
+
+# Show the variables within the current stack frame.
+(lldb) var
+
+# Show the history of commands in the session.
+# Good for ctrl+c/ctrl+v purposes.
+(lldb) history
+
+# Print a variable or expression
+(lldb) p (char*)foo
+
+# Call anything from the existing thread
+(lldb) call foo(1,2);
+</code></pre>
 </body>
 </html>

@@ -163,8 +163,13 @@ build/bin/initdb -D build/data
 # Add our specific port to the configuration file.
 # The step above doesn't do that.
 echo "port = 54${VERSION}" >> build/data/postgresql.conf
+echo "max_locks_per_transaction=1000" >> build/data/postgresql.conf
+echo "log_statement = 'all'" >> build/data/postgresql.conf
+echo "log_duration = on" >> build/data/postgresql.conf
+echo "log_line_prefix = '%t [%p]: [%l-1] %q%u@%d '" >> build/data/postgresql.conf
 
-# This initialises the database server.
+# This initialises the database server. All the queries will be stored in the
+# file named `logfile` at the base directory.
 build/bin/pg_ctl -D build/data -l logfile start
 
 # Create the default db "postgres${VERSION}".
