@@ -3,4 +3,7 @@
 ## General
 
 - [Basic Tips](electronics/circuit_design/general/basic_tips.md)
-- [Voltage Dividers](electronics/circuit_design/general/voltage_dividers.md)
+
+## Stability
+
+- [Creating constant voltages](electronics/circuit_design/stability/creating_constant_voltages.md)

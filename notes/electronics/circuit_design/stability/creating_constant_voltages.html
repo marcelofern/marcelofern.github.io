@@ -59,14 +59,24 @@
   <![endif]-->
 </head>
 <body>
-<h1>Circuit Design</h1>
-<h2>General</h2>
-<ul>
-<li><a href="general/basic_tips.html">Basic Tips</a></li>
-</ul>
-<h2>Stability</h2>
-<ul>
-<li><a href="stability/creating_constant_voltages.html">Creating constant voltages</a></li>
-</ul>
+<h1>Creating Constant Voltages</h1>
+<pre><code>Created at: 2025-02-02
+</code></pre>
+<h2>Zener Diodes</h2>
+<blockquote>
+<p>Zeners are used to create a constant voltage inside a circuit somewhere,
+simply done by providing them with a (roughly constant) current derived from
+a higher voltage within the circuit.</p>
+</blockquote>
+<p>However...</p>
+<blockquote>
+<p>When thinking about zeners, it’s worth remembering that low-voltage units
+(e.g., 3.3 V) behave rather poorly, in terms of constancy of voltage versus
+current (Figure 1.17); if you think you need a low voltage zener, use a
+two-terminal reference instead (also called IC voltage reference).</p>
+</blockquote>
+<p>See my notes on zener diodes for more info.</p>
+<h2>IC Voltage Reference</h2>
+<p>Preferred over zener diodes for low voltages.</p>
 </body>
 </html>

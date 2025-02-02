@@ -84,3 +84,7 @@
 ## Documentation
 
 - [Postgres Documentation Syntax](databases/postgres/documentation/postgres_documentation_syntax.md)
+
+## Fields
+
+- [Choosing between varchar and varchar(n)](databases/postgres/fields/choosing_between_varchar_and_varchar_n.md)
