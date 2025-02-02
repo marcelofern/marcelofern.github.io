@@ -59,18 +59,18 @@
   <![endif]-->
 </head>
 <body>
-<h1>Circuit Design</h1>
-<h2>General</h2>
-<ul>
-<li><a href="general/basic_tips.html">Basic Tips</a></li>
-</ul>
-<h2>Stability</h2>
-<ul>
-<li><a href="stability/creating_constant_voltages.html">Creating constant voltages</a></li>
-</ul>
-<h2>Comparators</h2>
-<ul>
-<li><a href="comparators/using_voltage_dividers_with_comparators.html">Using voltage dividers with comparators</a></li>
-</ul>
+<h1>Using Voltage Dividers With Comparators</h1>
+<h2>Example</h2>
+<p>This circuit's goal is to turn a red LED on when the temperature is greater
+than 30c.</p>
+<p>The comparator's output is grounded when Vy &gt; Vx, otherwise it's an open
+circuit.</p>
+<p>Note: This circuit is insensitive to the power supply because it compares
+ratios!</p>
+<p><img src="_img_voltage_divider_and_comparators.jpg" alt="_img_voltage_divider_and_comparators.jpg"></p>
+<p>The voltage divider on the left is not variable with the temperature, whereas
+the one on the right is.</p>
+<p>Both voltage dividers are identical when Temperature=30c, after that, the right
+voltage-divider output starts to go down and the LED turns on.</p>
 </body>
 </html>
