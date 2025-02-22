@@ -10,7 +10,214 @@
     <uri>https://marcelofern.com</uri>
   </author>
   <id>tag:marcelofern.com,2024:/feed</id>
-<entry><title>Should you not use Postgres varchar(n) by default?</title><link href="https://www.marcelofern.com/posts/postgres/should_you_not_use_varchar_n/index.html"/><id>tag:marcelofern.com,2025-02-01:/postgres/should_you_not_use_varchar_n/index.html</id><content type="html">&lt;h1&gt;Should you not use Postgres varchar(n) by default?&lt;/h1&gt;
+<entry><title>Profiling a Django Migration in Postgres</title><link href="https://www.marcelofern.com/posts/postgres/profiling_a_django_migration_in_postgres/index.html"/><id>tag:marcelofern.com,2025-02-17:/postgres/profiling_a_django_migration_in_postgres/index.html</id><content type="html">&lt;h1&gt;Profiling a Django Migration in Postgres&lt;/h1&gt;
+&lt;pre&gt;&lt;code&gt;Created at: 2025-02-17
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this post I want to start from the end. I want to look into the SQL for a
+particular schema change, and then verify whether a Django migration that
+produces this change is safe to run in production or not.&lt;/p&gt;
+&lt;p&gt;Let&#x27;s start with a question:
+&lt;em&gt;Is the following schema change safe to run in a production database?&lt;/em&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;ALTER TABLE foo ADD COLUMN bar int NOT NULL DEFAULT 1234;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this hypothetical scenario, &lt;code&gt;foo&lt;/code&gt; is:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fairly large (over 100GB).&lt;/li&gt;
+&lt;li&gt;Used in anger in production.&lt;/li&gt;
+&lt;li&gt;Running on a supported Postgres version (&amp;gt; v12).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Without answering the question yet, I want you to consider this other
+statement:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;ALTER TABLE foo ADD COLUMN buzz int NOT NULL DEFAULT (random() * 10000)::int;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So, have you figured if either (or both) of those are safe to run?&lt;/p&gt;
+&lt;p&gt;If not, you might want to start thinking about what Postgres would have to do
+in order to have a &lt;code&gt;NOT NULL&lt;/code&gt; column with a &lt;code&gt;DEFAULT&lt;/code&gt; value.&lt;/p&gt;
+&lt;p&gt;Would it need to scan the table and store those values in existing rows? What
+if the new rows didn&#x27;t fit in the page? Is there a way to do it so that
+Postgres doesn&#x27;t need to scan the table?&lt;/p&gt;
+&lt;p&gt;One of the worst things that can happen when you perform a schema change is for
+it to end up rewriting the table. Rewriting takes time, and while the table is
+being rewritten, the DDL statement will be holding an access exclusive lock,
+not permitting any other sessions and transactions to read or write to the
+table.&lt;/p&gt;
+&lt;h2&gt;Supposition: The table is rewritten&lt;/h2&gt;
+&lt;p&gt;So starting with the first statement, let&#x27;s investigate whether it rewrites the
+table or not. We will first need to get the &lt;code&gt;foo&lt;/code&gt; table up, and populate it.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;-- Create the table
+DROP TABLE IF EXISTS foo;
+CREATE TABLE foo (id SERIAL PRIMARY KEY);
+
+-- Insert 100_000 rows.
+INSERT INTO foo (id) SELECT generate_series(1, 100000);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next, we want to know what Postgres is doing internally. For that, we&#x27;ll need
+to profile what happens when the &lt;code&gt;ALTER TABLE&lt;/code&gt; command is running.&lt;/p&gt;
+&lt;p&gt;Note: As I am writing this post on a Mac, I will use &amp;quot;Instruments&amp;quot; to profile
+Postgres, but if you are on a Linux machine you can use &lt;code&gt;perf&lt;/code&gt; instead. I wrote
+a guide
+&lt;a href=&quot;https://marcelofern.com/notes/databases/postgres/internals/profiling_postgres_on_linux.html&quot;&gt;here&lt;/a&gt;
+for the Linux users.&lt;/p&gt;
+&lt;p&gt;The first step is to grab the process id of the &lt;code&gt;psql&lt;/code&gt; shell we are going to
+use for profiling:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT pg_backend_pid();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then, open the &amp;quot;Time Profiler&amp;quot; tool on Instruments.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;_img_time_profiler.png&quot; alt=&quot;_img_time_profiler.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;And find the Postgres process. In terms of configuration I mostly use the
+defaults. I only change the frequency to &amp;quot;High&amp;quot;, and recording mode to
+&amp;quot;Deferred&amp;quot;:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;_img_time_profiler_config.png&quot; alt=&quot;_img_time_profiler_config.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Now we hit &lt;code&gt;RECORD&lt;/code&gt;, and perform these statements on psql:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;BEGIN;
+ALTER TABLE foo ADD COLUMN buzz int NOT NULL DEFAULT (random() * 1000)::int;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And then we hit &lt;code&gt;STOP&lt;/code&gt;. The profiler result would look something like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;_img_default_random_profile.png&quot; alt=&quot;_img_default_random_profile.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;There is a suspicious call to &lt;code&gt;ATRewriteTable&lt;/code&gt;... This is not good!&lt;/p&gt;
+&lt;p&gt;Let&#x27;s see what the other alter table with a constant default does. But first,
+let&#x27;s rollback that transaction.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;ROLLBACK;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And now let&#x27;s run our Time Profiler and then execute the command:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;BEGIN;
+ALTER TABLE foo ADD COLUMN bar int NOT NULL DEFAULT 12345;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;_img_default_constant_profile.png&quot; alt=&quot;_img_default_constant_profile.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Wait a minute... Is this calling &lt;code&gt;ATRewriteTables&lt;/code&gt;?&lt;/p&gt;
+&lt;p&gt;Yes! But this is a false positive... Calling this function doesn&#x27;t mean that it
+is actually rewritting the table. Perhaps a better name for that function
+should be &lt;code&gt;ATMaybeRewriteTables&lt;/code&gt;? ...&lt;/p&gt;
+&lt;p&gt;In any case, if &lt;code&gt;ATRewriteTables&lt;/code&gt; is going to actually do anything, it will
+call the &lt;code&gt;ATRewriteTable&lt;/code&gt; (note the singular) function, where the magic
+happens.&lt;/p&gt;
+&lt;p&gt;But also, scrolling down that function I see this pattern:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-c&quot;&gt;    if (newrel || needscan)
+    {
+        if (newrel)
+            ereport(DEBUG1,
+                    (errmsg_internal(&amp;quot;rewriting table \&amp;quot;%s\&amp;quot;&amp;quot;,
+                                     RelationGetRelationName(oldrel))));
+        else
+            ereport(DEBUG1,
+                    (errmsg_internal(&amp;quot;verifying table \&amp;quot;%s\&amp;quot;&amp;quot;,
+                                     RelationGetRelationName(oldrel))));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So this means that Postgres writes to the logger when it&#x27;s rewriting or
+verifying a table. This configuration can be turned on by:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SET client_min_messages=debug1;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So if we run the SQL statements again, we&#x27;ll see that log message showing up in
+the &lt;code&gt;psql&lt;/code&gt; shell:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;BEGIN;
+
+ALTER TABLE foo ADD COLUMN buzz int NOT NULL DEFAULT (random() * 10000)::int;
+-- DEBUG:  rewriting table &amp;quot;foo&amp;quot;
+
+-- This one doesn&#x27;t print anything, as the table is not rewritten.
+ALTER TABLE foo ADD COLUMN bar int NOT NULL DEFAULT 12345;
+
+ROLLBACK;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;The Django Equivalent&lt;/h2&gt;
+&lt;p&gt;Say we have the following &amp;quot;dumb&amp;quot; model:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;class Foo(models.Model):
+    pass
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let&#x27;s add a new integer field with a default:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;class Foo(models.Model):
+    bar = models.IntegerField(null=False, default=10)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Django will create the following migration automatically:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-py&quot;&gt;# Generated by Django 5.1.6 on 2025-02-17 05:54
+
+from django.db import migrations, models
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        (&#x27;app&#x27;, &#x27;0001_initial&#x27;),
+    ]
+
+    operations = [
+        migrations.AddField(
+            model_name=&#x27;foo&#x27;,
+            name=&#x27;bar&#x27;,
+            field=models.IntegerField(default=10),
+        ),
+    ]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Which results in these SQL statements:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;BEGIN;
+--
+-- Add field bar to foo
+--
+ALTER TABLE &amp;quot;myfoo&amp;quot; ADD COLUMN &amp;quot;bar&amp;quot; integer DEFAULT 10 NOT NULL;
+ALTER TABLE &amp;quot;myfoo&amp;quot; ALTER COLUMN &amp;quot;bar&amp;quot; DROP DEFAULT;
+COMMIT;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Why is Django creating a default and dropping it immediately?
+This happens due to the consequences of three considerations:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Django allows &lt;code&gt;default&lt;/code&gt; to be a callable:&lt;pre&gt;&lt;code class=&quot;language-py&quot;&gt;def my_default():
+    import random
+    return random.randint(0, 42)
+
+class Foo(models.Model):
+    bar = models.IntegerField(null=False, default=my_default)
+&lt;/code&gt;&lt;/pre&gt;
+In this case, Django grabs the first value returned by &lt;code&gt;my_default&lt;/code&gt; as the
+value to generate the DDL statement. If you run &lt;code&gt;sqlmigrate&lt;/code&gt; multiple
+times, it will even generate different outputs!&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;-- ./manage.py sqlmigrate app 0004
+
+BEGIN;
+ALTER TABLE &amp;quot;foo&amp;quot; ADD COLUMN &amp;quot;bar&amp;quot; integer DEFAULT 15 NOT NULL;
+ALTER TABLE &amp;quot;foo&amp;quot; ALTER COLUMN &amp;quot;bar&amp;quot; DROP DEFAULT;
+COMMIT;
+
+-- ./manage.py sqlmigrate app 0004
+
+BEGIN;
+--
+-- Add field bar to foo
+--
+ALTER TABLE &amp;quot;foo&amp;quot; ADD COLUMN &amp;quot;bar&amp;quot; integer DEFAULT 4 NOT NULL;
+ALTER TABLE &amp;quot;foo&amp;quot; ALTER COLUMN &amp;quot;bar&amp;quot; DROP DEFAULT;
+COMMIT;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;As a consequence of the above, the callable may contain a very complex logic
+that isn&#x27;t able to be reproduced as SQL. This means that Django has to
+enforce the default in the application level, not in the database level.&lt;/li&gt;
+&lt;li&gt;If the above is true, why have a &lt;code&gt;DEFAULT&lt;/code&gt; then? That&#x27;s because adding a NOT
+NULL without a default in an existing table is an error in Postgres:&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;ALTER TABLE foo ADD COLUMN buzz_buzz int NOT NULL;
+-- ERROR:  column &amp;quot;buzz_buzz&amp;quot; of relation &amp;quot;foo&amp;quot; contains null values
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We can see these limitations as a consequence of Django&#x27;s design to allow the
+&lt;code&gt;default&lt;/code&gt; argument to work with callables.&lt;/p&gt;
+&lt;h2&gt;Further Problems&lt;/h2&gt;
+&lt;p&gt;If your database can be used by people from &lt;em&gt;outside&lt;/em&gt; the Django application,
+the defaults won&#x27;t be honoured. From a data-integrity perspective, it is best
+to enforce rules on the database than on the application.&lt;/p&gt;
+&lt;h2&gt;A Little Plot Twist&lt;/h2&gt;
+&lt;p&gt;Luckily, Django 5.0 now includes the parameter &lt;code&gt;Field.db_default&lt;/code&gt; that allows
+the default to be enforced on the database level!&lt;/p&gt;
+&lt;p&gt;So you can have this change:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-python&quot;&gt;class Foo(models.Model):
+    bar = models.IntegerField(null=False, db_default=10)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Which creates these changes:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;BEGIN;
+--
+-- Add field bar to foo
+--
+ALTER TABLE &amp;quot;myfoo&amp;quot; ADD COLUMN &amp;quot;bar&amp;quot; integer DEFAULT 10 NOT NULL;
+COMMIT;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note how the &lt;code&gt;DEFAULT&lt;/code&gt; is not dropped in this case.&lt;/p&gt;</content><published>2025-02-17T00:00:00Z</published><updated>2025-02-17T00:00:00Z</updated></entry><entry><title>Should you not use Postgres varchar(n) by default?</title><link href="https://www.marcelofern.com/posts/postgres/should_you_not_use_varchar_n/index.html"/><id>tag:marcelofern.com,2025-02-01:/postgres/should_you_not_use_varchar_n/index.html</id><content type="html">&lt;h1&gt;Should you not use Postgres varchar(n) by default?&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2025-02-01
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The Postgres wiki has a page called &lt;a href=&quot;https://wiki.postgresql.org/wiki/Don%27t_Do_This#Don.27t_use_varchar.28n.29_by_default&quot;&gt;&amp;quot;Don&#x27;t Do
