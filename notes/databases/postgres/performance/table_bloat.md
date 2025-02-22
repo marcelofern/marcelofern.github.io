@@ -65,17 +65,21 @@ CREATE EXTENSION IF NOT EXISTS pgstattuple;
 
 DROP TABLE IF EXISTS not_bloated;
 CREATE TABLE not_bloated (id SERIAL PRIMARY KEY, val INT);
+ALTER TABLE not_bloated SET (autovacuum_enabled = false);
 CREATE INDEX not_bloated_idx on not_bloated (val);
 INSERT INTO not_bloated (val) SELECT generate_series(1, 100000);
 
 DROP TABLE IF EXISTS bloated;
 CREATE TABLE bloated (id SERIAL PRIMARY KEY, val INT);
+ALTER TABLE bloated SET (autovacuum_enabled = false);
 CREATE INDEX bloated_idx on bloated (val);
 INSERT INTO bloated (val) SELECT generate_series(1, 100000);
 
 VACUUM FULL;
 
-DELETE FROM bloated WHERE val >= 50000;
+-- Delete every second row to fragment the table.
+DELETE FROM bloated WHERE val % 2 = 0;
+VACUUM ANALYSE bloated;
 
 SELECT * FROM pgstattuple('not_bloated');
 -- table_len          | 3629056 (in bytes)
@@ -88,16 +92,18 @@ SELECT * FROM pgstattuple('not_bloated');
 -- free_space         | 16652
 -- free_percent       | 0.46
 
+-- The table_len is the same, even though the bloated table has about half of
+-- the ammount of duples as in the not_bloated table!
 SELECT * FROM pgstattuple('bloated');
--- table_len          | 3629056 (in bytes)
--- tuple_count        | 49999
--- tuple_len          | 1599968
+-- table_len          | 3629056
+-- tuple_count        | 50000
+-- tuple_len          | 1600000
 -- tuple_percent      | 44.09
--- dead_tuple_count   | 50001
--- dead_tuple_len     | 1600032
+-- dead_tuple_count   | 50000
+-- dead_tuple_len     | 1600000
 -- dead_tuple_percent | 44.09
--- free_space         | 16652
--- free_percent       | 0.46
+-- free_space         | 1618424
+-- free_percent       | 44.6
 
 SELECT * FROM pgstatindex('not_bloated_idx');
 -- version            | 4
@@ -110,6 +116,8 @@ SELECT * FROM pgstatindex('not_bloated_idx');
 -- deleted_pages      | 0
 -- avg_leaf_density   | 89.83
 -- leaf_fragmentation | 0
+
+-- The leaf density is much lower
 SELECT * FROM pgstatindex('bloated_idx');
 -- version            | 4
 -- tree_level         | 1
@@ -119,8 +127,57 @@ SELECT * FROM pgstatindex('bloated_idx');
 -- leaf_pages         | 274
 -- empty_pages        | 0
 -- deleted_pages      | 0
--- avg_leaf_density   | 89.83
+-- avg_leaf_density   | 45.06
 -- leaf_fragmentation | 0
+
+-- Run these EXPLAINs a couple of times
+EXPLAIN (ANALYZE, BUFFERS, COSTS off)
+SELECT * FROM not_bloated;
+--                               QUERY PLAN
+---------------------------------------------------------------------------
+-- Seq Scan on not_bloated (actual time=0.035..16.198 rows=100000 loops=1)
+--   Buffers: shared hit=443
+-- Planning Time: 0.142 ms
+-- Execution Time: 25.619 ms
+
+-- The bloated table hits the same amount of buffers as the not_bloated table
+-- even though it has half the amount of tuples.
+EXPLAIN (ANALYZE, BUFFERS, COSTS off)
+SELECT * FROM bloated;
+--                              QUERY PLAN
+-- --------------------------------------------------------------------
+--  Seq Scan on bloated (actual time=0.069..15.524 rows=50000 loops=1)
+--    Buffers: shared hit=443
+--  Planning Time: 0.191 ms
+--  Execution Time: 23.297 ms
+
+-- Now using the index instead of seq scan
+EXPLAIN (ANALYZE, BUFFERS, COSTS off)
+SELECT * FROM not_bloated WHERE val > 1000 and val < 40000;
+--                                          QUERY PLAN
+-- --------------------------------------------------------------------------------------------
+--  Bitmap Heap Scan on not_bloated (actual time=17.933..25.978 rows=38999 loops=1)
+--    Recheck Cond: ((val > 1000) AND (val < 40000))
+--    Heap Blocks: exact=173
+--    Buffers: shared hit=282
+--    ->  Bitmap Index Scan on not_bloated_idx (actual time=17.829..17.830 rows=38999 loops=1)
+--          Index Cond: ((val > 1000) AND (val < 40000))
+--          Buffers: shared hit=109
+--  Planning Time: 0.320 ms
+--  Execution Time: 29.565 ms
+
+-- Uses the same amount of buffers but the table is half the size!!!
+EXPLAIN (ANALYZE, BUFFERS, COSTS off)
+SELECT * FROM bloated WHERE val > 1000 and val < 40000;
+-- Bitmap Heap Scan on bloated (actual time=17.238..25.120 rows=38999 loops=1)
+--   Recheck Cond: ((val > 1000) AND (val < 40000))
+--   Heap Blocks: exact=173
+--   Buffers: shared hit=282
+--   ->  Bitmap Index Scan on bloated_idx (actual time=17.110..17.110 rows=38999 loops=1)
+--         Index Cond: ((val > 1000) AND (val < 40000))
+--         Buffers: shared hit=109
+-- Planning Time: 0.324 ms
+-- Execution Time: 28.723 ms
 ```
 
 Note from the Postgres documentation:
@@ -171,3 +228,7 @@ calculates index bloat using a special query created based on:
 The actual query can be found [here](https://github.com/DataDog/integrations-core/blob/8c575d73d669c67fd154da6d32e5dad9448b2091/postgres/datadog_checks/postgres/relationsmanager.py#L323)
 
 The same is true for table bloat, but the query is slightly different [source](https://github.com/DataDog/integrations-core/blob/8c575d73d669c67fd154da6d32e5dad9448b2091/postgres/datadog_checks/postgres/relationsmanager.py#L269).
+
+Stack overflow question:
+
+- [How Postgres bloat is dangerous?](https://dba.stackexchange.com/questions/310873/how-postgres-bloat-is-dangerous)

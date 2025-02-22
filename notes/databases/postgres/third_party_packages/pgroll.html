@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>pgroll</h1>
+<pre><code>Created at: 2025-02-13
+</code></pre>
+<h2>Some problems</h2>
+<h3>Schema changes happen in place</h3>
+<p>For example, making a <code>user</code>'s table <code>description</code> field non-nullable involves
+this migration:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;02_user_description_set_nullable&quot;,
+  &quot;operations&quot;: [
+    {
+      &quot;alter_column&quot;: {
+        &quot;table&quot;: &quot;users&quot;,
+        &quot;column&quot;: &quot;description&quot;,
+        &quot;nullable&quot;: false,
+        &quot;up&quot;: &quot;(SELECT CASE WHEN description IS NULL THEN 'description for ' || name ELSE description END)&quot;,
+        &quot;down&quot;: &quot;description&quot;
+      }
+    }
+  ]
+}
+</code></pre>
+<p>Which during schema changes inserts a new column and updates data such as:</p>
+<pre><code class="language-sql">SELECT * FROM users ORDER BY id LIMIT 10
++-----+----------+-------------------------+--------------------------+
+| id  | name     | description             | _pgroll_new_description  |
++-----+----------+-------------------------+--------------------------+
+| 1   | user_1   | &lt;null&gt;                  | description for user_1   |
+| 2   | user_2   | description for user_2  | description for user_2   |
+| 3   | user_3   | &lt;null&gt;                  | description for user_3   |
+| 4   | user_4   | description for user_4  | description for user_4   |
+| 5   | user_5   | &lt;null&gt;                  | description for user_5   |
+| 6   | user_6   | description for user_6  | description for user_6   |
+| 7   | user_7   | &lt;null&gt;                  | description for user_7   |
+| 8   | user_8   | &lt;null&gt;                  | description for user_8   |
+| 9   | user_9   | description for user_9  | description for user_9   |
+| 10  | user_10  | description for user_10 | description for user_10  |
+</code></pre>
+<p>This might generate a lot of deadrows and trigger <code>vacuum analyse</code> many times
+depending on the size of the table.</p>
+<h2>How it works</h2>
+<p>https://pgroll.com/blog/inside-pgroll-how-it-works-under-the-hood</p>
+</body>
+</html>

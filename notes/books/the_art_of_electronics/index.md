@@ -29,6 +29,9 @@ Complementary reading:
 - [day 6: Voltage Dividers](books/the_art_of_electronics/day_6.md)
 - [day 7: Thevenin Theorem](books/the_art_of_electronics/day_7.md)
 - [day 8: Diodes](books/the_art_of_electronics/day_8.md)
+- [day 9: Sinusoidal Signals](books/the_art_of_electronics/day_9.md)
+- [day 10: Decibels and Square waves](books/the_art_of_electronics/day_010.md)
+- [day 11: TBD](books/the_art_of_electronics/day_011.md)
 
 Complementary reading:
 - [ ] Appendix D (Thevenin's Theorem proof).

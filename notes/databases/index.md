@@ -57,6 +57,7 @@
 - [Profiling Postgres On Mac](databases/postgres/internals/profiling_postgres_on_mac.md)
 - [Debugging Postgres](databases/postgres/internals/debugging_postgres.md)
 - [How Postgres Implements Foreign Keys](databases/postgres/internals/how_postgres_implements_foreign_keys.md)
+- [Swapping a Table With its Copy](databases/postgres/internals/swapping_a_table_with_its_copy.md)
 
 ## Disk
 
@@ -67,6 +68,10 @@
 - [pg_repack](databases/postgres/extensions/pg_repack.md)
 - [pgcrypto](databases/postgres/extensions/pgcrypto.md)
 - [how extensions are created](databases/postgres/extensions/how_extensions_are_created.md)
+
+## Third Party Packages
+
+- [pgroll](databases/postgres/third_party_packages/pgroll.md)
 
 ## Transactions
 

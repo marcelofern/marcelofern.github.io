@@ -115,6 +115,9 @@ bear --output src/compile_commands.json -- make
 make install
 ```
 
+TODO: It might be useful to compile with `LOCK_DEBUG` activated to get logs
+about locks in the logfile (find how).
+
 ## Optional (extensions)
 
 If you need to install extensions, like `btree_gist`:
@@ -167,6 +170,10 @@ echo "max_locks_per_transaction=1000" >> build/data/postgresql.conf
 echo "log_statement = 'all'" >> build/data/postgresql.conf
 echo "log_duration = on" >> build/data/postgresql.conf
 echo "log_line_prefix = '%t [%p]: [%l-1] %q%u@%d '" >> build/data/postgresql.conf
+echo "session_preload_libraries = 'auto_explain'" >> build/data/postgresql.conf
+echo "auto_explain.log_nested_statements = true" >> build/data/postgresql.conf
+echo "auto_explain.log_min_duration = 200" >> build/data/postgresql.conf
+
 
 # This initialises the database server. All the queries will be stored in the
 # file named `logfile` at the base directory.
@@ -180,9 +187,11 @@ build/bin/createdb --port=${PORT} ${DBNAME}
 echo "rm -f logfile && build/bin/pg_ctl -D build/data -l logfile start" > server_start.sh
 echo "build/bin/pg_ctl -D build/data stop" > server_stop.sh
 echo "build/bin/psql -e --port=${PORT} --dbname=${DBNAME} \"\$@\"" > psql.sh
+echo "./server_stop.sh && ./server_start.sh" > server_restart.sh
 
 chmod +x server_start.sh
 chmod +x server_stop.sh
+chmod +x server_restart.sh
 chmod +x psql.sh
 
 # I often find it a good idea to initialise a git repository. If I need to

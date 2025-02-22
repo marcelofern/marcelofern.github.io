@@ -85,3 +85,7 @@ Reading list resources:
 
 - The 21 Former Doctor Secrets.
 - Bad Therapy: Why Kids aren't growing up.
+
+## Blog Posts
+
+- https://cloud.google.com/blog/products/databases/deep-dive-into-postgresql-vacuum-garbage-collector

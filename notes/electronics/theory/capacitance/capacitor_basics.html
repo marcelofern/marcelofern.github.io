@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Capacitor Basics</h1>
+<pre><code>Created at: 2025-02-16
+</code></pre>
+<blockquote>
+<p>Capacitors, in particular, are essential in nearly every circuit application.
+They are used for waveform generation, ﬁltering, and blocking and bypass
+applications. They are used in integrators and differentiators. In com-
+bination with inductors, they make possible sharp ﬁlters for separating
+desired signals from background. TAOE 3rd ed.</p>
+</blockquote>
+<pre><code>I = C(dV/dT)
+capacitor is more complicated than a resistor: the current is not simply
+proportional to the voltage, but rather to the rate of change of voltage
+
+Cparallel = C1 + C2 + C3...
+The total parallel capacitance is the sum of the capacitances.
+
+Cseries = 1 / (1/C1) + (1/C2) ...
+The total series capacitance is similar to the parallel resistance.
+
+Q = CV
+A capacitor of C farads with V volts across its terminals has Q coulombs of
+stored charge on one plate and −Q on the other.
+
+Uc = (1/2)CV²
+Uc is in joules (energy stored in the capacitor) for C in farads and V in
+volts.
+
+C = 8.85×10−14 ε A/d F,
+
+The capacitance is proportional to the area and inversely proportional to the
+spacing. For the simple parallel-plate capacitor, with separation d and plate
+area A (and with the spacing d much less than the dimensions of the plates),
+the capacitance C is given by the above equation.
+
+where ε is the dielectric constant of the insulator, and the dimensions are
+measured in centimeters. It takes a lot of area, and tiny spacing, to make the
+sort of capacitances commonly used in circuits
+</code></pre>
+<h2>Intuition Tips</h2>
+<ul>
+<li>capacitors might be considered simply as frequency-dependent resistors.</li>
+<li>capacitors can act as frequency-dependent voltage dividers.</li>
+</ul>
+<h2>General</h2>
+<ul>
+<li>bypass and coupling are the most common use for capacitors. Because a
+capacitor looks like an open circuit at dc, it lets you couple a varying
+(sine) signal while blocking its average dc level. This is a blocking capacitor
+(also called a coupling capacitor), as in Figure 1.93. Likewise, because a
+capacitor looks like a short circuit at high frequencies, it suppresses
+(“bypasses”) signals where you don’t want them.</li>
+<li>A farad is an enormous capacitance, and you usually deal in microfarads (μ
+F), nanofarads (nF), or picofarads (pF).</li>
+</ul>
+</body>
+</html>
