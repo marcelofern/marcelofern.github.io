@@ -91,5 +91,6 @@ bpftrace -e 'profile:hz:49 /pid == 5216/ { @[ustack(5)] = count(); }'
 # Sample user-level stacks at 49 Hertz, for processes named “mysqld”:
 bpftrace -e 'profile:hz:49 /comm == &quot;mysqld&quot;/ { @[ustack] = count(); }'
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

@@ -22,21 +22,14 @@ This can be shown by the following script:
 ```sql
 SET client_min_messages=debug1;
 
-\timing on
-
-CREATE TABLE t1 AS SELECT a FROM generate_Series(1,1000000)a;
-ALTER TABLE t1 ADD COLUMN b int NULL;
-ALTER TABLE t1 ADD COLUMN c int NOT NULL DEFAULT 1234;
+CREATE TABLE foo AS SELECT a FROM generate_Series(1,1000000)a;
+ALTER TABLE foo ADD COLUMN b int NULL;
+ALTER TABLE foo ADD COLUMN c int NOT NULL DEFAULT 1234;
 
 -- Only adding this column will require a rewrite. That's
 -- because the default expression isn't mutable.
-ALTER TABLE t1 ADD column d int not NULL DEFAULT (random() * 10000)::int;
--- DEBUG:  rewriting table "t1"
-```
-
-```sql
-DROP TABLE IF EXISTS foo;
-CREATE TABLE foo (id SERIAL PRIMARY KEY);
+ALTER TABLE foo ADD COLUMN d int NOT NULL DEFAULT (random() * 10000)::int;
+-- DEBUG:  rewriting table "foo"
 ```
 
 You can find where the `rewriting table` string comes from `ATRewriteTable`. If
@@ -67,8 +60,8 @@ So every time a rewrite happens, it will raise the following:
 
 ```
 DEBUG:  EventTriggerInvoke 16396
-NOTICE:  rewriting table t1 for reason 2
-DEBUG:  rewriting table "t1"
+NOTICE:  rewriting table foo for reason 2
+DEBUG:  rewriting table "foo"
 ```
 
 The reason code is release dependent. There has been discussion about adding

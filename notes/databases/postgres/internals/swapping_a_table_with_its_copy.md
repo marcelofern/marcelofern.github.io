@@ -6,6 +6,8 @@ Created at: 2025-02-14
 
 NOTE: THIS IS A WORK IN PROGRESS. THE FOLLOWING SCRIPT DOES NOT FULLY WORK YET.
 
+Current discussions are happening in the Postgres mailing list [here](https://www.postgresql.org/message-id/flat/CAM2F1VONo8M9gcybhmf8-CdmRUC2QrFGZkZLYF-%2BuLZuhRKaxQ%40mail.gmail.com#52fb0644ea84c647e3521bd04476e566)
+
 ## Why Would You Need To Swap a Table With its Copy?
 
 Some Postgres schema changes can't be performed without acquiring an access
@@ -30,7 +32,7 @@ are ready!
 DROP TABLE IF EXISTS original CASCADE;
 CREATE TABLE original (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(5000) NOT NULL,
+    name VARCHAR(5000) NOT NULL, -- necessary for the TOAST table.
     value INTEGER NOT NULL
 );
 -- Insert 10_000 rows into it.
@@ -50,7 +52,7 @@ CREATE TABLE copy (
 -- Pull all the data from the original table into the copy table.
 INSERT INTO copy SELECT id, name, value FROM ONLY original;
 
--- Create a table with a foreign key to the origianl table to verify if the
+-- Create a table with a foreign key to the original table to verify if the
 -- swap addresses the foreign key table.
 DROP TABLE IF EXISTS table_with_fk;
 CREATE TABLE table_with_fk (
@@ -267,7 +269,7 @@ WITH swapped_dep AS (
       AND d2.objid = ('copy'::regclass)
 )
 -- TODO: this update is not working, maybe it needs to be deleted and then
--- inserted again? This is what pg_repack does.
+-- inserted again? A delete-followed-by create is what pg_repack seems to do.
 UPDATE pg_depend
 SET objid = CASE
     WHEN objid = (SELECT original_objid FROM swapped_dep) THEN (SELECT copy_objid FROM swapped_dep)
@@ -295,7 +297,27 @@ DROP TABLE copy CASCADE;
 INSERT INTO original (id, name, value) values (10001, 'my_new_row', 10);
 SELECT * from original order by id DESC;
 
--- TODO: Index names for pks and its seq have not been renamed:
+-- TODO (minor): Index names for pks and its seq have not been renamed.
+
+-- TODO (major): The FKs on the related tables weren't updated to use the new
+-- table
+-- \d table_with_fk
+--                                Table "public.table_with_fk"
+--    Column    |  Type   | Collation | Nullable |                  Default
+-- -------------+---------+-----------+----------+-------------------------------------------
+--  id          | integer |           | not null | nextval('table_with_fk_id_seq'::regclass)
+--  original_id | integer |           | not null |
+-- Indexes:
+--     "table_with_fk_pkey" PRIMARY KEY, btree (id)
+-- 
+-- \d table_with_not_valid_fk
+--                                Table "public.table_with_not_valid_fk"
+--    Column    |  Type   | Collation | Nullable |                       Default
+-- -------------+---------+-----------+----------+-----------------------------------------------------
+--  id          | integer |           | not null | nextval('table_with_not_valid_fk_id_seq'::regclass)
+--  original_id | integer |           | not null |
+-- Indexes:
+--     "table_with_not_valid_fk_pkey" PRIMARY KEY, btree (id)
 
 -- Roll this back so that your postgres db doesn't get potentially messed up.
 ROLLBACK;
