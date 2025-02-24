@@ -122,7 +122,7 @@ In any case, if `ATRewriteTables` is going to actually do anything, it will
 call the `ATRewriteTable` (note the singular) function, where the magic
 happens.
 
-But also, scrolling down that function I see this pattern:
+But also, scrolling down that function I see the pattern:
 
 ```c
 	if (newrel || needscan)

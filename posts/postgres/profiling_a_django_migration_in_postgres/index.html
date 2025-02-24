@@ -140,7 +140,7 @@ should be <code>ATMaybeRewriteTables</code>? ...</p>
 <p>In any case, if <code>ATRewriteTables</code> is going to actually do anything, it will
 call the <code>ATRewriteTable</code> (note the singular) function, where the magic
 happens.</p>
-<p>But also, scrolling down that function I see this pattern:</p>
+<p>But also, scrolling down that function I see the pattern:</p>
 <pre><code class="language-c">    if (newrel || needscan)
     {
         if (newrel)
