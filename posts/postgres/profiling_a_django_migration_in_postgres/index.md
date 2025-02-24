@@ -75,13 +75,13 @@ SELECT pg_backend_pid();
 
 Then, open the "Time Profiler" tool on Instruments.
 
-![_img_time_profiler.png](_img_time_profiler.png)
+![img_time_profiler.png](img_time_profiler.png)
 
 And find the Postgres process. In terms of configuration I mostly use the
 defaults. I only change the frequency to "High", and recording mode to
 "Deferred":
 
-![_img_time_profiler_config.png](_img_time_profiler_config.png)
+![img_time_profiler_config.png](img_time_profiler_config.png)
 
 Now we hit `RECORD`, and perform these statements on psql:
 
@@ -92,7 +92,7 @@ ALTER TABLE foo ADD COLUMN buzz int NOT NULL DEFAULT (random() * 1000)::int;
 
 And then we hit `STOP`. The profiler result would look something like this:
 
-![_img_default_random_profile.png](_img_default_random_profile.png)
+![img_default_random_profile.png](img_default_random_profile.png)
 
 There is a suspicious call to `ATRewriteTable`... This is not good!
 
@@ -110,7 +110,7 @@ BEGIN;
 ALTER TABLE foo ADD COLUMN bar int NOT NULL DEFAULT 12345;
 ```
 
-![_img_default_constant_profile.png](_img_default_constant_profile.png)
+![img_default_constant_profile.png](img_default_constant_profile.png)
 
 Wait a minute... Is this calling `ATRewriteTables`?
 

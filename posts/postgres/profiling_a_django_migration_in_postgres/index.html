@@ -112,17 +112,17 @@ use for profiling:</p>
 <pre><code class="language-sql">SELECT pg_backend_pid();
 </code></pre>
 <p>Then, open the &quot;Time Profiler&quot; tool on Instruments.</p>
-<p><img src="_img_time_profiler.png" alt="_img_time_profiler.png"></p>
+<p><img src="img_time_profiler.png" alt="img_time_profiler.png"></p>
 <p>And find the Postgres process. In terms of configuration I mostly use the
 defaults. I only change the frequency to &quot;High&quot;, and recording mode to
 &quot;Deferred&quot;:</p>
-<p><img src="_img_time_profiler_config.png" alt="_img_time_profiler_config.png"></p>
+<p><img src="img_time_profiler_config.png" alt="img_time_profiler_config.png"></p>
 <p>Now we hit <code>RECORD</code>, and perform these statements on psql:</p>
 <pre><code class="language-sql">BEGIN;
 ALTER TABLE foo ADD COLUMN buzz int NOT NULL DEFAULT (random() * 1000)::int;
 </code></pre>
 <p>And then we hit <code>STOP</code>. The profiler result would look something like this:</p>
-<p><img src="_img_default_random_profile.png" alt="_img_default_random_profile.png"></p>
+<p><img src="img_default_random_profile.png" alt="img_default_random_profile.png"></p>
 <p>There is a suspicious call to <code>ATRewriteTable</code>... This is not good!</p>
 <p>Let's see what the other alter table with a constant default does. But first,
 let's rollback that transaction.</p>
@@ -132,7 +132,7 @@ let's rollback that transaction.</p>
 <pre><code class="language-sql">BEGIN;
 ALTER TABLE foo ADD COLUMN bar int NOT NULL DEFAULT 12345;
 </code></pre>
-<p><img src="_img_default_constant_profile.png" alt="_img_default_constant_profile.png"></p>
+<p><img src="img_default_constant_profile.png" alt="img_default_constant_profile.png"></p>
 <p>Wait a minute... Is this calling <code>ATRewriteTables</code>?</p>
 <p>Yes! But this is a false positive... Calling this function doesn't mean that it
 is actually rewritting the table. Perhaps a better name for that function

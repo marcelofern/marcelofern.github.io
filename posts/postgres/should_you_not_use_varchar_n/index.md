@@ -73,7 +73,7 @@ guarantees, application code is not.
 Most services have hard constraints on such inputs. For example, the below is
 the limit for names on Twitter:
 
-![_img_twitter_limits.png](_img_twitter_limits.png)
+![img_twitter_limits.png](img_twitter_limits.png)
 
 ## Storing free-text in a database may not be a good idea
 

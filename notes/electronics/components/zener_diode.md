@@ -4,7 +4,7 @@
 Created at: 2025-02-02
 ```
 
-![_img_zener_diode](_img_zener_diode.png)
+![img_zener_diode](img_zener_diode.png)
 
 Zeners are used to create a constant voltage inside a circuit somewhere, simply
 done by providing them with a (roughly constant) current derived from a higher
@@ -42,4 +42,4 @@ representation of a zener diode!
 > current (Figure 1.17); if you think you need a low voltage zener, use a
 > two-terminal reference instead
 
-![_img_zener_diode_vs_ic_voltage_ref.png](_img_zener_diode_vs_ic_voltage_ref.png)
+![img_zener_diode_vs_ic_voltage_ref.png](img_zener_diode_vs_ic_voltage_ref.png)

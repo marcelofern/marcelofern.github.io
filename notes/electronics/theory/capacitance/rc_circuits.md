@@ -4,7 +4,7 @@
 Created at: 2025-02-16
 ```
 
-![_img_rc_circuit.png](_img_rc_circuit.png)
+![img_rc_circuit.png](img_rc_circuit.png)
 
 RC circuits can be used to filter a signal by blocking certain frequencies and
 passing others. The two most common RC filters are the high-pass filters and

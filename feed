@@ -63,17 +63,17 @@ use for profiling:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;SELECT pg_backend_pid();
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Then, open the &amp;quot;Time Profiler&amp;quot; tool on Instruments.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;_img_time_profiler.png&quot; alt=&quot;_img_time_profiler.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;img_time_profiler.png&quot; alt=&quot;img_time_profiler.png&quot;&gt;&lt;/p&gt;
 &lt;p&gt;And find the Postgres process. In terms of configuration I mostly use the
 defaults. I only change the frequency to &amp;quot;High&amp;quot;, and recording mode to
 &amp;quot;Deferred&amp;quot;:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;_img_time_profiler_config.png&quot; alt=&quot;_img_time_profiler_config.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;img_time_profiler_config.png&quot; alt=&quot;img_time_profiler_config.png&quot;&gt;&lt;/p&gt;
 &lt;p&gt;Now we hit &lt;code&gt;RECORD&lt;/code&gt;, and perform these statements on psql:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;BEGIN;
 ALTER TABLE foo ADD COLUMN buzz int NOT NULL DEFAULT (random() * 1000)::int;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;And then we hit &lt;code&gt;STOP&lt;/code&gt;. The profiler result would look something like this:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;_img_default_random_profile.png&quot; alt=&quot;_img_default_random_profile.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;img_default_random_profile.png&quot; alt=&quot;img_default_random_profile.png&quot;&gt;&lt;/p&gt;
 &lt;p&gt;There is a suspicious call to &lt;code&gt;ATRewriteTable&lt;/code&gt;... This is not good!&lt;/p&gt;
 &lt;p&gt;Let&#x27;s see what the other alter table with a constant default does. But first,
 let&#x27;s rollback that transaction.&lt;/p&gt;
@@ -83,7 +83,7 @@ let&#x27;s rollback that transaction.&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-sql&quot;&gt;BEGIN;
 ALTER TABLE foo ADD COLUMN bar int NOT NULL DEFAULT 12345;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&quot;_img_default_constant_profile.png&quot; alt=&quot;_img_default_constant_profile.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;img_default_constant_profile.png&quot; alt=&quot;img_default_constant_profile.png&quot;&gt;&lt;/p&gt;
 &lt;p&gt;Wait a minute... Is this calling &lt;code&gt;ATRewriteTables&lt;/code&gt;?&lt;/p&gt;
 &lt;p&gt;Yes! But this is a false positive... Calling this function doesn&#x27;t mean that it
 is actually rewritting the table. Perhaps a better name for that function
@@ -91,7 +91,7 @@ should be &lt;code&gt;ATMaybeRewriteTables&lt;/code&gt;? ...&lt;/p&gt;
 &lt;p&gt;In any case, if &lt;code&gt;ATRewriteTables&lt;/code&gt; is going to actually do anything, it will
 call the &lt;code&gt;ATRewriteTable&lt;/code&gt; (note the singular) function, where the magic
 happens.&lt;/p&gt;
-&lt;p&gt;But also, scrolling down that function I see this pattern:&lt;/p&gt;
+&lt;p&gt;But also, scrolling down that function I see the pattern:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-c&quot;&gt;    if (newrel || needscan)
     {
         if (newrel)
@@ -217,7 +217,8 @@ the default to be enforced on the database level!&lt;/p&gt;
 ALTER TABLE &amp;quot;myfoo&amp;quot; ADD COLUMN &amp;quot;bar&amp;quot; integer DEFAULT 10 NOT NULL;
 COMMIT;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Note how the &lt;code&gt;DEFAULT&lt;/code&gt; is not dropped in this case.&lt;/p&gt;</content><published>2025-02-17T00:00:00Z</published><updated>2025-02-17T00:00:00Z</updated></entry><entry><title>Should you not use Postgres varchar(n) by default?</title><link href="https://www.marcelofern.com/posts/postgres/should_you_not_use_varchar_n/index.html"/><id>tag:marcelofern.com,2025-02-01:/postgres/should_you_not_use_varchar_n/index.html</id><content type="html">&lt;h1&gt;Should you not use Postgres varchar(n) by default?&lt;/h1&gt;
+&lt;p&gt;Note how the &lt;code&gt;DEFAULT&lt;/code&gt; is not dropped in this case.&lt;/p&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2025-02-17T00:00:00Z</published><updated>2025-02-17T00:00:00Z</updated></entry><entry><title>Should you not use Postgres varchar(n) by default?</title><link href="https://www.marcelofern.com/posts/postgres/should_you_not_use_varchar_n/index.html"/><id>tag:marcelofern.com,2025-02-01:/postgres/should_you_not_use_varchar_n/index.html</id><content type="html">&lt;h1&gt;Should you not use Postgres varchar(n) by default?&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2025-02-01
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The Postgres wiki has a page called &lt;a href=&quot;https://wiki.postgresql.org/wiki/Don%27t_Do_This#Don.27t_use_varchar.28n.29_by_default&quot;&gt;&amp;quot;Don&#x27;t Do
@@ -280,7 +281,7 @@ the job to the database. The database is excellent for data integrity
 guarantees, application code is not.&lt;/p&gt;
 &lt;p&gt;Most services have hard constraints on such inputs. For example, the below is
 the limit for names on Twitter:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;_img_twitter_limits.png&quot; alt=&quot;_img_twitter_limits.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;img_twitter_limits.png&quot; alt=&quot;img_twitter_limits.png&quot;&gt;&lt;/p&gt;
 &lt;h2&gt;Storing free-text in a database may not be a good idea&lt;/h2&gt;
 &lt;p&gt;Databases are optimised for structured data. There are better alternatives for
 storing free-text like S3, CDNs, or even just a dump static file server.&lt;/p&gt;
@@ -343,7 +344,8 @@ field.&lt;/li&gt;
 DDoS attack surface.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Do not&lt;/strong&gt; reach out for free-text fields by default. Unless you are always
 adding a CHECK CONSTRAINT to sanitise input limits.&lt;/li&gt;
-&lt;/ul&gt;</content><published>2025-02-01T00:00:00Z</published><updated>2025-02-01T00:00:00Z</updated></entry><entry><title>Code Reviews In Vim</title><link href="https://www.marcelofern.com/posts/git/code_reviews_in_vim/index.html"/><id>tag:marcelofern.com,2024-11-21:/git/code_reviews_in_vim/index.html</id><content type="html">&lt;h1&gt;Code Reviews In Vim&lt;/h1&gt;
+&lt;/ul&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2025-02-01T00:00:00Z</published><updated>2025-02-01T00:00:00Z</updated></entry><entry><title>Code Reviews In Vim</title><link href="https://www.marcelofern.com/posts/git/code_reviews_in_vim/index.html"/><id>tag:marcelofern.com,2024-11-21:/git/code_reviews_in_vim/index.html</id><content type="html">&lt;h1&gt;Code Reviews In Vim&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-11-21
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;A common way of reviewing code today is by performing the review using the
@@ -424,7 +426,8 @@ to have vim-editing capabilities when writing down a comment on a pull request.&
 &lt;p&gt;Often, I will write code blocks in reply to a commit anyway, so editing
 comments in vim makes it easier to edit the comment than say, the GitHub UI.&lt;/p&gt;
 &lt;p&gt;Note: There are ways to embed vim into a browser nowadays, but it often feels
-strange. I prefer to not use an embedded vim.&lt;/p&gt;</content><published>2024-11-21T00:00:00Z</published><updated>2024-11-21T00:00:00Z</updated></entry><entry><title>About That Postgres Json Field</title><link href="https://www.marcelofern.com/posts/postgres/about-that-postgres-json-field/index.html"/><id>tag:marcelofern.com,2024-10-10:/postgres/about-that-postgres-json-field/index.html</id><content type="html">&lt;h1&gt;About That Postgres Json Field&lt;/h1&gt;
+strange. I prefer to not use an embedded vim.&lt;/p&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2024-11-21T00:00:00Z</published><updated>2024-11-21T00:00:00Z</updated></entry><entry><title>About That Postgres Json Field</title><link href="https://www.marcelofern.com/posts/postgres/about-that-postgres-json-field/index.html"/><id>tag:marcelofern.com,2024-10-10:/postgres/about-that-postgres-json-field/index.html</id><content type="html">&lt;h1&gt;About That Postgres Json Field&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-10-10
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The json type was introduced in Postgres 9.2. Since then, the json type has
@@ -837,7 +840,8 @@ run_tests()
    `/ossssso+/:-        -:/+osssso+-     GPU: Intel TigerLake-LP GT2 [Iris Xe Graphics]
   `+sso+:-`                 `.-/+oso:    Memory: 6629MiB / 15717MiB
  `++:.                           `-/+/
-&lt;/code&gt;&lt;/pre&gt;</content><published>2024-10-10T00:00:00Z</published><updated>2024-10-10T00:00:00Z</updated></entry><entry><title>Thoughts on 3 years of management</title><link href="https://www.marcelofern.com/posts/management/thoughts-on-management/index.html"/><id>tag:marcelofern.com,2024-10-08:/management/thoughts-on-management/index.html</id><content type="html">&lt;h1&gt;Thoughts on 3 years of management&lt;/h1&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2024-10-10T00:00:00Z</published><updated>2024-10-10T00:00:00Z</updated></entry><entry><title>Thoughts on 3 years of management</title><link href="https://www.marcelofern.com/posts/management/thoughts-on-management/index.html"/><id>tag:marcelofern.com,2024-10-08:/management/thoughts-on-management/index.html</id><content type="html">&lt;h1&gt;Thoughts on 3 years of management&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-10-08
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;I&#x27;ve been managing for the past 3 years at my current job. This is not
@@ -1117,7 +1121,8 @@ management.&lt;/li&gt;
 team.&lt;/li&gt;
 &lt;li&gt;Critically thinking about management and leadership decisions.&lt;/li&gt;
 &lt;li&gt;Keeping track of progress!&lt;/li&gt;
-&lt;/ul&gt;</content><published>2024-10-08T00:00:00Z</published><updated>2024-10-08T00:00:00Z</updated></entry><entry><title>On Git Commit Messages</title><link href="https://www.marcelofern.com/posts/git/on-commit-messages/index.html"/><id>tag:marcelofern.com,2024-10-05:/git/on-commit-messages/index.html</id><content type="html">&lt;h1&gt;On Git Commit Messages&lt;/h1&gt;
+&lt;/ul&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2024-10-08T00:00:00Z</published><updated>2024-10-08T00:00:00Z</updated></entry><entry><title>On Git Commit Messages</title><link href="https://www.marcelofern.com/posts/git/on-commit-messages/index.html"/><id>tag:marcelofern.com,2024-10-05:/git/on-commit-messages/index.html</id><content type="html">&lt;h1&gt;On Git Commit Messages&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-10-05
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;There are two web pages that provide a great summary on Git Commits best
@@ -1362,7 +1367,8 @@ don&#x27;t depend on external services.&lt;/p&gt;
 &lt;h2&gt;Further Reading&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/torvalds/linux/pull/17&quot;&gt;https://github.com/torvalds/linux/pull/17&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><published>2024-10-05T00:00:00Z</published><updated>2024-10-05T00:00:00Z</updated></entry><entry><title>Postgres Unique Constraints Without Downtime</title><link href="https://www.marcelofern.com/posts/postgres/unique-constraints-without-downtime/index.html"/><id>tag:marcelofern.com,2024-10-01:/postgres/unique-constraints-without-downtime/index.html</id><content type="html">&lt;h1&gt;Postgres Unique Constraints Without Downtime&lt;/h1&gt;
+&lt;/ul&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2024-10-05T00:00:00Z</published><updated>2024-10-05T00:00:00Z</updated></entry><entry><title>Postgres Unique Constraints Without Downtime</title><link href="https://www.marcelofern.com/posts/postgres/unique-constraints-without-downtime/index.html"/><id>tag:marcelofern.com,2024-10-01:/postgres/unique-constraints-without-downtime/index.html</id><content type="html">&lt;h1&gt;Postgres Unique Constraints Without Downtime&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-10-01
 Updated at: 2024-10-08
 &lt;/code&gt;&lt;/pre&gt;
@@ -1712,7 +1718,8 @@ table_sizes = [
     1_000_000_000,
 ]
 run_tests(table_sizes)
-&lt;/code&gt;&lt;/pre&gt;</content><published>2024-10-01T00:00:00Z</published><updated>2024-10-08T00:00:00Z</updated></entry><entry><title>Why Is This Site Built With C</title><link href="https://www.marcelofern.com/posts/c/why-is-this-site-built-with-c/index.html"/><id>tag:marcelofern.com,2024-08-26:/c/why-is-this-site-built-with-c/index.html</id><content type="html">&lt;h1&gt;Why Is This Site Built With C&lt;/h1&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2024-10-01T00:00:00Z</published><updated>2024-10-08T00:00:00Z</updated></entry><entry><title>Why Is This Site Built With C</title><link href="https://www.marcelofern.com/posts/c/why-is-this-site-built-with-c/index.html"/><id>tag:marcelofern.com,2024-08-26:/c/why-is-this-site-built-with-c/index.html</id><content type="html">&lt;h1&gt;Why Is This Site Built With C&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-08-26
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;I&#x27;ve been writing about &lt;strong&gt;things&lt;/strong&gt; on a personal website since
@@ -1973,7 +1980,8 @@ standard library (which is probably the only standard lib of popular
 programming languages that fits in a &lt;a href=&quot;https://www.google.com/search?q=C+standard+library+P.J+Plauger&quot;&gt;commented book of 500
 pages&lt;/a&gt;...).
 Otherwise, nothing can run in the platform. So I&#x27;m hoping this bet will
-pay off.&lt;/p&gt;</content><published>2024-08-26T00:00:00Z</published><updated>2024-08-26T00:00:00Z</updated></entry><entry><title>The Dumbest Compiler Imaginable</title><link href="https://www.marcelofern.com/posts/python/the-dumbest-compiler-imaginable/index.html"/><id>tag:marcelofern.com,2024-08-20:/python/the-dumbest-compiler-imaginable/index.html</id><content type="html">&lt;h1&gt;The Dumbest Compiler Imaginable&lt;/h1&gt;
+pay off.&lt;/p&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2024-08-26T00:00:00Z</published><updated>2024-08-26T00:00:00Z</updated></entry><entry><title>The Dumbest Compiler Imaginable</title><link href="https://www.marcelofern.com/posts/python/the-dumbest-compiler-imaginable/index.html"/><id>tag:marcelofern.com,2024-08-20:/python/the-dumbest-compiler-imaginable/index.html</id><content type="html">&lt;h1&gt;The Dumbest Compiler Imaginable&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-08-20
 &lt;/code&gt;&lt;/pre&gt;
 &lt;blockquote&gt;
@@ -2265,7 +2273,8 @@ it does feel like it. If a fork is successful it may be merged up-stream
 instead of remaining a fork. If the interpreter itself is built without
 CPython&#x27;s C-extensions in mind, it will not provide a rich ecosystem for all
 the performance-dependent 3rd-party libs out there and will thus probably be
-less used.&lt;/p&gt;</content><published>2024-08-20T00:00:00Z</published><updated>2024-08-20T00:00:00Z</updated></entry><entry><title>Managing Python Environments</title><link href="https://www.marcelofern.com/posts/python/managing-python-environments/index.html"/><id>tag:marcelofern.com,2024-08-06:/python/managing-python-environments/index.html</id><content type="html">&lt;h1&gt;Managing Python Environments&lt;/h1&gt;
+less used.&lt;/p&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2024-08-20T00:00:00Z</published><updated>2024-08-20T00:00:00Z</updated></entry><entry><title>Managing Python Environments</title><link href="https://www.marcelofern.com/posts/python/managing-python-environments/index.html"/><id>tag:marcelofern.com,2024-08-06:/python/managing-python-environments/index.html</id><content type="html">&lt;h1&gt;Managing Python Environments&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-08-06
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The ecosystem for managing Python environments is huge, and so is the number
@@ -2488,7 +2497,8 @@ customisation, I have to step out of the manager or understand how the manager
 works so that I can apply the particular building flags I want.&lt;/p&gt;
 &lt;p&gt;This is also a problem in a rolling release system like Arch Linux, as
 installing multiple versions of the same dependency will point you towards some
-form of virtualisation (using docker, for example) or building from source.&lt;/p&gt;</content><published>2024-08-06T00:00:00Z</published><updated>2024-08-06T00:00:00Z</updated></entry><entry><title>Which Assembly Syntax to Choose?</title><link href="https://www.marcelofern.com/posts/asm/att-vs-intel-syntax/index.html"/><id>tag:marcelofern.com,2024-07-24:/asm/att-vs-intel-syntax/index.html</id><content type="html">&lt;h1&gt;Which Assembly Syntax to Choose?&lt;/h1&gt;
+form of virtualisation (using docker, for example) or building from source.&lt;/p&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2024-08-06T00:00:00Z</published><updated>2024-08-06T00:00:00Z</updated></entry><entry><title>Which Assembly Syntax to Choose?</title><link href="https://www.marcelofern.com/posts/asm/att-vs-intel-syntax/index.html"/><id>tag:marcelofern.com,2024-07-24:/asm/att-vs-intel-syntax/index.html</id><content type="html">&lt;h1&gt;Which Assembly Syntax to Choose?&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-07-24
 Updated at: 2024-08-13
 &lt;/code&gt;&lt;/pre&gt;
@@ -2671,7 +2681,8 @@ Intel.&lt;/p&gt;
 &lt;p&gt;But considering that you will likely come across both when &lt;em&gt;reading&lt;/em&gt; code, my
 recommendation is to learn both syntaxes, and if you don&#x27;t use assembly that
 often just keep a cheatsheet handy so that you can quickly navigate between the
-discrepancies.&lt;/p&gt;</content><published>2024-07-24T00:00:00Z</published><updated>2024-08-13T00:00:00Z</updated></entry><entry><title>mov edi, edi</title><link href="https://www.marcelofern.com/posts/asm/mov_edi_edi/index.html"/><id>tag:marcelofern.com,2024-06-08:/asm/mov_edi_edi/index.html</id><content type="html">&lt;h1&gt;mov edi, edi&lt;/h1&gt;
+discrepancies.&lt;/p&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2024-07-24T00:00:00Z</published><updated>2024-08-13T00:00:00Z</updated></entry><entry><title>mov edi, edi</title><link href="https://www.marcelofern.com/posts/asm/mov_edi_edi/index.html"/><id>tag:marcelofern.com,2024-06-08:/asm/mov_edi_edi/index.html</id><content type="html">&lt;h1&gt;mov edi, edi&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created at: 2024-06-08
 Updated at: 2024-07-27
 &lt;/code&gt;&lt;/pre&gt;
@@ -2782,7 +2793,8 @@ that casting per-se does not clean up unused bits of a 64bit register. That
 could happen if a 64 bit integer was casted down to a 32 bit one.&lt;/p&gt;
 &lt;p&gt;Again, this is very much based on my own understanding on how assembly works in
 my platform, if you think that I got something wrong please send me an email at
-marceelofernandes@gmail.com.&lt;/p&gt;</content><published>2024-06-08T00:00:00Z</published><updated>2024-07-27T00:00:00Z</updated></entry><entry><title>Goodbye ZSH</title><link href="https://www.marcelofern.com/posts/linux/goodbye_zsh/index.html"/><id>tag:marcelofern.com,2024-05-08:/linux/goodbye_zsh/index.html</id><content type="html">&lt;h1&gt;Goodbye ZSH&lt;/h1&gt;
+marceelofernandes@gmail.com.&lt;/p&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2024-06-08T00:00:00Z</published><updated>2024-07-27T00:00:00Z</updated></entry><entry><title>Goodbye ZSH</title><link href="https://www.marcelofern.com/posts/linux/goodbye_zsh/index.html"/><id>tag:marcelofern.com,2024-05-08:/linux/goodbye_zsh/index.html</id><content type="html">&lt;h1&gt;Goodbye ZSH&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created: 2024-05-08
 Updated: 2024-07-06
 &lt;/code&gt;&lt;/pre&gt;
@@ -2932,7 +2944,8 @@ technology for something better (or just pick the boring tech that has always
 been there to begin with).&lt;/p&gt;
 &lt;p&gt;I have no plans to go more basic and further switch to &lt;code&gt;sh&lt;/code&gt; at this stage, but
 I will be looking at &lt;code&gt;dash&lt;/code&gt; next to get the sweet performance enhancements and
-something that is more POSIX compliant than bash.&lt;/p&gt;</content><published>2024-05-08T00:00:00Z</published><updated>2024-07-06T00:00:00Z</updated></entry><entry><title>Branchless Programming Experiments in C++ and Python</title><link href="https://www.marcelofern.com/posts/cpp/branchless_programming/index.html"/><id>tag:marcelofern.com,2023-08-22:/cpp/branchless_programming/index.html</id><content type="html">&lt;h1&gt;Branchless Programming Experiments in C++ and Python&lt;/h1&gt;
+something that is more POSIX compliant than bash.&lt;/p&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2024-05-08T00:00:00Z</published><updated>2024-07-06T00:00:00Z</updated></entry><entry><title>Branchless Programming Experiments in C++ and Python</title><link href="https://www.marcelofern.com/posts/cpp/branchless_programming/index.html"/><id>tag:marcelofern.com,2023-08-22:/cpp/branchless_programming/index.html</id><content type="html">&lt;h1&gt;Branchless Programming Experiments in C++ and Python&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created: 2023-08-22
 Updated: 2024-07-28
 &lt;/code&gt;&lt;/pre&gt;
@@ -3225,7 +3238,8 @@ someone tried to optimise int summation &lt;a href=&quot;https://github.com/pyth
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In conclusion this kind of branchless optimisation does not quite work with
 Python. However, due to time, I haven&#x27;t really analysed other branchless
-techniques that are superior in many situations like bit masking.&lt;/p&gt;</content><published>2023-08-22T00:00:00Z</published><updated>2024-07-28T00:00:00Z</updated></entry><entry><title>A Critique of SOLID</title><link href="https://www.marcelofern.com/posts/software-design/a-critique-of-solid/index.html"/><id>tag:marcelofern.com,2023-04-15:/software-design/a-critique-of-solid/index.html</id><content type="html">&lt;h1&gt;A Critique of SOLID&lt;/h1&gt;
+techniques that are superior in many situations like bit masking.&lt;/p&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2023-08-22T00:00:00Z</published><updated>2024-07-28T00:00:00Z</updated></entry><entry><title>A Critique of SOLID</title><link href="https://www.marcelofern.com/posts/software-design/a-critique-of-solid/index.html"/><id>tag:marcelofern.com,2023-04-15:/software-design/a-critique-of-solid/index.html</id><content type="html">&lt;h1&gt;A Critique of SOLID&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created: 2023-04-15
 Updated: 2024-07-06
 &lt;/code&gt;&lt;/pre&gt;
@@ -3675,7 +3689,8 @@ nowadays have scars to prove that.&lt;/p&gt;
 though I don&#x27;t agree with them fully. It is easy to look back on the past and
 point fingers about decisions that don&#x27;t apply to the present. I think that
 overall the popularity of SOLID and the outcome of having more people thinking
-about designs and their own set of principles is a positive thing.&lt;/p&gt;</content><published>2023-04-15T00:00:00Z</published><updated>2024-07-06T00:00:00Z</updated></entry><entry><title>Linux Rice</title><link href="https://www.marcelofern.com/posts/linux/rice/index.html"/><id>tag:marcelofern.com,2020-08-30:/linux/rice/index.html</id><content type="html">&lt;h1&gt;Linux Rice&lt;/h1&gt;
+about designs and their own set of principles is a positive thing.&lt;/p&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2023-04-15T00:00:00Z</published><updated>2024-07-06T00:00:00Z</updated></entry><entry><title>Linux Rice</title><link href="https://www.marcelofern.com/posts/linux/rice/index.html"/><id>tag:marcelofern.com,2020-08-30:/linux/rice/index.html</id><content type="html">&lt;h1&gt;Linux Rice&lt;/h1&gt;
 &lt;pre&gt;&lt;code&gt;Created: 2020-08-30
 Updated: 2024-07-06
 &lt;/code&gt;&lt;/pre&gt;
@@ -3790,5 +3805,6 @@ speed was very simple.&lt;/p&gt;
 at is &lt;a href=&quot;https://www.reddit.com/r/unixporn/&quot;&gt;/r/unixporn&lt;/a&gt;. Most of my setup came
 from picking apart different rices that users have shared in that channel. It
 is also a good place to visit once in a while to stay up-to-date with what the
-rest of the community is using and trying.&lt;/p&gt;</content><published>2020-08-30T00:00:00Z</published><updated>2024-07-06T00:00:00Z</updated></entry>
+rest of the community is using and trying.&lt;/p&gt;
+&lt;script async src=&quot;https://scripts.simpleanalyticscdn.com/latest.js&quot;&gt;&lt;/script&gt;</content><published>2020-08-30T00:00:00Z</published><updated>2024-07-06T00:00:00Z</updated></entry>
 </feed>

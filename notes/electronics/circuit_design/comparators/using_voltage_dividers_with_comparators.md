@@ -11,7 +11,7 @@ circuit.
 Note: This circuit is insensitive to the power supply because it compares
 ratios!
 
-![_img_voltage_divider_and_comparators.jpg](_img_voltage_divider_and_comparators.jpg)
+![img_voltage_divider_and_comparators.jpg](img_voltage_divider_and_comparators.jpg)
 
 
 The voltage divider on the left is not variable with the temperature, whereas

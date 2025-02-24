@@ -12,7 +12,7 @@ resistors can be simplified to a single battery and a single resistor.
 
 ## Representation
 
-![_img_thevenin_circuit.png](_img_thevenin_circuit.png)
+![img_thevenin_circuit.png](img_thevenin_circuit.png)
 
 ## How to find V and R of the Thevenin Circuit
 
@@ -21,4 +21,4 @@ R = is find through the short-circuit current of the equivalent circuit.
 
 ## Example: Voltage Divider Thevenin
 
-![_img_thevenin_voltage_divider.jpg](_img_thevenin_voltage_divider.jpg)
+![img_thevenin_voltage_divider.jpg](img_thevenin_voltage_divider.jpg)

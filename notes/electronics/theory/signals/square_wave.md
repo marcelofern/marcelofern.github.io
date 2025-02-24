@@ -4,7 +4,7 @@
 Created at: 2025-02-09
 ```
 
-![_img_square_wave.png](_img_square_wave.png)
+![img_square_wave.png](img_square_wave.png)
 
 Like the sinewave, the square wave is characterized by amplitude and frequency
 (and perhaps phase).
