@@ -82,7 +82,8 @@ DROP TABLE IF EXISTS original CASCADE;
 CREATE TABLE original (
     id SERIAL PRIMARY KEY,
     name VARCHAR(5000) NOT NULL, -- necessary for the TOAST table.
-    value INTEGER NOT NULL
+    value INTEGER NOT NULL,
+    field_with_default INTEGER DEFAULT 42
 );
 -- Insert 10_000 rows into it.
 INSERT INTO original (name, value)
@@ -91,13 +92,10 @@ SELECT
     (generate_series(1, 10000) % 10000) + 1 AS value;
 
 -- Create the copy table, this table will be swapped for the original table
--- later
+-- later. Do not copy the indexes and constraints here to make batch insertion
+-- faster (in a real production scenario).
 DROP TABLE IF EXISTS copy;
-CREATE TABLE copy (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(5000) NOT NULL,
-    value INTEGER NOT NULL
-);
+CREATE TABLE copy (LIKE original INCLUDING DEFAULTS);
 -- Pull all the data from the original table into the copy table.
 INSERT INTO copy SELECT id, name, value FROM ONLY original;
 
@@ -160,41 +158,66 @@ ORDER BY X.relname;
 -- -[ RECORD 1 ]----+---------
 -- relname          | copy
 -- reltablespace    | 0
--- oid              | 22522
--- reltoastrelid    | 22526
+-- oid              | 2134315
+-- reltoastrelid    | 2134318
 -- relowner         | 10
 -- relkind          | r
--- relfrozenxid     | 2068
+-- relfrozenxid     | 127003
 -- relminmxid       | 1
--- relpages         | 64
--- reltuples        | 10000
--- relallvisible    | 64
--- relfilenode      | 22522
--- toast_indexrelid | 22527
+-- relpages         | 0
+-- reltuples        | -1
+-- relallvisible    | 0
+-- relfilenode      | 2134315
+-- toast_indexrelid | 2134319
 -- -[ RECORD 2 ]----+---------
 -- relname          | original
 -- reltablespace    | 0
--- oid              | 22513
--- reltoastrelid    | 22517
+-- oid              | 2134306
+-- reltoastrelid    | 2134311
 -- relowner         | 10
 -- relkind          | r
--- relfrozenxid     | 2065
+-- relfrozenxid     | 127000
 -- relminmxid       | 1
--- relpages         | 64
--- reltuples        | 10000
--- relallvisible    | 64
--- relfilenode      | 22513
--- toast_indexrelid | 22518
+-- relpages         | 0
+-- reltuples        | -1
+-- relallvisible    | 0
+-- relfilenode      | 2134306
+-- toast_indexrelid | 2134312
 
--- Take note of the dependencies for the toast table to compare later.
+-- Take note of the dependencies to compare later.
+-- These are the objs the original and copy table depend on.
 SELECT
-    d1.objid AS original_objid,
-    d2.objid AS copy_objid
+    d1.refobjid AS original_refobjid,
+    d2.refobjid AS copy_refobjid
 FROM pg_depend d1, pg_depend d2
 WHERE d1.objid = ('original'::regclass) AND d2.objid = ('copy'::regclass);
--- -[ RECORD 1 ]--+------
--- original_objid | 22513
--- copy_objid     | 22522
+-- -[ RECORD 1 ]-----+-----
+-- original_refobjid | 2200
+-- copy_refobjid     | 2200
+-- Here '2200' is just the standard public schema:
+
+-- The only dependency these tables have is the standard public schema.
+SELECT *
+FROM pg_description
+WHERE objoid = 2200;
+-- -[ RECORD 1 ]-----------------------
+-- objoid      | 2200
+-- classoid    | 2615
+-- objsubid    | 0
+-- description | standard public schema
+
+-- Take note of the dependencies that depend on our two tables.
+-- This should include toast tables and sequences.
+SELECT
+    dep.objid AS dependant_oid,
+    c1.relname AS dependant_relname,
+    dep.refobjid AS source_oid,
+    c2.relname AS source_relname
+FROM pg_depend dep
+LEFT JOIN pg_class c1 ON (c1.oid = dep.objid)
+LEFT JOIN pg_class c2 ON (c2.oid = dep.refobjid)
+WHERE dep.refobjid in (('original'::regclass), ('copy'::regclass));
+-- Long list of dependencies omitted.
 
 -- Start table swap inside a transaction.
 BEGIN;
@@ -278,69 +301,65 @@ ORDER BY X.relname;
 -- -[ RECORD 1 ]----+---------
 -- relname          | copy
 -- reltablespace    | 0
--- oid              | 22522
--- reltoastrelid    | 22517
+-- oid              | 2134315
+-- reltoastrelid    | 2134311
 -- relowner         | 10
 -- relkind          | r
--- relfrozenxid     | 2065
+-- relfrozenxid     | 127001
 -- relminmxid       | 1
 -- relpages         | 64
 -- reltuples        | 10000
 -- relallvisible    | 64
--- relfilenode      | 22513
--- toast_indexrelid | 22518
+-- relfilenode      | 2134306
+-- toast_indexrelid | 2134312
 -- -[ RECORD 2 ]----+---------
 -- relname          | original
 -- reltablespace    | 0
--- oid              | 22513
--- reltoastrelid    | 22526
+-- oid              | 2134306
+-- reltoastrelid    | 2134318
 -- relowner         | 10
 -- relkind          | r
--- relfrozenxid     | 2068
+-- relfrozenxid     | 127004
 -- relminmxid       | 1
 -- relpages         | 64
 -- reltuples        | 10000
 -- relallvisible    | 64
--- relfilenode      | 22522
--- toast_indexrelid | 22527
+-- relfilenode      | 2134315
+-- toast_indexrelid | 2134319
 
--- Lock the pg_depend rows that correspond to 'original' and 'copy'
-SELECT * FROM pg_depend
+-- Lock the pg_depend rows where 'original' and 'copy' depend on something else
+-- Only look for the &quot;normal&quot; and &quot;internal&quot; (toast) relationships.
+SELECT 1 FROM pg_depend
 WHERE objid IN (('original')::regclass, ('copy')::regclass)
 FOR UPDATE;
 
--- Swap the objid values for the two dependencies
-WITH swapped_dep AS (
-    SELECT
-        d1.objid AS original_objid, d2.objid AS copy_objid
-    FROM pg_depend d1, pg_depend d2
-    WHERE d1.objid = ('original'::regclass)
-      AND d2.objid = ('copy'::regclass)
-)
--- TODO: this update is not working, maybe it needs to be deleted and then
--- inserted again? A delete-followed-by create is what pg_repack seems to do.
 UPDATE pg_depend
-SET objid = CASE
-    WHEN objid = (SELECT original_objid FROM swapped_dep) THEN (SELECT copy_objid FROM swapped_dep)
-    WHEN objid = (SELECT copy_objid FROM swapped_dep) THEN (SELECT original_objid FROM swapped_dep)
-END
-WHERE objid IN (SELECT original_objid FROM swapped_dep UNION SELECT copy_objid FROM swapped_dep);
+SET objid = ('original')::regclass
+WHERE objid = ('copy')::regclass and deptype IN ('n', 'i');
 
--- Verify the dependencies have been swapped.
-SELECT
-    d1.objid AS original_objid,
-    d2.objid AS copy_objid
-FROM pg_depend d1, pg_depend d2
-WHERE d1.objid = ('original'::regclass) AND d2.objid = ('copy'::regclass);
----[ RECORD 1 ]--+------
---original_objid | 22513
---copy_objid     | 22522
+UPDATE pg_depend
+SET objid = ('copy')::regclass
+WHERE objid = ('original')::regclass and deptype IN ('n', 'i');
+
+-- Lock the pg_depend rows where 'original' and 'copy' are dependent upon by
+-- something else
+SELECT 1 FROM pg_depend
+WHERE refobjid IN (('original')::regclass, ('copy')::regclass)
+FOR UPDATE;
+
+UPDATE pg_depend
+SET refobjid = ('original')::regclass
+WHERE refobjid = ('copy')::regclass and deptype IN ('n', 'i');
+
+UPDATE pg_depend
+SET refobjid = ('copy')::regclass
+WHERE refobjid = ('original')::regclass and deptype IN ('n', 'i');
 
 -- Renames!
 ALTER TABLE original RENAME TO temp_original;
 ALTER TABLE copy RENAME TO original;
 ALTER TABLE temp_original RENAME TO copy;
-DROP TABLE copy CASCADE;
+-- DROP TABLE copy CASCADE;
 
 -- Insert a couple of rows in the new &quot;original&quot; to verify it works
 INSERT INTO original (id, name, value) values (10001, 'my_new_row', 10);

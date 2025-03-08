@@ -14,6 +14,7 @@
 
 - [Tenacity](programming_languages/python/packages/tenacity.md)
 - [Fixit](programming_languages/python/packages/fixit.md)
+- [IPython](programming_languages/python/packages/ipython.md)
 
 ## performance
 

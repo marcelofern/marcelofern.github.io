@@ -67,8 +67,13 @@ you'll see an error when not using CASCADE (default is RESTRICT):
 ```sql
 BEGIN;
 
+DROP TABLE IF EXISTS refered CASCADE;
 CREATE TABLE refered (id serial, int_field int unique);
+
+DROP TABLE IF EXISTS referencing CASCADE;
 CREATE TABLE referencing (id serial);
+
+INSERT INTO refered (int_field) SELECT generate_series(1, 10000)
 
 ALTER TABLE "referencing" ADD COLUMN "refered_int_field" int NULL
 CONSTRAINT "delete_this_soon"

@@ -32,6 +32,8 @@ WHERE
     -- or with
     -- SELECT pid, query, state, backend_start FROM pg_stat_activity WHERE state = 'active';
     a.pid = 777;
+    -- Or if you have another shell opened to analyse the data, you can perform
+    -- a.pid != pg_backend_pid();
 ```
 
 That will give you a result like this:

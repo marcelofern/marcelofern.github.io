@@ -6,6 +6,7 @@
 - [Python](programming_languages/python/index.md)
 - [Scheme](programming_languages/scheme/index.md)
 - [Lua](programming_languages/lua/index.md)
+- [Rust](programming_languages/rust/index.md)
 
 ## Theory
 

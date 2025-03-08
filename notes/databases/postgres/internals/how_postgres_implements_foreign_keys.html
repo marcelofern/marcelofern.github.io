@@ -112,8 +112,13 @@ code</a></p>
 you'll see an error when not using CASCADE (default is RESTRICT):</p>
 <pre><code class="language-sql">BEGIN;
 
+DROP TABLE IF EXISTS refered CASCADE;
 CREATE TABLE refered (id serial, int_field int unique);
+
+DROP TABLE IF EXISTS referencing CASCADE;
 CREATE TABLE referencing (id serial);
+
+INSERT INTO refered (int_field) SELECT generate_series(1, 10000)
 
 ALTER TABLE &quot;referencing&quot; ADD COLUMN &quot;refered_int_field&quot; int NULL
 CONSTRAINT &quot;delete_this_soon&quot;

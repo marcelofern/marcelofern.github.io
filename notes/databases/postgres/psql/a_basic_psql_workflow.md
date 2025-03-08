@@ -61,3 +61,28 @@ end
 
 vim.api.nvim_command('command! -nargs=? PsqlBuffer lua PsqlBuffer(<f-args>)')
 ```
+
+## Tip 4: Print SQL of psql backslash commands:
+
+```
+\set ECHO_HIDDEN 1
+```
+
+And to turn it off, simply set `ECHO_HIDDEN` to 0.
+
+## Tip 5: Print query SQL with results
+
+This is often handy when you are copy/pasting results of queries.
+
+Set the `ECHO` variable to `all`
+
+```
+\set ECHO all
+```
+
+When you are done, set `ECHO` to `none`
+
+```
+\set ECHO none
+```
+

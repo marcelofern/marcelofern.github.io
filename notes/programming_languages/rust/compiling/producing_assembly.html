@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Producing Assembly</h1>
+<pre><code>Created at: 2025-02-28
+</code></pre>
+<h2>Using rustc</h2>
+<pre><code class="language-sh"># The following generates a &quot;main.s&quot; file in the same directory.
+rustc --emit=asm main.rs
+
+# Useful flags
+# -O (optimisation level = 2)
+# -g (debuginfo = 2)
+rustc --emit=asm -O main.rs
+rustc --emit=asm -g main.rs
+# If you want to pick opt-level=2
+rustc -C opt-level=3 --emit=asm main.rs
+
+# If you want LLVM intermediate representation
+# instead of assembly (this will create a .ll file):
+rustc --emit=llvm-ir main.rs
+</code></pre>
+<h2>Using cargo (in a cargo project)</h2>
+<pre><code class="language-sh"># This will create a `.s` file in
+# $ROOT/target/release/deps/
+cargo rustc --release -- --emit=asm
+
+# Or just to run as &quot;debug&quot;
+cargo rustc -- --emit=asm
+
+# The same flags from rustc are available here
+cargo rustc --release -- -C opt-level=3 --emit=asm
+</code></pre>
+<h2>Using cargo asm</h2>
+<p>Using cargo-asm to Generate Assembly from Rust Code</p>
+<p><code>cargo-asm</code> is a more interactive and user-friendly tool for inspecting
+the assembly of Rust functions. It allows you to view assembly output
+for specific functions rather than the entire binary.</p>
+<pre><code class="language-sh"># it needs to be installed first:
+cargo install --force cargo-show-asm
+
+# now you can inspect a specific function:
+cargo asm prj::foo
+
+# in debug (dev) mode
+cargo asm --dev prj::foo
+
+# If you're using a library:
+cargo asm prj::foo::bar
+
+# If you want to see the underlying rust code:
+cargo asm prj::foo --rust
+
+# If you want to &quot;simplify&quot; the output for readibility:
+cargo asm prj::foo --simplify
+</code></pre>
+<p>Example code to test:</p>
+<pre><code>use std::io;
+
+#[inline(never)]
+fn foo(x: i64, y: i64) -&gt; i64 {
+    return x + y;
+}
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_line(&amp;mut input).unwrap(); // Read user input
+    let x: i64 = input.trim().parse().unwrap(); // Convert to i64
+    let result = foo(x, x);
+    println!(&quot;{}&quot;, result)
+}
+</code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

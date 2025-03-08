@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Building a Binary</h1>
+<pre><code>Created at: 2025-02-27
+</code></pre>
+<p>Inside a project created with cargo (Cargo.toml), run:</p>
+<pre><code class="language-sh">cargo build
+</code></pre>
+<p>This will create a binary in <code>target/debug/&lt;bin_name&gt;</code>. Also:</p>
+<blockquote>
+<p>Running cargo build for the first time also causes Cargo to create a new file
+at the top level: Cargo.lock. This file keeps track of the exact versions of
+dependencies in your project. This project doesn’t have dependencies, so the
+file is a bit sparse. You won’t ever need to change this file manually; Cargo
+manages its contents for you.</p>
+</blockquote>
+<h2>Profile</h2>
+<p>You can change the profile in which you want to generate the binary.
+For example:</p>
+<pre><code class="language-sh">cargo build --profile=release
+</code></pre>
+<p>This will create a binary in <code>target/release/&lt;bin_name&gt;</code>. The <code>release</code> command
+will have run with the following settings:</p>
+<pre><code>[profile.release]
+opt-level = 3  # similar to gcc -O3
+debug = false  # no debug info at all
+# Platform-specific. controls whether debug information, if generated, is
+# either placed in the executable itself or adjacent to it.
+split-debuginfo = '...' 
+strip = &quot;none&quot;  # Whether to strip symbols or debuginfo from binary
+debug-assertions = false  # enables the debug_assert! macro. Not for prod.
+overflow-checks = false
+lto = false  # longer linker time at the expense of more optimisation
+panic = 'unwind'
+incremental = false  # incremental compilation. Makes compilation faster
+codegen-units = 16
+rpath = false
+</code></pre>
+<h2>check</h2>
+<p>Sometimes, building the binary can take a lot of time.
+If all you want to do is to check that the code would compile, you can run:</p>
+<pre><code class="language-sh">cargo check
+# cargo check --profile=release
+</code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>
