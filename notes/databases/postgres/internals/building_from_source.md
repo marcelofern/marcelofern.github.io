@@ -34,7 +34,7 @@ with the source code.
 
 ## Step 0 (for macOs users only - skip if on Linux)
 
-Run these commands first, so that your homebrew libraries
+Run these commands first, so that your homebrew libraries can be found.
 
 ```sh
 export CPPFLAGS="-I/opt/homebrew/include"
@@ -43,7 +43,9 @@ export LDFLAGS="-L/opt/homebrew/lib"
 
 ## Configure
 
-In the source directory, there is a bash script called `./configure`.
+First, move the folder to the final directory you want it in.
+
+In the root directory, there is a bash script called `./configure`.
 
 ```sh
 VERSION=15

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Drop trigger locks</h1>
+<pre><code>Created at: 2025-03-12
+</code></pre>
+<p>Given the following set up:</p>
+<pre><code class="language-sql">DROP TABLE IF EXISTS foo;
+CREATE TABLE foo (
+    id SERIAL PRIMARY KEY,
+    bar VARCHAR(1000)
+);
+
+DROP TABLE IF EXISTS foo_audit_log;
+CREATE TABLE foo_audit_log (
+    id SERIAL PRIMARY KEY,
+    foo_id INT,
+    old_value VARCHAR(1000),
+    new_value VARCHAR(1000),
+    changed_at TIMESTAMPTZ
+);
+
+CREATE OR REPLACE FUNCTION log_bar_changes()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
+        INSERT INTO foo_audit_log (foo_id, old_value, new_value, changed_at)
+        VALUES (NEW.id, OLD.bar, NEW.bar, NOW());
+    ELSIF (TG_OP = 'DELETE') THEN
+        INSERT INTO foo_audit_log (foo_id, old_value, new_value, changed_at)
+        VALUES (OLD.id, OLD.bar, NULL, NOW());
+    END IF;
+
+    IF (TG_OP = 'DELETE') THEN
+        RETURN NULL; -- For DELETE operation, row is already removed
+    ELSE
+        RETURN NEW; -- For INSERT or UPDATE, return the new row
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER foo_bar_changes
+AFTER INSERT OR UPDATE OR DELETE ON foo
+FOR EACH ROW
+EXECUTE FUNCTION log_bar_changes();
+
+INSERT INTO foo (bar) SELECT generate_series(1, 10000);
+</code></pre>
+<p>If we drop the trigger:</p>
+<pre><code class="language-sql">BEGIN;
+DROP TRIGGER foo_bar_changes ON foo;
+</code></pre>
+<p>The following locks are hold</p>
+<pre><code> locktype |        mode         | granted | relation | relname |                query                 |  lock_duration
+----------+---------------------+---------+----------+---------+--------------------------------------+-----------------
+ relation | AccessShareLock     | t       |  2491826 | foo     | DROP TRIGGER foo_bar_changes ON foo; | 00:07:01.223563
+ relation | AccessExclusiveLock | t       |  2491826 | foo     | DROP TRIGGER foo_bar_changes ON foo; | 00:07:01.223563
+</code></pre>
+<p>And if we want to also drop the function, then we have an extra:</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

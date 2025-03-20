@@ -81,12 +81,13 @@ and grab the version of Postgres you are interested in.</p>
 <p>This will create a new folder <code>postgresql-version</code> in your current directory
 with the source code.</p>
 <h2>Step 0 (for macOs users only - skip if on Linux)</h2>
-<p>Run these commands first, so that your homebrew libraries</p>
+<p>Run these commands first, so that your homebrew libraries can be found.</p>
 <pre><code class="language-sh">export CPPFLAGS=&quot;-I/opt/homebrew/include&quot;
 export LDFLAGS=&quot;-L/opt/homebrew/lib&quot;
 </code></pre>
 <h2>Configure</h2>
-<p>In the source directory, there is a bash script called <code>./configure</code>.</p>
+<p>First, move the folder to the final directory you want it in.</p>
+<p>In the root directory, there is a bash script called <code>./configure</code>.</p>
 <pre><code class="language-sh">VERSION=15
 PREFIX=&quot;$(pwd)/build&quot;
 

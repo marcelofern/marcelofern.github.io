@@ -62,6 +62,17 @@
 <h1>Downloading Kindle Highlights In Linux</h1>
 <pre><code>Created at: 2024-09-04
 </code></pre>
+<h2>Summary</h2>
+<pre><code class="language-sh">DEVICE=/dev/sda
+sudo mkdir /mnt/kindle
+sudo mount $DEVICE /mnt/kindle
+cd /mnt/kindle/documents
+cp 'My Clippings.txt' ~/Downloads/my_clippings.txt
+cd ~
+sudo umount /mnt/kindle
+sudo rm -rf /mnt/kindle
+</code></pre>
+<h2>Step by step</h2>
 <ol>
 <li>After pluging Kindle via USB, verify the name of the disk partition:<pre><code class="language-sh">sudo fdisk -l
 </code></pre>
@@ -84,16 +95,6 @@ sudo rm -rf /mnt/kindle
 </code></pre>
 </li>
 </ol>
-<h2>Putting it all together</h2>
-<pre><code class="language-sh">DEVICE=/dev/sda
-sudo mkdir /mnt/kindle
-sudo mount $DEVICE /mnt/kindle
-cd /mnt/kindle/documents
-cp 'My Clippings.txt' ~/Downloads/my_clippings.txt
-cd ~
-sudo umount /mnt/kindle
-sudo rm -rf /mnt/kindle
-</code></pre>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

@@ -4,6 +4,21 @@
 Created at: 2024-09-04
 ```
 
+## Summary
+
+```sh
+DEVICE=/dev/sda
+sudo mkdir /mnt/kindle
+sudo mount $DEVICE /mnt/kindle
+cd /mnt/kindle/documents
+cp 'My Clippings.txt' ~/Downloads/my_clippings.txt
+cd ~
+sudo umount /mnt/kindle
+sudo rm -rf /mnt/kindle
+```
+
+## Step by step
+
 1. After pluging Kindle via USB, verify the name of the disk partition:
    ```sh
    sudo fdisk -l
@@ -29,15 +44,3 @@ Created at: 2024-09-04
    sudo rm -rf /mnt/kindle
    ```
 
-## Putting it all together
-
-```sh
-DEVICE=/dev/sda
-sudo mkdir /mnt/kindle
-sudo mount $DEVICE /mnt/kindle
-cd /mnt/kindle/documents
-cp 'My Clippings.txt' ~/Downloads/my_clippings.txt
-cd ~
-sudo umount /mnt/kindle
-sudo rm -rf /mnt/kindle
-```

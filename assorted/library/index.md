@@ -64,6 +64,7 @@ ones in this list to be good enough to be shared with the public.
 - Asimov, Isaac - The End of Eternity.
 - Asimov, Isaac - The Foundation Series.
 - Asimov, Isaac - The Robot Series.
+- Baoshu - The Redemption of Time ([review](assorted/library/the-redemption-of-time/index.md))
 - Cixin, Liu - Remembrance of Earth's Past Trilogy ([review](assorted/library/remembrance-of-earths-past/index.md))
 - Coelho, Paulo - The Alchemist ([review](assorted/library/the-alchemist/index.md))
 - Dostoevsky, Fyodor - Brothers Karamazov ([review](assorted/library/brothers-karamazov/index.md))
@@ -78,6 +79,8 @@ ones in this list to be good enough to be shared with the public.
 - Herbert, Frank - Chapterhouse: Dune.
 - Herbert, Brian - Hunters of Dune.
 - Herbert, Brian - Sandworms of Dune ([review](assorted/library/sandworms-of-dune/index.md)).
+- Marquez, Gabriel Garcia - One Hundred Years of Solitude ([review](assorted/library/one-hundred-years-of-solitude/index.md))
+- Orwell, George - 1984 ([review](assorted/library/1984/index.md))
 - Shusterman, Neal - Arc of a Scythe Series ([review](assorted/library/arc-of-a-scythe/index.md))
 - Tolkien, J. R. R. - The Hobbit.
 - Tolkien, J. R. R. - The Lord of The Rings Trilogy.
@@ -99,6 +102,7 @@ ones in this list to be good enough to be shared with the public.
 - DeMarco, Tom - Peopleware. ([review](assorted/library/peopleware/index.md))
 - Meyer, Erin - The Culture Map. ([review](assorted/library/culture-map/index.md))
 - Voss, Chris - Never Split The Difference. ([review](assorted/library/never-split-the-difference/index.md))
+- Fournier, Camille - The Manager's Path. ([review](assorted/library/the-managers-path/index.md))
 
 ## Pedagogy
 
