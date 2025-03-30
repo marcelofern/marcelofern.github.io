@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Contenttypes Framework</h1>
+<pre><code>Created at: 2025-03-27
+</code></pre>
+<h2>What is it?</h2>
+<p>A generic interface for working with Django models.</p>
+<h2>The ContentType model</h2>
+<p>The <code>ContentType</code> model is at the core of the framework.
+It has the columns</p>
+<ul>
+<li>app_label: str</li>
+<li>model: str</li>
+<li>name: str (verbose name obtained from the model's <code>verbose_name</code> attribute)</li>
+</ul>
+<p>Rows are injected into that table whenever new models are installed.</p>
+<p>There are methods on this model for both finding the model for a row, and for
+getting a row for a model.</p>
+<ul>
+<li><code>ContentType.get_object_for_this_type(...get() args...)</code>
+Takes a set of valid lookup arguments for the model the ContentType
+represents, and does a get() lookup on that model, returning the
+corresponding object from the underlying model.</li>
+<li><code>ContentType.model_class()</code> get the model for a row.</li>
+</ul>
+<pre><code class="language-py">from django.contrib.contenttypes.models import ContentType
+user_type = ContentType.objects.get(app_label=&quot;auth&quot;, model=&quot;user&quot;)
+user_type
+# &lt;ContentType: user&gt;
+
+user_type.model_class()
+# &lt;class 'django.contrib.auth.models.User'&gt;
+user_type.get_object_for_this_type(username=&quot;Guido&quot;)
+# &lt;User: Guido&gt;
+</code></pre>
+<h2>Generic Relations</h2>
+<p><code>ContentType</code> is also used for Generic Relations.</p>
+<p>You can relate another model to <code>ContentType</code> as a way of tying instances of it
+to particular model classes, and use these methods to get access to those model
+classes.</p>
+<pre><code class="language-py">from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.db import models
+
+
+class TaggedItem(models.Model):
+    tag = models.SlugField()
+    # STEP 1: You need a foreign key to the ContentType model.
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    # STEP 2: A field that can store the type of &quot;id&quot; to any of the desired
+    # generic models you want to link to.
+    # NOTE: you can't support multiple objects with different id types under
+    # this strategy. Unless you use something like a varchar that can be
+    # coerced to different types.
+    object_id = models.PositiveIntegerField()
+    # STEP 3: Give the model a GenericForeignKey, and pass it the names of the
+    # two fields described above. If these fields are named “content_type” and
+    # “object_id”, you can omit this – those are the default field names.
+    # NOTE: this field is not &quot;filterable&quot; so the following will fail:
+    # TaggedItem.objects.filter(content_object=guido)
+    content_object = GenericForeignKey(&quot;content_type&quot;, &quot;object_id&quot;)
+
+    def __str__(self):
+        return self.tag
+
+    class Meta:
+        indexes = [
+            # These fields are not automatically index, so create your own.
+            models.Index(fields=[&quot;content_type&quot;, &quot;object_id&quot;]),
+        ]
+</code></pre>
+<p>Say you want to get the object of that content type:</p>
+<pre><code class="language-py">from django.contrib.auth.models import User
+guido = User.objects.get(username=&quot;Guido&quot;)
+t = TaggedItem(content_object=guido, tag=&quot;bdfl&quot;)
+t.save()
+t.content_object
+# &lt;User: Guido&gt;
+
+guido.delete()
+t.content_object  # returns None
+</code></pre>
+<p>You can also use a reverse relationship:</p>
+<pre><code class="language-py">from django.contrib.contenttypes.fields import GenericRelation
+from django.db import models
+
+
+class Bookmark(models.Model):
+    url = models.URLField()
+    tags = GenericRelation(TaggedItem)
+
+b = Bookmark(url=&quot;https://www.djangoproject.com/&quot;)
+b.save()
+t1 = TaggedItem(content_object=b, tag=&quot;django&quot;)
+t1.save()
+t2 = TaggedItem(content_object=b, tag=&quot;python&quot;)
+t2.save()
+b.tags.all()
+</code></pre>
+<h2>Resources</h2>
+<p>Official docs:
+https://docs.djangoproject.com/en/5.1/ref/contrib/contenttypes/</p>
+<p>Blog post describing why you should not use this:
+https://lukeplant.me.uk/blog/posts/avoid-django-genericforeignkey/</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

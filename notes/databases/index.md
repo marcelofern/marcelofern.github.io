@@ -51,6 +51,8 @@
 - [JSON filtering vs text casting](databases/postgres/performance/json_filtering_vs_text_casting.md)
 - [Table bloat](databases/postgres/performance/table_bloat.md)
 - [Slow ORDER BY and LIMIT](databases/postgres/performance/slow_order_by_and_limit.md)
+- [Fastest way to find if table is empty](databases/postgres/performance/fastest_way_to_find_if_table_is_empty.md)
+- [UUID vs ID](databases/postgres/performance/uuids_vs_id.md)
 
 ### Internals
 

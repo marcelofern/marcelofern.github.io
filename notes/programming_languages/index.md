@@ -7,6 +7,7 @@
 - [Scheme](programming_languages/scheme/index.md)
 - [Lua](programming_languages/lua/index.md)
 - [Rust](programming_languages/rust/index.md)
+- [Bash](programming_languages/bash/index.md)
 
 ## Theory
 

@@ -5,6 +5,7 @@
 - [Migration state and operation](programming_languages/python/django/migration_state_and_operation.md)
 - [Testing django locally](programming_languages/python/django/testing_django_locally.md)
 - [default on Model Field](programming_languages/python/django/default_on_model_field.md)
+- [Contenttypes framework](programming_languages/python/django/contenttypes_framework.md)
 
 ## internals
 
@@ -15,6 +16,7 @@
 - [Tenacity](programming_languages/python/packages/tenacity.md)
 - [Fixit](programming_languages/python/packages/fixit.md)
 - [IPython](programming_languages/python/packages/ipython.md)
+- [logging](programming_languages/python/packages/logging.md)
 
 ## performance
 
