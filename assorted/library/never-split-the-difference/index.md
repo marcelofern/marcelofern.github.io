@@ -19,6 +19,11 @@ In summary, this book reads more like the advice on a specialist, rather than
 a thorough scientific analysis of the subject. I think that this approach suits
 the topic well.
 
+## Other readings that are relevant on negotiation:
+
+- [Rules for negotiating an offer (2016)](https://haseebq.com/my-ten-rules-for-negotiating-a-job-offer/)
+- [How to not bomb your offer negotiation (2016)](https://haseebq.com/how-not-to-bomb-your-offer-negotiation/)
+
 
 ## Summary Of The Summary
 
