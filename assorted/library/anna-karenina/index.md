@@ -155,10 +155,6 @@ This is my first Tolstoy, I will certainly be reading more.
 > sofa. He did it zealously, thinking it was for her (his pregnant wife), and
 > only later learned that he had prepared his own bed.
 
-> Then Levin remembered being sent somewhere. Once he was sent to move a table
-> and a sofa. He did it zealously, thinking it was for her, and only later
-> learned that he had prepared his own bed.
-
 > What he felt for this small being was not at all what he had expected. There
 > was nothing happy or joyful in this feeling; on the contrary, there was a new
 > tormenting fear. There was an awareness of a new region of vulnerability. And
