@@ -5,6 +5,7 @@
 - [SET CONSTRAINTS](databases/postgres/constraints/set_constraints.md)
 - [SET NOT NULL](databases/postgres/constraints/set_not_null.md)
 - [EXCLUDE USING](databases/postgres/constraints/exclude_using.md)
+- [Composite Primary Keys](databases/postgres/constraints/composite_primary_keys.md)
 
 ### Outages
 
@@ -27,6 +28,7 @@
 - [Composed index vs denormalised column index](databases/postgres/indexing/composed_index_vs_denormalised_column_index.md)
 - [REINDEX CONCURRENTLY](databases/postgres/indexing/reindex_concurrently.md)
 - [Visualising a btree index](databases/postgres/indexing/visualising_a_btree_index.md)
+- [NULLS NOT DISTINCT](databases/postgres/indexing/nulls_not_distinct.md)
 
 ### Planning
 
@@ -97,6 +99,11 @@
 ### Fields
 
 - [Choosing between varchar and varchar(n)](databases/postgres/fields/choosing_between_varchar_and_varchar_n.md)
+- [Identity columns](databases/postgres/fields/identity_columns.md)
+
+### WAL
+
+- [WAL basics](databases/postgres/wal/basics.md)
 
 ## SQL
 

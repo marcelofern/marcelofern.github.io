@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>NULLS NOT DISTINCT</h1>
+<pre><code>Created at: 2025-04-09
+</code></pre>
+<p>By default, NULL values are treated as distinct values. This means that when
+making comparisons, <code>NULL != NULL</code>. Instead, NULL is considered &quot;unkown&quot;.</p>
+<p>This means that the index above won't do what you expect:</p>
+<pre><code class="language-sql">CREATE UNIQUE INDEX
+  foo_idx
+ON
+  bar (my_column)
+WHERE
+  my_column IS NULL;
+</code></pre>
+<p>You might have thought that &quot;there can be one row in the <code>bar</code> table where
+my_column is NULL&quot;, but that is not correct.</p>
+<h2>Constraints</h2>
+<p>The same is valid for constraints:</p>
+<pre><code class="language-sql">DROP TABLE IF EXISTS foo;
+CREATE TABLE foo (id SERIAL PRIMARY KEY, val INTEGER);
+
+INSERT INTO foo (id) SELECT generate_series(1, 10000);
+
+-- Should be zero
+SELECT count(*) FROM foo WHERE val IS NOT NULL;
+
+-- This works
+ALTER TABLE foo ADD CONSTRAINT unique_val UNIQUE (val);
+</code></pre>
+<h2>Postgres 15</h2>
+<p>In Postgres 15+ the feature <code>NULLS NOT DISTINCT</code> is available when creating
+unique indexes. The correct way of creating the index above would be:</p>
+<pre><code class="language-sql">CREATE UNIQUE INDEX
+  foo_idx
+ON
+  bar (my_column)
+NULLS NOT DISTINCT
+WHERE
+  my_column IS NULL;
+</code></pre>
+<h2>Older Versions</h2>
+<p>There is a workaround for older Postgres versions. You can use &quot;COALESCE&quot; to
+store an actual value in the index when the entry is set to NULL.</p>
+<p>Supposing <code>my_column</code> is a time stamp:</p>
+<pre><code class="language-sql">CREATE UNIQUE INDEX
+  foo_idx
+ON
+  bar (COALESCE(my_column, '1970-01-01 00:00:00'))
+WHERE
+  my_column IS NULL;
+</code></pre>
+<p>Make sure to pick a sentinel value (in this case 1970-01-01 midnight) that no
+other entry in the table would likely obtain.</p>
+<p>It looks funky, but remember that this is the value stored in the index; the
+table still stores the NULL value against that column.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -6,6 +6,7 @@
 - [Testing django locally](programming_languages/python/django/testing_django_locally.md)
 - [default on Model Field](programming_languages/python/django/default_on_model_field.md)
 - [Contenttypes framework](programming_languages/python/django/contenttypes_framework.md)
+- [Finding fks pointing to a model](programming_languages/python/django/finding_fks_pointing_to_a_model.md)
 
 ## internals
 
@@ -33,6 +34,7 @@
 
 - [`try`-`except`-`finally`](programming_languages/python/syntax/try_except_finally.md)
 - [`setdefault`](programming_languages/python/syntax/setdefault.md)
+- [switch](programming_languages/python/syntax/switch.md)
 
 ## typing
 

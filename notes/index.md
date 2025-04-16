@@ -17,14 +17,17 @@
 - [Embedded development](embedded_development/index.md)
 - [Electronics](electronics/index.md)
 
-## Hardware
+## Hardware & Machines
 
 - [Tools](hardware_tools/index.md)
 - [House Building](house_building/index.md)
 - [Cameras](cameras/index.md)
+- [e-readers](e_readers/index.md)
+- [cars](cars/index.md)
 
 ## Etc.
 
 - [Notes on books](books/index.md)
 - [Notes on writing](writing/index.md)
 - [Transcriptions](transcriptions/index.md)
+- [Business](business/index.md)

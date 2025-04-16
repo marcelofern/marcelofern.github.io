@@ -59,31 +59,26 @@
   <![endif]-->
 </head>
 <body>
-<h2>Breads</h2>
-<ul>
-<li><a href="bagel.html">bagel</a></li>
-<li><a href="waffle.html">waffle</a></li>
-</ul>
-<h2>Cakes</h2>
-<ul>
-<li><a href="banana_cake.html">banana cake</a></li>
-</ul>
-<h2>Sauces</h2>
-<ul>
-<li><a href="cashew_cheese.html">cashew cheese</a></li>
-</ul>
-<h2>Soups</h2>
-<ul>
-<li><a href="pumpkin_soup.html">pumpkin soup</a></li>
-</ul>
-<h2>Mexican</h2>
-<ul>
-<li><a href="nachos.html">nachos</a></li>
-</ul>
-<h1>Bread Maker</h1>
-<ul>
-<li><a href="bread_maker/large_wholemeal_bread.html">large wholemeal bread</a></li>
-</ul>
+<h1>Finding FKs Pointing To a Model</h1>
+<pre><code>Created at: 2025-04-09
+</code></pre>
+<pre><code class="language-py">from django.apps import apps
+from django.db import models
+
+def find_foreign_keys(app, model_name):
+    base_model = apps.get_model(app, model_name)
+    referencing_models = []
+
+    for app in apps.get_app_configs():
+        for model in app.get_models():
+            for field in model._meta.fields:
+                if isinstance(field, models.ForeignKey) and field.related_model == base_model:
+                    referencing_models.append(model)
+
+    return referencing_models
+
+find_foreign_keys(&quot;events&quot;, &quot;externalevent&quot;)
+</code></pre>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

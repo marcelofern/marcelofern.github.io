@@ -57,6 +57,7 @@ Reading list resources:
 ## Philosophy
 
 - The Parallax View - Slavoj Zizek
+- On Bullshit Harry G. Frankfurt
 
 ## Management
 

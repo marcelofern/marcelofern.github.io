@@ -59,31 +59,20 @@
   <![endif]-->
 </head>
 <body>
-<h2>Breads</h2>
-<ul>
-<li><a href="bagel.html">bagel</a></li>
-<li><a href="waffle.html">waffle</a></li>
-</ul>
-<h2>Cakes</h2>
-<ul>
-<li><a href="banana_cake.html">banana cake</a></li>
-</ul>
-<h2>Sauces</h2>
-<ul>
-<li><a href="cashew_cheese.html">cashew cheese</a></li>
-</ul>
-<h2>Soups</h2>
-<ul>
-<li><a href="pumpkin_soup.html">pumpkin soup</a></li>
-</ul>
-<h2>Mexican</h2>
-<ul>
-<li><a href="nachos.html">nachos</a></li>
-</ul>
-<h1>Bread Maker</h1>
-<ul>
-<li><a href="bread_maker/large_wholemeal_bread.html">large wholemeal bread</a></li>
-</ul>
+<h1>Composite Primary Keys</h1>
+<pre><code>Created at: 2025-04-14
+</code></pre>
+<h2>Examples</h2>
+<pre><code class="language-sql">CREATE TABLE course_grades (
+    quarter_id INTEGER,
+    course_id TEXT,
+    student_id INTEGER,
+    grade INTEGER,
+    PRIMARY KEY(quarter_id, course_id, student_id)
+);
+</code></pre>
+<h2>Resources</h2>
+<p>https://kb.objectrocket.com/postgresql/postgresql-composite-primary-keys-629</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

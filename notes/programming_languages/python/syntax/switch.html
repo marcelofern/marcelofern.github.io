@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Switch</h1>
+<pre><code>Created at: 2025-04-09
+</code></pre>
+<h2>Can we think of Python Switch as a C switch?</h2>
+<p>Source: https://github.com/kraken-tech/psycopack/pull/4#discussion_r2030547248</p>
+<p>Perhaps that discussion cares further scrutinity?</p>
+<p>After evaluating the PEP and the official Python docs, it's clearer to me that
+what this code above does is already structural pattern matching. E.g., I am
+not comparing the exact value (like C switch statements), I am comparing an
+object type, shape, and value.</p>
+<p>To further strengthen that position, there's this example from &quot;matching
+objects&quot; in the canonical pep tutorial for <code>switch</code> statements.
+<a href="https://peps.python.org/pep-0636/#adding-a-ui-matching-objects">Reference</a></p>
+<p>Also, there is a clear example in the tutorial that is an accurate match our
+situation:</p>
+<blockquote>
+<p>Patterns may use named constants. These must be dotted names to prevent them
+from being interpreted as capture variable:</p>
+</blockquote>
+<pre><code class="language-python">from enum import Enum
+class Color(Enum):
+    RED = 0
+    GREEN = 1
+    BLUE = 2
+
+match color:
+    case Color.RED:
+        print(&quot;I see red!&quot;)
+    case Color.GREEN:
+        print(&quot;Grass is green&quot;)
+    case Color.BLUE:
+        print(&quot;I'm feeling the blues :(&quot;)
+</code></pre>
+<p>I wouldn't say that you'd be wrong by transferring a C-style thinking into
+Python <code>match</code> statements, given that the former is just a &quot;simpler&quot; use case
+of Python object matching. That is, given that in Python
+everything-is-an-object<code>*</code></p>
+<p><code>*</code>: not everything, keywords are not objects - but this is a common falacy!</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>
