@@ -84,6 +84,7 @@ ones in this list to be good enough to be shared with the public.
 - Shusterman, Neal - Arc of a Scythe Series ([review](assorted/library/arc-of-a-scythe/index.md))
 - Tolkien, J. R. R. - The Hobbit.
 - Tolkien, J. R. R. - The Lord of The Rings Trilogy.
+- Tolstoy, Leo - Anna Karenina ([review](assorted/library/anna-karenina/index.md))
 
 ## Health
 

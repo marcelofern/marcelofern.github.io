@@ -59,37 +59,20 @@
   <![endif]-->
 </head>
 <body>
-<h2>Breads</h2>
-<ul>
-<li><a href="bagel.html">bagel</a></li>
-<li><a href="waffle.html">waffle</a></li>
-</ul>
-<h2>Cakes</h2>
-<ul>
-<li><a href="banana_cake.html">banana cake</a></li>
-</ul>
-<h2>Sauces</h2>
-<ul>
-<li><a href="cashew_cheese.html">cashew cheese</a></li>
-</ul>
-<h2>Soups</h2>
-<ul>
-<li><a href="pumpkin_soup.html">pumpkin soup</a></li>
-</ul>
-<h2>Mexican</h2>
-<ul>
-<li><a href="nachos.html">nachos</a></li>
-</ul>
-<h2>Brazilian</h2>
-<ul>
-<li><a href="brazilian/moqueca.html">moqueca</a></li>
-</ul>
-<h1>Bread Maker</h1>
-<ul>
-<li><a href="bread_maker/large_wholemeal_bread.html">large wholemeal bread</a></li>
-<li><a href="bread_maker/pizza_dough.html">pizza dough</a></li>
-<li><a href="bread_maker/hot_cross_bun.html">hot cross bun</a></li>
-</ul>
+<h1>Temporary Tables</h1>
+<pre><code>Created at: 2025-04-22
+</code></pre>
+<p>Temporary tables only live for the length of that session (or transaction when
+insite a BEGIN/COMMIT block).</p>
+<p>They can be created with the <code>TEMPORARY</code> or <code>TEMP</code> keyword:</p>
+<pre><code class="language-sql">CREATE TEMP TABLE table_name(
+   ...
+);
+</code></pre>
+<p>Because temporary tables are session/transaction-only, multiple sessions can
+create a temporary table with the same name.</p>
+<p>This means that temporary tables can be used programatically to store the
+results of some complex calculation pertaining to the session or transaction.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

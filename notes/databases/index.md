@@ -55,6 +55,7 @@
 - [Slow ORDER BY and LIMIT](databases/postgres/performance/slow_order_by_and_limit.md)
 - [Fastest way to find if table is empty](databases/postgres/performance/fastest_way_to_find_if_table_is_empty.md)
 - [UUID vs ID](databases/postgres/performance/uuids_vs_id.md)
+- [Unlogged Tables](databases/postgres/performance/unlogged_tables.md)
 
 ### Internals
 
@@ -104,6 +105,14 @@
 ### WAL
 
 - [WAL basics](databases/postgres/wal/basics.md)
+
+### Sequences
+
+- [ALTER SEQUENCE OWNED BY](databases/postgres/sequences/alter_sequence_owned_by.md)
+
+### Isolation
+
+- [Temporary tables](databases/postgres/isolation/temporary_tables.md)
 
 ## SQL
 

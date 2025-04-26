@@ -19,6 +19,12 @@
 
 - [nachos](assorted/food_recipes/nachos.md)
 
+## Brazilian
+
+- [moqueca](assorted/food_recipes/brazilian/moqueca.md)
+
 # Bread Maker
 
 - [large wholemeal bread](assorted/food_recipes/bread_maker/large_wholemeal_bread.md)
+- [pizza dough](assorted/food_recipes/bread_maker/pizza_dough.md)
+- [hot cross bun](assorted/food_recipes/bread_maker/hot_cross_bun.md)

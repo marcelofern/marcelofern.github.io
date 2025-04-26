@@ -64,3 +64,10 @@ back wheels. That may indicate some alignment problem.
 Tyres age and become harder, leading to cracks. Look for age stamps (e.g.,
 '2319' for the 23rd week of 2019) and consider replacing tires older than 3-4
 years
+
+## NZ specific
+
+- Ask if the dealer can do WoF and Rego on the same day.
+- Ask for a AA pre-purchase inspection:
+  https://www.aa.co.nz/cars/buying-and-selling/pre-purchase-inspections/
+

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>ALTER SEQUENCE ONWED BY</h1>
+<pre><code>Created at: 2025-04-22
+</code></pre>
+<p>When a user creates a table and sets the primary key of that table to follow
+a default from a sequence, the DDL changes can look like this:</p>
+<pre><code class="language-sql">DROP TABLE IF EXISTS foo CASCADE;
+CREATE SEQUENCE seq;
+CREATE TABLE foo (id INTEGER);
+ALTER TABLE foo ALTER COLUMN id SET DEFAULT nextval('seq');
+</code></pre>
+<p>Once this table is out in the wild, you might have reason to figure out the
+name of the sequence being used by foo.id:</p>
+<pre><code class="language-sql">SELECT pg_get_serial_sequence('foo', 'id');
+-- returns no results
+</code></pre>
+<p>However, this returns no results. <code>pg_get_serial_sequence</code> looks for
+<code>pg_depend</code> entries, and in this case there isn't one.</p>
+<p>This can be changed:</p>
+<pre><code class="language-sql">ALTER SEQUENCE seq OWNED BY foo.id;
+</code></pre>
+<p>And now you get results:</p>
+<pre><code> pg_get_serial_sequence
+------------------------
+ public.seq
+</code></pre>
+<h2>SERIAL fields</h2>
+<p>If using a <code>SERIAL</code> field, Postgres will do that for you for free.
+This:</p>
+<pre><code class="language-sql">CREATE TABLE tablename (
+    colname SERIAL
+);
+</code></pre>
+<p>Is the equivalent of:</p>
+<pre><code class="language-sql">CREATE SEQUENCE tablename_colname_seq AS integer;
+CREATE TABLE tablename (
+    colname integer NOT NULL DEFAULT nextval('tablename_colname_seq')
+);
+ALTER SEQUENCE tablename_colname_seq OWNED BY tablename.colname;
+</code></pre>
+<p>The
+<a href="https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-SERIAL">docs</a>
+says:</p>
+<blockquote>
+<p>Lastly, the sequence is marked as “owned by” the column, so that it will be
+dropped if the column or table is dropped.</p>
+</blockquote>
+<h2>Gotcha of SERIAL columns</h2>
+<blockquote>
+<p>Because smallserial, serial and bigserial are implemented using sequences,
+there may be &quot;holes&quot; or gaps in the sequence of values which appears in the
+column, even if no rows are ever deleted. A value allocated from the sequence
+is still &quot;used up&quot; even if a row containing that value is never successfully
+inserted into the table column. This may happen, for example, if the
+inserting transaction rolls back. See nextval() in Section 9.17 for details.</p>
+</blockquote>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>
