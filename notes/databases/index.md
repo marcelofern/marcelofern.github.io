@@ -114,6 +114,10 @@
 
 - [Temporary tables](databases/postgres/isolation/temporary_tables.md)
 
+### Statistics
+
+- [table statistics](databases/postgres/statistics/table_statistics.md)
+
 ## SQL
 
 - [Mozilla SQL Style Guide](databases/sql/style_guides/mozilla.md)

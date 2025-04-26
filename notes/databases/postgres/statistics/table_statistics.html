@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Table Statistics</h1>
+<pre><code>Created at: 2025-04-26
+</code></pre>
+<p>The table <code>pg_stat_all_tables</code> can be queried to collect statistics about a
+particular table. The <code>pg_stat_user_tables</code> and <code>pg_stat_sys_tables</code> views
+contain the same information, but filtered to only show user and system tables
+respectively.</p>
+<p>See:
+https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-ALL-TABLES-VIEW</p>
+<h2>Query</h2>
+<pre><code class="language-sql">SELECT
+  *,
+  pg_size_pretty(pg_total_relation_size(relid)) AS table_size
+FROM
+  pg_stat_all_tables
+WHERE
+  relname = 'foo';
+</code></pre>
+<h2>Example</h2>
+<pre><code class="language-sql">-- Create a basic table with 10,000 rows.
+DROP TABLE IF EXISTS foo CASCADE;
+CREATE TABLE foo (id SERIAL PRIMARY KEY);
+INSERT INTO foo SELECT generate_series(1, 10000);
+
+-- This will create dead rows.
+DELETE FROM foo WHERE id % 2 = 0;
+
+-- Verify stats.
+SELECT
+  *,
+  pg_size_pretty(pg_total_relation_size(relid)) AS table_size
+FROM
+  pg_stat_all_tables
+WHERE
+  relname = 'foo';
+
+-- relid               | 22997
+-- schemaname          | public
+-- relname             | foo
+-- seq_scan            | 2
+-- seq_tup_read        | 10000
+-- idx_scan            | 0
+-- idx_tup_fetch       | 0
+-- n_tup_ins           | 10000
+-- n_tup_upd           | 0
+-- n_tup_del           | 5000
+-- n_tup_hot_upd       | 0
+-- n_live_tup          | 5000
+-- n_dead_tup          | 5000
+-- n_mod_since_analyze | 15000
+-- n_ins_since_vacuum  | 10000
+-- last_vacuum         |
+-- last_autovacuum     |
+-- last_analyze        |
+-- last_autoanalyze    |
+-- vacuum_count        | 0
+-- autovacuum_count    | 0
+-- analyze_count       | 0
+-- autoanalyze_count   | 0
+</code></pre>
+<h2>Resetting statistics</h2>
+<blockquote>
+<p>pg_stat_reset () → void (SELECT pg_stat_reset();)
+Resets all statistics counters for the current database to zero.
+This function is restricted to superusers by default, but other users can be
+granted EXECUTE to run the function.</p>
+</blockquote>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>
