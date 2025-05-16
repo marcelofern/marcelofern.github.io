@@ -1,4 +1,4 @@
-# Moqueca vegana (Evie's Recipe)
+# Moqueca vegana (Evie's Recipe) 🫑🍅🥥🍠
 
 ## Sauce
 - 2-4 red capsicums (roasted, de-skinned, blended until smooth)
@@ -49,5 +49,4 @@ You could also use:
   capsicum sauce, and coconut milk. (If using tofu, would add here).
 - Cook until begins to simmer, then add sugar, salt, and soy sauce to get the
   flavour balance.
-
-Serve with rice, farofa, etc!
+- Once the veggies are tender, serve with rice, farofa, etc!
