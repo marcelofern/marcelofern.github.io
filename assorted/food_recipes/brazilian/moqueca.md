@@ -1,4 +1,4 @@
-# Moqueca vegana (Evie's Recipe) 🫑🍅🥥🍠
+# Moqueca Vegana (Evie's Recipe) 🫑🍅🥥🍠
 
 ## Sauce
 - 2-4 red capsicums (roasted, de-skinned, blended until smooth)
