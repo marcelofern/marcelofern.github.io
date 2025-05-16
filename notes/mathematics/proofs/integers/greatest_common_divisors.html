@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Greatest Common Divisors Proof</h1>
+<pre><code>Created at: 2025-05-11
+</code></pre>
+<h2>Necessary concepts</h2>
+<h3>Definition of Divisibility For Integers</h3>
+<p>A nonzero integer <code>a</code> is said to divide an integer <code>b</code> if <code>b/a = k</code> for some
+integer <code>k</code>.
+When <code>a</code> divides <code>b</code>, we write <code>a | b</code>.
+When <code>a</code> does not divide <code>b</code>, we write <code>a † b</code>.</p>
+<h2>Definition of Greatest Common Divisors</h2>
+<ul>
+<li>Let <code>a</code> and <code>b</code> be integers.</li>
+<li>If <code>c | a</code> and <code>c | b</code> then <code>c</code> is a <em>common</em> divisor of <code>a</code> and <code>b</code>.</li>
+<li>The <em>greatest</em> common divisor of <code>a</code> and <code>b</code> is the largest integer <code>d</code> such
+that,</li>
+<li><code>d | a</code> and <code>d |  b</code>.</li>
+</ul>
+<p>This number (d) is denoted <code>gcd(a,b)</code>.</p>
+<h2>Examples (prior to the proof)</h2>
+<ul>
+<li>gcd(6, 8) = 2</li>
+<li>gcd(12, 8) = 4</li>
+<li>gcd(6, -8) = 2</li>
+<li>gcd(7, 15) = 1</li>
+<li>gcd(-5, -20) = 5</li>
+<li>gcd(9, 9) = 9</li>
+</ul>
+<h2>Insights (prior to the proof)</h2>
+<ul>
+<li><p>If <code>a</code> and <code>b</code> are non-zero, then</p>
+</li>
+<li><p>Since <code>1 | x</code> is true for every integer, then</p>
+</li>
+<li><p><code>1 | a</code> and <code>1 | b</code> are also true, then</p>
+</li>
+<li><p>The integer 1 is always a common divisor, then</p>
+</li>
+<li><p>The greatest common divisor will therefore at least be 1.</p>
+</li>
+<li><p>The greatest common divisor can never be larger than |a| or |b|, then</p>
+</li>
+<li><p>1 ≤ gcd(a,b) ≤ |a|, and</p>
+</li>
+<li><p>1 ≤ gcd(a,b) ≤ |b|, and therefore</p>
+</li>
+<li><p>gcd(a, b) <em>always</em> exists.</p>
+</li>
+<li><p>When a = 0 and b = 0, then there's no greatest common divisor as every
+integer is a divisor of 0.</p>
+</li>
+</ul>
+<h2>Theorem Bézout's identity (prior to the proof)</h2>
+<p>If <code>a</code> and <code>b</code> are positive integers, then there exist integers <code>k</code> and <code>l</code>
+such that: <code>gcd(a, b) = ak + bl</code>.</p>
+<h3>Examples</h3>
+<pre><code>  gcd(12,20) = 4
+  gcd(12,20) = 12k + 20l
+  gcd(12,20) = 12*2 + 20*-1
+  k = 2, l = -1
+
+  gcd(12,20) = 4
+  gcd(12,20) = 12k + 20l
+  gcd(12,20) = 12*-3 + 20*2
+  k = -3, l = 2
+</code></pre>
+<p>In fact there are infinite solutions. But only one suffices for the theorem.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

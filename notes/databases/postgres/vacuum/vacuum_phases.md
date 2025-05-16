@@ -140,3 +140,10 @@ FROM pg_stat_progress_vacuum p
 JOIN pg_stat_activity a using (pid)
 ORDER BY now() - a.xact_start DESC;
 ```
+
+Or simpler:
+
+```sql
+SELECT * FROM pg_stat_progress_vacuum
+WHERE oid = 'my_sweet_table'::regclass;
+```

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Function Permissions</h1>
+<blockquote>
+<p>EXECUTE</p>
+</blockquote>
+<blockquote>
+<p>Allows calling a function or procedure, including use of any operators that
+are implemented on top of the function. This is the only type of privilege
+that is applicable to functions and procedures.</p>
+</blockquote>
+<p>Example:</p>
+<pre><code class="language-sql">CREATE USER sweet_user;
+
+CREATE OR REPLACE FUNCTION public.add_numbers(a integer, b integer)
+RETURNS integer
+LANGUAGE sql
+AS $$
+    SELECT a + b;
+$$;
+
+-- Revoke all function privileges (for clarity), then grant only EXECUTE
+REVOKE ALL ON FUNCTION public.add_numbers(integer, integer) FROM PUBLIC;
+
+-- To make script idempotent
+REVOKE ALL ON FUNCTION public.add_numbers(integer, integer) FROM sweet_user;
+
+SELECT
+  grantee,
+  specific_name,
+  routine_schema,
+  routine_name,
+  privilege_type
+FROM
+  information_schema.routine_privileges
+WHERE
+  routine_name = 'add_numbers'
+  AND routine_schema = 'public';
+--       grantee      |    specific_name    | routine_schema | routine_name | privilege_type
+-- -------------------+---------------------+----------------+--------------+----------------
+--  marcelo.fernandes | add_numbers_3716267 | public         | add_numbers  | EXECUTE
+
+SET ROLE sweet_user;
+SELECT public.add_numbers(2, 3);
+-- ERROR:  permission denied for function add_numbers
+SET ROLE &quot;marcelo.fernandes&quot;;
+
+GRANT EXECUTE ON FUNCTION public.add_numbers(integer, integer) TO sweet_user;
+--       grantee      |    specific_name    | routine_schema | routine_name | privilege_type
+-- -------------------+---------------------+----------------+--------------+----------------
+--  marcelo.fernandes | add_numbers_3716267 | public         | add_numbers  | EXECUTE
+--  sweet_user        | add_numbers_3716267 | public         | add_numbers  | EXECUTE
+
+SET ROLE sweet_user;
+SELECT public.add_numbers(2, 3);
+SET ROLE &quot;marcelo.fernandes&quot;;
+</code></pre>
+<h2>What if sweet_user wants to create their own functions?</h2>
+<p>They will need to have &quot;CREATE&quot; privilege in the schema.</p>
+<pre><code class="language-sql">SET ROLE &quot;marcelo.fernandes&quot;;
+
+GRANT CREATE ON SCHEMA &quot;public&quot; TO sweet_user;
+
+SET ROLE sweet_user;
+
+CREATE OR REPLACE FUNCTION public.new_add_numbers(a integer, b integer)
+RETURNS integer
+LANGUAGE sql
+AS $$
+    SELECT a + b;
+$$;
+
+SELECT public.add_numbers(2, 3);
+SET ROLE &quot;marcelo.fernandes&quot;;
+</code></pre>
+<h2>Tips</h2>
+<p>For testing permissions, you can always:</p>
+<pre><code class="language-sql">SET ROLE sweet_user;
+-- test stuff here
+SET ROLE &quot;marcelo.fernandes&quot;;
+</code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

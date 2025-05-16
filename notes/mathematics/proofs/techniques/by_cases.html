@@ -59,44 +59,62 @@
   <![endif]-->
 </head>
 <body>
-<h2>High-level computing</h2>
+<h1>Proofs By Cases</h1>
+<pre><code>Created at: 2025-05-11
+</code></pre>
+<p>Proving by case means dividing a problem into all the possible branches and
+then solving each branch individually.</p>
+<p>In other words, &quot;divide and conquer&quot;.</p>
+<h2>Example</h2>
+<p><strong>Proposition</strong>:</p>
 <ul>
-<li><a href="databases/index.html">Databases</a></li>
-<li><a href="message_brokers/index.html">Message brokers</a></li>
-<li><a href="programming_languages/index.html">Programming languages</a></li>
-<li><a href="security/index.html">Security</a></li>
-<li><a href="linux/index.html">Linux</a></li>
-<li><a href="macos/index.html">MacOs</a></li>
-<li><a href="version_control/index.html">Version Control</a></li>
-<li><a href="text_editors/index.html">Text Editors</a></li>
+<li>If <code>n</code> is an integer, then <code>n² + n + 6</code> is even.</li>
 </ul>
-<h2>Low-level computing</h2>
+<p><strong>Fact</strong>:</p>
 <ul>
-<li><a href="compilers/index.html">Compilers</a></li>
-<li><a href="debuggers/index.html">Debuggers</a></li>
-<li><a href="computer_architecture/index.html">Computer architecture</a></li>
-<li><a href="embedded_development/index.html">Embedded development</a></li>
-<li><a href="electronics/index.html">Electronics</a></li>
+<li>(1) If <code>n</code> is an integer, it is either odd or even.</li>
+<li>(2) Any multiplication, addition, or subtraction of an integer by another results
+in another integer.</li>
 </ul>
-<h2>Even lower level computing</h2>
+<p><strong>Definitions</strong>:</p>
 <ul>
-<li><a href="mathematics/index.html">Mathematics</a></li>
+<li>(a) An integer <code>n</code> is even if <code>n = 2k</code> where <code>k</code> is another integer.</li>
+<li>(b) An integer <code>n</code> is odd if <code>n = 2k + 1</code> where <code>k</code> is another integer.</li>
 </ul>
-<h2>Hardware &amp; Machines</h2>
-<ul>
-<li><a href="hardware_tools/index.html">Tools</a></li>
-<li><a href="house_building/index.html">House Building</a></li>
-<li><a href="cameras/index.html">Cameras</a></li>
-<li><a href="e_readers/index.html">e-readers</a></li>
-<li><a href="cars/index.html">cars</a></li>
-</ul>
-<h2>Etc.</h2>
-<ul>
-<li><a href="books/index.html">Notes on books</a></li>
-<li><a href="writing/index.html">Notes on writing</a></li>
-<li><a href="transcriptions/index.html">Transcriptions</a></li>
-<li><a href="business/index.html">Business</a></li>
-</ul>
+<p><strong>Branch 1 <code>n</code> is even</strong>:</p>
+<pre><code>  n² + n + 6, then
+
+  (2k)² + 2k + 6, then
+
+  4k² + 2k + 6, then
+
+  2(2k² + k + 3), then
+
+  2x where x = (2k² + k + 3)
+
+  By fact (2) x is an integer.
+
+  By definition (a), we have that n² + n + 6 results in an even number when
+  n is even.
+</code></pre>
+<p><strong>Branch 2 <code>n</code> is odd</strong>:</p>
+<pre><code>  n² + n + 6, then
+
+  (2k + 1)² + 2k + 1 + 6, then
+
+  4k² + 4k + 1 + 2k + 1 + 6, then
+
+  4k² + 6k + 8, then
+
+  2(2k² + 3k + 4), then
+
+  2x where x (2k² + 3k + 4)
+
+  By fact (2) x is an integer.
+
+  By definition (a), we have that n² + n + 6 results in an even number when
+  n is odd.
+</code></pre>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

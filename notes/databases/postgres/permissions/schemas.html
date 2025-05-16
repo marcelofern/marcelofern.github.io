@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Schema Permissions</h1>
+<pre><code>Created at: 2025-05-09
+</code></pre>
+<ul>
+<li>By default, users cannot access any objects in schemas they do not own</li>
+<li>To allow that, the owner of the schema must grant the USAGE privilege on the
+schema.<pre><code class="language-sql">CREATE SCHEMA IF NOT EXISTS sweet_schema;
+CREATE USER sweet_user;
+
+GRANT USAGE ON SCHEMA sweet_schema TO sweet_user;
+
+-- USAGE: accessing objects in the schema.
+-- CREATE: creating objects in the schema.
+SELECT
+  has_schema_privilege('sweet_user', 'sweet_schema', 'USAGE') as usage_privilege,
+  has_schema_privilege('sweet_user', 'sweet_schema', 'CREATE') as create_privilege;
+-- usage_privilege  | t
+-- create_privilege | f
+</code></pre>
+</li>
+<li>By default, every user has USAGE privilege in the &quot;public&quot; schema.<pre><code class="language-sql">SELECT
+  has_schema_privilege('sweet_user', 'public', 'USAGE') as usage_privilege,
+  has_schema_privilege('sweet_user', 'public', 'CREATE') as create_privilege;
+-- usage_privilege  | t
+-- create_privilege | f
+</code></pre>
+</li>
+<li>To allow users to make use of the objects in a schema, additional privileges
+might need to be granted, as appropriate for the object.<pre><code class="language-sql">DROP TABLE IF EXISTS sweet_schema.foo;
+CREATE TABLE sweet_schema.foo (id SERIAL PRIMARY KEY);
+INSERT INTO sweet_schema.foo SELECT generate_series(1, 1000);
+
+SELECT
+  grantee,
+  table_schema AS schema,
+  table_name,
+  privilege_type AS privilege,
+  grantor
+FROM
+  information_schema.table_privileges
+WHERE
+  grantee = 'sweet_user';
+-- (0 rows)
+
+GRANT SELECT ON sweet_schema.foo TO sweet_user;
+GRANT INSERT ON sweet_schema.foo TO sweet_user;
+GRANT UPDATE ON sweet_schema.foo TO sweet_user;
+GRANT DELETE ON sweet_schema.foo TO sweet_user;
+GRANT TRUNCATE ON sweet_schema.foo TO sweet_user;
+GRANT REFERENCES ON sweet_schema.foo TO sweet_user;
+GRANT TRIGGER ON sweet_schema.foo TO sweet_user;
+--  grantee   |    schema    | table_name | privilege  |      grantor
+--------------+--------------+------------+------------+-------------------
+-- sweet_user | sweet_schema | foo        | INSERT     | marcelo.fernandes
+-- sweet_user | sweet_schema | foo        | SELECT     | marcelo.fernandes
+-- sweet_user | sweet_schema | foo        | UPDATE     | marcelo.fernandes
+-- sweet_user | sweet_schema | foo        | DELETE     | marcelo.fernandes
+-- sweet_user | sweet_schema | foo        | TRUNCATE   | marcelo.fernandes
+-- sweet_user | sweet_schema | foo        | REFERENCES | marcelo.fernandes
+-- sweet_user | sweet_schema | foo        | TRIGGER    | marcelo.fernandes
+</code></pre>
+</li>
+</ul>
+<h2>Tips</h2>
+<p>For testing permissions, you can always:</p>
+<pre><code class="language-sql">SET ROLE sweet_user;
+-- test stuff here
+SET ROLE &quot;marcelo.fernandes&quot;;
+</code></pre>
+<blockquote>
+<p>In databases upgraded from PostgreSQL 14 or earlier, everyone has that
+privilege on the schema public. Some usage patterns call for revoking that
+privilege:</p>
+</blockquote>
+<pre><code class="language-sql">REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+</code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

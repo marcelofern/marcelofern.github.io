@@ -210,6 +210,10 @@ FROM pg_stat_progress_vacuum p
 JOIN pg_stat_activity a using (pid)
 ORDER BY now() - a.xact_start DESC;
 </code></pre>
+<p>Or simpler:</p>
+<pre><code class="language-sql">SELECT * FROM pg_stat_progress_vacuum
+WHERE oid = 'my_sweet_table'::regclass;
+</code></pre>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

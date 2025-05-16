@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Faster autovacuum</h1>
+<pre><code>Created at: 2025-04-30
+</code></pre>
+<p>In order to speed up autovacuum, you can disable <code>vacuum_index_cleanup</code>.</p>
+<pre><code class="language-sql">alter table foo set (vacuum_index_cleanup off);
+</code></pre>
+<h2>Index Cleanup</h2>
+<p>From the docs:</p>
+<blockquote>
+<p>Normally, VACUUM will skip index vacuuming when there are very few dead
+tuples in the table. The cost of processing all of the table's indexes is
+expected to greatly exceed the benefit of removing dead index tuples when
+this happens. This option can be used to force VACUUM to process indexes when
+there are more than zero dead tuples. The default is AUTO, which allows
+VACUUM to skip index vacuuming when appropriate. If INDEX_CLEANUP is set to
+ON, VACUUM will conservatively remove all dead tuples from indexes. This may
+be useful for backwards compatibility with earlier releases of PostgreSQL
+where this was the standard behavior.</p>
+</blockquote>
+<blockquote>
+<p>INDEX_CLEANUP can also be set to OFF to force VACUUM to always skip index
+vacuuming, even when there are many dead tuples in the table. This may be
+useful when it is necessary to make VACUUM run as quickly as possible to
+avoid imminent transaction ID wraparound (see Section 24.1.5). However, the
+wraparound failsafe mechanism controlled by vacuum_failsafe_age will
+generally trigger automatically to avoid transaction ID wraparound failure,
+and should be preferred. If index cleanup is not performed regularly,
+performance may suffer, because as the table is modified indexes will
+accumulate dead tuples and the table itself will accumulate dead line
+pointers that cannot be removed until index cleanup is completed.</p>
+</blockquote>
+<blockquote>
+<p>This option has no effect for tables that have no index and is ignored if the
+FULL option is used. It also has no effect on the transaction ID wraparound
+failsafe mechanism. When triggered it will skip index vacuuming, even when
+INDEX_CLEANUP is set to ON.</p>
+</blockquote>
+<h2>What to do after</h2>
+<p>You will need to <code>REINDEX</code> the indexes that weren't vacuumed.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -16,13 +16,16 @@ Postgres can now prove the correctness of NOT NULL simply by checking an
 existing constraint.
 
 ```sql
+DROP TABLE IF EXISTS foo;
+CREATE TABLE foo (bar INTEGER);
+INSERT INTO foo (bar) SELECT generate_series(1, 1000);
 -- The below still requires ACCESS EXCLUSIVE lock, but doesn't require a full
 -- table scan.
 -- This check will only be applied to new or modified rows, existing rows
 -- won't be validated because of the NOT VALID clause.
 ALTER TABLE foo
 ADD CONSTRAINT foo_not_null
-CHECK (bar1 IS NOT NULL) NOT VALID;
+CHECK (bar IS NOT NULL) NOT VALID;
 
 -- The below performs a sequential scan, but without an exclusive lock.
 -- Concurrent sessions can read/write.
@@ -37,7 +40,7 @@ ALTER TABLE foo VALIDATE CONSTRAINT foo_not_null;
 -- ALTER TABLE command should be fast.
 -- If you are not on Postgres >=12, you should skip this as it will take a lot
 -- of time, and the current CHECK constraint might be good enough.
-ALTER TABLE foo ALTER COLUMN bar1 SET NOT NULL;
+ALTER TABLE foo ALTER COLUMN bar SET NOT NULL;
 
 -- The CHECK constraint has fulfilled its obligation and can now departure.
 -- This takes an ACCESS EXCLUSIVE lock, but should run very fast.

@@ -65,6 +65,8 @@
 - [Debugging Postgres](databases/postgres/internals/debugging_postgres.md)
 - [How Postgres Implements Foreign Keys](databases/postgres/internals/how_postgres_implements_foreign_keys.md)
 - [Swapping a Table With its Copy](databases/postgres/internals/swapping_a_table_with_its_copy.md)
+- [Page Pruning](databases/postgres/internals/page_pruning.md)
+- [Fillfactor](databases/postgres/internals/fillfactor.md)
 
 ### Disk
 
@@ -92,6 +94,7 @@
 
 - [VACUUM Phases](databases/postgres/vacuum/vacuum_phases.md)
 - [Replication slots blocking VACUUM](databases/postgres/vacuum/replication_slots_blocking_vacuum.md)
+- [Faster autovacuum](databases/postgres/vacuum/faster_autovacuum.md)
 
 ### Documentation
 
@@ -117,6 +120,16 @@
 ### Statistics
 
 - [table statistics](databases/postgres/statistics/table_statistics.md)
+
+### Schemas
+
+- [schemas basics](databases/postgres/schemas/basics.md)
+
+### Permissions
+
+- [schemas](databases/postgres/permissions/schemas.md)
+- [tables](databases/postgres/permissions/tables.md)
+- [functions](databases/postgres/permissions/functions.md)
 
 ## SQL
 

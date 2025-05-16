@@ -59,44 +59,59 @@
   <![endif]-->
 </head>
 <body>
-<h2>High-level computing</h2>
+<h1>Direct Proofs</h1>
+<pre><code>Created at: 2025-05-10
+</code></pre>
+<p>A direct proof is a way to prove &quot;P therefore Q&quot;, or P → Q.</p>
+<p>The idea is to start with some P and work a way towards Q. This usually
+involves applying definitions, previous results, algebra, logic and other
+techniques to satisfy P → Q.</p>
+<h2>Structure</h2>
+<pre><code>Proposition:
+  P → Q
+
+Proof:
+  Assume P
+  &lt;explanation of what P means&gt;
+              ...
+  Apply algebra, logic, etc.
+              ...
+  &lt;this is what Q means&gt;
+
+Therefore Q
+</code></pre>
+<h2>Example</h2>
+<p><strong>Fact</strong></p>
 <ul>
-<li><a href="databases/index.html">Databases</a></li>
-<li><a href="message_brokers/index.html">Message brokers</a></li>
-<li><a href="programming_languages/index.html">Programming languages</a></li>
-<li><a href="security/index.html">Security</a></li>
-<li><a href="linux/index.html">Linux</a></li>
-<li><a href="macos/index.html">MacOs</a></li>
-<li><a href="version_control/index.html">Version Control</a></li>
-<li><a href="text_editors/index.html">Text Editors</a></li>
+<li>The sum, difference, and product of integers is an integer.</li>
+<li>An integer is either even or odd.</li>
 </ul>
-<h2>Low-level computing</h2>
+<p><strong>Definitions:</strong></p>
 <ul>
-<li><a href="compilers/index.html">Compilers</a></li>
-<li><a href="debuggers/index.html">Debuggers</a></li>
-<li><a href="computer_architecture/index.html">Computer architecture</a></li>
-<li><a href="embedded_development/index.html">Embedded development</a></li>
-<li><a href="electronics/index.html">Electronics</a></li>
+<li>An integer <code>n</code> is even if <code>n = 2k</code> for some integer <code>k</code>.</li>
+<li>An integer <code>n</code> is odd  if <code>n = 2k + 1</code> for some integer <code>k</code>.</li>
 </ul>
-<h2>Even lower level computing</h2>
+<p><strong>Proposition</strong>:</p>
 <ul>
-<li><a href="mathematics/index.html">Mathematics</a></li>
+<li>The sum of two even integers is even.</li>
 </ul>
-<h2>Hardware &amp; Machines</h2>
-<ul>
-<li><a href="hardware_tools/index.html">Tools</a></li>
-<li><a href="house_building/index.html">House Building</a></li>
-<li><a href="cameras/index.html">Cameras</a></li>
-<li><a href="e_readers/index.html">e-readers</a></li>
-<li><a href="cars/index.html">cars</a></li>
-</ul>
-<h2>Etc.</h2>
-<ul>
-<li><a href="books/index.html">Notes on books</a></li>
-<li><a href="writing/index.html">Notes on writing</a></li>
-<li><a href="transcriptions/index.html">Transcriptions</a></li>
-<li><a href="business/index.html">Business</a></li>
-</ul>
+<pre><code>Given
+  A = 2x
+  B = 2y
+
+Then
+  A + B = 2x + 2y
+  A + B = 2(x + y)
+
+Let
+  z = (x + y)
+
+So that
+  A + B = 2z
+
+By definition:
+  A + B is an even number.
+</code></pre>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

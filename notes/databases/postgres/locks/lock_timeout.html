@@ -78,6 +78,41 @@ SET LOCAL lock_timeout = 1000;
 ALTER TABLE accounts DROP COLUMN amount;
 // ERROR: canceling statement due to lock timeout
 </code></pre>
+<h2>RESET Gotchas</h2>
+<p>Warning: the <code>RESET lock_timeout;</code> operation will reset the SESSION timeout,
+even if it is performed inside a transaction. See below:</p>
+<pre><code class="language-sql">-- This is the default lock_timeout (0s)
+SHOW lock_timeout;
+
+-- Set the SESSION lock timeout (42s)
+SET lock_timeout = '42s';
+SHOW lock_timeout;
+
+BEGIN;
+
+-- WARNING: This will set a new value for the SESSION lock_timeout from within
+-- the transaction because it is missing the LOCAL key word!
+SET lock_timeout = '10s';
+SHOW lock_timeout;
+
+-- Set it again but this time only for the transaction. This value will not
+-- affect the session lock_timeout.
+SET LOCAL lock_timeout = '9s';
+SHOW lock_timeout;
+
+-- Reset BOTH the SESSION and Transaction lock_timeout (both go back to 0, the
+-- default).
+RESET lock_timeout;
+SHOW lock_timeout;
+
+COMMIT;
+
+-- Should now be 0s because it was reset inside the transaction.
+SHOW lock_timeout;
+</code></pre>
+<p>Alternative: Inside a transaction, use <code>SET LOCAL lock_timeout TO DEFAULT;</code>
+instead.</p>
+<p>Further discussions <a href="https://www.postgresql.org/message-id/flat/CAM2F1VM86387XCtNgbTbVQO6PfYBjCHg74XLsfavWJ-o-OZE%2BQ%40mail.gmail.com">here</a></p>
 <h2>Behaviour inside and outside a transaction</h2>
 <p>Basics: <code>SET lock_timeout 100ms</code>  sets the timeout for the whole session,
 whereas <code>SET LOCAL lock_timeout 100ms</code> sets the timeout for the current

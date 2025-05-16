@@ -17,6 +17,10 @@
 - [Embedded development](embedded_development/index.md)
 - [Electronics](electronics/index.md)
 
+## Even lower level computing
+
+- [Mathematics](mathematics/index.md)
+
 ## Hardware & Machines
 
 - [Tools](hardware_tools/index.md)

@@ -29,11 +29,17 @@ WHERE
 ```sql
 -- Create a basic table with 10,000 rows.
 DROP TABLE IF EXISTS foo CASCADE;
-CREATE TABLE foo (id SERIAL PRIMARY KEY);
+
+CREATE TABLE
+  foo (id SERIAL PRIMARY KEY)
+WITH (autovacuum_enabled = false);
+
 INSERT INTO foo SELECT generate_series(1, 10000);
 
 -- This will create dead rows.
 DELETE FROM foo WHERE id % 2 = 0;
+
+VACUUM foo;
 
 -- Verify stats.
 SELECT
@@ -59,11 +65,11 @@ WHERE
 -- n_dead_tup          | 5000
 -- n_mod_since_analyze | 15000
 -- n_ins_since_vacuum  | 10000
--- last_vacuum         |
+-- last_vacuum         | 2025-04-27 15:19:18.210339+12
 -- last_autovacuum     |
 -- last_analyze        |
 -- last_autoanalyze    |
--- vacuum_count        | 0
+-- vacuum_count        | 1
 -- autovacuum_count    | 0
 -- analyze_count       | 0
 -- autoanalyze_count   | 0

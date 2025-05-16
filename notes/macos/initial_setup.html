@@ -216,6 +216,28 @@ Get an app (free and OS) Called CheatSheet, and with that you can see all the
 shortcuts used by the app, and if you make a rule in the
 Settings-&gt;Keyboard-&gt;Shortcuts using the exact text given in CheatSheet it will
 change it to what you select..</p>
+<h2>Set up shortcuts for grey mode.</h2>
+<p>Pre-setup: Enable xcode command line tools:</p>
+<pre><code class="language-sh">xcode-select --install
+# Enable command line tools
+sudo xcode-select --switch /Library/Developer/CommandLineTools
+sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+</code></pre>
+<pre><code class="language-sh">cd /tmp/
+git clone --recurse-submodules https://github.com/marcelofern/grayscale
+
+cd grayscale/
+make
+
+# Move the app to the documents folder
+mv build/BuildProducts/Realease/grayscale.app ~/Documents
+</code></pre>
+<p>grayscale.app will be placed into build/Build/Products/Release.</p>
+<p>Open it with</p>
+<pre><code>open grayscale.app
+</code></pre>
+<p>Automatically open grayscale at login by adding it to the list in System
+Settings &gt; General &gt; Login Items</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

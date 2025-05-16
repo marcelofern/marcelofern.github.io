@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Fillfactor</h1>
+<pre><code>Created at: 2025-04-27
+</code></pre>
+<p>The fill factor of a table indicates the % of the table space that will be
+filled with data. By default this value is 100%. The value can be altered on
+a table basis, but it cannot be lower than 10%.</p>
+<pre><code class="language-sql">DROP TABLE IF EXISTS foo CASCADE;
+CREATE TABLE foo (id SERIAL PRIMARY KEY);
+INSERT INTO foo SELECT generate_series(1, 10000);
+
+-- Verify the custom fillfactor from the table.
+-- In this case it does not return anything, because there is no custom
+-- fillfactor and the table is using the default.
+SELECT reloptions
+FROM pg_class
+WHERE relname = 'foo';
+
+ALTER TABLE foo SET (fillfactor = 30);
+
+SELECT reloptions
+FROM pg_class
+WHERE relname = 'foo';
+-- Now we've got the value.
+--
+--   reloptions
+-------------------
+-- {fillfactor=30}
+</code></pre>
+<h2>Limits</h2>
+<p>The fillfactor value cannot be under 10%:</p>
+<pre><code class="language-sql">ALTER TABLE foo SET (fillfactor = 5);
+
+-- ERROR:  value 5 out of bounds for option &quot;fillfactor&quot;
+-- DETAIL:  Valid values are between &quot;10&quot; and &quot;100&quot;.
+</code></pre>
+<h2>Using lower values</h2>
+<p>When an INSERT operation tries to add a new row, it will only add it to a page
+that is filled less than the fillfactor %. The rest of the space is kept for
+UPDATE operations (no such space is reserved by default, when fillfactor is
+100%).</p>
+<p>This means that an update row is more likely to be inserted into the same page
+as the old one - which is more efficient.</p>
+<h2>Changing The Default For the Whole DB</h2>
+<p>As of now, I don't think the default can be changed.</p>
+<p>I have looked at the <code>data/postgresql.conf</code> file - and also the
+<code>share/postgresql.conf.sample</code> file, and couldn't see anything.</p>
+<p>I've asked in the mailing list
+<a href="https://www.postgresql.org/message-id/flat/CAM2F1VMu747bv5X3wTvhzLQUWRaJzREdaS%3DcoVz%2BWjxkBjzvng%40mail.gmail.com">here</a></p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>
