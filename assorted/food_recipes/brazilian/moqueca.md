@@ -14,7 +14,7 @@
 - Salt to taste (~1-2 tsp?)
 - 1.5 tbsp soy sauce
 
-## Vegetables (can use what’s in the fridge / seasonal) ☺️ I used:
+## Vegetables (can use what’s in the fridge / seasonal) I used:
 - Green capsicum
 - Onion (optional but nice)
 - Cauliflower
@@ -49,4 +49,4 @@ You could also use:
   capsicum sauce, and coconut milk. (If using tofu, would add here).
 - Cook until begins to simmer, then add sugar, salt, and soy sauce to get the
   flavour balance.
-- Once the veggies are tender, serve with rice, farofa, etc!
+- Once the veggies are tender, serve with rice, farofa, etc! ☺️
