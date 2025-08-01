@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Unique set of columns</h1>
+<p>A composite unique index doesn't quite cut when you want the set of two columns
+to be unique, irrespective of &quot;column ordering&quot;.</p>
+<p>Use a unique index with an expression instead:</p>
+<pre><code class="language-sql">DROP TABLE IF EXISTS message CASCADE;
+CREATE TABLE message (
+  id SERIAL PRIMARY KEY
+);
+
+DROP TABLE IF EXISTS message_comparison CASCADE;
+CREATE TABLE message_comparison (
+  message_a INT,
+  message_b INT,
+  FOREIGN KEY (message_a) REFERENCES message(id),
+  FOREIGN KEY (message_b) REFERENCES message(id)
+);
+
+CREATE UNIQUE INDEX &quot;comparison_a_b_must_be_uniq&quot;
+ON message_comparison (
+  (LEAST(&quot;message_a&quot;, &quot;message_b&quot;)),
+  (GREATEST(&quot;message_a&quot;, &quot;message_b&quot;))
+);
+
+-- Add 10 rows to the message table to use by the comparison table.
+INSERT INTO message SELECT generate_series(1, 10);
+
+-- Add pairs of comparisons to attest unique constraint
+INSERT INTO message_comparison (message_a, message_b) VALUES
+  (1, 2),
+  (3, 4),
+  (5, 6),
+  (7, 8),
+  (9, 10);
+
+
+INSERT INTO message_comparison (message_a, message_b) VALUES
+  (2, 1);
+
+-- ERROR:  duplicate key value violates unique constraint &quot;comparison_a_b_must_be_uniq&quot;
+-- DETAIL:  Key (LEAST(message_a, message_b), GREATEST(message_a, message_b))=(1, 2) already exists.
+</code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

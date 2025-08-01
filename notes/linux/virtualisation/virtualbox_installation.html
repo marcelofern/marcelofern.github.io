@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Virtualbox Installation</h1>
+<pre><code>Created at: 2025-05-18
+</code></pre>
+<p>Before starting the installation, make sure that your BIOS is set up to allow
+for virtualisation.</p>
+<p>You just have to go to the BIOS panel, security, and tick all the
+virtualisation features.</p>
+<h2>Download the host package</h2>
+<p>Find wheter you are using the LTS linux kernel or not:</p>
+<pre><code class="language-sh">uname -r
+# 6.12.27-1-lts
+</code></pre>
+<p>Install the first package above if you are using <code>lts</code>, else the second one.</p>
+<ul>
+<li>virtualbox-host-modules-lts</li>
+<li>virtualbox-host-modules-arch</li>
+</ul>
+<h2>Check if CONFIG_MODULE_SIG_FORCE is set</h2>
+<pre><code class="language-sh">zgrep CONFIG_MODULE_SIG_FORCE /proc/config.gz
+</code></pre>
+<p>If it is, follow the instructions in:
+<a href="https://wiki.archlinux.org/title/VirtualBox">here</a>.</p>
+<p>Else, skip it (I have skipped in my installation as I don't set that variable).</p>
+<h2>Guest Additions</h2>
+<blockquote>
+<p>It is also recommended to install the virtualbox-guest-iso package on the
+host running VirtualBox. This package will act as a disc image that can be
+used to install the guest additions onto guest systems other than Arch Linux.
+The .iso file will be located at
+/usr/lib/virtualbox/additions/VBoxGuestAdditions.iso, and may have to be
+mounted manually inside the virtual machine. Once mounted, you can run the
+guest additions installer inside the guest.</p>
+</blockquote>
+<pre><code class="language-sh">yay virtualbox-guest-iso
+</code></pre>
+<h2>Get the extension pack</h2>
+<p>(only free for personal use)</p>
+<pre><code class="language-sh">yay virtualbox-ext-oracle
+</code></pre>
+<h2>Front ends</h2>
+<p>VirtualBox comes with four front-ends:</p>
+<ul>
+<li>If you want to use VirtualBox with the regular GUI, use <code>VirtualBox</code>.</li>
+<li>If you want to launch and manage your virtual machines from the command-line,
+use the <code>VBoxSDL</code> command, which only provides a plain window for the virtual
+machine without any overlays.</li>
+<li>If you want to use VirtualBox without running any GUI (e.g. on a server), use
+the <code>VBoxHeadless</code> command. With the VRDP extension you can still remotely
+access the displays of your virtual machines.</li>
+<li>If you want to remotely manage virtual machines, the VirtualBox web service
+(vboxwebsrv) provides the server side backend. It can be used with RemoteBox
+(GUI) or phpVirtualBox (WebUI).</li>
+</ul>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

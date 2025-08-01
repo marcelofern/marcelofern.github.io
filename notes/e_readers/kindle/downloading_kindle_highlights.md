@@ -8,6 +8,7 @@ Created at: 2024-09-04
 
 ```sh
 DEVICE=/dev/sda
+sudo rm -rf /mnt/kindle
 sudo mkdir /mnt/kindle
 sudo mount $DEVICE /mnt/kindle
 cd /mnt/kindle/documents

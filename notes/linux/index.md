@@ -21,3 +21,10 @@ first.
 - [top](linux/cpu_monitoring_tools/top.md)
 - [perf](linux/cpu_monitoring_tools/perf.md)
 - [bpftrace](linux/cpu_monitoring_tools/bpftrace.md)
+
+## Virtualisation
+
+- [virtualbox installation](linux/virtualisation/virtualbox_installation.md)
+- [virtualbox customisation](linux/virtualisation/virtualbox_customisation.md)
+- [windows xp](linux/virtualisation/windows_xp.md)
+- [windows 7](linux/virtualisation/windows_7.md)

@@ -7,6 +7,7 @@
 - [default on Model Field](programming_languages/python/django/default_on_model_field.md)
 - [Contenttypes framework](programming_languages/python/django/contenttypes_framework.md)
 - [Finding fks pointing to a model](programming_languages/python/django/finding_fks_pointing_to_a_model.md)
+- [Don't use Generic Foreign Key](programming_languages/python/django/dont_use_generic_foreign_key.md)
 
 ## internals
 

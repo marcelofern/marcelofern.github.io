@@ -14,6 +14,8 @@ Created at: 2025-05-09
   object's type (table, function, etc.).
 - The right to modify or destroy an object is inherent in being the object's
   owner, and cannot be granted or revoked in itself.
+- The concept of "Ownership" in Postgres can be inherited. See the
+  [roles](databases/postgres/permissions/roles.md) note.
 
 ## Ownership
 

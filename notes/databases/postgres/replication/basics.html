@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Basics of Replication</h1>
+<pre><code>Created at: 2025-05-25
+</code></pre>
+<p>Source:
+https://www.highgo.ca/2023/04/03/setting-up-a-postgresql-replica-server-locally/</p>
+<h2>Physical Replication With Streaming</h2>
+<ol>
+<li>Log onto psql with an admin user.</li>
+<li>Create a replication user and a table to play with.<pre><code class="language-sql">CREATE ROLE rep_user WITH REPLICATION LOGIN PASSWORD 'rep_pass';
+CREATE TABLE t1(a INT, b INT);
+INSERT INTO t1 VALUES (1,2);
+</code></pre>
+</li>
+<li>Update the <code>build/data/postgresql.conf</code> by adding this line:<pre><code>listen_addresses = 'localhost'
+</code></pre>
+</li>
+<li>Update the <code>build/data/pg_hba.conf</code> by adding this line:<pre><code>host  replication   rep_user  localhost   md5
+</code></pre>
+</li>
+<li>Run <code>pg_basebackup</code> to create a <code>rep/</code> folder with the replica data.<pre><code>build/bin/pg_basebackup -h localhost \
+                        -U rep_user \
+                        -X stream \
+                        -C \
+                        -S replica_1 \
+                        -v \
+                        -R \
+                        -W \
+                        -D build/rep
+</code></pre>
+</li>
+<li>Update <code>build/rep/postgresql.conf</code> and set the port number to something
+different than the main server.<pre><code>port = 5454
+</code></pre>
+</li>
+<li>Still in <code>build/rep/postgresql.conf</code> set primary_conninfo to (change the
+user accordingly):<pre><code>primary_conninfo = 'dbname=postgres user=postgres host=localhost port=5432 sslmode=disable'
+</code></pre>
+</li>
+<li>Create the <code>sandby.signal</code> file:<pre><code>touch build/rep/standby.signal
+</code></pre>
+</li>
+<li>Restart the primary Postgres server.</li>
+<li>In a second terminal, start the replica.<pre><code>build/bin/pg_ctl -D build/rep start
+</code></pre>
+</li>
+<li>Log onto the replica with:<pre><code>build/bin/psql --port=5454 --dbname=postgres
+</code></pre>
+</li>
+<li>Stop the replica with:<pre><code>build/bin/pg_ctl -D build/rep stop
+</code></pre>
+</li>
+</ol>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

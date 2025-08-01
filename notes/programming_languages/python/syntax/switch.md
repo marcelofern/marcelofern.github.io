@@ -8,12 +8,10 @@ Created at: 2025-04-09
 
 Source: https://github.com/kraken-tech/psycopack/pull/4#discussion_r2030547248
 
-Perhaps that discussion cares further scrutinity?
-
-After evaluating the PEP and the official Python docs, it's clearer to me that
-what this code above does is already structural pattern matching. E.g., I am
-not comparing the exact value (like C switch statements), I am comparing an
-object type, shape, and value.
+After evaluating the PEP and the official Python docs, it seems to me that what
+this code above does is already structural pattern matching. E.g., I am not
+comparing the exact value (like C switch statements), I am comparing an object
+type, shape, and value.
 
 To further strengthen that position, there's this example from "matching
 objects" in the canonical pep tutorial for `switch` statements.

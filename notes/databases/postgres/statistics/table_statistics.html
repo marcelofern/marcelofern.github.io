@@ -86,11 +86,12 @@ CREATE TABLE
 WITH (autovacuum_enabled = false);
 
 INSERT INTO foo SELECT generate_series(1, 10000);
+ANALYZE foo;
 
 -- This will create dead rows.
 DELETE FROM foo WHERE id % 2 = 0;
-
-VACUUM foo;
+DELETE FROM foo WHERE id % 27 = 0;
+ANALYZE foo;
 
 -- Verify stats.
 SELECT

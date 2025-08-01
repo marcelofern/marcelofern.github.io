@@ -82,6 +82,11 @@ goes faster.</li>
 <li>Macos has also a very old version of openssl, which is incompatible with
 newer versions of other libraries (like Python), further enhancing the
 problem of having a brew dependency mismatching a system dependency.</li>
+<li>If you are a developer, chances are you'll need Xcode. It turns out that you
+can't just &quot;download it&quot;. You need to first create an Apple accound with your
+personal information and bank details, so that you can download it. There are
+several things that break if you don't have Xcode, as it provides many of the
+libs for development on a MacOs.</li>
 </ul>
 <h2>Swap Command key for Ctrl key (maybe, I'm not doing it now.)</h2>
 <p>Go to:</p>
@@ -112,16 +117,17 @@ Step 2. Go to &quot;System Settings&quot;.
 Step 3. Click on &quot;Desktop &amp; Dock&quot;.
 Step 4. Choose &quot;Hot Corners&quot; at the bottom.
 Setp 5. Set every corner to a dash <code>-</code> which does nothing.</p>
-<h2>Install Alacritty</h2>
+<h2>Update the terminal app shell</h2>
 <ol>
-<li>Go to the website and install it.</li>
 <li>Go to the terminal app, press &quot;cmd + ,&quot; to open settings.</li>
 <li>Change &quot;shells open with&quot; to use /bin/bash.</li>
 </ol>
 <h2>Install brew</h2>
 <p>Go to the website and install it.</p>
 <h2>Install dev tools</h2>
-<pre><code class="language-sh">brew install \
+<pre><code class="language-sh">export PATH=/opt/homebrew/bin:$PATH
+
+brew install \
     neovim \
     git \
     tree \
@@ -129,13 +135,20 @@ Setp 5. Set every corner to a dash <code>-</code> which does nothing.</p>
     fd \
     rg \
     ripgrep \
-    firefox \
     terminal-notifier \
     fzf \
     python \
     bear \
-    ctags
+    ctags \
+    stow \
+    bash \
+    alacritty \
+    tmux \
+    choose-gui \
+    universal-ctags \
+    coreutils
 
+brew install firefox
 brew install --cask nikitabobko/tap/aerospace
 brew install --cask betterdisplay
 </code></pre>
@@ -145,7 +158,7 @@ brew install --cask betterdisplay
 system settings page). Also set the config to not group!</li>
 </ol>
 <h2>Install My dotfiles</h2>
-<pre><code class="language-sh">~/workspace/scripts/dotfiles.sh install
+<pre><code class="language-sh">~/workspace/dotfiles/scripts/dotfiles.sh install
 </code></pre>
 <p>Note: Change the <code>open_github_file.lua</code> plugin to include the prefix to
 exclude.</p>
@@ -153,8 +166,7 @@ exclude.</p>
 <p>MacOs comes with zsh by default, which isn't a great shell.
 The bash version it comes with is outdated, so we download a new one with
 brew</p>
-<pre><code class="language-sh">brew install bash
-chsh -s /opt/homebrew/bin/bash
+<pre><code class="language-sh">chsh -s /opt/homebrew/bin/bash
 
 # Symlink .bashrc to .bash_profile
 ln -s ~/.bashrc ~/.bash_profile
@@ -168,9 +180,11 @@ sudo reboot now
 <li>Users &amp; Groups</li>
 <li>Right click your user</li>
 <li>Advanced Options</li>
+<li>Press CMD + SHIFT + G and insert <code>/opt/homebrew/bin/</code></li>
+<li>Select the bash binary.</li>
 </ul>
 <h2>Install Plug (neovim package manager)</h2>
-<p>Just follow the website instructions.</p>
+<p>Just follow the website instructions to get the <code>curl</code> script.</p>
 <h2>Basic nice things</h2>
 <p>Go to Settings - Keyboard and configure:</p>
 <pre><code class="language-sh"># Increase key-repeat
@@ -194,10 +208,16 @@ sudo reboot now
 <li>cmd+shift+o (find link)</li>
 <li>cmd+shift+j (start scrolling)</li>
 </ul>
+<h2>Adjust mouse speed (if needed)</h2>
+<p>Go to &quot;Mouse&quot; on settings.
+Click on &quot;advanced&quot; and remove the pointer acceleration.
+This will enable you to go faster.</p>
 <h2>Adjust monitor (if needed)</h2>
 <p>On better display, follow this guide:</p>
 <p>https://github.com/waydabber/BetterDisplay/wiki/Fully-scalable-HiDPI-desktop</p>
-<p>I have to set my home monitor to ~70% resolution.</p>
+<p>I have to set my home monitor to ~86% resolution.
+Note: You might have to close your macos lid for the black gaps on the side to
+go away!!!</p>
 <h2>Vimum</h2>
 <p>Add this mapper rule:</p>
 <pre><code>map q removeTab
@@ -210,7 +230,7 @@ shortcuts.</p>
 <p>Reload This Page -&gt; ctrl+r
 New Tab -&gt; ctrl+t
 Close Tab -&gt; ctrl+w
-Reopen Closed tab -&gt; ctrl+shiftT</p>
+Reopen Closed Tab -&gt; ctrl+shift+t</p>
 <p>Optional (I'm not using this currently):
 Get an app (free and OS) Called CheatSheet, and with that you can see all the
 shortcuts used by the app, and if you make a rule in the
@@ -230,7 +250,7 @@ cd grayscale/
 make
 
 # Move the app to the documents folder
-mv build/BuildProducts/Realease/grayscale.app ~/Documents
+mv build/Build/Products/Release/grayscale.app ~/Documents
 </code></pre>
 <p>grayscale.app will be placed into build/Build/Products/Release.</p>
 <p>Open it with</p>

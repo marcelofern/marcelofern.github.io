@@ -99,7 +99,8 @@ JOIN
     pg_class c ON c.oid = l.relation
 WHERE
     -- change it to the pid of the psql shell executing the ALTER TABLE.
-    a.pid = 21665;
+    -- a.pid = 21665;
+    a.pid != pg_backend_pid();
 </code></pre>
 <pre><code> locktype |        mode         | granted | relation | relname |
 ----------+---------------------+---------+----------+---------+

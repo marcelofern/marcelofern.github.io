@@ -71,8 +71,11 @@ make &amp;&amp; make install
 <h2>MacOs users only:</h2>
 <p>Make sure you are linking homebrew (follow my note for installing postgres from
 source), and if you have error about missing symbols, add the following at the
-end of the <code>gcc</code> command:</p>
+end of the <code>gcc</code> command that is printed for <code>make</code> (at the top of the stdout):</p>
 <pre><code class="language-sh">gcc -Wall ... -lz -lssl -lcrypto
+</code></pre>
+<p>And then:</p>
+<pre><code class="language-sh">make install
 </code></pre>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>

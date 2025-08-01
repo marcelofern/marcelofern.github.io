@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Windows XP</h1>
+<pre><code>Created at: 2025-05-18
+</code></pre>
+<p>Microsoft does not offer Windows XP any more. You might have to find other ways
+of getting it. Through a physical CD or a web link (somewhere).</p>
+<h2>VirtualBox Installation Options</h2>
+<p>Make sure to enable <strong>Guest Additions</strong> so that you can share folders.</p>
+<p>Once the virtual machine is up, go to:</p>
+<ul>
+<li>Devices -&gt; &quot;Insert Guest Additions CD Image&quot;</li>
+</ul>
+<p>Then go to &quot;my computer&quot; and</p>
+<ul>
+<li>double click on the CD icons.</li>
+<li>also run the floppy disk.</li>
+</ul>
+<h2>Screen Adjusment</h2>
+<p>Use &quot;Auto-resize guest display&quot;.</p>
+<h2>Adding A Shared Folder</h2>
+<p>Create a folder in your <strong>host</strong> that will be the shared folder. Like
+<code>mkdir ~/Documents/vm_shared</code>. Move the .exe there.</p>
+<p>Now in Virtualbox, in the windows XP window, go to:</p>
+<p>-&gt; Devices -&gt; Shared Folders</p>
+<p>Add that folder, make it auto-mount and permanent.</p>
+<blockquote>
+<p>In a Windows guest, shared folders are browseable and therefore visible in
+Windows Explorer. So, to attach the host's shared folder to your Windows
+guest, open Windows Explorer and look for it under &quot;My Networking Places&quot; -&gt;
+&quot;Entire Network&quot; -&gt; &quot;VirtualBox Shared Folders&quot;. By right-clicking on a
+shared folder and selecting &quot;Map network drive&quot; from the menu that pops up,
+you can assign a drive letter to that shared folder.</p>
+</blockquote>
+<p>But in windows XP, it will instead be at &quot;My Computer&quot;.
+You may need to reset the VM.</p>
+<h2>Internet (in progress)</h2>
+<p>The default internet explorer is Microsfot Explorer, which isn't supported by
+a lot of websites. Latest Chrome and Firefox don't support windows XP.</p>
+<p>Download Firefox in the <strong>host</strong> machine by finding the
+latest version in the ftp server, for example:</p>
+<ul>
+<li>https://ftp.mozilla.org/pub/firefox/releases/138.0/win32/en-US/</li>
+</ul>
+<h2>Display</h2>
+<p>Drag the window to make it bigger, the VM will auto adjust. Else:
+Change the dimensions from inside Windows, in the control panel.</p>
+<h2>Tips</h2>
+<ul>
+<li>When installing the virtual box, do not select more than 3GB memory as it
+won't work.</li>
+</ul>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

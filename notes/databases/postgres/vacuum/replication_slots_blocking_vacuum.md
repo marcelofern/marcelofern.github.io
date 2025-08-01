@@ -59,13 +59,13 @@ select * from pg_replication_slots ;
 After dropping a replication slot, VACUUM should resume:
 
 ```sql
-select pg_drop_replication_slot(‘ocean’);
+select pg_drop_replication_slot('ocean');
 ```
 
 ## Creating Replication Slots
 
 ```sql
-select pg_create_physical_replication_slot(‘ocean’);
+select pg_create_physical_replication_slot('ocean');
 ```
 
 ## Outro
@@ -73,3 +73,60 @@ select pg_create_physical_replication_slot(‘ocean’);
 Useful links:
 
 - https://hevodata.com/learn/postgresql-replication-slots/
+
+## Sandbox (not workable yet...)
+
+```sql
+ALTER SYSTEM SET autovacuum = off;
+
+-- Create replication slot
+select pg_drop_replication_slot('foo');
+select pg_create_physical_replication_slot('foo', true);
+
+-- Check its status
+SELECT * FROM pg_replication_slots;
+-- slot_name           | foo
+-- plugin              |
+-- slot_type           | physical
+-- datoid              |
+-- database            |
+-- temporary           | f
+-- active              | f
+-- active_pid          |
+-- xmin                |
+-- catalog_xmin        |
+-- restart_lsn         |
+-- confirmed_flush_lsn |
+-- wal_status          |
+-- safe_wal_size       |
+-- two_phase           | f
+
+DROP TABLE IF EXISTS public.foo CASCADE;
+CREATE TABLE public.foo (id SERIAL PRIMARY KEY) WITH (autovacuum_enabled = false);
+
+INSERT INTO public.foo SELECT generate_series(1, 1000000);
+ANALYZE public.foo;
+
+-- This will create dead rows.
+DELETE FROM public.foo WHERE id % 2 = 0;
+DELETE FROM public.foo WHERE id % 27 = 0;
+ANALYZE public.foo;
+
+-- Confirm by querying stats.
+SELECT
+  *,
+  pg_size_pretty(pg_total_relation_size(relid)) AS table_size
+FROM
+  pg_stat_all_tables
+WHERE
+  relname = 'foo'
+  AND schemaname = 'public';
+-- Relevant rows:
+-- n_live_tup          | 462962
+-- n_dead_tup          | 518519
+```
+
+Now in another PSQL shell, try to vacuum the table
+
+```sql
+VACUUM public.foo;

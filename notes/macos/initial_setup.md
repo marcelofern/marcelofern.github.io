@@ -23,6 +23,11 @@ Problems:
 - Macos has also a very old version of openssl, which is incompatible with
   newer versions of other libraries (like Python), further enhancing the
   problem of having a brew dependency mismatching a system dependency.
+- If you are a developer, chances are you'll need Xcode. It turns out that you
+  can't just "download it". You need to first create an Apple accound with your
+  personal information and bank details, so that you can download it. There are
+  several things that break if you don't have Xcode, as it provides many of the
+  libs for development on a MacOs.
 
 ## Swap Command key for Ctrl key (maybe, I'm not doing it now.)
 Go to:
@@ -64,11 +69,10 @@ Step 3. Click on "Desktop & Dock".
 Step 4. Choose "Hot Corners" at the bottom.
 Setp 5. Set every corner to a dash `-` which does nothing.
 
-## Install Alacritty
+## Update the terminal app shell
 
-1. Go to the website and install it.
-2. Go to the terminal app, press "cmd + ," to open settings.
-3. Change "shells open with" to use /bin/bash.
+1. Go to the terminal app, press "cmd + ," to open settings.
+2. Change "shells open with" to use /bin/bash.
 
 ## Install brew
 
@@ -77,6 +81,8 @@ Go to the website and install it.
 ## Install dev tools
 
 ```sh
+export PATH=/opt/homebrew/bin:$PATH
+
 brew install \
     neovim \
     git \
@@ -85,13 +91,20 @@ brew install \
     fd \
     rg \
     ripgrep \
-    firefox \
     terminal-notifier \
     fzf \
     python \
     bear \
-    ctags
+    ctags \
+    stow \
+    bash \
+    alacritty \
+    tmux \
+    choose-gui \
+    universal-ctags \
+    coreutils
 
+brew install firefox
 brew install --cask nikitabobko/tap/aerospace
 brew install --cask betterdisplay
 ```
@@ -103,7 +116,7 @@ Notes:
 ## Install My dotfiles
 
 ```sh
-~/workspace/scripts/dotfiles.sh install
+~/workspace/dotfiles/scripts/dotfiles.sh install
 ```
 
 Note: Change the `open_github_file.lua` plugin to include the prefix to
@@ -116,7 +129,6 @@ The bash version it comes with is outdated, so we download a new one with
 brew
 
 ```sh
-brew install bash
 chsh -s /opt/homebrew/bin/bash
 
 # Symlink .bashrc to .bash_profile
@@ -132,10 +144,12 @@ Also change from zsh to bash in:
 - Users & Groups
 - Right click your user
 - Advanced Options
+- Press CMD + SHIFT + G and insert `/opt/homebrew/bin/`
+- Select the bash binary.
 
 ## Install Plug (neovim package manager)
 
-Just follow the website instructions.
+Just follow the website instructions to get the `curl` script.
 
 ## Basic nice things
 
@@ -165,13 +179,21 @@ Change the shortcuts for:
 - cmd+shift+o (find link)
 - cmd+shift+j (start scrolling)
 
+## Adjust mouse speed (if needed)
+
+Go to "Mouse" on settings.
+Click on "advanced" and remove the pointer acceleration.
+This will enable you to go faster.
+
 ## Adjust monitor (if needed)
 
 On better display, follow this guide:
 
 https://github.com/waydabber/BetterDisplay/wiki/Fully-scalable-HiDPI-desktop
 
-I have to set my home monitor to ~70% resolution.
+I have to set my home monitor to ~86% resolution.
+Note: You might have to close your macos lid for the black gaps on the side to
+go away!!!
 
 ## Vimum
 
@@ -193,7 +215,7 @@ Add an entry for Firefox with these settings:
 Reload This Page -> ctrl+r
 New Tab -> ctrl+t
 Close Tab -> ctrl+w
-Reopen Closed tab -> ctrl+shiftT
+Reopen Closed Tab -> ctrl+shift+t
 
 Optional (I'm not using this currently):
 Get an app (free and OS) Called CheatSheet, and with that you can see all the
@@ -220,7 +242,7 @@ cd grayscale/
 make
 
 # Move the app to the documents folder
-mv build/BuildProducts/Realease/grayscale.app ~/Documents
+mv build/Build/Products/Release/grayscale.app ~/Documents
 ```
 
 grayscale.app will be placed into build/Build/Products/Release.

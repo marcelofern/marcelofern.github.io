@@ -104,6 +104,7 @@ ones in this list to be good enough to be shared with the public.
 - Meyer, Erin - The Culture Map. ([review](assorted/library/culture-map/index.md))
 - Voss, Chris - Never Split The Difference. ([review](assorted/library/never-split-the-difference/index.md))
 - Fournier, Camille - The Manager's Path. ([review](assorted/library/the-managers-path/index.md))
+- Graeber, David - Bullshit jobs. ([review](assorted/library/bullshit-jobs/index.md))
 
 ## Pedagogy
 

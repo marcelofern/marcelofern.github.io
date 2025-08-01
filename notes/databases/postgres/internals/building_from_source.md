@@ -56,7 +56,8 @@ PREFIX="$(pwd)/build"
     CFLAGS="-fno-omit-frame-pointer -ggdb" \
     --prefix=${PREFIX} \
     --with-pgport=54${VERSION} \
-    --enable-debug
+    --enable-debug \
+    --without-icu
 ```
 
 Flags:

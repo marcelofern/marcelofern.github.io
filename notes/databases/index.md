@@ -6,6 +6,8 @@
 - [SET NOT NULL](databases/postgres/constraints/set_not_null.md)
 - [EXCLUDE USING](databases/postgres/constraints/exclude_using.md)
 - [Composite Primary Keys](databases/postgres/constraints/composite_primary_keys.md)
+- [Conditional and expression unique constraints](databases/postgres/constraints/conditional_and_expression_unique_constraints.md)
+- [Unique set of columns](databases/postgres/constraints/unique_set_of_columns.md)
 
 ### Outages
 
@@ -85,6 +87,7 @@
 ### Transactions
 
 - [Transaction Isolation](databases/postgres/transactions/transaction_isolation.md)
+- [Read only transactions](databases/postgres/transaction/read_only_transactions.md)
 
 ### PSQL
 
@@ -95,6 +98,10 @@
 - [VACUUM Phases](databases/postgres/vacuum/vacuum_phases.md)
 - [Replication slots blocking VACUUM](databases/postgres/vacuum/replication_slots_blocking_vacuum.md)
 - [Faster autovacuum](databases/postgres/vacuum/faster_autovacuum.md)
+
+### Replication
+
+- [Replication basics](databases/postgres/replication/basics.md)
 
 ### Documentation
 
@@ -130,6 +137,7 @@
 - [schemas](databases/postgres/permissions/schemas.md)
 - [tables](databases/postgres/permissions/tables.md)
 - [functions](databases/postgres/permissions/functions.md)
+- [roles](databases/postgres/permissions/roles.md)
 
 ## SQL
 

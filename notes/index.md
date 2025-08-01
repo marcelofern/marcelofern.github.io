@@ -8,6 +8,7 @@
 - [MacOs](macos/index.md)
 - [Version Control](version_control/index.md)
 - [Text Editors](text_editors/index.md)
+- [Terminal Multiplexers](terminal_multiplexers/index.md)
 
 ## Low-level computing
 
@@ -28,6 +29,7 @@
 - [Cameras](cameras/index.md)
 - [e-readers](e_readers/index.md)
 - [cars](cars/index.md)
+- [woodworking](woodworking/index.md)
 
 ## Etc.
 

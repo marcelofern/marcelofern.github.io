@@ -18,9 +18,14 @@ make && make install
 
 Make sure you are linking homebrew (follow my note for installing postgres from
 source), and if you have error about missing symbols, add the following at the
-end of the `gcc` command:
+end of the `gcc` command that is printed for `make` (at the top of the stdout):
 
 ```sh
 gcc -Wall ... -lz -lssl -lcrypto
 ```
 
+And then:
+
+```sh
+make install
+```

@@ -13,9 +13,10 @@ The different levels mean to restrict the existence of the following issues:
 - dirty read: A transaction reads data written by a concurrent uncommitted
   transaction.
 
-- nonrepeatable read: A transaction re-reads data it has previously read and
-  finds that data has been modified by another transaction (that committed
-  since the initial read).
+- nonrepeatable read: A transaction re-reads the same row twice and finds that
+  data has been modified by another transaction (that committed since the
+  initial read) and thus the first transaction has different results between
+  each query.
 
 - phantom read: A transaction re-executes a query returning a set of rows that
   satisfy a search condition and finds that the set of rows satisfying the
@@ -43,4 +44,27 @@ visible to all other transactions and are not rolled back if the transaction
 that made the changes aborts.
 [1](https://www.postgresql.org/docs/current/transaction-iso.html).
 
+## Changing the transaction isolation with SET TRANSACTION
 
+```
+marcelo.fernandes=# \help SET TRANSACTION
+Command:     SET TRANSACTION
+Description: set the characteristics of the current transaction
+Syntax:
+SET TRANSACTION transaction_mode [, ...]
+SET TRANSACTION SNAPSHOT snapshot_id
+SET SESSION CHARACTERISTICS AS TRANSACTION transaction_mode [, ...]
+
+where transaction_mode is one of:
+
+    ISOLATION LEVEL { SERIALIZABLE | REPEATABLE READ | READ COMMITTED | READ UNCOMMITTED }
+    READ WRITE | READ ONLY
+    [ NOT ] DEFERRABLE
+
+URL: https://www.postgresql.org/docs/15/sql-set-transaction.html
+```
+
+NOTE:
+> The transaction isolation level cannot be changed after the first query or
+> data-modification statement (SELECT, INSERT, DELETE, UPDATE, MERGE, FETCH, or
+> COPY) of a transaction has been executed.

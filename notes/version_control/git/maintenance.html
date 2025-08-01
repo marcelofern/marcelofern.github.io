@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Maintenance</h1>
+<p>This command provides a way to add cronjobs that run daily, hourly and weekly
+maintenance tasks on your git repositories.</p>
+<p>This will update the <code>.git/config</code> file in the repository with the following
+configuration:</p>
+<pre><code>[maintenance]
+    auto = false
+    strategy = incremental
+</code></pre>
+<p>According to the <code>man</code> page:</p>
+<pre><code>The incremental strategy uses the following schedule for each maintenance task:
+
+   •   gc: disabled.
+
+   •   commit-graph: hourly.
+
+   •   prefetch: hourly.
+
+   •   loose-objects: daily.
+
+   •   incremental-repack: daily.
+</code></pre>
+<p>Each task will do something to make git faster in the repo. Further explanation
+for these tasks (gc, commit-graph, etc.) can be found in the <code>man</code> page.</p>
+<h2>Why is gc disabled?</h2>
+<blockquote>
+<p>gc: Clean up unnecessary files and optimize the local repository. &quot;GC&quot; stands
+for &quot;garbage collection,&quot; but this task performs many smaller tasks. This
+task can be expensive for large repositories, as it repacks all Git objects
+into a single pack-file. It can also be disruptive in some situations, as it
+deletes stale data. See git-gc(1) for more details on garbage collection in
+Git.</p>
+</blockquote>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

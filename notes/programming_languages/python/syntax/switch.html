@@ -64,11 +64,10 @@
 </code></pre>
 <h2>Can we think of Python Switch as a C switch?</h2>
 <p>Source: https://github.com/kraken-tech/psycopack/pull/4#discussion_r2030547248</p>
-<p>Perhaps that discussion cares further scrutinity?</p>
-<p>After evaluating the PEP and the official Python docs, it's clearer to me that
-what this code above does is already structural pattern matching. E.g., I am
-not comparing the exact value (like C switch statements), I am comparing an
-object type, shape, and value.</p>
+<p>After evaluating the PEP and the official Python docs, it seems to me that what
+this code above does is already structural pattern matching. E.g., I am not
+comparing the exact value (like C switch statements), I am comparing an object
+type, shape, and value.</p>
 <p>To further strengthen that position, there's this example from &quot;matching
 objects&quot; in the canonical pep tutorial for <code>switch</code> statements.
 <a href="https://peps.python.org/pep-0636/#adding-a-ui-matching-objects">Reference</a></p>

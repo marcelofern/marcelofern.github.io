@@ -70,9 +70,10 @@ Committed. Note that read committed is the default.</p>
 <li><p>dirty read: A transaction reads data written by a concurrent uncommitted
 transaction.</p>
 </li>
-<li><p>nonrepeatable read: A transaction re-reads data it has previously read and
-finds that data has been modified by another transaction (that committed
-since the initial read).</p>
+<li><p>nonrepeatable read: A transaction re-reads the same row twice and finds that
+data has been modified by another transaction (that committed since the
+initial read) and thus the first transaction has different results between
+each query.</p>
 </li>
 <li><p>phantom read: A transaction re-executes a query returning a set of rows that
 satisfy a search condition and finds that the set of rows satisfying the
@@ -97,6 +98,29 @@ therefore the counter of a column declared using serial) are immediately
 visible to all other transactions and are not rolled back if the transaction
 that made the changes aborts.
 <a href="https://www.postgresql.org/docs/current/transaction-iso.html">1</a>.</p>
+<h2>Changing the transaction isolation with SET TRANSACTION</h2>
+<pre><code>marcelo.fernandes=# \help SET TRANSACTION
+Command:     SET TRANSACTION
+Description: set the characteristics of the current transaction
+Syntax:
+SET TRANSACTION transaction_mode [, ...]
+SET TRANSACTION SNAPSHOT snapshot_id
+SET SESSION CHARACTERISTICS AS TRANSACTION transaction_mode [, ...]
+
+where transaction_mode is one of:
+
+    ISOLATION LEVEL { SERIALIZABLE | REPEATABLE READ | READ COMMITTED | READ UNCOMMITTED }
+    READ WRITE | READ ONLY
+    [ NOT ] DEFERRABLE
+
+URL: https://www.postgresql.org/docs/15/sql-set-transaction.html
+</code></pre>
+<p>NOTE:</p>
+<blockquote>
+<p>The transaction isolation level cannot be changed after the first query or
+data-modification statement (SELECT, INSERT, DELETE, UPDATE, MERGE, FETCH, or
+COPY) of a transaction has been executed.</p>
+</blockquote>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>
