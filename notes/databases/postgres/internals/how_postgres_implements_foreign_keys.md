@@ -73,7 +73,7 @@ CREATE TABLE refered (id serial, int_field int unique);
 DROP TABLE IF EXISTS referencing CASCADE;
 CREATE TABLE referencing (id serial);
 
-INSERT INTO refered (int_field) SELECT generate_series(1, 10000)
+INSERT INTO refered (int_field) SELECT generate_series(1, 10000);
 
 ALTER TABLE "referencing" ADD COLUMN "refered_int_field" int NULL
 CONSTRAINT "delete_this_soon"
@@ -93,4 +93,34 @@ DETAIL:  constraint delete_this_soon on table referencing depends on column
 int_field of table refered
 
 HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+```
+
+## Locks
+
+Here are the locks involved in adding the FK:
+
+```
+ locktype |         mode          | granted | relation |   relname   |                               query                               |  lock_duration  
+----------+-----------------------+---------+----------+-------------+-------------------------------------------------------------------+-----------------
+ relation | AccessShareLock       | t       |  2673969 | referencing | ALTER TABLE "referencing" ADD COLUMN "refered_int_field" int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT "delete_this_soon"                                    +| 
+          |                       |         |          |             | REFERENCES "refered"("int_field")                                +| 
+          |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
+ relation | ShareRowExclusiveLock | t       |  2673969 | referencing | ALTER TABLE "referencing" ADD COLUMN "refered_int_field" int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT "delete_this_soon"                                    +| 
+          |                       |         |          |             | REFERENCES "refered"("int_field")                                +| 
+          |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
+ relation | AccessExclusiveLock   | t       |  2673969 | referencing | ALTER TABLE "referencing" ADD COLUMN "refered_int_field" int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT "delete_this_soon"                                    +| 
+          |                       |         |          |             | REFERENCES "refered"("int_field")                                +| 
+          |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
+ relation | AccessShareLock       | t       |  2673962 | refered     | ALTER TABLE "referencing" ADD COLUMN "refered_int_field" int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT "delete_this_soon"                                    +| 
+          |                       |         |          |             | REFERENCES "refered"("int_field")                                +| 
+          |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
+ relation | ShareRowExclusiveLock | t       |  2673962 | refered     | ALTER TABLE "referencing" ADD COLUMN "refered_int_field" int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT "delete_this_soon"                                    +| 
+          |                       |         |          |             | REFERENCES "refered"("int_field")                                +| 
+          |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
+(5 rows)
 ```

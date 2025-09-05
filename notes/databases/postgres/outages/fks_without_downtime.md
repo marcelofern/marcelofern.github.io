@@ -13,10 +13,6 @@ caused.
 We need a schema and a table with some rows:
 
 ```sql
-CREATE DATABASE fk_test_db;
--- If using psql, connect to that db:
--- \c fk_test_db
-
 DROP TABLE IF EXISTS foo;
 CREATE TABLE foo (
     id SERIAL PRIMARY KEY,

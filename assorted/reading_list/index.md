@@ -70,6 +70,8 @@ Reading list resources:
 
 ## Conference Articles
 
+- What Every Programmer Should Know About Memory - Ulrich Drepper
+
 - ACM/IEEE International Conference on Software Engineering
   - https://doi.org:10.1145/1134285.1134355 (462 citations)
   - https://doi.org/10.1145/1134285.1134303 (167 citations) - Feature oriented refactoring.

@@ -118,7 +118,7 @@ CREATE TABLE refered (id serial, int_field int unique);
 DROP TABLE IF EXISTS referencing CASCADE;
 CREATE TABLE referencing (id serial);
 
-INSERT INTO refered (int_field) SELECT generate_series(1, 10000)
+INSERT INTO refered (int_field) SELECT generate_series(1, 10000);
 
 ALTER TABLE &quot;referencing&quot; ADD COLUMN &quot;refered_int_field&quot; int NULL
 CONSTRAINT &quot;delete_this_soon&quot;
@@ -136,6 +136,32 @@ DETAIL:  constraint delete_this_soon on table referencing depends on column
 int_field of table refered
 
 HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+</code></pre>
+<h2>Locks</h2>
+<p>Here are the locks involved in adding the FK:</p>
+<pre><code> locktype |         mode          | granted | relation |   relname   |                               query                               |  lock_duration  
+----------+-----------------------+---------+----------+-------------+-------------------------------------------------------------------+-----------------
+ relation | AccessShareLock       | t       |  2673969 | referencing | ALTER TABLE &quot;referencing&quot; ADD COLUMN &quot;refered_int_field&quot; int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT &quot;delete_this_soon&quot;                                    +| 
+          |                       |         |          |             | REFERENCES &quot;refered&quot;(&quot;int_field&quot;)                                +| 
+          |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
+ relation | ShareRowExclusiveLock | t       |  2673969 | referencing | ALTER TABLE &quot;referencing&quot; ADD COLUMN &quot;refered_int_field&quot; int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT &quot;delete_this_soon&quot;                                    +| 
+          |                       |         |          |             | REFERENCES &quot;refered&quot;(&quot;int_field&quot;)                                +| 
+          |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
+ relation | AccessExclusiveLock   | t       |  2673969 | referencing | ALTER TABLE &quot;referencing&quot; ADD COLUMN &quot;refered_int_field&quot; int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT &quot;delete_this_soon&quot;                                    +| 
+          |                       |         |          |             | REFERENCES &quot;refered&quot;(&quot;int_field&quot;)                                +| 
+          |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
+ relation | AccessShareLock       | t       |  2673962 | refered     | ALTER TABLE &quot;referencing&quot; ADD COLUMN &quot;refered_int_field&quot; int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT &quot;delete_this_soon&quot;                                    +| 
+          |                       |         |          |             | REFERENCES &quot;refered&quot;(&quot;int_field&quot;)                                +| 
+          |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
+ relation | ShareRowExclusiveLock | t       |  2673962 | refered     | ALTER TABLE &quot;referencing&quot; ADD COLUMN &quot;refered_int_field&quot; int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT &quot;delete_this_soon&quot;                                    +| 
+          |                       |         |          |             | REFERENCES &quot;refered&quot;(&quot;int_field&quot;)                                +| 
+          |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
+(5 rows)
 </code></pre>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>

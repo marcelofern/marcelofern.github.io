@@ -45,6 +45,10 @@
 - [Advisory Lock](databases/postgres/locks/advisory_lock.md)
 - [Drop trigger locks](databases/postgres/locks/drop_trigger_locks.md)
 
+### Triggers
+
+- [Get definition of a trigger](databases/postgres/triggers/get_definition_of_a_trigger.md)
+
 ### Testing
 
 - [Postgres Docker Container](databases/postgres/testing/postgres_docker_container.md)
@@ -111,6 +115,7 @@
 
 - [Choosing between varchar and varchar(n)](databases/postgres/fields/choosing_between_varchar_and_varchar_n.md)
 - [Identity columns](databases/postgres/fields/identity_columns.md)
+- [Updating jsonb columns](databases/postgres/fields/updating_jsonb_columns.md)
 
 ### WAL
 
@@ -119,6 +124,12 @@
 ### Sequences
 
 - [ALTER SEQUENCE OWNED BY](databases/postgres/sequences/alter_sequence_owned_by.md)
+- [ALTER SEQUENCE CYCLE](databases/postgres/sequences/alter_sequence_cycle.md)
+- [Querying sequence information](databases/postgres/sequences/querying_sequence_information.md)
+
+### Functions
+
+- [Get definition of a function](databases/postgres/functions/get_definition_of_a_function.md)
 
 ### Isolation
 

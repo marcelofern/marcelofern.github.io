@@ -67,11 +67,7 @@ extra operations are necessary to ensure no application downtime will be
 caused.</p>
 <h2>Setting up the environment</h2>
 <p>We need a schema and a table with some rows:</p>
-<pre><code class="language-sql">CREATE DATABASE fk_test_db;
--- If using psql, connect to that db:
--- \c fk_test_db
-
-DROP TABLE IF EXISTS foo;
+<pre><code class="language-sql">DROP TABLE IF EXISTS foo;
 CREATE TABLE foo (
     id SERIAL PRIMARY KEY,
     int_field INT NOT NULL
