@@ -85,6 +85,19 @@ do:</p>
 <ul>
 <li>https://github.com/scottt/debugbreak</li>
 </ul>
+<h2>Using POSIX raise</h2>
+<p>You can also try:</p>
+<pre><code class="language-c">// main.c
+#include &quot;signal.h&quot;
+
+int main() {
+  raise(SIGTRAP);
+  return 0;
+}
+// Compiled with gcc -g /tmp/main.c -o /tmp/main &amp;&amp; gdb /tmp/main
+</code></pre>
+<p>Then when running the program with <code>gdb</code>, this will effectively pause execution
+so that you can have a look around. I.e:</p>
 <h2>Neovim shortcut</h2>
 <ul>
 <li>F1: Adds the breakpoint in a new line under the cursor.</li>

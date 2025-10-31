@@ -30,6 +30,24 @@ Original idea from:
 In case the above does not work, please try:
 - https://github.com/scottt/debugbreak
 
+## Using POSIX raise
+
+You can also try:
+
+```c
+// main.c
+#include "signal.h"
+
+int main() {
+  raise(SIGTRAP);
+  return 0;
+}
+// Compiled with gcc -g /tmp/main.c -o /tmp/main && gdb /tmp/main
+```
+
+Then when running the program with `gdb`, this will effectively pause execution
+so that you can have a look around. I.e:
+
 ## Neovim shortcut
 
 - F1: Adds the breakpoint in a new line under the cursor.

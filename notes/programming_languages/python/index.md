@@ -41,6 +41,10 @@
 
 - [Sentinels](programming_languages/python/typing/sentinels.md)
 
-## Virtual Environments
+## virtual environments
 
 - [venv](programming_languages/python/virtual_envs/venv.md)
+
+## linting
+
+- [pragma alphabetize](programming_languages/python/linting/pragma_alphabetize.md)

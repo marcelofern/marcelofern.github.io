@@ -143,6 +143,10 @@
 
 - [schemas basics](databases/postgres/schemas/basics.md)
 
+### Varchar
+
+- [when does varchar schema changes become risky](databases/postgres/varchar/when_does_varchar_schema_changes_become_risky.md)
+
 ### Permissions
 
 - [schemas](databases/postgres/permissions/schemas.md)

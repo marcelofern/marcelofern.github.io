@@ -59,15 +59,11 @@
   <![endif]-->
 </head>
 <body>
-<h1>Bash</h1>
-<h2>Output</h2>
-<ul>
-<li><a href="output/redirecting_output.html">redirecting output</a></li>
-</ul>
-<h2>Files</h2>
-<ul>
-<li><a href="files/printing_file_names_as_YYYYMMDDfilename.html">printing file names as YYYY/MM/DD/filename</a></li>
-</ul>
+<h1>Printing file names as YYYY/MM/DD/filename.ext</h1>
+<pre><code>Created at: 2025-09-14
+</code></pre>
+<pre><code class="language-sh">find . -type f -exec stat --format=&quot;%y %n&quot; {} \; | awk '{split($1, date, &quot;-&quot;); sub(/^\.\//, &quot;&quot;, $4); print date[1] &quot;/&quot; date[2] &quot;/&quot; date[3] &quot;/&quot; $4}'
+</code></pre>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

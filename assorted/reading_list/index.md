@@ -32,6 +32,11 @@ Reading list resources:
 - Fluent C: Principles, Practices, and Patterns
 - Secure Coding in C and C++ (SEI Series in Software Engineering (Paperback))
 
+## C
+
+- https://www.dependablec.org/
+- https://www.quelsolaar.com/Why_is_C_the_safest_language.pdf
+
 ## Security
 
 - Practical Malware Analysis

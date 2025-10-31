@@ -5,7 +5,6 @@
 - [performance analysis in 60 seconds](linux/perf_analysis_in_60_sec.md)
 - [arch linux installation](linux/arch_linux_installation.md)
 - [disabling suspended mode](linux/disabling_suspended_mode.md)
-- [loading an usb stick](linux/loading_an_usb_stick.md)
 - [downgrading arch package](linux/downgrading_arch_package.md)
 
 ## CPU Monitoring Tools
@@ -28,3 +27,8 @@ first.
 - [virtualbox customisation](linux/virtualisation/virtualbox_customisation.md)
 - [windows xp](linux/virtualisation/windows_xp.md)
 - [windows 7](linux/virtualisation/windows_7.md)
+
+## External Devices
+
+- [loading an usb stick](linux/loading_an_usb_stick.md)
+- [connecting to an iphone](linux/external_devices/connecting_to_an_iphone.md)

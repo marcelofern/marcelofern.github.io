@@ -59,15 +59,23 @@
   <![endif]-->
 </head>
 <body>
-<h1>Bash</h1>
-<h2>Output</h2>
-<ul>
-<li><a href="output/redirecting_output.html">redirecting output</a></li>
-</ul>
-<h2>Files</h2>
-<ul>
-<li><a href="files/printing_file_names_as_YYYYMMDDfilename.html">printing file names as YYYY/MM/DD/filename</a></li>
-</ul>
+<h1>When does varchar schema changes become risky</h1>
+<p>Increasing a varchar is just a catalog operation. It locks the table but only
+for a short period as the operation runs very fast.</p>
+<p>Decreasing, however, is risky as it <strong>rewrites</strong> the table.</p>
+<pre><code class="language-sql">DROP TABLE IF EXISTS foo;
+CREATE TABLE foo (bar VARCHAR(4));
+INSERT INTO foo (bar) SELECT generate_series(1, 1000);
+
+-- Get debugging messages
+SET client_min_messages=debug1;
+
+ALTER TABLE foo ALTER COLUMN bar TYPE VARCHAR(5);
+-- No DEBUG logs on rescaning/rewriting
+
+ALTER TABLE foo ALTER COLUMN bar TYPE VARCHAR(4);
+-- DEBUG:  rewriting table &quot;foo&quot;
+</code></pre>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>
