@@ -59,43 +59,56 @@
   <![endif]-->
 </head>
 <body>
-<h1>Resistor Basics</h1>
-<pre><code>Created at: 2025-01-15
+<h1>File Syntax</h1>
+<pre><code>Created at: 2025-11-02
 </code></pre>
-<h2>Laws</h2>
-<ul>
-<li>Ohm's law: <code>R = V/I</code></li>
-</ul>
-<h2>In Series</h2>
-<p>R(series) = R1 + R2</p>
-<h2>In Parallel</h2>
-<p>R(parallel) = (R1*R2) / (R1+R2)
-Or also:
-1/(Rparallel) = 1/R1 + 1/R2 ...</p>
-<p>Tip: By parallelising resistors you <strong>always get a smaller resistance</strong>.</p>
-<h2>Power (dissipated)</h2>
-<pre><code>P = IV
-P = I²R
-P = V²/R
+<p>A basic spice file can be defined with a title, followed by comments or a list
+of nodes forming a netlist and some optional operations and control input.</p>
+<p>For example, a basic voltage divider can be declared as:</p>
+<pre><code class="language-sp">.title Voltage Divider
+
+* netlist details (note: 0 means GROUND).
+V1 in 0 1
+R1 in out 1k
+R2 out 0 2k
+* denotes the end of the netlist
+
+* which controls to start the simulation with
+.control
+op
+print all
+.endc
+
+.end
 </code></pre>
-<h2>Intuition</h2>
-<ul>
-<li>A large resistor in series with a small resistor has roughly the resistance
-of the larger one.</li>
-<li>Inversely, a large resistor in parallel with a small resistor has roughly the
-resistance of the smaller one.</li>
-<li>To reduce the resistance, connect a (much) larger resistor in parallel.</li>
-<li>Putting N resistors of value X in parallel is the same as having a resistor
-of value X/N</li>
-</ul>
-<h2>Trivia</h2>
-<ul>
-<li>Usually made of some conducting stuff (carbon, thin metal, carbon film, wire
-of poor conductivity...) and characterised by its resistance.</li>
-<li>Most frequent resistors come in values from 1Ω to 10MΩ.</li>
-<li>Also characterised by how much power they can <em>safely</em> dissipate. Usually
-around 1/4W or 1/8W</li>
-</ul>
+<p>Standard component definitions follow the structure:</p>
+<pre><code>&lt;component name&gt; &lt;left node&gt; &lt;right node&gt; &lt;value&gt;
+</code></pre>
+<h2>DC Signal</h2>
+<p>For a DC signal connected to ground (0) and to a node called (in) of 1V:</p>
+<pre><code class="language-sp">* format:
+* &lt;source name, starting with &quot;v&quot;&gt; &lt;+node&gt; &lt;-node&gt; &lt;value in volts&gt;
+
+V1 in 0 1
+</code></pre>
+<h2>AC Signal</h2>
+<pre><code class="language-sp">* dc format:
+* &lt;source name, starting with &quot;v&quot;&gt; &lt;+node&gt; &lt;-node&gt; DC &lt;DC value in volts&gt;
+* ac format:
+* PULSE (VL VH TD TR TF PW PER PHASE)
+*   VL = starting voltage
+*   VH = end voltage
+*   TD = delay before the pulse starts
+*   TR = rise time
+*   TF = fall time
+*   PW = pulse width
+*   PER = period of repetition
+*   PHASE = phase shift.
+
+* A pulse from 0 to 5V, with 1u of delay, rise and fall time. Phase is omitted
+* here, the pulse width and period of repetition are both 1s (quite long).
+V1 in 0 dc 0 PULSE (0 5 1u 1u 1u 1s 1s)
+</code></pre>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

@@ -3,6 +3,8 @@
 ## Basics
 
 - [Thevenin Theorem](electronics/theory/thevenin_theorem.md)
+- [Kirchhoff's current law](electronics/theory/kirchhoffs_current_law.md)
+- [Kirchhoff's voltage law](electronics/theory/kirchhoffs_voltage_law.md)
 
 ## Voltage
 

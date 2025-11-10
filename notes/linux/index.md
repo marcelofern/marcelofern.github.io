@@ -32,3 +32,4 @@ first.
 
 - [loading an usb stick](linux/loading_an_usb_stick.md)
 - [connecting to an iphone](linux/external_devices/connecting_to_an_iphone.md)
+- [wacom](linux/external_devices/wacom.md)

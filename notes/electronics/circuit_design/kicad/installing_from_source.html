@@ -59,43 +59,15 @@
   <![endif]-->
 </head>
 <body>
-<h1>Resistor Basics</h1>
-<pre><code>Created at: 2025-01-15
+<h1>Installing from source</h1>
+<pre><code>Created at: 2025-11-05
 </code></pre>
-<h2>Laws</h2>
-<ul>
-<li>Ohm's law: <code>R = V/I</code></li>
-</ul>
-<h2>In Series</h2>
-<p>R(series) = R1 + R2</p>
-<h2>In Parallel</h2>
-<p>R(parallel) = (R1*R2) / (R1+R2)
-Or also:
-1/(Rparallel) = 1/R1 + 1/R2 ...</p>
-<p>Tip: By parallelising resistors you <strong>always get a smaller resistance</strong>.</p>
-<h2>Power (dissipated)</h2>
-<pre><code>P = IV
-P = I²R
-P = V²/R
+<p>Don't. It is very finickly to get everything sussed. On arch linux simply:</p>
+<pre><code class="language-sh">sudo pacman -Syu kicad
+# if you want to install the official libraries (recommended):
+sudo pacman -Syu --asdeps kicad-library kicad-library-3d
 </code></pre>
-<h2>Intuition</h2>
-<ul>
-<li>A large resistor in series with a small resistor has roughly the resistance
-of the larger one.</li>
-<li>Inversely, a large resistor in parallel with a small resistor has roughly the
-resistance of the smaller one.</li>
-<li>To reduce the resistance, connect a (much) larger resistor in parallel.</li>
-<li>Putting N resistors of value X in parallel is the same as having a resistor
-of value X/N</li>
-</ul>
-<h2>Trivia</h2>
-<ul>
-<li>Usually made of some conducting stuff (carbon, thin metal, carbon film, wire
-of poor conductivity...) and characterised by its resistance.</li>
-<li>Most frequent resistors come in values from 1Ω to 10MΩ.</li>
-<li>Also characterised by how much power they can <em>safely</em> dissipate. Usually
-around 1/4W or 1/8W</li>
-</ul>
+<p>Official docs: https://dev-docs.kicad.org/en/build/linux/index.html</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

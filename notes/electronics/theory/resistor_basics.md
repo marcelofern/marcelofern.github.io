@@ -15,8 +15,11 @@ R(series) = R1 + R2
 ## In Parallel
 
 R(parallel) = (R1*R2) / (R1+R2)
+Or also:
+1/(Rparallel) = 1/R1 + 1/R2 ...
 
 Tip: By parallelising resistors you **always get a smaller resistance**.
+
 
 ## Power (dissipated)
 

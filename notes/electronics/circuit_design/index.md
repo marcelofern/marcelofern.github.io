@@ -11,3 +11,7 @@
 ## Comparators
 
 - [Using voltage dividers with comparators](electronics/circuit_design/comparators/using_voltage_dividers_with_comparators.md)
+
+## Kicad
+
+- [Installting from source](electronics/circuit_design/kicad/installing_from_source.md)

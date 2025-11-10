@@ -59,43 +59,33 @@
   <![endif]-->
 </head>
 <body>
-<h1>Resistor Basics</h1>
-<pre><code>Created at: 2025-01-15
+<h1>Transient Simulation</h1>
+<pre><code>Created at: 2025-11-02
 </code></pre>
-<h2>Laws</h2>
-<ul>
-<li>Ohm's law: <code>R = V/I</code></li>
-</ul>
-<h2>In Series</h2>
-<p>R(series) = R1 + R2</p>
-<h2>In Parallel</h2>
-<p>R(parallel) = (R1*R2) / (R1+R2)
-Or also:
-1/(Rparallel) = 1/R1 + 1/R2 ...</p>
-<p>Tip: By parallelising resistors you <strong>always get a smaller resistance</strong>.</p>
-<h2>Power (dissipated)</h2>
-<pre><code>P = IV
-P = I²R
-P = V²/R
+<p>Transient circuit simulation analyses how a circuit's voltage, current, and
+other properties change over time, typically in response to a sudden input
+signal like a switch being turned on. It analysis changes that happen quickly.</p>
+<p>Not to be confused with AC analysis, which analyses characteristics in the
+frequency domain, such as gain and impedance, by varying the input signal's
+frequency. In transient circuit analysis, the time is variable.</p>
+<p>Given the following circuit (dual rc ladder):</p>
+<p><img src="dual_rc_ladder.png" alt="dual_rc_ladder.png"></p>
+<p>Which can be expressed by</p>
+<pre><code class="language-sp">.title dual rc ladder
+
+V1 in 0 dc 0 PULSE (0 5 1u 1u 1u 1 1)
+R1 int in 10k
+R2 out int 1k
+C1 int 0 1u
+C2 out 0 100n
+.end
 </code></pre>
-<h2>Intuition</h2>
-<ul>
-<li>A large resistor in series with a small resistor has roughly the resistance
-of the larger one.</li>
-<li>Inversely, a large resistor in parallel with a small resistor has roughly the
-resistance of the smaller one.</li>
-<li>To reduce the resistance, connect a (much) larger resistor in parallel.</li>
-<li>Putting N resistors of value X in parallel is the same as having a resistor
-of value X/N</li>
-</ul>
-<h2>Trivia</h2>
-<ul>
-<li>Usually made of some conducting stuff (carbon, thin metal, carbon film, wire
-of poor conductivity...) and characterised by its resistance.</li>
-<li>Most frequent resistors come in values from 1Ω to 10MΩ.</li>
-<li>Also characterised by how much power they can <em>safely</em> dissipate. Usually
-around 1/4W or 1/8W</li>
-</ul>
+<p>To start the transient simulation:</p>
+<pre><code class="language-ps">tran 50u 50m
+</code></pre>
+<p>To plot the nodes:</p>
+<pre><code class="language-ps">plot in int out
+</code></pre>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>
