@@ -59,12 +59,31 @@
   <![endif]-->
 </head>
 <body>
-<h1>Circuit Analysis</h1>
-<h2>Basic</h2>
-<ul>
-<li><a href="basic/dc_circuits.html">Basic DC circuits (node/supernode and mesh/supermesh)</a></li>
-<li><a href="basic/linearity_and_superposition.html">Linearity and Superposition</a></li>
-</ul>
+<h1>Linearity and Superposition</h1>
+<pre><code>Created at: 2025-11-15
+</code></pre>
+<p>Linear circuits can be analysed with a technique called &quot;Superposition&quot;.
+A linear circuit is a circuit composed by independent sources, linear elements,
+and linear dependent sources. Those are all components that have a linear
+voltage-current relationship.</p>
+<p>The superposition principe states that the response in a linear circuit having
+more than one independent source can be obtained by adding the responses caused
+by the separate independent sources acting alone.</p>
+<p>Tips:</p>
+<ol>
+<li>Independent voltage sources become short circuits. I.e., when you &quot;turn off&quot;
+(0V) a voltage source, it becomes a short circuit.</li>
+<li>Independent current sources become open circuits. I.e., when you &quot;turn off&quot;
+(0A) a current source, it becomes an open circuit.</li>
+<li>Multiplying all independent sources by K results in all the current and
+voltage responses being multiplied by the same factor &quot;K&quot;.</li>
+<li>This type of analysis might end up generating little circuits, but it
+strengths come from identifying the significance of various parts of a more
+complex circuit. This is often done in transistor and phasor analysis.</li>
+</ol>
+<h2>Examples</h2>
+<p><img src="justaposition_circuit_1.png" alt="justaposition_circuit_1.png">
+<img src="justaposition_circuit_2.png" alt="justaposition_circuit_2.png"></p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

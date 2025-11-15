@@ -3,3 +3,4 @@
 ## Basic
 
 - [Basic DC circuits (node/supernode and mesh/supermesh)](electronics/circuit_analysis/basic/dc_circuits.md)
+- [Linearity and Superposition](electronics/circuit_analysis/basic/linearity_and_superposition.md)
