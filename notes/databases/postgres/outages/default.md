@@ -139,6 +139,5 @@ these values recently [source](https://www.postgresql.org/message-id/CAKAnmmL+Z6
 
 ## Sources
 
-- I have asked [this
-  question](https://www.postgresql.org/message-id/CAM2F1VNAP2bKEtxymaX%3Dj%2BaV3hTfcZjH7p2jyCDGc_329rUiPQ%40mail.gmail.com)
+- I have asked [this question](https://www.postgresql.org/message-id/CAM2F1VNAP2bKEtxymaX%3Dj%2BaV3hTfcZjH7p2jyCDGc_329rUiPQ%40mail.gmail.com)
   on the docs mailing list. The replies are a good read.

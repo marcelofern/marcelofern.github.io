@@ -2,4 +2,4 @@
 
 ## Basic
 
-- [Basic DC circuits](electronics/circuit_analysis/basic/dc_circuits.md)
+- [Basic DC circuits (node/supernode and mesh/supermesh)](electronics/circuit_analysis/basic/dc_circuits.md)
