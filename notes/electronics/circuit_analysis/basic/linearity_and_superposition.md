@@ -28,3 +28,4 @@ Tips:
 
 ![justaposition_circuit_1.png](justaposition_circuit_1.png)
 ![justaposition_circuit_2.png](justaposition_circuit_2.png)
+![justaposition_circuit_3.png](justaposition_circuit_3.png)
