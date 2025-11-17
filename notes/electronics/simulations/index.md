@@ -10,3 +10,7 @@
 - [Operation point - DC analysis](electronics/simulations/ngspice/passive_circuits/operation_point.md)
 - [Transient simulation](electronics/simulations/ngspice/passive_circuits/transient_simulation.md)
 
+
+## Circuit Analysis Techniques
+
+- [DC parameter sweep](electronics/simulations/ngspice/circuit-analysis-techniques/dc_parameter_sweep.md)

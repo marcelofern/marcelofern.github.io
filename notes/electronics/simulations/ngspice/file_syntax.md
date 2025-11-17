@@ -4,6 +4,9 @@
 Created at: 2025-11-02
 ```
 
+For more details on syntax of spice files, refer to the
+[ngspice manual](https://ngspice.sourceforge.io/docs/ngspice-manual.pdf)
+
 A basic spice file can be defined with a title, followed by comments or a list
 of nodes forming a netlist and some optional operations and control input.
 
@@ -64,3 +67,7 @@ V1 in 0 1
 * here, the pulse width and period of repetition are both 1s (quite long).
 V1 in 0 dc 0 PULSE (0 5 1u 1u 1u 1s 1s)
 ```
+## Dependent sources
+
+For a good explanation on how dependent sources work in ngspice watch
+[this video](https://www.youtube.com/watch?v=NlyPUpZd7lw)

@@ -23,6 +23,7 @@ Tips:
 4. This type of analysis might end up generating little circuits, but it
    strengths come from identifying the significance of various parts of a more
    complex circuit. This is often done in transistor and phasor analysis.
+5. The most common analysis (power) is not subject to superposition.
 
 ## Examples
 
