@@ -59,20 +59,19 @@
   <![endif]-->
 </head>
 <body>
-<h1>Circuit Analysis</h1>
-<h2>Basic</h2>
-<ul>
-<li><a href="basic/dc_circuits.html">Basic DC circuits (node/supernode and mesh/supermesh)</a></li>
-<li><a href="basic/linearity_and_superposition.html">Linearity and Superposition</a></li>
-<li><a href="basic/source_transformations.html">Source transformations</a></li>
-<li><a href="basic/thevenin_and_norton_equivalent_circuits.html">Thevenin and norton equivalent circuits</a></li>
-<li><a href="basic/maximum_power_transfer.html">Maximum power transfer</a></li>
-</ul>
-<h2>Cheatsheet</h2>
-<ul>
-<li>Is the circuit very basic? Use node/mesh analysis</li>
-<li>Do you need to find the value for a source for your circuit? Use superposition.</li>
-</ul>
+<h1>Thevenin and Norton Equivalent Circuits</h1>
+<pre><code>Created at: 2025-11-19
+</code></pre>
+<p>If you need to make a <em>partial</em> analysis of a circuit, for example, defining
+the current/voltage/power delivered to a single &quot;load&quot; resistor by the
+remainder of the circuit (which can be fairly complex), and perhaps you want to
+find the response for different values of the load resistor, thevenin theoram
+tells you that it is possible to replace everything except the load resistor
+with an independent voltage source in series with a resistor. Or if you are
+using the Norton equivalent, an independent current source with a parallel
+resistor.</p>
+<h2>Examples</h2>
+<p><img src="thevenin_1.png" alt="thevenin_1.png"></p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>
