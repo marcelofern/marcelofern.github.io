@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Changing SERIAL column to IDENTITY without downtime</h1>
+<pre><code>Created at: 2025-11-17
+</code></pre>
+<p>Tested on Postgres 15.</p>
+<pre><code class="language-sql">-- Make the script idempotent
+DROP TABLE IF EXISTS foo;
+
+-- Add a table with a SERIAL PK
+CREATE TABLE foo (id SERIAL PRIMARY KEY);
+
+-- Seed it with some rows
+DO $$
+BEGIN
+    FOR i IN 1..100 LOOP
+        INSERT INTO foo DEFAULT VALUES;
+    END LOOP;
+END $$;
+
+SET client_min_messages=debug1;
+
+-- Use an anonymous code block with DO to store the value of the
+-- original sequence before dropping it.
+DO $$
+DECLARE
+    seq_name text;
+    last_value bigint;
+    restart_value bigint;
+BEGIN
+    LOCK TABLE foo IN ACCESS EXCLUSIVE MODE;
+
+    seq_name := pg_get_serial_sequence('foo', 'id');
+    RAISE NOTICE 'The sequence name is: %', seq_name;
+
+    -- Retrieve the last value of the sequence
+    -- EXECUTE format('SELECT last_value FROM %I', seq_name) INTO last_value;
+    EXECUTE 'SELECT last_value FROM ' || seq_name INTO last_value;
+    RAISE NOTICE 'The last value of the sequence is: %', last_value;
+
+    -- Drop the field default, else we'd get the error:
+    -- column &quot;id&quot; of relation &quot;foo&quot; already has a default value.
+    ALTER TABLE foo ALTER COLUMN id DROP DEFAULT;
+
+    -- Set the column to be GENERATED ALWAYS AS IDENTITY with the restart value
+    -- as last_value + 1
+    restart_value := last_value + 1;
+    RAISE NOTICE 'The next value of the new sequence will be: %', restart_value;
+    ALTER TABLE foo ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY;
+    EXECUTE format('ALTER TABLE foo ALTER COLUMN id RESTART WITH %s', restart_value);
+COMMIT;
+END $$;
+
+-- Insert data into foo to validate there's no duplicated id conflict.
+INSERT INTO foo DEFAULT VALUES;
+</code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -7,6 +7,7 @@
 - [Source transformations](electronics/circuit_analysis/basic/source_transformations.md)
 - [Thevenin and norton equivalent circuits](electronics/circuit_analysis/basic/thevenin_and_norton_equivalent_circuits.md)
 - [Maximum power transfer](electronics/circuit_analysis/basic/maximum_power_transfer.md)
+- [Δ-Y Conversion](electronics/circuit_analysis/basic/delta_wye_conversion.md)
 
 ## Cheatsheet
 
