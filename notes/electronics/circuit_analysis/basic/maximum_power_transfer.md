@@ -15,3 +15,6 @@ Created at: 2025-11-21
 2. This theorem helps us specify a particular load to draw the maximum amount
    of power from the equivalent thevenin network.
 
+## Examples
+
+![maximum_power_transfer_2.png](maximum_power_transfer_2.png)
