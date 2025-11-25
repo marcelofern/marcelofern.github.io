@@ -9,6 +9,11 @@
 - [Maximum power transfer](electronics/circuit_analysis/basic/maximum_power_transfer.md)
 - [Δ-Y Conversion](electronics/circuit_analysis/basic/delta_wye_conversion.md)
 
+## Operational Amplifiers (Op Amp)
+
+- [The ideal operational amplifier](electronics/circuit_analysis/operational_amplifiers/the_ideal_op_amp.md)
+- [The practical operational amplifier](electronics/circuit_analysis/operational_amplifiers/practical_op_amp.md)
+
 ## Cheatsheet
 
 - Is the circuit very basic? Use node/mesh analysis
