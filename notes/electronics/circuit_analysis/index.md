@@ -13,6 +13,7 @@
 
 - [The ideal operational amplifier](electronics/circuit_analysis/operational_amplifiers/the_ideal_op_amp.md)
 - [The practical operational amplifier](electronics/circuit_analysis/operational_amplifiers/practical_op_amp.md)
+- [Common-mode Rejection](electronics/circuit_analysis/operational_amplifiers/common_mode_rejection.md)
 
 ## Cheatsheet
 
