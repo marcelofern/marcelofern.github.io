@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Negative Feedback vs Positive Feedback</h1>
+<pre><code>Created at: 2025-11-30
+</code></pre>
+<p>Note: In electronics positive feedback is usually a &quot;bad thing&quot; and negative
+feedback is a &quot;good thing&quot; because for most applications it's desirable to
+control the gain (through negative feedback) rather than to drive it to
+extremes (saturation - positive feedback).</p>
+<h2>Negative Feedback</h2>
+<p>In this type of connection, the op amp output will be connected back to the
+inverting terminal.</p>
+<p>The output voltage is &quot;sent back&quot; to the negative terminal, so that means that
+the original equation:</p>
+<pre><code>Vout = A*(V+ - V-)
+</code></pre>
+<p>Now becomes</p>
+<pre><code>Vout = A*(V+ - fVout)
+
+Where f = a fraction of what Vout is sending back.
+</code></pre>
+<p>Because A is a very large number:</p>
+<pre><code>Vout/A = V+ - fVout
+
+Therefore
+
+0 = V+ - fVout
+</code></pre>
+<p>In practical terms, it means that if the op amp sense any voltage difference
+between its inputs, it will respond by feeding back as much current/voltage
+through the feedback network as is necessary to keep the input difference equal
+to zero! <strong>This is only valid for negative feedback</strong>.</p>
+<p>Negative feedback examples are:</p>
+<ul>
+<li>Inverting amplifier</li>
+<li>Non inverting amplifier</li>
+<li>Buffer</li>
+</ul>
+<h2>Positive Feedback</h2>
+<p>In this case the output sends back a response to the positive terminal
+(non-inverting terminal):</p>
+<pre><code>Vout = A*(V+ - V-)
+
+Becomes:
+
+Vout = A*(fVout - V-)
+
+Where f = a fraction of what Vout is sending back
+</code></pre>
+<p>Because the fVout component is positive, it will drive the op amp into
+saturation mode, i.e: fVout augments the Vout output, which augments the fVout
+componend, so on so forth.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

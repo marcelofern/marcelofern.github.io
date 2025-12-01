@@ -12,6 +12,11 @@
 
 - [Using voltage dividers with comparators](electronics/circuit_design/comparators/using_voltage_dividers_with_comparators.md)
 
+## Operational Amplifiers
+
+- [Inverter amplifier](electronics/circuit_design/op_amps/inverter_amplifier.md)
+- [Powering amp ops](electronics/circuit_design/op_amps/powering_op_amps.md)
+
 ## Kicad
 
 - [Installting from source](electronics/circuit_design/kicad/installing_from_source.md)
