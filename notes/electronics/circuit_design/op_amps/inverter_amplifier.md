@@ -10,3 +10,6 @@ and op amps for more information.
 
 ![inverter_amplifier_1.png](inverter_amplifier_1.png)
 
+## Ngspice Simulation
+
+![inverter_amplifier_2.png](inverter_amplifier_2.png)
