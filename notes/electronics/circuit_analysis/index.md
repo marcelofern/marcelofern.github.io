@@ -18,6 +18,14 @@
 - [Common-mode Rejection](electronics/circuit_analysis/operational_amplifiers/common_mode_rejection.md)
 - [Comparators](electronics/circuit_analysis/operational_amplifiers/comparators.md)
 
+## Capacitors
+
+- [Capacitor basics](electronics/circuit_analysis/capacitors/basics.md)
+
+## Inductors
+
+- [Inductor basics](electronics/circuit_analysis/inductors/basics.md)
+
 ## Cheatsheet
 
 - Is the circuit very basic? Use node/mesh analysis
