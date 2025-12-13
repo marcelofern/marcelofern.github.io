@@ -20,7 +20,7 @@
 - [Is This DDL Going To Rewrite The Table?](databases/postgres/outages/is_this_ddl_going_to_rewrite_the_table.md)
 - [Renaming A Table Using VIEW](databases/postgres/outages/renaming_a_table_using_view.md)
 - [Changing the precision of a field without downtime](databases/postgres/outages/changing_the_precision_of_a_field_without_downtime.md)
-- [Changing SERIAL column to IDENTITY Without Downtime(databases/postgres/outages/changing_serial_column_to_identity_without_downtime.md)
+- [Changing SERIAL column to IDENTITY Without Downtime](databases/postgres/outages/changing_serial_column_to_identity_without_downtime.md)
 
 ### Indexing
 

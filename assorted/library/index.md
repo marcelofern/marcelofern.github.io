@@ -7,6 +7,7 @@ ones in this list to be good enough to be shared with the public.
 
 - Burkov, Andriy - The Hundred Page Machine Learning Book
 - Duntemann, Jeff - x64 Assembly Language Step-by-step. ([notes](assorted/library/x64-assembly-language/index.md))
+- Evans, Eric - Domain Driven Design. ([notes](assorted/library/domain-driven-design/index.md))
 - Flanagan, David - JavaScript, the definitive guide. ([notes](assorted/library/javascript-the-definitive-guide/index.md))
 - Fowler, Martin - Refactoring ([review](assorted/library/refactoring/index.md))
 - Gregg, Brendan - Systems Performance ([review](assorted/library/systems-performance/index.md))
