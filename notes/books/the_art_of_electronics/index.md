@@ -24,12 +24,12 @@ Complementary reading:
 
 ## Chapter 1
 
-- [day 4: Beginning Chapter 1](books/the_art_of_electronics/day_4.md)
-- [day 5: More on Resistors](books/the_art_of_electronics/day_5.md)
-- [day 6: Voltage Dividers](books/the_art_of_electronics/day_6.md)
-- [day 7: Thevenin Theorem](books/the_art_of_electronics/day_7.md)
-- [day 8: Diodes](books/the_art_of_electronics/day_8.md)
-- [day 9: Sinusoidal Signals](books/the_art_of_electronics/day_9.md)
+- [day 4: Beginning Chapter 1](books/the_art_of_electronics/day_004.md)
+- [day 5: More on Resistors](books/the_art_of_electronics/day_005.md)
+- [day 6: Voltage Dividers](books/the_art_of_electronics/day_006.md)
+- [day 7: Thevenin Theorem](books/the_art_of_electronics/day_007.md)
+- [day 8: Diodes](books/the_art_of_electronics/day_008.md)
+- [day 9: Sinusoidal Signals](books/the_art_of_electronics/day_009.md)
 - [day 10: Decibels and Square waves](books/the_art_of_electronics/day_010.md)
 - [day 11: TBD](books/the_art_of_electronics/day_011.md)
 
