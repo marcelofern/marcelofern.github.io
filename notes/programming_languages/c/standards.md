@@ -14,8 +14,8 @@ The following language features were introduced by the book:
 - `long int` data type.
 - `unsigned int` data type.
 - Compound operators that allow to combine arithmetic operation with assignment
-  were changed from **=op** to **op=**. For example, `a =+ 1;` has become `a +=
-  1;`. This happened to remove ambiguity. Before, `a=-10;` meant `a =- 10;`
+  were changed from **=op** to **op=**. For example, `a =+ 1;` has become `a += 1;`.
+  This happened to remove ambiguity. Before, `a=-10;` meant `a =- 10;`
   instead of `a = -10;`
 
 C functions that returned an `int` could be declared without the `int` keyword
@@ -216,9 +216,8 @@ struct T { int tag; union { float x; int n; }; };
 ```
 - The `quick_exit` function as a third way to terminate a program, intended to
   do at least minimal deinitialisation.
-- Macros for the construction of complex values (partly because `real +
-  imaginary*I` might not yield the expected value if imaginary is infinite or
-  NaN).
+- Macros for the construction of complex values (partly because `real + imaginary*I`
+  might not yield the expected value if imaginary is infinite or NaN).
 
 ## C17
 
@@ -226,7 +225,7 @@ C17 fixes numerous minor defects in C11 without introducing new language
 features.
 
 
-## [Extra] Embedded C
+## (Extra) Embedded C
 
 > Embedded C is a set of language extensions for the C programming language by
 > the C Standards Committee to address commonality issues that exist between C

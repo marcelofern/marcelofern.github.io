@@ -104,7 +104,7 @@ a reference:
 - `isinstance()` like in `isinstance(obj, float)` will narrow obj to have float
   type
 - `issubclass()` like in `issubclass(cls, MyClass)` will narrow cls to be
-  Type[MyClass]
+  `Type[MyClass]`.
 - `type` like in `type(obj)` is int will narrow obj to have int type
 - `callable()` like in `callable(obj)` will narrow object to callable type
 - `obj is not None` will narrow object to its non-optional form

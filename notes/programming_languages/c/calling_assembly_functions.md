@@ -15,8 +15,8 @@ If the assembly function takes more than 6 arguments, the remaining ones
 will be on $rsp+8. This is because $rsp+0 stores the value of rip that
 will be returning to the C code after the `ret` instruction.
 
-7. rsp+8
-8. rsp+8*2
+7. `rsp+8`
+8. `rsp+8*2`
 9. `...`
 
 ## Callee-saved registers vs Caller-saved registers

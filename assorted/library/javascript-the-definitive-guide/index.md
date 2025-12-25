@@ -341,7 +341,7 @@ typeof(1234n) // > 'bigint'
 
 On template literals (template strings).
 
-Template strings are delimited with backticks (`). Allowing for string
+Template strings are delimited with backticks. Allowing for string
 interpolation, multi-line strings, and tagged templates.
 
 ```javascript
@@ -999,7 +999,6 @@ for(let i=0; i < a.length; a[i++] = 0) ;
 // for example:
 if ((a===0) || (b===0)); // this line does nothing
   o = null; // thus this line is _always_ executed
-
 ```
 
 Looping with `for of` or `for/of`
@@ -1036,7 +1035,7 @@ for (let [k, v] of Object.entries(o)) {
 // the above is similar to dict.items() in Python.
 ```
 
-Looping with `for in` or `for/in`
+Looping with `for in` or `for/in`.
 
 Gotchas:
 > Enumerable inherited properties are enumerated by the for/in loop. This means
@@ -1182,7 +1181,7 @@ Rules:
   that in non-strict mode, this implicit variable declares a global variable by
   adding a new property to the global object.
 - Functions invoked as functions (rather than as methods) have a **this** value
-  of undefined. In non-strict mode, **this* is the global object.
+  of undefined. In non-strict mode, **this** is the global object.
   Also, for functions invoked with call() or apply(), **this** is the value
   passed as the first argument to these functions. In non strict-mode, null and
   undefined values are replaced with the global object.
@@ -1324,7 +1323,7 @@ let p = {
 - An array is an ordered collection of values
 - JavaScript arrays are untyped. I.e., an array element may be of any type, and
   different elements of the same array may be of different types.
-- An array cannot have more than 2**32 - 2 = 4294967294 indexes.
+- An array cannot have more than `2**32 - 2 = 4294967294` indexes.
 - Arrays may be sparse: The elements need not have contiguous indexes, and
   there may be gaps
 

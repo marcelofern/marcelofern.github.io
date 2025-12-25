@@ -60,27 +60,18 @@
 </head>
 <body>
 <p>2024-04-28</p>
-<h2>Types of interrupt</h2>
+<h2>Types of interrupt</h0>
 <p>The ATMega328P has three kinds of interrupts:</p>
-<ul>
-<li><code>external interrupts</code>: E.g. a change in voltage on an external pin.</li>
-<li><code>timer interrupts</code>: E.g. when the timer reaches a certain value or overflows.</li>
-<li><code>serial communication interrupts</code>: E.g. a particular event from UART or SPI
-triggers an interrupt.</li>
-</ul>
-<h2>How interrupts work</h2>
-<p>When an interrupt occurs, the microcontroller suspends the current execution
-of the program (changing the instruction pointer register), and jumps to a
-place in memory that points to an <strong>interrupt vector table</strong>.</p>
-<p>The interrupt vector table contains the address of functions that need to be
-called for particular interrupts.</p>
-<p>These functions are often called interrupt service routine (ISR), or simply
-&quot;interrupt handler&quot;.</p>
+<ul><li><code>external interrupts</code>: E.g. a change in voltage on an external pin.</li><li><code>timer interrupts</code> : E.g. when the timer reaches a certain value or overflows.</li><li><code>serial communication interrupts</code> : E.g. a particular event from UART or SPI triggers an interrupt.</li></ul>
+<h2>How interrupts work</h0>
+<p>When an interrupt occurs, the microcontroller suspends the current execution of the program (changing the instruction pointer register), and jumps to a place in memory that points to an <b>interrupt vector table</b>.</p>
+<p>The interrupt vector table contains the address of functions that need to be called for particular interrupts.</p>
+<p>These functions are often called interrupt service routine (ISR), or simply "interrupt handler".</p>
 <p>The interrupt vector table is available on section 11.1 of the manual.</p>
-<h2>Disabling / Re-enabling interrupts</h2>
-<p>Interrupts can be disabled temporarily by calling <code>cli()</code> and can then be
-re-enabled by calling <code>sei()</code>:</p>
-<pre><code class="language-c">#include &lt;avr/interrupt.h&gt;
+<h2>Disabling / Re<ul><li>eennaabblliinngg  iinntteerrrruuppttss</h0>
+ Interrupts can be disabled temporarily by calling <code>cli()</code> and can then be re</li><li>enabled by calling <code>sei()</code>:</li></ul>
+<pre><code class="language-c">
+#include <avr/interrupt.h>
 
 int main() {
     // Disable interrupts
@@ -91,32 +82,18 @@ int main() {
     sei();
     // Rest of the code with interrupts enabled
 }
-</code></pre>
-<h2>When to disable interrupts</h2>
-<ul>
-<li><code>Multi-byte objects</code>: Always disable interrupts before updating multi-byte
-objects.</li>
-<li><code>Updating multiple variables atomically</code>: If you rely on a pack of variables
-to be set in a particular way, you should disable interrupts first, lest you
-end up with half of the pack updated, and the other half out of date.</li>
-<li><code>Hardware access</code>: Some hardware expect a sequence of read-modify-write
-operations to be handled.</li>
-<li><code>Bootloader of firmware update</code>: No interrupts here otherwise the system will
-become corrupted.</li>
-<li><code>Real time constraints</code>: With interrupts you lose some of the deterministic
-aspect of real-time systems.</li>
-</ul>
-<h2>Example</h2>
-<p>The script below prints &quot;I have been pressed!&quot;, every time the button has been
-pressed. It can print to usart and picocom if you're using the usart script
-from my previous note: <a href="usart.html">usart</a></p>
-<pre><code class="language-c">#include &lt;avr/interrupt.h&gt;
-#include &lt;stdio.h&gt;
-#include &quot;../include/usart.h&quot;
+</code></pre><h2>When to disable interrupts</h0>
+<ul><li><code>Multi-byte objects</code>: Always disable interrupts before updating multi</li><li>byte objects.</li><li><code>Updating multiple variables atomically</code> : If you rely on a pack of variables to be set in a particular way, you should disable interrupts first, lest you end up with half of the pack updated, and the other half out of date.</li><li><code>Hardware access</code> : Some hardware expect a sequence of read</li><li>modify</li><li>write operations to be handled.</li><li><code>Bootloader of firmware update</code> : No interrupts here otherwise the system will become corrupted.</li><li><code>Real time constraints</code> : With interrupts you lose some of the deterministic aspect of real</li><li>time systems.</li></ul>
+<h2>Example</h0>
+<p>The script below prints "I have been pressed!", every time the button has been pressed. It can print to usart and picocom if you're using the usart script from my previous note: <a href="embedded_development/atmega328p/usart.md">usart</a></p>
+<pre><code class="language-c">
+#include <avr/interrupt.h>
+#include <stdio.h>
+#include "../include/usart.h"
 
 void configure_interrupt() {
   /*
-   * Interrupt that happens when PB0 is &quot;pressed&quot;.
+   * Interrupt that happens when PB0 is "pressed".
    * In arduino, this is digital 8.
    *
    * 1. Set PB0 as input with pull-up resistor.
@@ -126,10 +103,10 @@ void configure_interrupt() {
    *
    * Note: PCINT0 is another name (special function) for PB0.
    */
-  DDRB &amp;= ~(1 &lt;&lt; PB0);
-  PORTB |= (1 &lt;&lt; PB0);
-  PCICR |= (1 &lt;&lt; PCIE0);
-  PCMSK0 |= (1 &lt;&lt; PCINT0);
+  DDRB &= ~(1 << PB0);
+  PORTB |= (1 << PB0);
+  PCICR |= (1 << PCIE0);
+  PCMSK0 |= (1 << PCINT0);
   sei();
 }
 
@@ -138,11 +115,11 @@ static void button_interrupt() {
    * Code that runs when the button is pressed.
    *
    */
-  printf(&quot;I have been pressed!\r\n&quot;);
+  printf("I have been pressed!\r\n");
 }
 
 ISR(PCINT0_vect) {
-  if (!(PINB &amp; (1 &lt;&lt; PB0))) {
+  if (!(PINB & (1 << PB0))) {
     button_interrupt();
   }
 }
@@ -150,22 +127,12 @@ ISR(PCINT0_vect) {
 int main(void) {
   usart_init();
   configure_interrupt();
-  printf(&quot;Let's go boys\r\n&quot;);
+  printf("Let's go boys\r\n");
   while (1) {
   }
   return 0;
 }
-</code></pre>
-<p>The board can be wired like in the picture below. It is important to set up
-the pull-down resistor, otherwise the button will be in a floating state and
-won't work.</p>
-<p><img src="interrupt_switch.png" alt="interrupt_switch"></p>
-<h2>Other remarks</h2>
-<ul>
-<li>There is also PCIE1 (for pins PCINT14..8) and PICIE2 (for pins PCINT23..16)</li>
-<li>Analogously, there's PCMSK1 and PCMSK2.</li>
-<li>Analogously, there's PCINT1_vect and PCINT2_vect.</li>
-</ul>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+</code></pre><p>The board can be wired like in the picture below. It is important to set up the pull-down resistor, otherwise the button will be in a floating state and won't work.</p>
+<p><img alt="interrupt_switch" src="interrupt_switch.png"></p>
+<h2>Other remarks</h0>
+<ul><li>There is also PCIE1 (for pins PCINT14..8) and PICIE2 (for pins PCINT23..16)</li><li>Analogously, there's PCMSK1 and PCMSK2.</li><li>Analogously, there's PCINT1_vect and PCINT2_vect.</li></ul>

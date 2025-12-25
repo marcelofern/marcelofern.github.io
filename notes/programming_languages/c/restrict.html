@@ -61,85 +61,58 @@
 <body>
 <p><code>2024-03-31</code></p>
 <p>The <code>restrict</code> keyword is available from C99.</p>
-<p>It can be used to give the compiler a hint that, for the lifetime of the
-pointer, no other pointer will be used to access the object to which it points
-in the function.</p>
-<p>This limits the effects of pointer aliasing, because if the compiler knows that
-there is only one pointer to a memory block, it can perform better
-optimisations.</p>
-<p>One such optimisation comes from the possibility for the compiler to trust no
-other code in the function changes the pointer, and thus the pointer only needs
-to be loaded to a register or to the stack once.</p>
+<p>It can be used to give the compiler a hint that, for the lifetime of the pointer, no other pointer will be used to access the object to which it points in the function.</p>
+<p>This limits the effects of pointer aliasing, because if the compiler knows that there is only one pointer to a memory block, it can perform better optimisations.</p>
+<p>One such optimisation comes from the possibility for the compiler to trust no other code in the function changes the pointer, and thus the pointer only needs to be loaded to a register or to the stack once.</p>
 <p>Take for example this code:</p>
-<pre><code class="language-c">void update_ptrs(int *a, int *b, int *val)
+<pre><code class="language-c">
+void update_ptrs(int *a, int *b, int *val)
 {
   *a += *val;
   *b += *val;
 }
-</code></pre>
-<p>It generates the following Assembly code:</p>
-<pre><code class="language-asm">update_ptrs:
+</code></pre><p>It generates the following Assembly code:</p>
+<pre><code class="language-asm">
+update_ptrs:
   mov  eax, DWORD PTR [rdx]
   add  DWORD PTR [rdi], eax
   mov  eax, DWORD PTR [rdx]
   add  DWORD PTR [rsi], eax
   ret
-</code></pre>
-<ul>
-<li>rdi = <code>int *a</code></li>
-<li>rsi = <code>int *b</code></li>
-<li>rdx = <code>int *val</code></li>
-</ul>
-<p>Note that the <code>int *val</code> pointer was loaded twice, as the compiler couldn't
-tell if its value had changed during the execution of the function.</p>
+</code></pre><ul><li>rdi = <code>int *a</code></li><li>rsi = <code>int *b</code></li><li>rdx = <code>int *val</code></li></ul>
+<p>Note that the <code>int *val</code> pointer was loaded twice, as the compiler couldn't tell if its value had changed during the execution of the function.</p>
 <p>However, with the restrict keyword, the extra loading goes away:</p>
-<pre><code class="language-c">void update_ptrs(int *restrict a, int *restrict b, int *restrict val)
+<pre><code class="language-c">
+void update_ptrs(int *restrict a, int *restrict b, int *restrict val)
 {
   *a += *val;
   *b += *val;
 }
-</code></pre>
-<p>We get one less instruction in the asm:</p>
-<pre><code class="language-asm">update_ptrs:
+</code></pre><p>We get one less instruction in the asm:</p>
+<pre><code class="language-asm">
+update_ptrs:
   mov  eax, DWORD PTR [rdx]
   add  DWORD PTR [rdi], eax
   add  DWORD PTR [rsi], eax
   ret
-</code></pre>
-<p>So why do we get one less instruction?</p>
-<p>Without the <code>restrict</code> keyword, the compiler needs to do one addition per time.
-This is because it does not know if the value of the pointers changed based on
-the previous instruction, so it needs to load things up again.</p>
-<p>If you tell the compiler that these memories don't overlap, there is no
-necessity for doing one operation at a time, since the previous instructions
-wouldn't have altered the value of a different pointer not involved in the
-instruction. The CPU can just &quot;parallelise&quot; the two additions directly.</p>
-<p>More over, we are telling the compiler that no other pointer in the function
-body points to the same object of those arguments, so the above is valid
-throughout all the instructions in the function body.</p>
-<p>Only one instruction seems like not such a big gain. But this is a <code>mov</code> from
-memory to a register, which is more expensive than other x86 instructions.
-Plus, the add instruction needs to wait for the loading instruction before it
-can run, and so the CPU cannot parallelise multiple instructions adequately.</p>
-<p>According to <a href="https://web.archive.org/web/20231001092447/https://hps.vi4io.org/_media/teaching/wintersemester_2013_2014/epc-1314-fasselt-c-keywords-report.pdf">Markus Fasselt's
-paper</a>,
-testing this optimisation in a very large <em>n</em>, the speed improvement of the
-optimised assembly can be of 3 times.</p>
-<h2>No protection against silly code</h2>
-<p>Note that there is no protection whatsoever for aliasing if your code is
-incorrect. Using <code>restrict</code> or not. This is a source of confusion.</p>
-<p>If we use this last <code>asm</code> listing, and assume the pointers <code>a</code> and <code>val</code> point
-to the same memory address, we obtain interesting results. Note that this also
-happens without the <code>restrict</code> word, as there is no protection for this kind of
-silly code I've made up.</p>
-<pre><code>rdx = rdi = 0xffffffff
+</code></pre><p>So why do we get one less instruction?</p>
+<p>Without the <code>restrict</code> keyword, the compiler needs to do one addition per time. This is because it does not know if the value of the pointers changed based on the previous instruction, so it needs to load things up again.</p>
+<p>If you tell the compiler that these memories don't overlap, there is no necessity for doing one operation at a time, since the previous instructions wouldn't have altered the value of a different pointer not involved in the instruction. The CPU can just "parallelise" the two additions directly.</p>
+<p>More over, we are telling the compiler that no other pointer in the function body points to the same object of those arguments, so the above is valid throughout all the instructions in the function body.</p>
+<p>Only one instruction seems like not such a big gain. But this is a <code>mov</code> from memory to a register, which is more expensive than other x86 instructions. Plus, the add instruction needs to wait for the loading instruction before it can run, and so the CPU cannot parallelise multiple instructions adequately.</p>
+<p>According to <a href="https://web.archive.org/web/20231001092447/https://hps.vi4io.org/_media/teaching/wintersemester_2013_2014/epc-1314-fasselt-c-keywords-report.pdf">Markus Fasselt's paper</a>, testing this optimisation in a very large <i>n</i>, the speed improvement of the optimised assembly can be of 3 times.</p>
+<h2>No protection against silly code</h0>
+<p>Note that there is no protection whatsoever for aliasing if your code is incorrect. Using <code>restrict</code> or not. This is a source of confusion.</p>
+<p>If we use this last <code>asm</code> listing, and assume the pointers <code>a</code> and <code>val</code> point to the same memory address, we obtain interesting results. Note that this also happens without the <code>restrict</code> word, as there is no protection for this kind of silly code I've made up.</p>
+<pre><code class="language-">
+rdx = rdi = 0xffffffff
 rsi = 0x00000000
 
 [rdx] = [rdi] = [0xffffffff] = 1
 [rsi] = [0x00000000] = 2
-</code></pre>
-<p>The assembly code would affect the pointer <code>val</code>.</p>
-<pre><code class="language-asm">mov eax, DWORD PTR[rdx]
+</code></pre><p>The assembly code would affect the pointer <code>val</code>.</p>
+<pre><code class="language-asm">
+mov eax, DWORD PTR[rdx]
 ; eax = 1
 
 add DWORD PTR [rdi], eax
@@ -147,24 +120,7 @@ add DWORD PTR [rdi], eax
 
 add DWORD PTR [rsi], eax
 ; 0x00000000 = 3
-</code></pre>
-<p>Expected:</p>
-<ul>
-<li>a = 2</li>
-<li>b = 3</li>
-<li>val = 1</li>
-</ul>
-<p>Obtained:</p>
-<ul>
-<li>a = 2</li>
-<li>b = 3</li>
-<li>val = 2</li>
-</ul>
-<h2>Further links</h2>
-<ul>
-<li><a href="https://web.archive.org/web/20231001092447/https://hps.vi4io.org/_media/teaching/wintersemester_2013_2014/epc-1314-fasselt-c-keywords-report.pdf">Markus Fasselt</a></li>
-<li><a href="https://wiki.sei.cmu.edu/confluence/display/c/EXP43-C.+Avoid+undefined+behavior+when+using+restrict-qualified+pointers">Undefined behaviour for restrict qualifiers</a></li>
-</ul>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+</code></pre><p>Expected: - a = 2 - b = 3 - val = 1</p>
+<p>Obtained: - a = 2 - b = 3 - val = 2</p>
+<h2>Further links</h0>
+<ul><li><a href="https://web.archive.org/web/20231001092447/https://hps.vi4io.org/_media/teaching/wintersemester_2013_2014/epc-1314-fasselt-c-keywords-report.pdf">Markus Fasselt</a></li><li><a href="https://wiki.sei.cmu.edu/confluence/display/c/EXP43-C.+Avoid+undefined+behavior+when+using+restrict-qualified+pointers">Undefined behaviour for restrict qualifiers</a></li></ul>

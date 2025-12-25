@@ -60,58 +60,44 @@
 </head>
 <body>
 <p>January 31, 2024</p>
-<h2>Using breakpoints in C</h2>
-<p>An easy shortcut to get a breakpoint in <code>gdb</code> going is by using global assembly
-labels.</p>
-<pre><code class="language-c">int fun(int a, int b) {
+<h2>Using breakpoints in C</h0>
+<p>An easy shortcut to get a breakpoint in <code>gdb</code> going is by using global assembly labels.</p>
+<pre><code class="language-c">
+int fun(int a, int b) {
     // do something
 
-    asm(&quot;b:&quot;);
+    asm("b:");
     // or
-    asm(&quot;b: nop&quot;);
+    asm("b: nop");
 
     // return something
 }
-</code></pre>
-<p>The label does nothing, but it means that once <code>gdb</code> is open, you can simply
-do:</p>
-<pre><code class="language-sh">(gdb) b b
-</code></pre>
-<p>Original idea from:</p>
-<ul>
-<li>https://nullprogram.com/blog/2024/01/28/</li>
-</ul>
-<p>In case the above does not work, please try:</p>
-<ul>
-<li>https://github.com/scottt/debugbreak</li>
-</ul>
-<h2>Using POSIX raise</h2>
+</code></pre><p>The label does nothing, but it means that once <code>gdb</code> is open, you can simply do:</p>
+<pre><code class="language-sh">
+(gdb) b b
+</code></pre><p>Original idea from: - https://nullprogram.com/blog/2024/01/28/</p>
+<p>In case the above does not work, please try: - https://github.com/scottt/debugbreak</p>
+<h2>Using POSIX raise</h0>
 <p>You can also try:</p>
-<pre><code class="language-c">// main.c
-#include &quot;signal.h&quot;
+<pre><code class="language-c">
+// main.c
+#include "signal.h"
 
 int main() {
   raise(SIGTRAP);
   return 0;
 }
-// Compiled with gcc -g /tmp/main.c -o /tmp/main &amp;&amp; gdb /tmp/main
-</code></pre>
-<p>Then when running the program with <code>gdb</code>, this will effectively pause execution
-so that you can have a look around. I.e:</p>
-<h2>Neovim shortcut</h2>
-<ul>
-<li>F1: Adds the breakpoint in a new line under the cursor.</li>
-<li>F2: Deletes the breakpoint.</li>
-</ul>
-<pre><code class="language-lua">vim.api.nvim_create_autocmd({&quot;BufNewFile&quot;, &quot;BufRead&quot;}, {
-  group = vim.api.nvim_create_augroup(&quot;UserCAutoCommands&quot;, {clear=true}),
+// Compiled with gcc -g /tmp/main.c -o /tmp/main && gdb /tmp/main
+</code></pre><p>Then when running the program with <code>gdb</code>, this will effectively pause execution so that you can have a look around. I.e:</p>
+<h2>Neovim shortcut</h0>
+<ul><li>F1: Adds the breakpoint in a new line under the cursor.</li><li>F2: Deletes the breakpoint.</li></ul>
+<pre><code class="language-lua">
+vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
+  group = vim.api.nvim_create_augroup("UserCAutoCommands", {clear=true}),
   pattern = '*.c',
   command = [[
-    noremap &lt;F1&gt; :normal oasm(&quot;b: nop&quot;);&lt;ESC&gt; |
-    noremap &lt;F2&gt; :g/^.*asm(&quot;b: nop&quot;).*/d&lt;CR&gt;
+    noremap <F1> :normal oasm("b: nop");<ESC> |
+    noremap <F2> :g/^.*asm("b: nop").*/d<CR>
   ]]
 })
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

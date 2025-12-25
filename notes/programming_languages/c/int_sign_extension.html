@@ -60,60 +60,46 @@
 </head>
 <body>
 <p>Take the following byte:</p>
-<pre><code>00000011
-</code></pre>
-<p>This byte represents the numeral <code>3</code>.
-If we want to turn this number into <code>-3</code> we have to perform the Two's
-Complement operation.</p>
-<ol>
-<li>Write the absolute value of a number in binary.</li>
-<li>Flip all the bits (0 becomes 1, and 1 becomes 0).</li>
-<li>Add 1 to the result.</li>
-</ol>
+<pre><code class="language-">
+00000011
+</code></pre><p>This byte represents the numeral <code>3</code>. If we want to turn this number into <code>-3</code> we have to perform the Two's Complement operation.</p>
+<ol><li>Write the absolute value of a number in binary.</li><li>Flip all the bits (0 becomes 1, and 1 becomes 0).</li><li>Add 1 to the result.</li></ol>
 <p>So it follows that the numeral <code>-3</code> is represented in a byte by:</p>
-<pre><code>11111101
-</code></pre>
-<p>However, in certain cases we want to cast this byte (<code>int8_t</code>) to a larger
-quantity, say for example a (<code>int16_t</code>).</p>
+<pre><code class="language-">
+11111101
+</code></pre><p>However, in certain cases we want to cast this byte (<code>int8_t</code>) to a larger quantity, say for example a (<code>int16_t</code>).</p>
 <p>For that to happen, we need to perform a sign extension.</p>
-<h2>Signed extension</h2>
+<h2>Signed extension</h0>
 <p>The procedure is as follow:</p>
-<ol>
-<li>Grab the value of the sign bit (highmost bit).</li>
-<li>Extend the binary number by filling the high bits with the sign bit.</li>
-</ol>
-<p>For the numeral 3 we have:</p>
-<pre><code>00000000 00000011
-</code></pre>
-<p>And for the numeral -3 we have:</p>
-<pre><code>11111111 11111101
-</code></pre>
+<ol><li>Grab the value of the sign bit (highmost bit).</li><li>Extend the binary number by filling the high bits with the sign bit.</li></ol>
+<p>For the numeral 3 we have: <pre><code class="language-">
+00000000 00000011
+</code></pre></p>
+<p>And for the numeral -3 we have: <pre><code class="language-">
+11111111 11111101
+</code></pre></p>
 <p>The numeral -3 has been extended, and it is still the Two's Complement of 3.</p>
-<h2>In C</h2>
-<p>C will automatically sign extend the numbers when casting an integer with more
-storage space.</p>
-<p>I am not entirely sure right now if this is implementation dependent or if it
-is a defined behaviour expected by the language.</p>
-<pre><code class="language-c">#include &lt;stdint.h&gt;
+<h2>In C</h0>
+<p>C will automatically sign extend the numbers when casting an integer with more storage space.</p>
+<p>I am not entirely sure right now if this is implementation dependent or if it is a defined behaviour expected by the language.</p>
+<pre><code class="language-c">
+#include <stdint.h>
 
 int main() {
   int8_t num = -3;
   // (gdb) p /t num
-  // &gt; 11111101
+  // > 11111101
 
   int16_t num16 = num;
   // (gdb) p /t num16
-  // &gt; 11111111 11111101
+  // > 11111111 11111101
 
   // (gdb) p /t num32
-  // &gt; 11111111 11111111 11111111 11111101
+  // > 11111111 11111111 11111111 11111101
   int num32 = num;
 
   // (gdb) p /t num64
-  // &gt; 11111111 11111111 11111111 11111111 11111111 1111111 11111111 111111101
+  // > 11111111 11111111 11111111 11111111 11111111 1111111 11111111 111111101
   long long num64 = num;
 }
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

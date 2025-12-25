@@ -463,8 +463,7 @@ matter:
 ## Single Responsibility Principle (SRP)
 
 This principle wasn't included in the original publication I linked above, and
-more details can be found in this blog post from [clean
-coder](http://web.archive.org/web/20240328163818/https://blog.cleancoder.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html).
+more details can be found in this blog post from [clean coder](http://web.archive.org/web/20240328163818/https://blog.cleancoder.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html).
 
 This principle builds up on the "Separation of Concerns" term that was
 popularised in a famous article "On the role of scientific thought" by Dijkstra

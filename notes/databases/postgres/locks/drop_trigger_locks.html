@@ -59,11 +59,12 @@
   <![endif]-->
 </head>
 <body>
-<h1>Drop trigger locks</h1>
-<pre><code>Created at: 2025-03-12
-</code></pre>
-<p>Given the following set up:</p>
-<pre><code class="language-sql">DROP TABLE IF EXISTS foo;
+<h1>Drop trigger locks</h0>
+<pre><code class="language-">
+Created at: 2025-03-12
+</code></pre><p>Given the following set up:</p>
+<pre><code class="language-sql">
+DROP TABLE IF EXISTS foo;
 CREATE TABLE foo (
     id SERIAL PRIMARY KEY,
     bar VARCHAR(1000)
@@ -103,18 +104,14 @@ FOR EACH ROW
 EXECUTE FUNCTION log_bar_changes();
 
 INSERT INTO foo (bar) SELECT generate_series(1, 10000);
-</code></pre>
-<p>If we drop the trigger:</p>
-<pre><code class="language-sql">BEGIN;
+</code></pre><p>If we drop the trigger:</p>
+<pre><code class="language-sql">
+BEGIN;
 DROP TRIGGER foo_bar_changes ON foo;
-</code></pre>
-<p>The following locks are hold</p>
-<pre><code> locktype |        mode         | granted | relation | relname |                query                 |  lock_duration
+</code></pre><p>The following locks are hold</p>
+<pre><code class="language-">
+ locktype |        mode         | granted | relation | relname |                query                 |  lock_duration
 ----------+---------------------+---------+----------+---------+--------------------------------------+-----------------
  relation | AccessShareLock     | t       |  2491826 | foo     | DROP TRIGGER foo_bar_changes ON foo; | 00:07:01.223563
  relation | AccessExclusiveLock | t       |  2491826 | foo     | DROP TRIGGER foo_bar_changes ON foo; | 00:07:01.223563
-</code></pre>
-<p>And if we want to also drop the function, then we have an extra:</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+</code></pre><p>And if we want to also drop the function, then we have an extra:</p>

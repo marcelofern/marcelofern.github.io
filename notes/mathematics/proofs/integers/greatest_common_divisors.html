@@ -59,62 +59,26 @@
   <![endif]-->
 </head>
 <body>
-<h1>Greatest Common Divisors Proof</h1>
-<pre><code>Created at: 2025-05-11
-</code></pre>
-<h2>Necessary concepts</h2>
-<h3>Definition of Divisibility For Integers</h3>
-<p>A nonzero integer <code>a</code> is said to divide an integer <code>b</code> if <code>b/a = k</code> for some
-integer <code>k</code>.
-When <code>a</code> divides <code>b</code>, we write <code>a | b</code>.
-When <code>a</code> does not divide <code>b</code>, we write <code>a † b</code>.</p>
-<h2>Definition of Greatest Common Divisors</h2>
-<ul>
-<li>Let <code>a</code> and <code>b</code> be integers.</li>
-<li>If <code>c | a</code> and <code>c | b</code> then <code>c</code> is a <em>common</em> divisor of <code>a</code> and <code>b</code>.</li>
-<li>The <em>greatest</em> common divisor of <code>a</code> and <code>b</code> is the largest integer <code>d</code> such
-that,</li>
-<li><code>d | a</code> and <code>d |  b</code>.</li>
-</ul>
+<h1>Greatest Common Divisors Proof</h0>
+<pre><code class="language-">
+Created at: 2025-05-11
+</code></pre><h2>Necessary concepts</h0>
+<h3>Definition of Divisibility For Integers</h0>
+<p>A nonzero integer <code>a</code> is said to divide an integer <code>b</code> if <code>b/a = k</code> for some integer <code>k</code>. When <code>a</code> divides <code>b</code>, we write <code>a | b</code>. When <code>a</code> does not divide <code>b</code>, we write <code>a † b</code>.</p>
+<h2>Definition of Greatest Common Divisors</h0>
+<ul><li>Let <code>a</code> and <code>b</code> be integers.</li><li>If <code>c | a</code> and <code>c | b</code> then <code>c</code> is a <i>common</i> divisor of <code>a</code> and <code>b</code>.</li><li>The <i>greatest</i> common divisor of <code>a</code> and <code>b</code> is the largest integer <code>d</code> such that,</li><li><code>d | a</code> and <code>d |  b</code>.</li></ul>
 <p>This number (d) is denoted <code>gcd(a,b)</code>.</p>
-<h2>Examples (prior to the proof)</h2>
-<ul>
-<li>gcd(6, 8) = 2</li>
-<li>gcd(12, 8) = 4</li>
-<li>gcd(6, -8) = 2</li>
-<li>gcd(7, 15) = 1</li>
-<li>gcd(-5, -20) = 5</li>
-<li>gcd(9, 9) = 9</li>
-</ul>
-<h2>Insights (prior to the proof)</h2>
-<ul>
-<li><p>If <code>a</code> and <code>b</code> are non-zero, then</p>
-</li>
-<li><p>Since <code>1 | x</code> is true for every integer, then</p>
-</li>
-<li><p><code>1 | a</code> and <code>1 | b</code> are also true, then</p>
-</li>
-<li><p>The integer 1 is always a common divisor, then</p>
-</li>
-<li><p>The greatest common divisor will therefore at least be 1.</p>
-</li>
-<li><p>The greatest common divisor can never be larger than |a| or |b|, then</p>
-</li>
-<li><p>1 ≤ gcd(a,b) ≤ |a|, and</p>
-</li>
-<li><p>1 ≤ gcd(a,b) ≤ |b|, and therefore</p>
-</li>
-<li><p>gcd(a, b) <em>always</em> exists.</p>
-</li>
-<li><p>When a = 0 and b = 0, then there's no greatest common divisor as every
-integer is a divisor of 0.</p>
-</li>
-</ul>
-<h2>Theorem Bézout's identity (prior to the proof)</h2>
-<p>If <code>a</code> and <code>b</code> are positive integers, then there exist integers <code>k</code> and <code>l</code>
-such that: <code>gcd(a, b) = ak + bl</code>.</p>
-<h3>Examples</h3>
-<pre><code>  gcd(12,20) = 4
+<h2>Examples (prior to the proof)</h0>
+<ul><li>gcd(6, 8) = 2</li><li>gcd(12, 8) = 4</li><li>gcd(6, </li><li>8) = 2</li><li>gcd(7, 15) = 1</li><li>gcd(</li><li>5, </li><li>20) = 5</li><li>gcd(9, 9) = 9</li></ul>
+<h2>Insights (prior to the proof)</h0>
+<ul><li>If <code>a</code> and <code>b</code> are non</li><li>zero, then</li><li>Since <code>1 | x</code> is true for every integer, then</li><li><code>1 | a</code> and <code>1 | b</code> are also true, then</li><li>The integer 1 is always a common divisor, then</li><li>The greatest common divisor will therefore at least be <ol><li></li></ol>
+</li><li>The greatest common divisor can never be larger than |a| or |b|, then</li><li>1 ≤ gcd(a,b) ≤ |a|, and</li><li>1 ≤ gcd(a,b) ≤ |b|, and therefore</li><li>gcd(a, b) <i>always</i> exists.</li></ul>
+<ul><li>When a = 0 and b = 0, then there's no greatest common divisor as every integer is a divisor of 0.</li></ul>
+<h2>Theorem Bézout's identity (prior to the proof)</h0>
+<p>If <code>a</code> and <code>b</code> are positive integers, then there exist integers <code>k</code> and <code>l</code> such that: <code>gcd(a, b) = ak + bl</code>.</p>
+<h3>Examples</h0>
+<pre><code class="language-">
+  gcd(12,20) = 4
   gcd(12,20) = 12k + 20l
   gcd(12,20) = 12*2 + 20*-1
   k = 2, l = -1
@@ -123,8 +87,4 @@ such that: <code>gcd(a, b) = ak + bl</code>.</p>
   gcd(12,20) = 12k + 20l
   gcd(12,20) = 12*-3 + 20*2
   k = -3, l = 2
-</code></pre>
-<p>In fact there are infinite solutions. But only one suffices for the theorem.</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+</code></pre><p>In fact there are infinite solutions. But only one suffices for the theorem.</p>

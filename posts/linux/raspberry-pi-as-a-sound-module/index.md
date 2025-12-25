@@ -173,7 +173,7 @@ synthesiser.
 sudo apt-get update && sudo apt-get install fluidsynth
 ```
 
-## Download sound fonts [optional]
+## Download sound fonts (optional)
 If you don't want to download fonts, you can use the default that comes with
 fluidsynth which is a very basic piano located at:
 `/usr/share/sounds/sf2/FluidR3_GM.sf2`

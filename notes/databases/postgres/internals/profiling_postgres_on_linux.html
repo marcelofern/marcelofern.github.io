@@ -59,32 +59,20 @@
   <![endif]-->
 </head>
 <body>
-<h1>Profiling Postgres On Linux</h1>
-<pre><code>Created at: 2024-10-24
-</code></pre>
-<p>This post is about profiling Postgres <strong>on Linux</strong>. The profiling tools used
-here are not OS agnostic. Alternatives for BSD and MacOs may exist. I have
-written a separated note for Mac, so check that out if you are interested.</p>
+<h1>Profiling Postgres On Linux</h0>
+<pre><code class="language-">
+Created at: 2024-10-24
+</code></pre><p>This post is about profiling Postgres <b>on Linux</b>. The profiling tools used here are not OS agnostic. Alternatives for BSD and MacOs may exist. I have written a separated note for Mac, so check that out if you are interested.</p>
 <p>The main goal is to check what happens when a Postgres query is triggered.</p>
-<h2>Building Postgres From Source</h2>
-<p>Follow my note called &quot;Building From Source&quot;.</p>
-<h2>Profiling with perf</h2>
-<p>This is my summarised version of two much completer pages:</p>
-<ul>
-<li><a href="https://wiki.postgresql.org/wiki/Profiling_with_perf">Postgres wiki</a></li>
-<li><a href="https://web.archive.org/web/20220814090539/https://www.2ndquadrant.com/en/blog/tracing-postgresql-perf/">blog post</a>.</li>
-</ul>
+<h2>Building Postgres From Source</h0>
+<p>Follow my note called "Building From Source".</p>
+<h2>Profiling with perf</h0>
+<p>This is my summarised version of two much completer pages: - <a href="https://wiki.postgresql.org/wiki/Profiling_with_perf">Postgres wiki</a> - <a href="https://web.archive.org/web/20220814090539/https://www.2ndquadrant.com/en/blog/tracing-postgresql-perf/">blog post</a>.</p>
 <p><code>perf record</code> runs a command and records its profile into <code>perf.data</code>.</p>
 <p>Flags:</p>
-<ul>
-<li><code>-a</code>: System-wide collection from all CPUs (this is the default).</li>
-<li><code>-g</code>: Records both kernel space and user space call-graph.</li>
-<li><code>-s</code>: Records per-thread event counts.</li>
-<li><code>-p</code>: Records events on existing process ID.</li>
-<li><code>--call-graph</code>: using the <code>dwarf</code> option instead of <code>fp</code> (frame pointer)
-means we don't have to worry about <code>--fomit-frame-pointer</code>.</li>
-</ul>
-<pre><code class="language-sh"># Allow use of almost all events by all users.
+<ul><li><code>-a</code>: System</li><li>wide collection from all CPUs (this is the default).</li><li><code>-g</code> : Records both kernel space and user space call</li><li>graph.</li><li><code>-s</code> : Records per</li><li>thread event counts.</li><li><code>-p</code> : Records events on existing process ID.</li><li><code>--call-graph</code> : using the <code>dwarf</code> option instead of <code>fp</code> (frame pointer) means we don't have to worry about <code>--fomit-frame-pointer</code>.</li></ul>
+<pre><code class="language-sh">
+# Allow use of almost all events by all users.
 # This will be reset if you reboot your computer.
 sudo sysctl -w kernel.perf_event_paranoid=-1
 
@@ -100,10 +88,10 @@ perf record -a -g -s --call-graph dwarf -p ${PID}
 # Then print the report. This will look at perf.data in the current directory.
 # You can use + to expand the stack trace.
 perf report -n
-</code></pre>
-<h2>Example</h2>
+</code></pre><h2>Example</h0>
 <p>What happens when we are dropping a unique constraint in Postgres?</p>
-<pre><code class="language-sql">-- Table with a single integer field.
+<pre><code class="language-sql">
+-- Table with a single integer field.
 DROP TABLE IF EXISTS example_table;
 CREATE TABLE example_table (
     id SERIAL PRIMARY KEY,
@@ -128,54 +116,43 @@ SELECT generate_series(20000001, 20900000);
 -- Make the dead tuples
 UPDATE example_table
 SET int_field = int_field + 10000000
-WHERE int_field &gt; 20000000;
+WHERE int_field > 20000000;
 
 -- Check number of dead rows, it should be about 900,000
 SELECT n_dead_tup FROM pg_stat_user_tables WHERE relname = 'example_table';
 
 -- Print the process id.
 select pg_backend_pid();
-</code></pre>
-<p>Note, if you already have something running on that psql shell, another way
-of grabbing that pid is to open a new shell and run:</p>
-<pre><code class="language-sql">select pid, query from pg_stat_activity
+</code></pre><p>Note, if you already have something running on that psql shell, another way of grabbing that pid is to open a new shell and run:</p>
+<pre><code class="language-sql">
+select pid, query from pg_stat_activity
 where application_name = 'psql' and pid != pg_backend_pid();
-</code></pre>
-<p>Now open a new terminal, and start the profiler:</p>
-<pre><code class="language-sh">PID=110540
+</code></pre><p>Now open a new terminal, and start the profiler:</p>
+<pre><code class="language-sh">
+PID=110540
 perf record -a -s --call-graph dwarf -p ${PID}
-</code></pre>
-<p>Back on the psql shell, drop the constraint and then close the psql process to
-stop profiling:</p>
-<pre><code class="language-sql">ALTER TABLE example_table
+</code></pre><p>Back on the psql shell, drop the constraint and then close the psql process to stop profiling:</p>
+<pre><code class="language-sql">
+ALTER TABLE example_table
 DROP CONSTRAINT unique_int_field;
-</code></pre>
-<p>Open the report for quick inspection:</p>
-<pre><code class="language-sh">perf report -n
-</code></pre>
-<p><img src="perf_drop_constraint.png" alt="perf_drop_constraint.png"></p>
+</code></pre><p>Open the report for quick inspection:</p>
+<pre><code class="language-sh">
+perf report -n
+</code></pre><p><img alt="perf_drop_constraint.png" src="perf_drop_constraint.png"></p>
 <p>Another way of seeing the profile is via flamegraph.</p>
-<pre><code class="language-sh">git clone --depth 1 https://github.com/brendangregg/FlameGraph
+<pre><code class="language-sh">
+git clone --depth 1 https://github.com/brendangregg/FlameGraph
 mv FlameGraph build
-FLAME=&quot;build/FlameGraph&quot;
+FLAME="build/FlameGraph"
 
 mkdir ${FLAME}/out
-perf script --header &gt; ${FLAME}/out.stacks
+perf script --header > ${FLAME}/out.stacks
 
-${FLAME}/stackcollapse-perf.pl &lt; ${FLAME}/out.stacks &gt; ${FLAME}/collapsed.txt
-${FLAME}/flamegraph.pl --hash ${FLAME}/collapsed.txt &gt; ${FLAME}/out.svg
+${FLAME}/stackcollapse-perf.pl < ${FLAME}/out.stacks > ${FLAME}/collapsed.txt
+${FLAME}/flamegraph.pl --hash ${FLAME}/collapsed.txt > ${FLAME}/out.svg
 
 $BROWSER ${FLAME}/out.svg
-</code></pre>
-<p><img src="perf_drop_constraint_flame.png" alt="perf_drop_constraint_flame.png"></p>
-<h2>Analysis</h2>
-<p>Dropping the constraint itself is very quick. It only involves updating the
-catalogue. However, the place that takes a lot of time is in committing the
-transaction.</p>
-<p>The <code>mdunlink</code> function is a function that helps manage relations that reside
-on magnetic disk. In this case, the constraint is backed by an index, and this
-index needs to be deleted. Ultimately this function will call truncate(1) with
-zero (removing it).</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+</code></pre><p><img alt="perf_drop_constraint_flame.png" src="perf_drop_constraint_flame.png"></p>
+<h2>Analysis</h0>
+<p>Dropping the constraint itself is very quick. It only involves updating the catalogue. However, the place that takes a lot of time is in committing the transaction.</p>
+<p>The <code>mdunlink</code> function is a function that helps manage relations that reside on magnetic disk. In this case, the constraint is backed by an index, and this index needs to be deleted. Ultimately this function will call truncate(1) with zero (removing it).</p>

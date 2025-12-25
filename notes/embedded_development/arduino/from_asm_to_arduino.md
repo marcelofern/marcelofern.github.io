@@ -25,7 +25,7 @@ avr-gcc -DF_CPU=16000000UL -mmcu=atmega328p main.S -o main
   pre-processed source code.
 - `-o` output
 
-## [Optional] compiling without stdlib
+## (Optional) compiling without stdlib
 
 For small scripts you may not need the stdlib, so you can pass the argument
 `nostdlib` to the compiler. The default is to include the stdlib.

@@ -59,41 +59,20 @@
   <![endif]-->
 </head>
 <body>
-<h1>Calling C Functions</h1>
-<pre><code>Created at: 2024-10-20
-</code></pre>
-<h2>TLDR</h2>
+<h1>Calling C Functions</h0>
+<pre><code class="language-">
+Created at: 2024-10-20
+</code></pre><h2>TLDR</h0>
 <p>The order of arguments to the C function is passed in the following registers:</p>
-<ol>
-<li>rdi</li>
-<li>rsi</li>
-<li>rdx</li>
-<li>rcx</li>
-<li>r8</li>
-<li>r9</li>
-</ol>
-<p>If the C function takes more than 6 arguments, the remaining ones
-will be on $rsp+8. This is because $rsp+0 stores the value of rip that
-will be returning to the assembly code after the <code>return</code> instruction.</p>
-<p>The following registers are callee-saved, meaning that callee functions should
-not have altered the content of these registers at the point in which they
-return back to the caller. It is fine to change them and reset them to the
-original value though:</p>
-<ul>
-<li>rbx</li>
-<li>rbp</li>
-<li>r12</li>
-<li>r13</li>
-<li>r14</li>
-<li>r15</li>
-</ul>
-<p>All other registers except the stack pointer rsp are classified as caller-saved
-registers. This means that any function can modify them. If those registers
-mean anything to the assembly caller, they must be saved. Otherwise, the callee
-is free to change them and so a bug may happen.</p>
-<h2>Code</h2>
+<ol><li>rdi</li><li>rsi</li><li>rdx</li><li>rcx</li><li>r8</li><li>r9</li></ol>
+<p>If the C function takes more than 6 arguments, the remaining ones will be on $rsp+8. This is because $rsp+0 stores the value of rip that will be returning to the assembly code after the <code>return</code> instruction.</p>
+<p>The following registers are callee-saved, meaning that callee functions should not have altered the content of these registers at the point in which they return back to the caller. It is fine to change them and reset them to the original value though:</p>
+<ul><li>rbx</li><li>rbp</li><li>r12</li><li>r13</li><li>r14</li><li>r15</li></ul>
+<p>All other registers except the stack pointer rsp are classified as caller-saved registers. This means that any function can modify them. If those registers mean anything to the assembly caller, they must be saved. Otherwise, the callee is free to change them and so a bug may happen.</p>
+<h2>Code</h0>
 <p>Given the following C function:</p>
-<pre><code class="language-c">// gcc -c foo.c -o foo.o
+<pre><code class="language-c">
+// gcc -c foo.c -o foo.o
 int foo(
     int a,
     int b,
@@ -111,9 +90,9 @@ int foo(
 ) {
   return a-b+c-d+e-f+g-h+i-j+k-l+m;
 }
-</code></pre>
-<p>And the following assembly code:</p>
-<pre><code class="language-asm">; nasm -f elf64 call_foo.asm -o call_foo.o
+</code></pre><p>And the following assembly code:</p>
+<pre><code class="language-asm">
+; nasm -f elf64 call_foo.asm -o call_foo.o
 
 section .data
 section .text
@@ -147,14 +126,13 @@ main:
     mov rax, 60          ; syscall: exit
     xor rdi, rdi         ; status: 0
     syscall
-</code></pre>
-<p>Now we compile both files into an executable:</p>
-<pre><code class="language-sh">gcc -Og -O0 call_foo.o foo.o -o call_foo
-</code></pre>
-<p>We can then run gdb against the executable, the value of rax is <strong>7</strong>.
-This is what we expected: <code>1-2+3-4+5-6+7-8+9-10+11-12+13 == 7</code>.</p>
+</code></pre><p>Now we compile both files into an executable:</p>
+<pre><code class="language-sh">
+gcc -Og -O0 call_foo.o foo.o -o call_foo
+</code></pre><p>We can then run gdb against the executable, the value of rax is <b>7</b>. This is what we expected: <code>1-2+3-4+5-6+7-8+9-10+11-12+13 == 7</code>.</p>
 <p>Checking the <code>foo</code> function in assembly we have:</p>
-<pre><code class="language-asm">foo:
+<pre><code class="language-asm">
+foo:
   push  rbp
   mov  rbp, rsp
   mov  DWORD PTR -4[rbp], edi
@@ -191,6 +169,3 @@ This is what we expected: <code>1-2+3-4+5-6+7-8+9-10+11-12+13 == 7</code>.</p>
   pop  rbp
   ret
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

@@ -60,32 +60,27 @@
 </head>
 <body>
 <p>2024-06-05</p>
-<h1>Printf Evaluation Order</h1>
-<p>Suppose you have a &quot;HEY&quot; file:</p>
-<pre><code class="language-sh">echo &quot;HEY&quot; &gt; /tmp/hey.txt
-</code></pre>
-<p>And the following code:</p>
-<pre><code class="language-c">#include &quot;stdio.h&quot;
+<h1>Printf Evaluation Order</h0>
+<p>Suppose you have a "HEY" file:</p>
+<pre><code class="language-sh">
+echo "HEY" > /tmp/hey.txt
+</code></pre><p>And the following code:</p>
+<pre><code class="language-c">
+#include "stdio.h"
 
 int main() {
-  FILE *fp = fopen(&quot;/tmp/hey.txt&quot;, &quot;r&quot;);
-  printf(&quot;%c %c %c&quot;, getc(fp), getc(fp), getc(fp));
+  FILE *fp = fopen("/tmp/hey.txt", "r");
+  printf("%c %c %c", getc(fp), getc(fp), getc(fp));
   fclose(fp);
 }
-</code></pre>
-<p>If you expected the result to be <code>H E Y</code>, you are wrong. You'll actually get
-<code>Y E H</code> instead.</p>
-<p>The order of evaluation of &quot;printf&quot; is not defined in the C standard, and thus
-the compiler is free to evaluate the arguments in whatever order it sees fit.</p>
+</code></pre><p>If you expected the result to be <code>H E Y</code>, you are wrong. You'll actually get <code>Y E H</code> instead.</p>
+<p>The order of evaluation of "printf" is not defined in the C standard, and thus the compiler is free to evaluate the arguments in whatever order it sees fit.</p>
 <p>In my case, gcc decided to evaluate last-to-first.</p>
-<p>Avoid calling printf with arguments that have side effects like getc. Do this
-instead:</p>
-<pre><code class="language-c">char c1 = getc(fp);
+<p>Avoid calling printf with arguments that have side effects like getc. Do this instead:</p>
+<pre><code class="language-c">
+char c1 = getc(fp);
 char c2 = getc(fp);
 char c3 = getc(fp);
 
-printf(&quot;%c %c %c\n&quot;, c1, c2, c3);
+printf("%c %c %c\n", c1, c2, c3);
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

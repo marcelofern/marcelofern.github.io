@@ -56,3 +56,4 @@ END $$;
 
 -- Insert data into foo to validate there's no duplicated id conflict.
 INSERT INTO foo DEFAULT VALUES;
+```

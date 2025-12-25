@@ -491,7 +491,7 @@ say, “Look, I think there has to be something here. Here’s what I think I se
 …” and then begin talking back and forth. But you want to pick capable people.
 To use another analogy, you know the idea called the critical mass. If you
 have enough stuff you have critical mass. There is also the idea I used to call
-`sound absorbers’. When you get too many sound absorbers, you give out an idea
+`sound absorbers`. When you get too many sound absorbers, you give out an idea
 and they merely say, “Yes, yes, yes.” What you want to do is get that critical
 mass in action; “Yes, that reminds me of so and so,” or, “Have you thought
 about that or this?” When you talk to other people, you want to get rid of

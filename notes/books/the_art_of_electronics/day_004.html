@@ -59,126 +59,72 @@
   <![endif]-->
 </head>
 <body>
-<h1>Day 4</h1>
-<pre><code>Created at: 2025-01-15
-</code></pre>
-<p>Today I'm finally starting chapter 1!</p>
-<p>I have a degree in Electrical Engineering, but I've finished that a while ago
-and am probably rusty. No bad in getting a refresher.</p>
-<h2>Interesting Quotes</h2>
-<blockquote>
-<p>A mid-century computer (the IBM 650) cost $300,000, weighed 2.7 tons, and
-contained 126 lamps on its control panel; in an amusing reversal, a
-contemporary energy-efficient lamp contains a computer of greater capability
-within its (physical) base, and costs about $10.</p>
-</blockquote>
-<blockquote>
-<p>It is often the case that the panel controls and cabinet hardware of an
-instrument cost more than the electronics inside.</p>
-</blockquote>
-<h2>Voltage</h2>
-<p><strong>Intuitive Explanation</strong>: What you apply to a circuit to make currents flow.</p>
-<p><strong>Enhanced Definition</strong>: The voltage between two points is the cost in energy
-(work) to move positive charge from a more negative point (lower potential) to
-a more positive point (higher potential). Equivalently, the energy released
-when a unit charge moves &quot;downhill&quot; from the higher potential to the lower.</p>
-<p><strong>Symbols</strong>: Often denoted by <em>V</em>, sometimes by <em>E</em>.</p>
-<p><strong>Nicknames</strong>: Potential Difference or Electromotive Force.</p>
-<p><strong>Unit of Measure</strong>: Volt (V)</p>
-<h2>Current</h2>
-<p><strong>Symbol</strong>: <em>I</em></p>
-<p><strong>Definition</strong>: The rate of flow of electric charge past a point.</p>
-<p><strong>Unit of Measure</strong>: Ampere (or amp).</p>
-<p><strong>Fun fact</strong>: A current of 1 amp equals a flow of 1 coulomb (6*10^18 electrons)
-of charge per second.</p>
-<p><strong>Conventions</strong>: In a circuit, current flows from a more positive point to a
-more negative one, even though the actual electron flow is in the opposite
-direction!</p>
-<h2>Important Rules</h2>
-<ol>
-<li><p>Kirchhoff's current law (KCL): The sum of currents into a point in a circuit
-equals the sum of the currents out. Such a point is often referred to as a
-node.</p>
-</li>
-<li><p>Kirchhoff's voltage law (KVL): Parallel connections have the same voltage
-across them. This also means that the sum of the voltage drops around any
-closed circuit is zero.</p>
-</li>
-<li><p>The power (energy per unit time) consumed by a circuit device is:
-<code>P = VI</code>.</p>
-<ul>
-<li>P is in watts.</li>
-<li>A 55W bulb connected at 220V plug has 0.25 amps through it.</li>
-<li>When dealing with periodic signals, P=VI deal with <em>average power</em>.</li>
-</ul>
-</li>
-<li><p>Ohm's law: <code>R = V/I</code>.</p>
-</li>
-</ol>
-<h2>Resistors</h2>
-<pre><code>R(series) = R1 + R2
+<h1>Day 4</h0>
+<pre><code class="language-">
+Created at: 2025-01-15
+</code></pre><p>Today I'm finally starting chapter 1!</p>
+<p>I have a degree in Electrical Engineering, but I've finished that a while ago and am probably rusty. No bad in getting a refresher.</p>
+<h2>Interesting Quotes</h0>
+<blockquote>A mid-century computer (the IBM 650) cost $300,000, weighed 2.7 tons, and</blockquote>
+<blockquote>contained 126 lamps on its control panel; in an amusing reversal, a</blockquote>
+<blockquote>contemporary energy-efficient lamp contains a computer of greater capability</blockquote>
+<blockquote>within its (physical) base, and costs about $10.</blockquote>
+<blockquote>It is often the case that the panel controls and cabinet hardware of an</blockquote>
+<blockquote>instrument cost more than the electronics inside.</blockquote>
+<h2>Voltage</h0>
+<p><b>Intuitive Explanation</b>: What you apply to a circuit to make currents flow.</p>
+<p><b>Enhanced Definition</b>: The voltage between two points is the cost in energy (work) to move positive charge from a more negative point (lower potential) to a more positive point (higher potential). Equivalently, the energy released when a unit charge moves "downhill" from the higher potential to the lower.</p>
+<p><b>Symbols</b>: Often denoted by <i>V</i>, sometimes by <i>E</i>.</p>
+<p><b>Nicknames</b>: Potential Difference or Electromotive Force.</p>
+<p><b>Unit of Measure</b>: Volt (V)</p>
+<h2>Current</h0>
+<p><b>Symbol</b>: <i>I</i></p>
+<p><b>Definition</b>: The rate of flow of electric charge past a point.</p>
+<p><b>Unit of Measure</b>: Ampere (or amp).</p>
+<p><b>Fun fact</b>: A current of 1 amp equals a flow of 1 coulomb (<code>6*10^18</code> electrons) of charge per second.</p>
+<p><b>Conventions</b>: In a circuit, current flows from a more positive point to a more negative one, even though the actual electron flow is in the opposite direction!</p>
+<h2>Important Rules</h0>
+<ol><li>Kirchhoff's current law (KCL): The sum of currents into a point in a circuit equals the sum of the currents out. Such a point is often referred to as a node.</li></ol>
+<p>2. Kirchhoff's voltage law (KVL): Parallel connections have the same voltage across them. This also means that the sum of the voltage drops around any closed circuit is zero.</p>
+<p>3. The power (energy per unit time) consumed by a circuit device is: <code>P = VI</code>. - P is in watts. - A 55W bulb connected at 220V plug has 0.25 amps through it. - When dealing with periodic signals, P=VI deal with _average power_.</p>
+<p>4. Ohm's law: <code>R = V/I</code>.</p>
+<h2>Resistors</h0>
+<pre><code class="language-">
+R(series) = R1 + R2
 
 R(parallel) = (R1*R2) / (R1 + R2)
 
 Alternatively...
 
 R(parallel) = 1 / (1/R1 + 1/R2)
-</code></pre>
-<p>Tip: By parallelising resistors you <strong>always get a smaller resistance</strong>.</p>
+</code></pre><p>Tip: By parallelising resistors you <b>always get a smaller resistance</b>.</p>
 <p>Trivia:</p>
-<ul>
-<li><p>Usually made of some conducting stuff (carbon, thin metal, carbon film, wire of
-poor conductivity...) and characterised by its resistance:</p>
-</li>
-<li><p>Most frequent resistors come in values from 1Ω to 10MΩ.</p>
-</li>
-<li><p>Also characterised by how much power they can <em>safely</em> dissipate. Usually
-around 1/4W or 1/8W</p>
-</li>
-</ul>
-<h2>Exercises</h2>
-<blockquote>
-<p>1.1 You have a 5k resistor and a 10k resistor. What is their combined
-resistance (a) in series and (b) in parallel?</p>
-</blockquote>
-<p>(a): 15k
-(b): 50k/15k = 3.333k</p>
-<blockquote>
-<p>1.2 If you place a 1 ohm resistor across a 12 volt car battery, how much power
-will it dissipate?</p>
-</blockquote>
-<p>P = VI
-V = 12V
-I = V/R = 12A
-P = 144W</p>
-<blockquote>
-<p>1.3 Prove the formulas for series and parallel resistors.</p>
-</blockquote>
+<ul><li>Usually made of some conducting stuff (carbon, thin metal, carbon film, wire of poor conductivity...) and characterised by its resistance:</li></ul>
+<ul><li>Most frequent resistors come in values from 1Ω to 10MΩ.</li></ul>
+<ul><li>Also characterised by how much power they can <i>safely</i> dissipate. Usually around 1/4W or 1/8W</li></ul>
+<h2>Exercises</h0>
+<blockquote>1.1 You have a 5k resistor and a 10k resistor. What is their combined</blockquote>
+<blockquote>resistance (a) in series and (b) in parallel?</blockquote>
+<p>(a): 15k (b): 50k/15k = 3.333k</p>
+<blockquote>1.2 If you place a 1 ohm resistor across a 12 volt car battery, how much power</blockquote>
+<blockquote>will it dissipate?</blockquote>
+<p>P = VI V = 12V I = V/R = 12A P = 144W</p>
+<blockquote>1.3 Prove the formulas for series and parallel resistors.</blockquote>
 <p>Given that:</p>
-<ol>
-<li>Kirchhoff's voltage law (KVL): Parallel connections have the same voltage
-across them. This also means that the sum of the voltage drops around any
-closed circuit is zero.</li>
-<li>Kirchhoff's current law (KCL): The sum of currents into a point in a circuit
-equals the sum of the currents out. Such a point is often referred to as a
-node.</li>
-<li>Ohm's law: <code>R = V/I</code>.</li>
-</ol>
-<p>Imagine a circuit that has one voltage source and two resistors, all connected
-in series. Where:</p>
-<pre><code>- V1         = voltage across R1.
+<ol><li>Kirchhoff's voltage law (KVL): Parallel connections have the same voltage across them. This also means that the sum of the voltage drops around any closed circuit is zero.</li><li>Kirchhoff's current law (KCL): The sum of currents into a point in a circuit equals the sum of the currents out. Such a point is often referred to as a node.</li><li>Ohm's law: <code>R = V/I</code>.</li></ol>
+<p>Imagine a circuit that has one voltage source and two resistors, all connected in series. Where:</p>
+<pre><code class="language-">
+- V1         = voltage across R1.
 - V2         = voltage across R2.
 - I1         = current across R1.
 - I2         = current across R2.
 - V          = power supply.
 - R(series)  = resulting resistance of the circuit in series.
 - I          = corrent through power supply.
-</code></pre>
-<p>From 1., <code>V = V1 + V2</code>
-From 2., <code>I1 = I2 = V</code>
-From 3., <code>R(series) = V/I</code></p>
+</code></pre><p>From 1., <code>V = V1 + V2</code> From 2., <code>I1 = I2 = V</code> From 3., <code>R(series) = V/I</code></p>
 <p>From ohm's law:</p>
-<pre><code>V1 = R1 * I1 = R1 * I
+<pre><code class="language-">
+V1 = R1 * I1 = R1 * I
 V2 = R2 * I2 = R2 * I
 
 V = R1 * I + R2 * I
@@ -186,13 +132,10 @@ R(series) = V/I = (R1 * I + R2 * I)/I
 
 Therefore
 R(series) = R1 + R2
-</code></pre>
-<p>Now for the parallel case let's imagine that V, R1, and R2 are connected in
-parallel.</p>
-<p>From 1., <code>V = V1 = V2</code>
-From 2., <code>I = I1 + I2</code>
-From 3., <code>R(parallel) = V/I</code></p>
-<pre><code>I1 = V1/R1 = V/R1
+</code></pre><p>Now for the parallel case let's imagine that V, R1, and R2 are connected in parallel.</p>
+<p>From 1., <code>V = V1 = V2</code> From 2., <code>I = I1 + I2</code> From 3., <code>R(parallel) = V/I</code></p>
+<pre><code class="language-">
+I1 = V1/R1 = V/R1
 I2 = V2/R2 = V/R2
 
 R(parallel) = V/I = V/(V/R1 + V/R2)
@@ -200,6 +143,3 @@ R(parallel) = V/I = V/(V/R1 + V/R2)
 Therefore
 R(parallel) = 1/(R1 + R2)
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

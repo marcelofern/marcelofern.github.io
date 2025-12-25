@@ -8,18 +8,18 @@
 - [Breakpoint](programming_languages/c/breakpoint.md)
 
 ## Implementation
-- [`function(void)`](programming_languages/c/function_void.md)
+- [function(void)](programming_languages/c/function_void.md)
 - [Function calls](programming_languages/c/function_calls.md)
-- [`int` sign extension](programming_languages/c/int_sign_extension.md)
+- [int sign extension](programming_languages/c/int_sign_extension.md)
 - [Standards](programming_languages/c/standards.md)
 - [What is a struct](programming_languages/c/what_is_a_struct.md)
 - [Function pointers](programming_languages/c/function_pointers.md)
 
 ## Keywords
 
-- [`register`](programming_languages/c/register.md)
-- [`restrict`](programming_languages/c/restrict.md)
-- [`static`](programming_languages/c/static.md)
+- [register](programming_languages/c/register.md)
+- [restrict](programming_languages/c/restrict.md)
+- [static](programming_languages/c/static.md)
 
 ## Performance
 

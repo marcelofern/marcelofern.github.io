@@ -196,8 +196,7 @@ ax:
 
 Changing `ax` to something other than a register name will fix the code. This
 may only be a problem when writing code manually. But note that if you are
-overriding gcc defaults the following code blows up when running `gcc
--masm=intel main.c`
+overriding gcc defaults the following code blows up when running `gcc -masm=intel main.c`
 
 ```c
 #include <stdio.h>

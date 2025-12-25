@@ -64,8 +64,8 @@ relocatable = false
   substitution is made. Typically, this is set to `$libdir/shared_library_name`
   and then MODULE_PATHNAME is used in CREATE FUNCTION commands for C-language
   functions, so that the script files do not need to hard-wire the name of the
-  shared library. The `$libdir` variable can be obtained via `pg_config
-  --libdir`. In my case it returns:
+  shared library. The `$libdir` variable can be obtained via `pg_config --libdir`.
+  In my case it returns:
   `/Users/marcelo.fernandes/workspace/postgres15/build/lib`
 
 - `relocatable`: An extension is relocatable if it is possible to move its

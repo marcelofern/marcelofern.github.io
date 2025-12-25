@@ -59,15 +59,16 @@
   <![endif]-->
 </head>
 <body>
-<h1>Visualising a btree index</h1>
-<h2>THIS IS UNDER DEVELOPMENT...</h2>
-<pre><code>Created at: 2025-03-12
-</code></pre>
-<p>Let's create a simple btree index.</p>
-<pre><code class="language-sql">-- For bt_metap
+<h1>Visualising a btree index</h0>
+<h2>THIS IS UNDER DEVELOPMENT...</h0>
+<pre><code class="language-">
+Created at: 2025-03-12
+</code></pre><p>Let's create a simple btree index.</p>
+<pre><code class="language-sql">
+-- For bt_metap
 CREATE EXTENSION IF NOT EXISTS pageinspect;
 
--- Set up a table with the index &quot;foo_bar&quot; and 10,000 rows.
+-- Set up a table with the index "foo_bar" and 10,000 rows.
 DROP TABLE IF EXISTS foo;
 CREATE TABLE foo (id SERIAL PRIMARY KEY, bar varchar(255));
 CREATE INDEX foo_bar ON foo (bar);
@@ -92,20 +93,13 @@ BEGIN
         );
     END LOOP;
 END $$;
-</code></pre>
-<h2>Installing pageinspect_inspector</h2>
-<pre><code class="language-sh">git clone https://github.com/marcelofern/pageinspect_inspector.git
+</code></pre><h2>Installing pageinspect_inspector</h0>
+<pre><code class="language-sh">
+git clone https://github.com/marcelofern/pageinspect_inspector.git
 cd pageinspect_inspector
 python setup.py develop
-</code></pre>
-<p>To run it:</p>
-<pre><code class="language-sh">python inspector/command.py --host localhost --port 5415 --db index_view --user x --index foo_bar --path /tmp/btree.html &amp;&amp; $BROWSER /tmp/btree.html
-</code></pre>
-<h2>READ</h2>
-<ul>
-<li>http://www.louisemeta.com/drafts/indexes-btree/</li>
-<li>https://github.com/uds5501/postgres-page-inspector</li>
-</ul>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+</code></pre><p>To run it:</p>
+<pre><code class="language-sh">
+python inspector/command.py --host localhost --port 5415 --db index_view --user x --index foo_bar --path /tmp/btree.html && $BROWSER /tmp/btree.html
+</code></pre><h2>READ</h0>
+<ul><li>http://www.louisemeta.com/drafts/indexes</li><li>btree/</li><li>https://github.com/uds5501/postgres</li><li>page</li><li>inspector</li></ul>

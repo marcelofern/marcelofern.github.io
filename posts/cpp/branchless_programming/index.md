@@ -51,8 +51,7 @@ In a nutshell, a pipeline is consisted of four stages: **fetch**, **decode**,
 **execute**, **write-back**.
 
 Each one of those stages will be handled by a circuit in the CPU. So whenever
-a instruction needs to be run, there are **4 high-level steps until the result
-is finally stored in memory.**
+a instruction needs to be run, there are **4 high-level steps until the result is finally stored in memory.**
 
 ## Pipeline analogy time
 

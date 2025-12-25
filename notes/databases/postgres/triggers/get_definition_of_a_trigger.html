@@ -59,10 +59,11 @@
   <![endif]-->
 </head>
 <body>
-<h1>Get definition of a trigger</h1>
-<pre><code>Created at: 2025-09-01
-</code></pre>
-<pre><code class="language-sql">SELECT
+<h1>Get definition of a trigger</h0>
+<pre><code class="language-">
+Created at: 2025-09-01
+</code></pre><pre><code class="language-sql">
+SELECT
     tgname AS trigger_name,
     pg_get_triggerdef(oid) AS trigger_definition
 FROM
@@ -70,6 +71,3 @@ FROM
 WHERE
     tgname = 'your_trigger_name';
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

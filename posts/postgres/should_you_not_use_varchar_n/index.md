@@ -4,8 +4,7 @@
 Created at: 2025-02-01
 ```
 
-The Postgres wiki has a page called ["Don't Do
-This"](https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_varchar.28n.29_by_default)
+The Postgres wiki has a page called ["Don't Do This"](https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_varchar.28n.29_by_default)
 where general good practices are discussed.
 
 Amongst them, there is a session titled: **"Don't use varchar(n) by default"**

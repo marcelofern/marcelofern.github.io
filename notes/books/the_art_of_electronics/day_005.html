@@ -59,53 +59,40 @@
   <![endif]-->
 </head>
 <body>
-<h1>Day 5</h1>
-<pre><code>Created at: 2025-01-27
-</code></pre>
-<h2>Intuitive tips for understanding resistor values</h2>
-<ul>
-<li>A large resistor in series with a small resistor has roughly the resistance
-of the larger one.</li>
-<li>Inversely, a large resistor in parallel with a small resistor has roughly the
-resistance of the smaller one.</li>
-<li>To reduce the resistance, connect a (much) larger resistor in parallel.</li>
-<li>Putting N resistors of value X in parallel is the same as having a resistor
-of value X/N</li>
-</ul>
-<h2>Examples</h2>
-<p>Say you want the resistance of 5k in parallel with 10k.
-This is the equivalent of three 10k resistors in parallel.
-Or one 3.3k (10k/3) resistor</p>
-<h2>Exercise 1.5</h2>
-<blockquote>
-<p>Show that it is not possible to exceed the power rating of a 1/4 watt
-resistor of resistance greater than 1k, no matter how you connect it, in a
-circuit operating from a 15 volt battery.</p>
-</blockquote>
-<p>From the power formulas:</p>
-<pre><code>P = IV
+<h1>Day 5</h0>
+<pre><code class="language-">
+Created at: 2025-01-27
+</code></pre><h2>Intuitive tips for understanding resistor values</h0>
+<ul><li>A large resistor in series with a small resistor has roughly the resistance of the larger one.</li><li>Inversely, a large resistor in parallel with a small resistor has roughly the resistance of the smaller one.</li><li>To reduce the resistance, connect a (much) larger resistor in parallel.</li><li>Putting N resistors of value X in parallel is the same as having a resistor of value X/N</li></ul>
+<h2>Examples</h0>
+<p>Say you want the resistance of 5k in parallel with 10k. This is the equivalent of three 10k resistors in parallel. Or one 3.3k (10k/3) resistor</p>
+<h2>Exercise <ol><li>55</h0>
+<blockquote>S Shhooww  tthhaatt  iitt  iiss  nnoott  ppoossssiibbllee  ttoo  eexxcceeeedd  tthhee  ppoowweerr  rraattiinngg  ooff  aa  11//44  wwaatttt</blockquote>
+<blockquote>rreessiissttoorr  ooff  rreessiissttaannccee  ggrreeaatteerr  tthhaann  11kk,,  nnoo  mmaatttteerr  hhooww  yyoouu  ccoonnnneecctt  iitt,,  iinn  aa</blockquote>
+<blockquote>cciirrccuuiitt  ooppeerraattiinngg  ffrroomm  aa  1155  vvoolltt  bbaatttteerryy..</blockquote>
+ From the power formulas:</li></ol>
+<pre><code class="language-">
+P = IV
 P = I²R
 P = V²/R
-</code></pre>
-<p>Say you connect the resistor in series with the circuit, and the circuit has
-resistance Rc.</p>
-<pre><code>P = V²/R
-P = (15²)/(&gt;=1k + Rc)
-P = 225/(&gt;=1k + Rc)
+</code></pre><p>Say you connect the resistor in series with the circuit, and the circuit has resistance Rc.</p>
+<pre><code class="language-">
+P = V²/R
+P = (15²)/(>=1k + Rc)
+P = 225/(>=1k + Rc)
 
-The highest power is when &gt;=1k + Rc is at a minimum. Meaning that Rc = 0 and
+The highest power is when >=1k + Rc is at a minimum. Meaning that Rc = 0 and
 the resistor is 1k.
 
 P = 225/1000
 P = 0.225
-P &lt; 1/4
-</code></pre>
-<p>Say you connect the resistor in parallel with the circuit, and the circuit has
-resistance Rc.</p>
-<pre><code>R(parallel) = (R1*R2) / (R1+R2)
-R(parallel) = (&gt;=1k*Rc) / (&gt;=1k+Rc)
+P < 1/4
+</code></pre><p>Say you connect the resistor in parallel with the circuit, and the circuit has resistance Rc.</p>
+<pre><code class="language-">
+R(parallel) = (R1*R2) / (R1+R2)
+R(parallel) = (>=1k*Rc) / (>=1k+Rc)
 
-The larger the value of &gt;=1k, the less current will go through it.
+The larger the value of >=1k, the less current will go through it.
 The less power will it dissipate (P = I²R).
 
 The higher R(parallel) is when the circuit is opened (Rc = ∞).
@@ -114,8 +101,5 @@ In this case all the current flows throw the 1k resistor.
 P = V²/R
 P = 225/1000
 P = 0.225
-P &lt; 1/4
+P < 1/4
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

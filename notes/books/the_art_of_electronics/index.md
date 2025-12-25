@@ -16,11 +16,11 @@ Created at: 2025-01-12
 ## SPICE
 
 Todo:
-- [ ] Find a SPICE provider for Linux.
+- Find a SPICE provider for Linux.
 
 
 Complementary reading:
-- [ ] Appendix J (Spice Primer)
+- Appendix J (Spice Primer)
 
 ## Chapter 1
 

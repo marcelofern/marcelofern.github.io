@@ -59,13 +59,13 @@
   <![endif]-->
 </head>
 <body>
-<h1>sar</h1>
-<pre><code>Created at: 2024-11-12
-</code></pre>
-<p>sar(1): The sar command writes to standard output the contents of selected
-cumulative activity counters in the operating system.</p>
+<h1>sar</h0>
+<pre><code class="language-">
+Created at: 2024-11-12
+</code></pre><p>sar(1): The sar command writes to standard output the contents of selected cumulative activity counters in the operating system.</p>
 <p>The <code>sar</code> command can be used to archive (and report) historical statistics.</p>
-<pre><code class="language-sh">$ sar -P ALL
+<pre><code class="language-sh">
+$ sar -P ALL
 
 Average:        CPU     %user     %nice   %system   %iowait    %steal     %idle
 Average:        all      1.14      0.00      1.58      0.01      0.00     97.26
@@ -78,16 +78,5 @@ Average:          5      0.88      0.00      1.87      0.00      0.00     97.26
 Average:          6      4.08      0.00      2.25      0.00      0.00     93.67
 Average:          7      0.11      0.00      0.22      0.00      0.00     99.67
 [...]
-</code></pre>
-<ul>
-<li><code>%user</code>: User-time, excluding %nice.</li>
-<li><code>%nice</code>: User-time for processes with nice'd priority.</li>
-<li><code>%system</code>: System-time (kernel).</li>
-<li><code>%iowait</code>: I/O wait.</li>
-<li><code>%steal</code>: Time spent servicing other tenants.</li>
-<li><code>%idle</code>: Idle</li>
-</ul>
+</code></pre><ul><li><code>%user</code>: User</li><li>time, excluding %nice.</li><li><code>%nice</code> : User</li><li>time for processes with nice'd priority.</li><li><code>%system</code> : System</li><li>time (kernel).</li><li><code>%iowait</code> : I/O wait.</li><li><code>%steal</code> : Time spent servicing other tenants.</li><li><code>%idle</code> : Idle</li></ul>
 <p>The sum of the variables must equal 100%.</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

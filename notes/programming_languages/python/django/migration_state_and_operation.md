@@ -29,8 +29,8 @@ CREATE INDEX "app_table_field_9878d9_idx_like" ON "app_table" ("field", varchar_
 
 The second index is almost always **not** what you want. Specially if the
 CharField is a choice field. But also, this kind of index only works for
-prefixed anchored search (`LIKE 'pre%'), it does not work for postfixed
-anchored search (`LIKE '%post') as it will do a table scan.
+prefixed anchored search (`LIKE 'pre%'`), it does not work for postfixed
+anchored search (`LIKE '%post'`) as it will do a table scan.
 
 If your changes are already in production, you now have to create a new
 migration that has state changes and operations split up. You can do so by

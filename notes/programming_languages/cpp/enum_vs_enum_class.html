@@ -60,72 +60,64 @@
 </head>
 <body>
 <p>March 10, 2023</p>
-<h2>Why you should use <code>enum class</code>.</h2>
-<p>TLDR: <code>enum class</code> is safer and less bug prone than <code>enum</code>s. Here are the
-reasons why this is the case:</p>
-<h2>They don't implicitly convert to other types</h2>
+<h2>Why you should use <code>eennuumm  ccllaassss`</code>.</h0>
+<p>TLDR: <code>enum class</code> is safer and less bug prone than <code>enum</code>s. Here are the reasons why this is the case:</p>
+<h2>They don't implicitly convert to other types</h0>
 <p>Take for instance a plain <code>enum</code>:</p>
-<pre><code class="language-cpp">enum Shape {SQUARE, CIRCLE, TRIANGLE};
+<pre><code class="language-cpp">
+enum Shape {SQUARE, CIRCLE, TRIANGLE};
 
 int main() {
   Shape square = SQUARE;  // OK
   int circle = CIRCLE; // Ouch! OK
 }
-</code></pre>
-<p>Now if as <code>enum class</code>:</p>
-<pre><code class="language-cpp">enum class Shape {SQUARE, CIRCLE, TRIANGLE};
+</code></pre><p>Now if as <code>enum class</code>:</p>
+<pre><code class="language-cpp">
+enum class Shape {SQUARE, CIRCLE, TRIANGLE};
 
 int main() {
   Shape square = SQUARE;  // error: undeclared identifier CIRCLE
   int circle = Shape::CIRCLE; // error: can't initialise type
 }
-</code></pre>
-<p>And here's from Bjarne Stroustrup's C++11 FAQ:</p>
-<blockquote>
-<p>The enum classes (&quot;new enums&quot;, &quot;strong enums&quot;) address three problems with
-traditional C++ enumerations:</p>
-<ul>
-<li>conventional enums implicitly convert to int, causing errors when someone
-does not want an enumeration to act as an integer.</li>
-<li>conventional enums export their enumerators to the surrounding scope, causing
-name clashes.</li>
-<li>the underlying type of an enum cannot be specified, causing confusion,
-compatibility problems, and makes forward declaration impossible.</li>
-</ul>
-<p>The new enums are &quot;enum class&quot; because they combine aspects of traditional
-enumerations (names values) with aspects of classes (scoped members and absence
-of conversions).</p>
-</blockquote>
-<h2>Assembly code</h2>
-<p>It's always interesting to have a look at the generated Assembly code to verify
-if there's anything else to it.</p>
+</code></pre><p>And here's from Bjarne Stroustrup's C++11 FAQ:</p>
+<blockquote>The enum classes ("new enums", "strong enums") address three problems with</blockquote>
+<blockquote>traditional C++ enumerations:</blockquote>
+<blockquote></blockquote>
+<blockquote>- conventional enums implicitly convert to int, causing errors when someone</blockquote>
+<blockquote>  does not want an enumeration to act as an integer.</blockquote>
+<blockquote>- conventional enums export their enumerators to the surrounding scope, causing</blockquote>
+<blockquote>  name clashes.</blockquote>
+<blockquote>- the underlying type of an enum cannot be specified, causing confusion,</blockquote>
+<blockquote>  compatibility problems, and makes forward declaration impossible.</blockquote>
+<blockquote></blockquote>
+<blockquote>The new enums are "enum class" because they combine aspects of traditional</blockquote>
+<blockquote>enumerations (names values) with aspects of classes (scoped members and absence</blockquote>
+<blockquote>of conversions).</blockquote>
+<h2>Assembly code</h0>
+<p>It's always interesting to have a look at the generated Assembly code to verify if there's anything else to it.</p>
 <p>For a plain enum we have the following:</p>
-<pre><code class="language-cpp">enum Vehicle {BYCICLE, MOTORBIKE, ELECTRIC_CAR};
+<pre><code class="language-cpp">
+enum Vehicle {BYCICLE, MOTORBIKE, ELECTRIC_CAR};
 
 Vehicle bike = BYCICLE;
 Vehicle motorbike = MOTORBIKE;
-</code></pre>
-<p>Assembly:</p>
-<pre><code class="language-assembly">bike:
+</code></pre><p>Assembly:</p>
+<pre><code class="language-assembly">
+bike:
         .zero   4
 motorbike:
         .long   1
-</code></pre>
-<p>Very straightforward, just two 4 byte labels, one containing only zeros, and
-another containing the value <code>1</code>.</p>
+</code></pre><p>Very straightforward, just two 4 byte labels, one containing only zeros, and another containing the value <code>1</code>.</p>
 <p>As for the <code>enum class</code>:</p>
-<pre><code class="language-cpp">enum class Vehicle {BYCICLE, MOTORBIKE, ELECTRIC_CAR};
+<pre><code class="language-cpp">
+enum class Vehicle {BYCICLE, MOTORBIKE, ELECTRIC_CAR};
 
 Vehicle bike = Vehicle::BYCICLE;
 Vehicle motorbike = Vehicle::MOTORBIKE;
-</code></pre>
-<p>The assembly code is effectively the same:</p>
-<pre><code class="language-assembly">bike:
+</code></pre><p>The assembly code is effectively the same:</p>
+<pre><code class="language-assembly">
+bike:
         .zero   4
 motorbike:
         .long   1
-</code></pre>
-<p>No surprises :)</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+</code></pre><p>No surprises :)</p>

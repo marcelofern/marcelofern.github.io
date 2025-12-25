@@ -13,7 +13,7 @@ evil − outcomes.
 This is a fun, short, and interesting read. It's written in a very personal
 level and can come across as a massive rant. Many swearing words are present
 on the text. If you are not up for it, or if you are not sure yet, at least
-have a look at the author's (Mike Monteiro) talk "F*ck You, Pay Me" on Youtube.
+have a look at the author's (Mike Monteiro) talk `"F*ck You, Pay Me"` on Youtube.
 It is not the exact topic of this book, but it gives you some insight into the
 brilliance of some of Mike's arguments.
 

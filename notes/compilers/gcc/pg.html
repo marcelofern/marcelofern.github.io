@@ -59,27 +59,26 @@
   <![endif]-->
 </head>
 <body>
-<h1>-pg</h1>
-<pre><code>Created at: 2024-10-21
-</code></pre>
+<h1><ul><li>ppgg</h0>
+<pre><code class="language-">
+Created at: 2024-10-21
+</code></pre></li></ul>
 <p>From the man pages:</p>
-<pre><code>-pg Generate extra code to write profile information suitable for the analysis
+<pre><code class="language-">
+-pg Generate extra code to write profile information suitable for the analysis
     program prof (for -p) or gprof (for -pg).  You must use this option when
     compiling the source files you want data about, and you must also use it
     when linking.
 
-You can use the function attribute &quot;no_instrument_function&quot; to suppress
+You can use the function attribute "no_instrument_function" to suppress
 profiling of individual functions when compiling with these options.
-</code></pre>
-<p>This is cool, but what does it actually do? First, let's talk about gprof.</p>
-<h2>gprof</h2>
-<blockquote>
-<p>gprof - display call graph profile data</p>
-</blockquote>
-<p>This program will produce the execution profile of a C, Pascal, or Fortran77
-program. It takens an &quot;a.out&quot; file compiled by gcc with the <code>-pg</code> flag.</p>
+</code></pre><p>This is cool, but what does it actually do? First, let's talk about gprof.</p>
+<h2>gprof</h0>
+<blockquote>gprof - display call graph profile data</blockquote>
+<p>This program will produce the execution profile of a C, Pascal, or Fortran77 program. It takens an "a.out" file compiled by gcc with the <code>-pg</code> flag.</p>
 <p>So for the following C code:</p>
-<pre><code class="language-c">// test.c
+<pre><code class="language-c">
+// test.c
 // gcc -pg test.c -o a.out
 
 long mul(long a, long b) {
@@ -91,7 +90,7 @@ float div(long a, long b) {
 }
 
 void looper() {
-    for (int i = 0; i &lt; 500000000; i++) {
+    for (int i = 0; i < 500000000; i++) {
         mul(i, i+42);
         div(i, i+42);
     }
@@ -101,13 +100,13 @@ int main() {
     looper();
     return 0;
 }
-</code></pre>
-<p>After you compiled the code, you must run the executable once:</p>
-<pre><code>[tmp] ./a.out
-</code></pre>
-<p>After the code finished, a file called <code>gmon.out</code> would have been created.</p>
+</code></pre><p>After you compiled the code, you must run the executable once:</p>
+<pre><code class="language-">
+[tmp] ./a.out
+</code></pre><p>After the code finished, a file called <code>gmon.out</code> would have been created.</p>
 <p>You can now run <code>gprof</code> against a.out:</p>
-<pre><code>$ gprof a.out
+<pre><code class="language-">
+$ gprof a.out
 Flat profile:
 
 Each sample counts as 0.01 seconds.
@@ -159,7 +158,7 @@ index % time    self  children    called             name
                 0.58    0.00 500000000/500000000     div [3]
                 0.53    0.00 500000000/500000000     mul [4]
 -----------------------------------------------
-                                                     &lt;spontaneous&gt;
+                                                     <spontaneous>
 [2]     83.3    0.00    1.55                         main [2]
                 0.44    1.11       1/1               looper [1]
 -----------------------------------------------
@@ -169,10 +168,10 @@ index % time    self  children    called             name
                 0.53    0.00 500000000/500000000     looper [1]
 [4]     28.5    0.53    0.00 500000000               mul [4]
 -----------------------------------------------
-                                                     &lt;spontaneous&gt;
+                                                     <spontaneous>
 [5]     10.8    0.20    0.00                         _init [5]
 -----------------------------------------------
-                                                     &lt;spontaneous&gt;
+                                                     <spontaneous>
 [6]      5.9    0.11    0.00                         _dl_relocate_static_pie [6]
 -----------------------------------------------
 
@@ -223,7 +222,7 @@ index % time    self  children    called             name
                 the name and the index number.
 
  If the parents of the function cannot be determined, the word
- `&lt;spontaneous&gt;' is printed in the `name' field, and all the other
+ `<spontaneous>' is printed in the `name' field, and all the other
  fields are blank.
 
  For the function's children, the fields have the following meanings:
@@ -256,32 +255,30 @@ Index by function name
 
    [6] _dl_relocate_static_pie [3] div                     [4] mul
    [5] _init                   [1] looper
-</code></pre>
-<p>There's a lot of information here, and the output is not super interesting for
-this particular program.</p>
-<p>If you compiled with the <code>-g</code> option, you can run gprof with <code>-A</code>, which will
-show the annotated code:</p>
-<pre><code>[tmp] gprof -A a.out
+</code></pre><p>There's a lot of information here, and the output is not super interesting for this particular program.</p>
+<p>If you compiled with the <code>-g</code> option, you can run gprof with <code>-A</code>, which will show the annotated code:</p>
+<pre><code class="language-">
+[tmp] gprof -A a.out
 *** File /tmp/foo.c:
                 // test.c
                 // gcc -pg test.c -o a.out
 
-   500000000 -&gt; long mul(long a, long b) {
+   500000000 -> long mul(long a, long b) {
                     return a*b;
                 }
 
-   500000000 -&gt; float div(long a, long b) {
+   500000000 -> float div(long a, long b) {
                     return a/b;
                 }
 
-           1 -&gt; void looper() {
-                    for (int i = 0; i &lt; 500000000; i++) {
+           1 -> void looper() {
+                    for (int i = 0; i < 500000000; i++) {
                         mul(i, i+42);
                         div(i, i+42);
                     }
                 }
 
-       ##### -&gt; int main() {
+       ##### -> int main() {
                     looper();
                     return 0;
                 }
@@ -303,11 +300,11 @@ Execution Summary:
 
 1000000001   Total number of line executions
 250000000.25   Average executions per line
-</code></pre>
-<h2>Useful flags:</h2>
-<pre><code>&quot;-r&quot;
-&quot;--function-ordering&quot;
-The --function-ordering option causes &quot;gprof&quot; to print a suggested function
+</code></pre><h2>Useful flags:</h0>
+<pre><code class="language-">
+"-r"
+"--function-ordering"
+The --function-ordering option causes "gprof" to print a suggested function
 ordering for the program based on profiling data.  This option suggests an
 ordering which may improve paging, tlb and cache behavior for the program on
 systems which support arbitrary ordering of functions in an executable.
@@ -315,9 +312,9 @@ systems which support arbitrary ordering of functions in an executable.
 The exact details of how to force the linker to place functions in a particular
 order is system dependent and out of the scope of this manual.
 
-&quot;-R map_file&quot;
-&quot;--file-ordering map_file&quot;
-The --file-ordering option causes &quot;gprof&quot; to print a suggested .o link line
+"-R map_file"
+"--file-ordering map_file"
+The --file-ordering option causes "gprof" to print a suggested .o link line
 ordering for the program based on profiling data.  This option suggests an
 ordering which may improve paging, tlb and cache behavior for the program on
 systems which do not support arbitrary ordering of functions in an executable.
@@ -326,34 +323,33 @@ Use of the -a argument is highly recommended with this option.
 
 The map_file argument is a pathname to a file which provides function name to
 object file mappings.  The format of the file is similar to the output of the
-program &quot;nm&quot;.
+program "nm".
 
-&quot;-a&quot;
-&quot;--no-static&quot;
-The -a option causes &quot;gprof&quot; to suppress the printing of statically declared
+"-a"
+"--no-static"
+The -a option causes "gprof" to suppress the printing of statically declared
 (private) functions.  (These are functions whose names are not listed as
 global, and which are not visible outside the file/function/block where they
 were defined.)  Time spent in these functions, calls to/from them, etc., will
 all be attributed to the function that was loaded directly before it in the
 executable file.  This option affects both the flat profile and the call graph.
-</code></pre>
-<h2>How does it do it?</h2>
-<p>How does gprof count how many times a function has been called and how long it
-took?</p>
+</code></pre><h2>How does it do it?</h0>
+<p>How does gprof count how many times a function has been called and how long it took?</p>
 <p>Let's have a quick look at the assembly generated by our mul function.</p>
-<pre><code class="language-c">// test.c
+<pre><code class="language-c">
+// test.c
 long mul(long a, long b) {
     return a*b;
 }
-</code></pre>
-<p>Compiling that with -O3:</p>
-<pre><code class="language-asm">mul:
+</code></pre><p>Compiling that with -O3:</p>
+<pre><code class="language-asm">
+mul:
   mov  rax, rdi
   imul  rax, rsi
   ret
-</code></pre>
-<p>Notice the difference when we compile it with -pg:</p>
-<pre><code class="language-asm">mul:
+</code></pre><p>Notice the difference when we compile it with -pg:</p>
+<pre><code class="language-asm">
+mul:
   push  rbp
   mov  rbp, rsp
 1:  call  mcount
@@ -361,140 +357,115 @@ long mul(long a, long b) {
   mov  rax, rdi
   imul  rax, rsi
   ret
-</code></pre>
-<h2>What the docs say</h2>
+</code></pre><h2>What the docs say</h0>
 <p>According to the <code>gprof</code> <a href="https://ftp.gnu.org/old-gnu/Manuals/gprof-2.9.1/html_node/gprof_25.html">manual</a></p>
-<blockquote>
-<p>The mcount routine, included in the profiling library, is responsible for
-recording in an in-memory call graph table both its parent routine (the
-child) and its parent's parent. This is typically done by examining the stack
-frame to find both the address of the child, and the return address in the
-original parent. Since this is a very machine-dependant operation, mcount
-itself is typically a short assembly-language stub routine that extracts the
-required information, and then calls __mcount_internal (a normal C function)
-with two arguments - frompc and selfpc. __mcount_internal is responsible for
-maintaining the in-memory call graph, which records frompc, selfpc, and the
-number of times each of these call arcs was transversed.</p>
-</blockquote>
-<p>So <code>mcount</code> only records the call count. How do we have the time estimation for
-each function?</p>
-<blockquote>
-<p>Profiling also involves watching your program as it runs, and keeping a
-histogram of where the program counter happens to be every now and then.
-Typically the program counter is looked at around 100 times per second of run
-time, but the exact frequency may vary from system to system.</p>
-</blockquote>
-<blockquote>
-<p>This is done is one of two ways. Most UNIX-like operating systems provide a
-profil() system call, which registers a memory array with the kernel, along
-with a scale factor that determines how the program's address space maps into
-the array. Typical scaling values cause every 2 to 8 bytes of address space
-to map into a single array slot. On every tick of the system clock (assuming
-the profiled program is running), the value of the program counter is
-examined and the corresponding slot in the memory array is incremented. Since
-this is done in the kernel, which had to interrupt the process anyway to
-handle the clock interrupt, very little additional system overhead is
-required.</p>
-</blockquote>
-<blockquote>
-<p>A special startup routine allocates memory for the histogram and either calls
-profil() or sets up a clock signal handler. This routine (monstartup) can be
-invoked in several ways. On Linux systems, a special profiling startup file
-gcrt0.o, which invokes monstartup before main, is used instead of the default
-crt0.o. Use of this special startup file is one of the effects of using `gcc
-... -pg' to link. On SPARC systems, no special startup files are used.
-Rather, the mcount routine, when it is invoked for the first time (typically
-when main is called), calls monstartup.</p>
-</blockquote>
-<p>This is why we see the _init section of the disassemblied file calling
-gmon_start</p>
-<pre><code class="language-asm">Disassembly of section .init:
+<blockquote>The mcount routine, included in the profiling library, is responsible for</blockquote>
+<blockquote>recording in an in-memory call graph table both its parent routine (the</blockquote>
+<blockquote>child) and its parent's parent. This is typically done by examining the stack</blockquote>
+<blockquote>frame to find both the address of the child, and the return address in the</blockquote>
+<blockquote>original parent. Since this is a very machine-dependant operation, mcount</blockquote>
+<blockquote>itself is typically a short assembly-language stub routine that extracts the</blockquote>
+<blockquote>required information, and then calls __mcount_internal (a normal C function)</blockquote>
+<blockquote>with two arguments - frompc and selfpc. __mcount_internal is responsible for</blockquote>
+<blockquote>maintaining the in-memory call graph, which records frompc, selfpc, and the</blockquote>
+<blockquote>number of times each of these call arcs was transversed.</blockquote>
+<p>So <code>mcount</code> only records the call count. How do we have the time estimation for each function?</p>
+<blockquote>Profiling also involves watching your program as it runs, and keeping a</blockquote>
+<blockquote>histogram of where the program counter happens to be every now and then.</blockquote>
+<blockquote>Typically the program counter is looked at around 100 times per second of run</blockquote>
+<blockquote>time, but the exact frequency may vary from system to system.</blockquote>
+<blockquote>This is done is one of two ways. Most UNIX-like operating systems provide a</blockquote>
+<blockquote>profil() system call, which registers a memory array with the kernel, along</blockquote>
+<blockquote>with a scale factor that determines how the program's address space maps into</blockquote>
+<blockquote>the array. Typical scaling values cause every 2 to 8 bytes of address space</blockquote>
+<blockquote>to map into a single array slot. On every tick of the system clock (assuming</blockquote>
+<blockquote>the profiled program is running), the value of the program counter is</blockquote>
+<blockquote>examined and the corresponding slot in the memory array is incremented. Since</blockquote>
+<blockquote>this is done in the kernel, which had to interrupt the process anyway to</blockquote>
+<blockquote>handle the clock interrupt, very little additional system overhead is</blockquote>
+<blockquote>required.</blockquote>
+<blockquote>A special startup routine allocates memory for the histogram and either calls</blockquote>
+<blockquote>profil() or sets up a clock signal handler. This routine (monstartup) can be</blockquote>
+<blockquote>invoked in several ways. On Linux systems, a special profiling startup file</blockquote>
+<blockquote>gcrt0.o, which invokes monstartup before main, is used instead of the default</blockquote>
+<blockquote>crt0.o. Use of this special startup file is one of the effects of using `gcc</blockquote>
+<blockquote>... -pg' to link. On SPARC systems, no special startup files are used.</blockquote>
+<blockquote>Rather, the mcount routine, when it is invoked for the first time (typically</blockquote>
+<blockquote>when main is called), calls monstartup. </blockquote>
+<p>This is why we see the _init section of the disassemblied file calling gmon_start</p>
+<pre><code class="language-asm">
+Disassembly of section .init:
 
-0000000000001000 &lt;_init&gt;:
+0000000000001000 <_init>:
     1000:	f3 0f 1e fa          	endbr64
     1004:	48 83 ec 08          	sub    $0x8,%rsp
-    1008:	48 8d 05 71 00 00 00 	lea    0x71(%rip),%rax        # 1080 &lt;__gmon_start__&gt;
+    1008:	48 8d 05 71 00 00 00 	lea    0x71(%rip),%rax        # 1080 <__gmon_start__>
     100f:	48 85 c0             	test   %rax,%rax
-    1012:	74 02                	je     1016 &lt;_init+0x16&gt;
+    1012:	74 02                	je     1016 <_init+0x16>
     1014:	ff d0                	call   *%rax
     1016:	48 83 c4 08          	add    $0x8,%rsp
     101a:	c3                   	ret
-</code></pre>
-<blockquote>
-<p>The profiling library also includes a function (mcleanup) which is typically
-registered using atexit() to be called as the program exits, and is
-responsible for writing the file `gmon.out'. Profiling is turned off, various
-headers are output, and the histogram is written, followed by the call-graph
-arcs and the basic-block counts.</p>
-</blockquote>
+</code></pre><blockquote>The profiling library also includes a function (mcleanup) which is typically</blockquote>
+<blockquote>registered using atexit() to be called as the program exits, and is</blockquote>
+<blockquote>responsible for writing the file `gmon.out'. Profiling is turned off, various</blockquote>
+<blockquote>headers are output, and the histogram is written, followed by the call-graph</blockquote>
+<blockquote>arcs and the basic-block counts.</blockquote>
 <p>We will see this mcleanup call when we dissect the code in a section below.</p>
-<blockquote>
-<p>The output from gprof gives no indication of parts of your program that are
-limited by I/O or swapping bandwidth. This is because samples of the program
-counter are taken at fixed intervals of the program's run time. Therefore,
-the time measurements in gprof output say nothing about time that your
-program was not running. For example, a part of the program that creates so
-much data that it cannot all fit in physical memory at once may run very
-slowly due to thrashing, but gprof will say it uses little time. On the other
-hand, sampling by run time has the advantage that the amount of load due to
-other users won't directly affect the output you get.</p>
-</blockquote>
-<h2>What does profil do?</h2>
-<p>The profil is used to create a buffer, that can store how many times a IP
-address was observed. This will give an estimate on the % of the program spent
-on that IP.</p>
-<h2>Checking mcount code</h2>
+<blockquote>The output from gprof gives no indication of parts of your program that are</blockquote>
+<blockquote>limited by I/O or swapping bandwidth. This is because samples of the program</blockquote>
+<blockquote>counter are taken at fixed intervals of the program's run time. Therefore,</blockquote>
+<blockquote>the time measurements in gprof output say nothing about time that your</blockquote>
+<blockquote>program was not running. For example, a part of the program that creates so</blockquote>
+<blockquote>much data that it cannot all fit in physical memory at once may run very</blockquote>
+<blockquote>slowly due to thrashing, but gprof will say it uses little time. On the other</blockquote>
+<blockquote>hand, sampling by run time has the advantage that the amount of load due to</blockquote>
+<blockquote>other users won't directly affect the output you get. </blockquote>
+<h2>What does profil do?</h0>
+<p>The profil is used to create a buffer, that can store how many times a IP address was observed. This will give an estimate on the % of the program spent on that IP.</p>
+<h2>Checking mcount code</h0>
 <p>So what is mcount doing? Let's compile the code and check the binary:</p>
-<pre><code class="language-sh">gcc -O3 -pg test.c -o /tmp/a.out
-objdump -d -S /tmp/a.out &gt; /tmp/a.asm
-</code></pre>
-<p>The <code>mul</code> function now looks like this:</p>
-<pre><code class="language-asm">00000000000011a0 &lt;mul&gt;:
+<pre><code class="language-sh">
+gcc -O3 -pg test.c -o /tmp/a.out
+objdump -d -S /tmp/a.out > /tmp/a.asm
+</code></pre><p>The <code>mul</code> function now looks like this:</p>
+<pre><code class="language-asm">
+00000000000011a0 <mul>:
 long mul(long a, long b) {
     11a0:	55                   	push   %rbp
     11a1:	48 89 e5             	mov    %rsp,%rbp
-    11a4:	e8 87 fe ff ff       	call   1030 &lt;mcount@plt&gt;
+    11a4:	e8 87 fe ff ff       	call   1030 <mcount@plt>
 }
     11a9:	5d                   	pop    %rbp
     return a*b;
     11aa:	48 89 f8             	mov    %rdi,%rax
     11ad:	48 0f af c6          	imul   %rsi,%rax
 }
-</code></pre>
-<p>So we are calling address 1030, which contains the mcount function.
-Let's have a look.</p>
-<pre><code>0000000000001030 &lt;mcount@plt&gt;:
-    1030:	ff 25 ca 2f 00 00    	jmp    *0x2fca(%rip)        # 4000 &lt;mcount@GLIBC_2.2.5&gt;
+</code></pre><p>So we are calling address 1030, which contains the mcount function. Let's have a look.</p>
+<pre><code class="language-">
+0000000000001030 <mcount@plt>:
+    1030:	ff 25 ca 2f 00 00    	jmp    *0x2fca(%rip)        # 4000 <mcount@GLIBC_2.2.5>
     1036:	68 00 00 00 00       	push   $0x0
-    103b:	e9 e0 ff ff ff       	jmp    1020 &lt;_init+0x20&gt;
-</code></pre>
-<ul>
-<li>jumps to the address 0x4000 where the mcount function actually is.</li>
-<li>push 0 onto the stack</li>
-<li>jump to 0x1020</li>
-</ul>
+    103b:	e9 e0 ff ff ff       	jmp    1020 <_init+0x20>
+</code></pre><ul><li>jumps to the address 0x4000 where the mcount function actually is.</li><li>push 0 onto the stack</li><li>jump to 0x1020</li></ul>
 <p>In 0x1020 we have:</p>
-<pre><code>0000000000001020 &lt;mcount@plt-0x10&gt;:
-    1020:	ff 35 ca 2f 00 00    	push   0x2fca(%rip)  # 3ff0 &lt;_GLOBAL_OFFSET_TABLE_+0x8&gt;
-    1026:	ff 25 cc 2f 00 00    	jmp    *0x2fcc(%rip) # 3ff8 &lt;_GLOBAL_OFFSET_TABLE_+0x10&gt;
+<pre><code class="language-">
+0000000000001020 <mcount@plt-0x10>:
+    1020:	ff 35 ca 2f 00 00    	push   0x2fca(%rip)  # 3ff0 <_GLOBAL_OFFSET_TABLE_+0x8>
+    1026:	ff 25 cc 2f 00 00    	jmp    *0x2fcc(%rip) # 3ff8 <_GLOBAL_OFFSET_TABLE_+0x10>
     102c:	0f 1f 40 00          	nopl   0x0(%rax)
-</code></pre>
-<ul>
-<li>It pushs 0x3ff0 to the stack.</li>
-<li>jumps to 0x3ff8.</li>
-<li>nopl (no operation) might be here just for alignment.</li>
-</ul>
+</code></pre><ul><li>It pushs 0x3ff0 to the stack.</li><li>jumps to 0x3ff8.</li><li>nopl (no operation) might be here just for alignment.</li></ul>
 <p>This doesn't tell us what <code>mcount</code> actually does... It is a shared library.</p>
 <p>Let's find what the shared library is:</p>
-<pre><code>ldd /tmp/a.out
+<pre><code class="language-">
+ldd /tmp/a.out
     linux-vdso.so.1 (0x00007fffc4df3000)
-    libc.so.6 =&gt; /usr/lib/libc.so.6 (0x000071686abb4000)
-    /lib64/ld-linux-x86-64.so.2 =&gt; /usr/lib64/ld-linux-x86-64.so.2 (0x000071686add1000)
-</code></pre>
-<p>It's probably in the libc.so shared library:</p>
-<pre><code>objdump -d /usr/lib/libc.so.6
-</code></pre>
-<pre><code class="language-asm">000000000011d5e0 &lt;_mcount@@GLIBC_2.2.5&gt;:
+    libc.so.6 => /usr/lib/libc.so.6 (0x000071686abb4000)
+    /lib64/ld-linux-x86-64.so.2 => /usr/lib64/ld-linux-x86-64.so.2 (0x000071686add1000)
+</code></pre><p>It's probably in the libc.so shared library:</p>
+<pre><code class="language-">
+objdump -d /usr/lib/libc.so.6
+</code></pre><pre><code class="language-asm">
+000000000011d5e0 <_mcount@@GLIBC_2.2.5>:
   11d5e0:	f3 0f 1e fa          	endbr64
   11d5e4:	48 83 ec 38          	sub    $0x38,%rsp
   11d5e8:	48 89 04 24          	mov    %rax,(%rsp)
@@ -506,7 +477,7 @@ Let's have a look.</p>
   11d605:	4c 89 4c 24 30       	mov    %r9,0x30(%rsp)
   11d60a:	48 8b 74 24 38       	mov    0x38(%rsp),%rsi
   11d60f:	48 8b 7d 08          	mov    0x8(%rbp),%rdi
-  11d613:	e8 88 f3 ff ff       	call   11c9a0 &lt;_mcleanup@@GLIBC_2.2.5+0x70&gt;
+  11d613:	e8 88 f3 ff ff       	call   11c9a0 <_mcleanup@@GLIBC_2.2.5+0x70>
   11d618:	4c 8b 4c 24 30       	mov    0x30(%rsp),%r9
   11d61d:	4c 8b 44 24 28       	mov    0x28(%rsp),%r8
   11d622:	48 8b 7c 24 20       	mov    0x20(%rsp),%rdi
@@ -517,42 +488,30 @@ Let's have a look.</p>
   11d63a:	48 83 c4 38          	add    $0x38,%rsp
   11d63e:	c3                   	ret
   11d63f:	90                   	nop
-</code></pre>
-<p>... More code!</p>
+</code></pre><p>... More code!</p>
 <p>Remember from the documentation what mcleanup does:</p>
-<blockquote>
-<p>The profiling library also includes a function (mcleanup) which is typically
-registered using atexit() to be called as the program exits, and is
-responsible for writing the file `gmon.out'. Profiling is turned off, various
-headers are output, and the histogram is written, followed by the call-graph
-arcs and the basic-block counts.</p>
-</blockquote>
-<h2>Outro</h2>
+<blockquote>The profiling library also includes a function (mcleanup) which is typically</blockquote>
+<blockquote>registered using atexit() to be called as the program exits, and is</blockquote>
+<blockquote>responsible for writing the file `gmon.out'. Profiling is turned off, various</blockquote>
+<blockquote>headers are output, and the histogram is written, followed by the call-graph</blockquote>
+<blockquote>arcs and the basic-block counts.</blockquote>
+<h2>Outro</h0>
 <p>Accoridng to IBM <a href="https://www.ibm.com/docs/en/aix/7.1?topic=command-implementation-gprof">docs</a>:</p>
-<blockquote>
-<p>The compiler inserts a call to the mcount() function into the object code
-generated for each recompiled function of your program. The mcount() function
-counts each time a parent calls a child function. Also, the monitor()
-function is enabled to estimate the time spent in each routine.</p>
-</blockquote>
-<p>What is the <code>monitor</code> function? <a href="https://man.cx/monitor(3)">source</a></p>
-<blockquote>
-<p>The monitor() function is an interface to the profil(2) function and is
-called automatically with default parameters by any program created by the
-cc(1B) utility with the -p option specified. Except to establish further
-control over profiling activity, it is not necessary to explicitly call
-monitor().</p>
-</blockquote>
-<blockquote>
-<p>When used, monitor() is called at least at the beginning and the end of a
-program. The first call to monitor() initiates the recording of two different
-kinds of execution-profile information: execution-time distribution and
-function call count. Execution-time distribution data is generated by
-profil() and the function call counts are generated by code supplied to the
-object file (or files) by cc(1B) -p. Both types of information are collected
-as a program executes. The last call to monitor() writes this collected data
-to the output file mon.out.</p>
-</blockquote>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+<blockquote>The compiler inserts a call to the mcount() function into the object code</blockquote>
+<blockquote>generated for each recompiled function of your program. The mcount() function</blockquote>
+<blockquote>counts each time a parent calls a child function. Also, the monitor()</blockquote>
+<blockquote>function is enabled to estimate the time spent in each routine.</blockquote>
+<p>What is the <code>monitor</code> function? <a href="https://man.cx/monitor<a href="3">source</a>)</p>
+<blockquote>The monitor() function is an interface to the profil(2) function and is</blockquote>
+<blockquote>called automatically with default parameters by any program created by the</blockquote>
+<blockquote>cc(1B) utility with the -p option specified. Except to establish further</blockquote>
+<blockquote>control over profiling activity, it is not necessary to explicitly call</blockquote>
+<blockquote>monitor().</blockquote>
+<blockquote>When used, monitor() is called at least at the beginning and the end of a</blockquote>
+<blockquote>program. The first call to monitor() initiates the recording of two different</blockquote>
+<blockquote>kinds of execution-profile information: execution-time distribution and</blockquote>
+<blockquote>function call count. Execution-time distribution data is generated by</blockquote>
+<blockquote>profil() and the function call counts are generated by code supplied to the</blockquote>
+<blockquote>object file (or files) by cc(1B) -p. Both types of information are collected</blockquote>
+<blockquote>as a program executes. The last call to monitor() writes this collected data</blockquote>
+<blockquote>to the output file mon.out.</blockquote>

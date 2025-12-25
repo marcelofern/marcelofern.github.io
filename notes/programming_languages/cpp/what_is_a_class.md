@@ -115,7 +115,7 @@ This sets up the stack frame for the function.
 
 The constructor then stores the value of the "this" pointer (which is passed as
 the first argument to the function in register rdi) in the local stack variable
-at [rbp-8]. It then loads the "this" pointer back into rax and uses it to set
+at `[rbp-8]`. It then loads the "this" pointer back into rax and uses it to set
 the first byte of the object to the value 102 (char 'f'), and the second byte
 to the value 98 (char 'b').
 

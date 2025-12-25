@@ -40,7 +40,7 @@
 
 ### Locks
 
-- [`lock_timeout`](databases/postgres/locks/lock_timeout.md)
+- [lock_timeout](databases/postgres/locks/lock_timeout.md)
 - [Locks cheatsheet](databases/postgres/locks/locks_cheatsheet.md)
 - [Print lock for query](databases/postgres/locks/print_lock_for_query.md)
 - [Deadlock Demonstration](databases/postgres/locks/deadlock_demonstration.md)

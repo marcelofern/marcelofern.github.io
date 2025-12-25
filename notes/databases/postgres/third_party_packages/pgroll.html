@@ -59,48 +59,43 @@
   <![endif]-->
 </head>
 <body>
-<h1>pgroll</h1>
-<pre><code>Created at: 2025-02-13
-</code></pre>
-<h2>Some problems</h2>
-<h3>Schema changes happen in place</h3>
-<p>For example, making a <code>user</code>'s table <code>description</code> field non-nullable involves
-this migration:</p>
-<pre><code class="language-json">{
-  &quot;name&quot;: &quot;02_user_description_set_nullable&quot;,
-  &quot;operations&quot;: [
+<h1>pgroll</h0>
+<pre><code class="language-">
+Created at: 2025-02-13
+</code></pre><h2>Some problems</h0>
+<h3>Schema changes happen in place</h0>
+<p>For example, making a <code>user</code>'s table <code>description</code> field non-nullable involves this migration:</p>
+<pre><code class="language-json">
+{
+  "name": "02_user_description_set_nullable",
+  "operations": [
     {
-      &quot;alter_column&quot;: {
-        &quot;table&quot;: &quot;users&quot;,
-        &quot;column&quot;: &quot;description&quot;,
-        &quot;nullable&quot;: false,
-        &quot;up&quot;: &quot;(SELECT CASE WHEN description IS NULL THEN 'description for ' || name ELSE description END)&quot;,
-        &quot;down&quot;: &quot;description&quot;
+      "alter_column": {
+        "table": "users",
+        "column": "description",
+        "nullable": false,
+        "up": "(SELECT CASE WHEN description IS NULL THEN 'description for ' || name ELSE description END)",
+        "down": "description"
       }
     }
   ]
 }
-</code></pre>
-<p>Which during schema changes inserts a new column and updates data such as:</p>
-<pre><code class="language-sql">SELECT * FROM users ORDER BY id LIMIT 10
+</code></pre><p>Which during schema changes inserts a new column and updates data such as:</p>
+<pre><code class="language-sql">
+SELECT * FROM users ORDER BY id LIMIT 10
 +-----+----------+-------------------------+--------------------------+
 | id  | name     | description             | _pgroll_new_description  |
 +-----+----------+-------------------------+--------------------------+
-| 1   | user_1   | &lt;null&gt;                  | description for user_1   |
+| 1   | user_1   | <null>                  | description for user_1   |
 | 2   | user_2   | description for user_2  | description for user_2   |
-| 3   | user_3   | &lt;null&gt;                  | description for user_3   |
+| 3   | user_3   | <null>                  | description for user_3   |
 | 4   | user_4   | description for user_4  | description for user_4   |
-| 5   | user_5   | &lt;null&gt;                  | description for user_5   |
+| 5   | user_5   | <null>                  | description for user_5   |
 | 6   | user_6   | description for user_6  | description for user_6   |
-| 7   | user_7   | &lt;null&gt;                  | description for user_7   |
-| 8   | user_8   | &lt;null&gt;                  | description for user_8   |
+| 7   | user_7   | <null>                  | description for user_7   |
+| 8   | user_8   | <null>                  | description for user_8   |
 | 9   | user_9   | description for user_9  | description for user_9   |
 | 10  | user_10  | description for user_10 | description for user_10  |
-</code></pre>
-<p>This might generate a lot of deadrows and trigger <code>vacuum analyse</code> many times
-depending on the size of the table.</p>
-<h2>How it works</h2>
+</code></pre><p>This might generate a lot of deadrows and trigger <code>vacuum analyse</code> many times depending on the size of the table.</p>
+<h2>How it works</h0>
 <p>https://pgroll.com/blog/inside-pgroll-how-it-works-under-the-hood</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

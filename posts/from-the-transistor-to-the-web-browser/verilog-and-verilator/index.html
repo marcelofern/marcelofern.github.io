@@ -60,135 +60,108 @@
 </head>
 <body>
 <p>January 5, 2023</p>
-<h2>Verilog</h2>
-<p>Verilog is a hardware description language (HDL) used in the design and
-verification of digital circuits. Verilog has been merged into the
-SystemVerilog standard in 2009, and is now part of the SystemVerilog language.</p>
-<h2>SystemVerilog</h2>
-<p>This is the actual language we'll be using. A source points out the following
-benefits of SystemVerilog:</p>
-<blockquote>
-<p>SystemVerilog is better than Verilog because of its ability to perform
-constrained random stimuli, use OOP features in testbench construction,
-functional coverage, assertions, etc.</p>
-</blockquote>
-<h3>Data Types</h3>
+<h2>Verilog</h0>
+<p>Verilog is a hardware description language (HDL) used in the design and verification of digital circuits. Verilog has been merged into the SystemVerilog standard in 2009, and is now part of the SystemVerilog language.</p>
+<h2>SystemVerilog</h0>
+<p>This is the actual language we'll be using. A source points out the following benefits of SystemVerilog:</p>
+<blockquote>SystemVerilog is better than Verilog because of its ability to perform</blockquote>
+<blockquote>constrained random stimuli, use OOP features in testbench construction,</blockquote>
+<blockquote>functional coverage, assertions, etc.</blockquote>
+<h3>Data Types</h0>
 <p>SystemVerilog has the following data types:</p>
-<ul>
-<li><strong>reg</strong>: Represent data storage elements (not necessarily physical
-registers). They retain their value until the next value is sent to them. Can
-only be driven in procedural blocks like <code>always</code> and <code>initial</code>.</li>
-<li><strong>wire</strong>: Used for connecting different elements. They can be treated as
-physical wires. Can only be driven in <code>assign</code> statements.</li>
-<li><strong>integer</strong></li>
-<li><strong>real</strong>: Like a <code>double</code> in C.</li>
-<li><strong>time</strong></li>
-<li><strong>realtime</strong>: Also a <code>double</code>.</li>
-<li><strong>logic</strong>: A 4-state data type. Can be driven by both procedural blocks and
-continuous <code>assign</code> statements.</li>
-<li><strong>bit</strong></li>
-<li><strong>byte</strong></li>
-<li><strong>shortint</strong> (16 bits)</li>
-<li><strong>int</strong> (32 bits)</li>
-<li><strong>longint</strong> (64 bits)</li>
-<li><strong>shortreal</strong> (float)</li>
-</ul>
-<p>Types that can hold UNKNOWN (X) and high-impedance (Z) values in addition to
-0 and 1 are called <strong>4-state data types</strong>.</p>
-<h4>logic</h4>
-<pre><code class="language-verilog">module tb;
+<ul><li><b>reg</b>: Represent data storage elements (not necessarily physical registers). They retain their value until the next value is sent to them. Can only be driven in procedural blocks like <code>always</code> and <code>initial</code>.</li><li><b>wire</b> : Used for connecting different elements. They can be treated as physical wires. Can only be driven in <code>assign</code> statements.</li><li><b>integer</b></li><li><b>real</b> : Like a <code>double</code> in C.</li><li><b>time</b></li><li><b>realtime</b> : Also a <code>double</code>.</li><li><b>logic</b> : A 4</li><li>state data type. Can be driven by both procedural blocks and continuous <code>assign</code> statements.</li><li><b>bit</b></li><li><b>byte</b></li><li><b>shortint</b> (16 bits)</li><li><b>int</b> (32 bits)</li><li><b>longint</b> (64 bits)</li><li><b>shortreal</b> (float)</li></ul>
+<p>Types that can hold UNKNOWN (X) and high-impedance (Z) values in addition to 0 and 1 are called <b>4-state data types</b>.</p>
+<h4>logic</h0>
+<pre><code class="language-verilog">
+module tb;
   logic [3:0]  my_data; // Declare a 4-bit logic type variable
   logic        en; // Declare a 1-bit logic type variable
 
   initial begin
     // Default value of logic type is X
-    $display (&quot;my_data=0x%0h en=%0b&quot;, my_data, en);
+    $display ("my_data=0x%0h en=%0b", my_data, en);
     // logic data type can be driven in initial/always blocks
     my_data = 4'hB;
-    $display (&quot;my_data=0x%0h en=%0b&quot;, my_data, en);
+    $display ("my_data=0x%0h en=%0b", my_data, en);
     #1;
-    $display (&quot;my_data=0x%0h en=%0b&quot;, my_data, en);
+    $display ("my_data=0x%0h en=%0b", my_data, en);
   end
   // logic data type can also be driven via assign statements
   assign en = my_data[0];
 endmodule
-</code></pre>
-<p>Simulation log:</p>
-<pre><code>my_data=0xx en=x
+</code></pre><p>Simulation log: <pre><code class="language-">
+my_data=0xx en=x
 my_data=0xb en=x
 my_data=0xb en=1
-</code></pre>
-<h4>bit</h4>
-<pre><code class="language-verilog">module tb;
-  bit       var_a; // Declare a 1 bit variable of type &quot;bit&quot;
-  bit [3:0] var_b; // Declare a 4 bit variable of type &quot;bit&quot;
+</code></pre></p>
+<h4>bit</h0>
+<pre><code class="language-verilog">
+module tb;
+  bit       var_a; // Declare a 1 bit variable of type "bit"
+  bit [3:0] var_b; // Declare a 4 bit variable of type "bit"
 
-  logic [3:0] x_val; // Declare a 4 bit variable of type &quot;logic&quot;
+  logic [3:0] x_val; // Declare a 4 bit variable of type "logic"
 
   initial begin
-    // Initial value of &quot;bit&quot; data type is 0
-    $display (&quot;Initial value var_a=%0b var_b=0x%0h&quot;, var_a, var_b);
+    // Initial value of "bit" data type is 0
+    $display ("Initial value var_a=%0b var_b=0x%0h", var_a, var_b);
     // Assign new values and display the variable to see that it gets the new values
     var_a = 1;
     var_b = 4'hF;
-    $display (&quot;New values var_a=%0b var_b=0x%0h&quot;, var_a, var_b);
-    // If a &quot;bit&quot; type variable is assigned with a value greater than it can hold
+    $display ("New values var_a=%0b var_b=0x%0h", var_a, var_b);
+    // If a "bit" type variable is assigned with a value greater than it can hold
     // the left most bits are truncated. In this case, var_b can hold only 4 bits
     // and hence 'h481 gets truncated leaving var_b with only 'ha;
     var_b = 16'h481a;
-    $display (&quot;Truncated value: var_b=0x%0h&quot;, var_b);
-    // If a logic type or any 4-state variable assigns its value to a &quot;bit&quot;
+    $display ("Truncated value: var_b=0x%0h", var_b);
+    // If a logic type or any 4-state variable assigns its value to a "bit"
     // type variable, then X and Z get converted to zero
     var_b = 4'b01zx;
-    $display (&quot;var_b = %b&quot;, var_b);
+    $display ("var_b = %b", var_b);
   end
 endmodule
-</code></pre>
-<p>Simulation log:</p>
-<pre><code>Initial value var_a=0 var_b=0x0
+</code></pre><p>Simulation log: <pre><code class="language-">
+Initial value var_a=0 var_b=0x0
 New values var_a=1 var_b=0xf
 Truncated value: var_b=0xa
 var_b = 0100
-</code></pre>
-<h3>Arrays</h3>
+</code></pre></p>
+<h3>Arrays</h0>
 <p>Arrays can be: static, dynamic, associative, queues</p>
-<h4>Static arrays</h4>
-<pre><code class="language-verilog">module tb;
+<h4>Static arrays</h0>
+<pre><code class="language-verilog">
+module tb;
   // an 8 bit-wide vector
-    bit [7:0] 	m_data; 	// A vector or 1D packed array
-    initial begin
-        // 1. Assign a value to the vector
-        m_data = 8'hA2;
-        // 2. Iterate through each bit of the vector and print value
-        for (int i = 0; i &lt; $size(m_data); i++) begin
-            $display (&quot;m_data[%0d] = %b&quot;, i, m_data[i]);
-        end
-    end
+	bit [7:0] 	m_data; 	// A vector or 1D packed array
+	initial begin
+		// 1. Assign a value to the vector
+		m_data = 8'hA2;
+		// 2. Iterate through each bit of the vector and print value
+		for (int i = 0; i < $size(m_data); i++) begin
+			$display ("m_data[%0d] = %b", i, m_data[i]);
+		end
+	end
 endmodule
-</code></pre>
-<h4>Dynamic arrays</h4>
-<pre><code class="language-verilog">// Dynamic array, size unknown but it holds integer values
+</code></pre><h4>Dynamic arrays</h0>
+<pre><code class="language-verilog">
+// Dynamic array, size unknown but it holds integer values
 int 		m_mem [];
-</code></pre>
-<h4>Associative arrays (like a dictionary)</h4>
-<pre><code class="language-verilog">int m_data [int]; // Key is of type int, and data is also of type int
+</code></pre><h4>Associative arrays (like a dictionary)</h0>
+<pre><code class="language-verilog">
+int m_data [int]; // Key is of type int, and data is also of type int
 int m_name [string]; // Key is of type string, and data is of type int
 
-m_name [&quot;Rachel&quot;] = 30;
-m_name [&quot;Orange&quot;] = 2;
+m_name ["Rachel"] = 30;
+m_name ["Orange"] = 2;
 
 m_data [32'h123] = 3333;
-</code></pre>
-<h3>Queues</h3>
-<pre><code class="language-verilog">int 	m_queue [$]; 		// Unbound queue, no size
+</code></pre><h3>Queues</h0>
+<pre><code class="language-verilog">
+int 	m_queue [$]; 		// Unbound queue, no size
 
 m_queue.push_back(23); 		// Push into the queue
 
 int data = m_queue.pop_front(); // Pop from the queue
-</code></pre>
-<p><strong>More information:</strong></p>
+</code></pre><p><b>More information:</b></p>
 <p><a href="https://www.chipverify.com/systemverilog/systemverilog-data-types-integer-byte">TUTORIAL 1</a></p>
 <p><a href="https://verilogguide.readthedocs.io/en/latest/verilog/overview.html">TUTORIAL 2</a></p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

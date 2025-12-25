@@ -59,48 +59,47 @@
   <![endif]-->
 </head>
 <body>
-<h1>REINDEX CONCURRENTLY</h1>
-<pre><code>Created at: 2024-12-20
-</code></pre>
-<p>Reindexing is a good strategy to address <a href="notes/databases/postgres/performance/table_bloat.html">index bloat</a>.</p>
+<h1>REINDEX CONCURRENTLY</h0>
+<pre><code class="language-">
+Created at: 2024-12-20
+</code></pre><p>Reindexing is a good strategy to address <a href="databases/postgres/performance/table_bloat.md">index bloat</a>.</p>
 <p>This operation will create a fresh new index from scratch.</p>
-<h2>Sandbox</h2>
+<h2>Sandbox</h0>
 <p>In shell 1:</p>
-<pre><code class="language-sql">CREATE DATABASE reindex_concurrently;
+<pre><code class="language-sql">
+CREATE DATABASE reindex_concurrently;
 
 DROP TABLE IF EXISTS foo;
 CREATE TABLE foo (id SERIAL PRIMARY KEY, bar INTEGER);
 CREATE INDEX bar_idx ON foo (bar);
 
 INSERT INTO foo (bar) SELECT generate_series(1, 10000);
-</code></pre>
-<p>In shell 2:</p>
-<pre><code class="language-sql">INSERT INTO foo (bar) VALUES (1);
-</code></pre>
-<p>Back in Shell 1:</p>
-<pre><code class="language-sql">REINDEX INDEX CONCURRENTLY bar_idx;
-</code></pre>
-<p>This will hang because shell 2 has an open transaction.
-If you cancel the REINDEX operation, you will see the following index:</p>
-<pre><code>                            Table &quot;public.foo&quot;
+</code></pre><p>In shell 2:</p>
+<pre><code class="language-sql">
+INSERT INTO foo (bar) VALUES (1);
+</code></pre><p>Back in Shell 1:</p>
+<pre><code class="language-sql">
+REINDEX INDEX CONCURRENTLY bar_idx;
+</code></pre><p>This will hang because shell 2 has an open transaction. If you cancel the REINDEX operation, you will see the following index:</p>
+<pre><code class="language-">
+                            Table "public.foo"
  Column |  Type   | Collation | Nullable |             Default
 --------+---------+-----------+----------+---------------------------------
  id     | integer |           | not null | nextval('foo_id_seq'::regclass)
  bar    | integer |           |          |
 Indexes:
-    &quot;foo_pkey&quot; PRIMARY KEY, btree (id)
-    &quot;bar_idx&quot; btree (bar)
-    &quot;bar_idx_ccnew&quot; btree (bar) INVALID
-</code></pre>
-<p>The more concurrent reindexes fail, the more <code>ccnew</code> indexes will show up:</p>
-<pre><code>    &quot;bar_idx_ccnew&quot; btree (bar) INVALID
-    &quot;bar_idx_ccnew1&quot; btree (bar) INVALID
-    &quot;bar_idx_ccnew2&quot; btree (bar) INVALID
-    &quot;bar_idx_ccnew3&quot; btree (bar) INVALID
-</code></pre>
-<p>Postgres internally calls the function <code>ReindexRelationConcurrently</code> that has
-this following explanation:</p>
-<pre><code> * ReindexRelationConcurrently - process REINDEX CONCURRENTLY for given
+    "foo_pkey" PRIMARY KEY, btree (id)
+    "bar_idx" btree (bar)
+    "bar_idx_ccnew" btree (bar) INVALID
+</code></pre><p>The more concurrent reindexes fail, the more <code>ccnew</code> indexes will show up:</p>
+<pre><code class="language-">
+    "bar_idx_ccnew" btree (bar) INVALID
+    "bar_idx_ccnew1" btree (bar) INVALID
+    "bar_idx_ccnew2" btree (bar) INVALID
+    "bar_idx_ccnew3" btree (bar) INVALID
+</code></pre><p>Postgres internally calls the function <code>ReindexRelationConcurrently</code> that has this following explanation:</p>
+<pre><code class="language-">
+ * ReindexRelationConcurrently - process REINDEX CONCURRENTLY for given
  * relation OID
  *
  * 'relationOid' can either belong to an index, a table or a materialized
@@ -108,42 +107,36 @@ this following explanation:</p>
  * excluding invalid indexes and any indexes used in exclusion constraints,
  * but including its associated toast table indexes.  For indexes, the index
  * itself will be rebuilt.
-</code></pre>
-<p>The index creation and replacement happens in 6 steps (comment extracted from
-the code after all the indexes for the operation are found).</p>
-<pre><code>    /*-----
-     * Now we have all the indexes we want to process in indexIds.
-     *
-     * The phases now are:
-     *
-     * 1. create new indexes in the catalog
-     * 2. build new indexes
-     * 3. let new indexes catch up with tuples inserted in the meantime
-     * 4. swap index names
-     * 5. mark old indexes as dead
-     * 6. drop old indexes
-     *
-     * We process each phase for all indexes before moving to the next phase,
-     * for efficiency.
-     */
+</code></pre><p>The index creation and replacement happens in 6 steps (comment extracted from the code after all the indexes for the operation are found).</p>
+<pre><code class="language-">
+	/*-----
+	 * Now we have all the indexes we want to process in indexIds.
+	 *
+	 * The phases now are:
+	 *
+	 * 1. create new indexes in the catalog
+	 * 2. build new indexes
+	 * 3. let new indexes catch up with tuples inserted in the meantime
+	 * 4. swap index names
+	 * 5. mark old indexes as dead
+	 * 6. drop old indexes
+	 *
+	 * We process each phase for all indexes before moving to the next phase,
+	 * for efficiency.
+	 */
 
-    /*
-     * Phase 1 of REINDEX CONCURRENTLY
-     *
-     * Create a new index with the same properties as the old one, but it is
-     * only registered in catalogs and will be built later.  Then get session
-     * locks on all involved tables.  See analogous code in DefineIndex() for
-     * more detailed comments.
-     */
-</code></pre>
-<p>Now on shell 2:</p>
-<pre><code class="language-sql">ROLLBACK;
-</code></pre>
-<p>And back on shell 1, finally reindex again:</p>
-<pre><code class="language-sql">REINDEX INDEX CONCURRENTLY bar_idx;
-</code></pre>
-<p><strong>Important</strong>: None of the <code>ccnew</code> indexes will be removed, you have to do that
-manually!</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+	/*
+	 * Phase 1 of REINDEX CONCURRENTLY
+	 *
+	 * Create a new index with the same properties as the old one, but it is
+	 * only registered in catalogs and will be built later.  Then get session
+	 * locks on all involved tables.  See analogous code in DefineIndex() for
+	 * more detailed comments.
+	 */
+</code></pre><p>Now on shell 2:</p>
+<pre><code class="language-sql">
+ROLLBACK;
+</code></pre><p>And back on shell 1, finally reindex again:</p>
+<pre><code class="language-sql">
+REINDEX INDEX CONCURRENTLY bar_idx;
+</code></pre><p><b>Important</b>: None of the <code>ccnew</code> indexes will be removed, you have to do that manually!</p>

@@ -59,21 +59,18 @@
   <![endif]-->
 </head>
 <body>
-<h1>Exercise 1.2</h1>
-<h2>Pre-exercise Theory</h2>
-<p><strong>Prefix Form</strong> is the &quot;convention of placing the operator to the left of the
-operands&quot;.</p>
-<p>One advantage of this form is that it can take any amount of arguments without
-any ambiguity:</p>
-<pre><code class="language-scm">(+ 42 77 12)
-</code></pre>
-<p>The other advantage is that nesting operations are also simple and unambiguous:</p>
-<pre><code class="language-scm">(+ 42 (- 77 12))
-</code></pre>
-<p>A good way of formatting prefix operations is by aligning the operands of an
-expression vertically, so that by looking at the indentation one can follow
-which operations go together:</p>
-<pre><code class="language-scm">; without pretty-print
+<h1>Exercise <ol><li>22</h0>
+<h2>P Prree<ul><li>eexxeerrcciissee  TThheeoorryy</h0>
+<b>Prefix Form</b> is the "convention of placing the operator to the left of the operands".</li></ol>
+ One advantage of this form is that it can take any amount of arguments without any ambiguity:</li></ul>
+<pre><code class="language-scm">
+(+ 42 77 12)
+</code></pre><p>The other advantage is that nesting operations are also simple and unambiguous:</p>
+<pre><code class="language-scm">
+(+ 42 (- 77 12))
+</code></pre><p>A good way of formatting prefix operations is by aligning the operands of an expression vertically, so that by looking at the indentation one can follow which operations go together:</p>
+<pre><code class="language-scm">
+; without pretty-print
 (+ (* 3 (+ (* 2 4) (+ 3 5))) (+ (- 10 7) 6))
 
 ; with pretty-print
@@ -87,19 +84,14 @@ which operations go together:</p>
       6
    )
 )
-
-## Problem
-
-&gt; Translate the following expression into prefix form:
-
-</code></pre>
-<h2>5 + 4 + (2 - (3 - (6 + 4/5)))</h2>
-<pre><code>    3(6 - 2)(2 - 7)
-</code></pre>
-<pre><code>
-The total of this division is = -0.246 or -37/150
-
-```scm
+</code></pre><h2>Problem</h0>
+<blockquote>Translate the following expression into prefix form:</blockquote>
+<pre><code class="language-">
+5 + 4 + (2 - (3 - (6 + 4/5)))
+-----------------------------
+        3(6 - 2)(2 - 7)
+</code></pre><p>The total of this division is = -0.246 or -37/150</p>
+<pre><code class="language-scm">
 (/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5))))) (* 3 (- 6 2) (- 2 7)))
 ; -37/150
 
@@ -123,6 +115,3 @@ The total of this division is = -0.246 or -37/150
     )
 )
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

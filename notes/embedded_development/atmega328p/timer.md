@@ -33,7 +33,7 @@ The PWM frequency for the output can be calculated by the following equation:
 
 For the 16bit timer this becomes:
 
-`f_pwm = f_clk / (N*(1+TOP))
+`f_pwm = f_clk / (N*(1+TOP))`
 
 N is a pre-scale value that can be configured (1, 8, 64, 256, or 1024).
 

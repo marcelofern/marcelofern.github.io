@@ -130,3 +130,4 @@ Now in another PSQL shell, try to vacuum the table
 
 ```sql
 VACUUM public.foo;
+```

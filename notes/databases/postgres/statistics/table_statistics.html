@@ -59,26 +59,23 @@
   <![endif]-->
 </head>
 <body>
-<h1>Table Statistics</h1>
-<pre><code>Created at: 2025-04-26
-</code></pre>
-<p>The table <code>pg_stat_all_tables</code> can be queried to collect statistics about a
-particular table. The <code>pg_stat_user_tables</code> and <code>pg_stat_sys_tables</code> views
-contain the same information, but filtered to only show user and system tables
-respectively.</p>
-<p>See:
-https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-ALL-TABLES-VIEW</p>
-<h2>Query</h2>
-<pre><code class="language-sql">SELECT
+<h1>Table Statistics</h0>
+<pre><code class="language-">
+Created at: 2025-04-26
+</code></pre><p>The table <code>pg_stat_all_tables</code> can be queried to collect statistics about a particular table. The <code>pg_stat_user_tables</code> and <code>pg_stat_sys_tables</code> views contain the same information, but filtered to only show user and system tables respectively.</p>
+<p>See: https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-ALL-TABLES-VIEW</p>
+<h2>Query</h0>
+<pre><code class="language-sql">
+SELECT
   *,
   pg_size_pretty(pg_total_relation_size(relid)) AS table_size
 FROM
   pg_stat_all_tables
 WHERE
   relname = 'foo';
-</code></pre>
-<h2>Example</h2>
-<pre><code class="language-sql">-- Create a basic table with 10,000 rows.
+</code></pre><h2>Example</h0>
+<pre><code class="language-sql">
+-- Create a basic table with 10,000 rows.
 DROP TABLE IF EXISTS foo CASCADE;
 
 CREATE TABLE
@@ -125,14 +122,8 @@ WHERE
 -- autovacuum_count    | 0
 -- analyze_count       | 0
 -- autoanalyze_count   | 0
-</code></pre>
-<h2>Resetting statistics</h2>
-<blockquote>
-<p>pg_stat_reset () → void (SELECT pg_stat_reset();)
-Resets all statistics counters for the current database to zero.
-This function is restricted to superusers by default, but other users can be
-granted EXECUTE to run the function.</p>
-</blockquote>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+</code></pre><h2>Resetting statistics</h0>
+<blockquote>pg_stat_reset () → void (SELECT pg_stat_reset();)</blockquote>
+<blockquote>Resets all statistics counters for the current database to zero.</blockquote>
+<blockquote>This function is restricted to superusers by default, but other users can be</blockquote>
+<blockquote>granted EXECUTE to run the function.</blockquote>

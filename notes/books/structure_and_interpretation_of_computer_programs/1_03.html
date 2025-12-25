@@ -59,43 +59,43 @@
   <![endif]-->
 </head>
 <body>
-<h1>Exercise 1.3</h1>
-<h2>Pre-exercise Theory</h2>
-<p>A procedure can be defined in Scheme like this:</p>
-<pre><code class="language-scm">(define (cube x) (* x x x))
-</code></pre>
-<h2>The problem</h2>
-<blockquote>
-<p>Define a procedure that takes three numbers as arguments and returns the sum
-of the squares of the two larger numbers.</p>
-</blockquote>
-<pre><code class="language-scm">(define (squared_sum_of_two_largest x y z)
+<h1>Exercise <ol><li>33</h0>
+<h2>P Prree<ul><li>eexxeerrcciissee  TThheeoorryy</h0>
+ A procedure can be defined in Scheme like this:</li></ol>
+<pre><code class="language-scm">
+(define (cube x) (* x x x))
+</code></pre></li></ul>
+<h2>The problem</h0>
+<blockquote>Define a procedure that takes three numbers as arguments and returns the sum</blockquote>
+<blockquote>of the squares of the two larger numbers.</blockquote>
+<pre><code class="language-scm">
+(define (squared_sum_of_two_largest x y z)
         (define (squared x) (* x x))
         (define (sum_of_squares x y) (+ (squared x) (squared y)))
         (
             cond
-            ((and (&gt;= x y) (&gt;= y z)) (sum_of_squares x y))
-            ((and (&gt;= y x) (&gt;= x z)) (sum_of_squares y x))
-            ((and (&gt;= y z) (&gt;= z x)) (sum_of_squares y z))
-            ((and (&gt;= z y) (&gt;= y x)) (sum_of_squares z y))
-            ((and (&gt;= z x) (&gt;= x y)) (sum_of_squares z x))
-            ((and (&gt;= x z) (&gt;= z y)) (sum_of_squares x z))
+            ((and (>= x y) (>= y z)) (sum_of_squares x y))
+            ((and (>= y x) (>= x z)) (sum_of_squares y x))
+            ((and (>= y z) (>= z x)) (sum_of_squares y z))
+            ((and (>= z y) (>= y x)) (sum_of_squares z y))
+            ((and (>= z x) (>= x y)) (sum_of_squares z x))
+            ((and (>= x z) (>= z y)) (sum_of_squares x z))
         )
 )
 
-; z &gt; y &gt; x
+; z > y > x
 (squared_sum_of_two_largest 2 3 4)
 ; 25
 
-; x &gt; y &gt; z
+; x > y > z
 (squared_sum_of_two_largest 4 3 2)
 ; 25
 
-; y &gt; x &gt; z
+; y > x > z
 (squared_sum_of_two_largest 3 4 2)
 ; 25
 
-; z &gt; x &gt; y
+; z > x > y
 (squared_sum_of_two_largest 3 2 4)
 ; 25
 
@@ -103,18 +103,15 @@ of the squares of the two larger numbers.</p>
 (squared_sum_of_two_largest 2 2 2)
 ; 8
 
-; x = y &gt; z
+; x = y > z
 (squared_sum_of_two_largest 3 3 2)
 ; 18
 
-; x &lt; y = z
+; x < y = z
 (squared_sum_of_two_largest 2 3 3)
 ; 18
 
-; z = x &gt; y
+; z = x > y
 (squared_sum_of_two_largest 3 2 3)
 ; 18
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

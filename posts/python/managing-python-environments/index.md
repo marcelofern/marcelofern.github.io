@@ -72,8 +72,7 @@ the abstraction provided by `pyenv`:
 2. Python versions are hidden from you, which is another magical feature that
    makes it a little less ergonomic for you to control or debug a particular
    environment yourself. This problem can be enhanced when the bug is in
-   `pyenv` itself. Checking for [recent
-   issues](https://github.com/pyenv/pyenv/issues?q=is%3Aissue+is%3Aclosed) in
+   `pyenv` itself. Checking for [recent issues](https://github.com/pyenv/pyenv/issues?q=is%3Aissue+is%3Aclosed) in
    the repository, one can see many distinct problems ranging from incompatible
    changes within `pyenv` itself, to weird missing C++ links in the Python
    executable, failing to create a virtual environment for a specific version

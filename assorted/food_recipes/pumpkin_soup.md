@@ -13,7 +13,7 @@
 - 1/2 a can of coconut cream (100% coconut).
 - 1 1/2 tablespoon of soy sauce.
 - 2 tablespoons of cumin and coriander.
-- [optional] 1/2 tablespoon of nutritional yeast.
+- (optional) 1/2 tablespoon of nutritional yeast.
 
 ## Prep
 

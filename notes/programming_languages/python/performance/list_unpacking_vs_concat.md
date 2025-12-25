@@ -101,10 +101,8 @@ I've tried increasing the size of the array, but the output remains consistent
 and both seem to run at the same speed.
 
 Looking at the python source for Cpython, the only difference I see between the
-[list
-concat](https://github.com/python/cpython/blob/d065edfb66470bbf06367b3570661d0346aa6707/Objects/listobject.c#L726)
-function and the [list
-extend](https://github.com/python/cpython/blob/d065edfb66470bbf06367b3570661d0346aa6707/Objects/listobject.c#L1161)
+[list concat](https://github.com/python/cpython/blob/d065edfb66470bbf06367b3570661d0346aa6707/Objects/listobject.c#L726)
+function and the [list extend](https://github.com/python/cpython/blob/d065edfb66470bbf06367b3570661d0346aa6707/Objects/listobject.c#L1161)
 function is that the concatenation does a malloc to begin with, and the second
 one does a calloc + memset.
 

@@ -59,30 +59,17 @@
   <![endif]-->
 </head>
 <body>
-<h1>Proofs By Cases</h1>
-<pre><code>Created at: 2025-05-11
-</code></pre>
-<p>Proving by case means dividing a problem into all the possible branches and
-then solving each branch individually.</p>
-<p>In other words, &quot;divide and conquer&quot;.</p>
-<h2>Example</h2>
-<p><strong>Proposition</strong>:</p>
-<ul>
-<li>If <code>n</code> is an integer, then <code>n² + n + 6</code> is even.</li>
-</ul>
-<p><strong>Fact</strong>:</p>
-<ul>
-<li>(1) If <code>n</code> is an integer, it is either odd or even.</li>
-<li>(2) Any multiplication, addition, or subtraction of an integer by another results
-in another integer.</li>
-</ul>
-<p><strong>Definitions</strong>:</p>
-<ul>
-<li>(a) An integer <code>n</code> is even if <code>n = 2k</code> where <code>k</code> is another integer.</li>
-<li>(b) An integer <code>n</code> is odd if <code>n = 2k + 1</code> where <code>k</code> is another integer.</li>
-</ul>
-<p><strong>Branch 1 <code>n</code> is even</strong>:</p>
-<pre><code>  n² + n + 6, then
+<h1>Proofs By Cases</h0>
+<pre><code class="language-">
+Created at: 2025-05-11
+</code></pre><p>Proving by case means dividing a problem into all the possible branches and then solving each branch individually.</p>
+<p>In other words, "divide and conquer".</p>
+<h2>Example</h0>
+<p><b>Proposition</b>: - If <code>n</code> is an integer, then <code>n² + n + 6</code> is even.</p>
+<p><b>Fact</b>: - (1) If <code>n</code> is an integer, it is either odd or even. - (2) Any multiplication, addition, or subtraction of an integer by another results in another integer.</p>
+<p><b>Definitions</b>: - (a) An integer <code>n</code> is even if <code>n = 2k</code> where <code>k</code> is another integer. - (b) An integer <code>n</code> is odd if <code>n = 2k + 1</code> where <code>k</code> is another integer.</p>
+<p><b>Branch 1 <code>n</code> is even</b>: <pre><code class="language-">
+  n² + n + 6, then</p>
 
   (2k)² + 2k + 6, then
 
@@ -96,9 +83,8 @@ in another integer.</li>
 
   By definition (a), we have that n² + n + 6 results in an even number when
   n is even.
-</code></pre>
-<p><strong>Branch 2 <code>n</code> is odd</strong>:</p>
-<pre><code>  n² + n + 6, then
+</code></pre><p><b>Branch 2 <code>n</code> is odd</b>: <pre><code class="language-">
+  n² + n + 6, then</p>
 
   (2k + 1)² + 2k + 1 + 6, then
 
@@ -115,6 +101,3 @@ in another integer.</li>
   By definition (a), we have that n² + n + 6 results in an even number when
   n is odd.
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

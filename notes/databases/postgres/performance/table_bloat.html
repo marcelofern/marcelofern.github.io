@@ -59,52 +59,29 @@
   <![endif]-->
 </head>
 <body>
-<h1>Table Bloat</h1>
-<pre><code>Created at: 2024-12-19
-</code></pre>
-<p>A table is bloated when it's actual size on disk is higher than the actual
-size of the data.</p>
-<p>Any UPDATEs and DELETEs will create &quot;dead tuples&quot; on the tables where these
-operations are performed.</p>
-<p>Dead tuples are tuples that can't be seen in the current database table version
-but are still stored in disk.</p>
-<p>Due to Postgres' MVCC architecture (Multiversion Concurrency Control), tuples
-aren't necessarily deleted or updated on disk as soon as they are affected by
-an operation.</p>
-<p>Such tuples have the problem of occupying space on disk. This space may be
-reclaimed by a VACUUM. In certain situations, not even a VACUUM can reclaim
-these dead tuples. This is the case when active transactions holding those
-dead tuples exist and the xmin horizon is behind - think about long-running
-transactions here.</p>
-<h2>Performance Implications Of Bloated Tables</h2>
-<ol>
-<li>The same query needs to read through more buffers to satisfy its results,
-because tuples are sparsely allocated on disk.</li>
-<li>These tuples take more room in memory, thus not allowing efficient caching
-of pages.</li>
-</ol>
-<h2>Vacuuming</h2>
-<p>While VACUUM may reclaim dead rows, it won't fix fragmented pages.
-That is, VACUUM won't reorder the tuples in their stored pages to defragment
-them, nor will it delete pages that aren't used by the table.</p>
-<p>This is only achieved when <code>VACUUM FULL</code> is performed. This operation will
-effectively copy all tables and create new ones with a compact size on disk.</p>
-<p>It's rare the database that can afford a <code>VACUUM FULL</code> these days, as it takes
-an AccessExclusive lock. Instead, there are alternatives like <code>pg_repack</code> to
-be used instead.</p>
-<p>Indexes can also become defragmented for the same reasons. The
-<code>pgstattuple.pgstatindex</code> function is useful for checking index fragmentation.
-Focus on the <code>avg_leaf_density</code> value, anything below 20% isn't great.
-<a href="https://dba.stackexchange.com/questions/331052/what-is-acceptable-level-of-btree-index-fragmentation-in-postgres">source</a>.</p>
-<h2>Bloat</h2>
+<h1>Table Bloat</h0>
+<pre><code class="language-">
+Created at: 2024-12-19
+</code></pre><p>A table is bloated when it's actual size on disk is higher than the actual size of the data.</p>
+<p>Any UPDATEs and DELETEs will create "dead tuples" on the tables where these operations are performed.</p>
+<p>Dead tuples are tuples that can't be seen in the current database table version but are still stored in disk.</p>
+<p>Due to Postgres' MVCC architecture (Multiversion Concurrency Control), tuples aren't necessarily deleted or updated on disk as soon as they are affected by an operation.</p>
+<p>Such tuples have the problem of occupying space on disk. This space may be reclaimed by a VACUUM. In certain situations, not even a VACUUM can reclaim these dead tuples. This is the case when active transactions holding those dead tuples exist and the xmin horizon is behind - think about long-running transactions here.</p>
+<h2>Performance Implications Of Bloated Tables</h0>
+<ol><li>The same query needs to read through more buffers to satisfy its results, because tuples are sparsely allocated on disk.</li><li>These tuples take more room in memory, thus not allowing efficient caching of pages.</li></ol>
+<h2>Vacuuming</h0>
+<p>While VACUUM may reclaim dead rows, it won't fix fragmented pages. That is, VACUUM won't reorder the tuples in their stored pages to defragment them, nor will it delete pages that aren't used by the table.</p>
+<p>This is only achieved when <code>VACUUM FULL</code> is performed. This operation will effectively copy all tables and create new ones with a compact size on disk.</p>
+<p>It's rare the database that can afford a <code>VACUUM FULL</code> these days, as it takes an AccessExclusive lock. Instead, there are alternatives like <code>pg_repack</code> to be used instead.</p>
+<p>Indexes can also become defragmented for the same reasons. The <code>pgstattuple.pgstatindex</code> function is useful for checking index fragmentation. Focus on the <code>avg_leaf_density</code> value, anything below 20% isn't great. <a href="https://dba.stackexchange.com/questions/331052/what-is-acceptable-level-of-btree-index-fragmentation-in-postgres">source</a>.</p>
+<h2>Bloat</h0>
 <p>To find the bloat of a table, Postgres' wiki recommends:</p>
-<blockquote>
-<p>To obtain more accurate information about database bloat, please refer to the
-pgstattuple or pg_freespacemap contrib modules.
-<a href="https://wiki.postgresql.org/wiki/Show_database_bloat">source</a></p>
-</blockquote>
-<h2>Example</h2>
-<pre><code class="language-sql">CREATE DATABASE bloat_test;
+<blockquote>To obtain more accurate information about database bloat, please refer to the</blockquote>
+<blockquote>pgstattuple or pg_freespacemap contrib modules.</blockquote>
+<blockquote>[source](https://wiki.postgresql.org/wiki/Show_database_bloat)</blockquote>
+<h2>Example</h0>
+<pre><code class="language-sql">
+CREATE DATABASE bloat_test;
 
 CREATE EXTENSION IF NOT EXISTS pgstattuple;
 
@@ -198,72 +175,56 @@ SELECT * FROM bloated;
 
 -- Now using the index instead of seq scan
 EXPLAIN (ANALYZE, BUFFERS, COSTS off)
-SELECT * FROM not_bloated WHERE val &gt; 1000 and val &lt; 40000;
+SELECT * FROM not_bloated WHERE val > 1000 and val < 40000;
 --                                          QUERY PLAN
 -- --------------------------------------------------------------------------------------------
 --  Bitmap Heap Scan on not_bloated (actual time=17.933..25.978 rows=38999 loops=1)
---    Recheck Cond: ((val &gt; 1000) AND (val &lt; 40000))
+--    Recheck Cond: ((val > 1000) AND (val < 40000))
 --    Heap Blocks: exact=173
 --    Buffers: shared hit=282
---    -&gt;  Bitmap Index Scan on not_bloated_idx (actual time=17.829..17.830 rows=38999 loops=1)
---          Index Cond: ((val &gt; 1000) AND (val &lt; 40000))
+--    ->  Bitmap Index Scan on not_bloated_idx (actual time=17.829..17.830 rows=38999 loops=1)
+--          Index Cond: ((val > 1000) AND (val < 40000))
 --          Buffers: shared hit=109
 --  Planning Time: 0.320 ms
 --  Execution Time: 29.565 ms
 
 -- Uses the same amount of buffers but the table is half the size!!!
 EXPLAIN (ANALYZE, BUFFERS, COSTS off)
-SELECT * FROM bloated WHERE val &gt; 1000 and val &lt; 40000;
+SELECT * FROM bloated WHERE val > 1000 and val < 40000;
 -- Bitmap Heap Scan on bloated (actual time=17.238..25.120 rows=38999 loops=1)
---   Recheck Cond: ((val &gt; 1000) AND (val &lt; 40000))
+--   Recheck Cond: ((val > 1000) AND (val < 40000))
 --   Heap Blocks: exact=173
 --   Buffers: shared hit=282
---   -&gt;  Bitmap Index Scan on bloated_idx (actual time=17.110..17.110 rows=38999 loops=1)
---         Index Cond: ((val &gt; 1000) AND (val &lt; 40000))
+--   ->  Bitmap Index Scan on bloated_idx (actual time=17.110..17.110 rows=38999 loops=1)
+--         Index Cond: ((val > 1000) AND (val < 40000))
 --         Buffers: shared hit=109
 -- Planning Time: 0.324 ms
 -- Execution Time: 28.723 ms
-</code></pre>
-<p>Note from the Postgres documentation:</p>
-<blockquote>
-<p>The table_len will always be greater than the sum of the tuple_len,
-dead_tuple_len and free_space. The difference is accounted for by fixed page
-overhead, the per-page table of pointers to tuples, and padding to ensure
-that tuples are correctly aligned.</p>
-</blockquote>
+</code></pre><p>Note from the Postgres documentation:</p>
+<blockquote>The table_len will always be greater than the sum of the tuple_len,</blockquote>
+<blockquote>dead_tuple_len and free_space. The difference is accounted for by fixed page</blockquote>
+<blockquote>overhead, the per-page table of pointers to tuples, and padding to ensure</blockquote>
+<blockquote>that tuples are correctly aligned.</blockquote>
 <p>We can define table bloat as:</p>
-<pre><code>table_bloat = (bloat_size / table_size) * 100
-</code></pre>
-<p>Where</p>
-<pre><code>bloat_size = table_len - tuple_len
+<pre><code class="language-">
+table_bloat = (bloat_size / table_size) * 100
+</code></pre><p>Where</p>
+<pre><code class="language-">
+bloat_size = table_len - tuple_len
 table_size = table_len
-</code></pre>
-<p>For our example, table bloat in the <code>bloated</code> table is ~56%.</p>
-<h2>Find The Top 10 Bloated Tables in The Database</h2>
-<pre><code class="language-sql">SELECT relname, (pgstattuple(oid)).*
+</code></pre><p>For our example, table bloat in the <code>bloated</code> table is ~56%.</p>
+<h2>Find The Top 10 Bloated Tables in The Database</h0>
+<pre><code class="language-sql">
+SELECT relname, (pgstattuple(oid)).*
 FROM pg_class WHERE relkind = 'r'
 ORDER BY dead_tuple_percent DESC
 LIMIT 10;
-</code></pre>
-<h2>Sources</h2>
-<ul>
-<li><a href="https://www.cybertec-postgresql.com/en/detecting-table-bloat/">bloat estimation blog post</a></li>
-<li><a href="https://www.timescale.com/learn/how-to-reduce-bloat-in-large-postgresql-tables">bloat estimation blog post 2</a></li>
-<li><a href="https://github.com/marcelofern/pgsql-bloat-estimation">bloat estimation queries</a></li>
-</ul>
-<h2>Outro</h2>
-<p>Since I am using DataDog at the moment, it's worth mentioning that DataDog
-calculates index bloat using a special query created based on:</p>
-<ul>
-<li><a href="https://wiki.postgresql.org/wiki/Show_database_bloat">postgres wiki on bloat</a></li>
-<li><a href="https://github.com/bucardo/check_postgres/">burcardo's check postgres</a></li>
-</ul>
+</code></pre><h2>Sources</h0>
+<ul><li><a href="https://www.cybertec-postgresql.com/en/detecting-table-bloat/">bloat estimation blog post</a></li><li><a href="https://www.timescale.com/learn/how-to-reduce-bloat-in-large-postgresql-tables">bloat estimation blog post 2</a></li><li><a href="https://github.com/marcelofern/pgsql-bloat-estimation">bloat estimation queries</a></li></ul>
+<h2>Outro</h0>
+<p>Since I am using DataDog at the moment, it's worth mentioning that DataDog calculates index bloat using a special query created based on:</p>
+<ul><li><a href="https://wiki.postgresql.org/wiki/Show_database_bloat">postgres wiki on bloat</a></li><li><a href="https://github.com/bucardo/check_postgres/">burcardo's check postgres</a></li></ul>
 <p>The actual query can be found <a href="https://github.com/DataDog/integrations-core/blob/8c575d73d669c67fd154da6d32e5dad9448b2091/postgres/datadog_checks/postgres/relationsmanager.py#L323">here</a></p>
 <p>The same is true for table bloat, but the query is slightly different <a href="https://github.com/DataDog/integrations-core/blob/8c575d73d669c67fd154da6d32e5dad9448b2091/postgres/datadog_checks/postgres/relationsmanager.py#L269">source</a>.</p>
 <p>Stack overflow question:</p>
-<ul>
-<li><a href="https://dba.stackexchange.com/questions/310873/how-postgres-bloat-is-dangerous">How Postgres bloat is dangerous?</a></li>
-</ul>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+<ul><li><a href="https://dba.stackexchange.com/questions/310873/how-postgres-bloat-is-dangerous">How Postgres bloat is dangerous?</a></li></ul>

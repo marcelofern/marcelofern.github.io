@@ -978,7 +978,7 @@ No flags are affected.
 ### XLAT
 
 The xlat instruction in x86 assembly language stands for "translate byte at
-DS:[(E)BX] and store result in AL." It is used to perform a simple byte lookup
+`DS:[(E)BX]` and store result in AL." It is used to perform a simple byte lookup
 and load the result into the AL register.
 
 - The contents of the EBX register (or BX if in 16-bit mode) are treated as an

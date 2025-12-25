@@ -61,15 +61,11 @@
 <body>
 <p>2024-05-13</p>
 <p>My old way of creating virtual environments in Python was:</p>
-<pre><code class="language-sh">virtualenv env_my_sweet_env
+<pre><code class="language-sh">
+virtualenv env_my_sweet_env
+source env_my_sweet_env/bin/activate
+</code></pre><p>But since Python 3.3+, the <code>python</code> bin comes with the <code>venv</code> module, making <code>virtualenv</code> unnecessary for me. <code>virtualenv</code> is still my preferred way if I were to use an older version of Python without <code>venv</code> support.</p>
+<pre><code class="language-sh">
+python -m venv env_my_sweet_env
 source env_my_sweet_env/bin/activate
 </code></pre>
-<p>But since Python 3.3+, the <code>python</code> bin comes with the <code>venv</code> module, making
-<code>virtualenv</code> unnecessary for me. <code>virtualenv</code> is still my preferred way if I
-were to use an older version of Python without <code>venv</code> support.</p>
-<pre><code class="language-sh">python -m venv env_my_sweet_env
-source env_my_sweet_env/bin/activate
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

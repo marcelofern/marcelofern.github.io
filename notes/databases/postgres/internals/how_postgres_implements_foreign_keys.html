@@ -59,58 +59,45 @@
   <![endif]-->
 </head>
 <body>
-<h1>How Postgres Implements Foreign Keys</h1>
-<pre><code>Created at: 2025-01-10
-</code></pre>
-<p>In order to implement foreign keys, Postgres creates 2 triggers in the
-referring table and 2 triggers in the referenced table</p>
-<h2>Referring Table Triggers</h2>
-<ul>
-<li><code>AFTER INSERT</code> and <code>AFTER UPDATE</code> row-level triggers. Such triggers verify
-the new row containing non-null foreign key field in the referring table
-points to an existing row in the referenced table.</li>
-</ul>
-<h2>Referred Table Triggers</h2>
-<ul>
-<li><code>AFTER UPDATE</code> and <code>AFTER DELETE</code> row-level triggers. Such triggers verify
-that UPDATEs and DELETEs don't culminate in invalid links in the referring
-table. If &quot;CASCADING&quot; it will also delete the orphaned row in the referring
-table.</li>
-</ul>
-<h2>Seeing The Code For The Triggers</h2>
+<h1>How Postgres Implements Foreign Keys</h0>
+<pre><code class="language-">
+Created at: 2025-01-10
+</code></pre><p>In order to implement foreign keys, Postgres creates 2 triggers in the referring table and 2 triggers in the referenced table</p>
+<h2>Referring Table Triggers</h0>
+<ul><li><code>AFTER INSERT</code> and <code>AFTER UPDATE</code> row</li><li>level triggers. Such triggers verify the new row containing non</li><li>null foreign key field in the referring table points to an existing row in the referenced table.</li></ul>
+<h2>Referred Table Triggers</h0>
+<ul><li><code>AFTER UPDATE</code> and <code>AFTER DELETE</code> row</li><li>level triggers. Such triggers verify that UPDATEs and DELETEs don't culminate in invalid links in the referring table. If "CASCADING" it will also delete the orphaned row in the referring table.</li></ul>
+<h2>Seeing The Code For The Triggers</h0>
 <p>Psql doesn't show them. But we can find them through the <code>pg_trigger</code> table.</p>
-<pre><code class="language-sql">SELECT tgname AS trigger_name,
+<pre><code class="language-sql">
+SELECT tgname AS trigger_name,
        tgisinternal AS internal,
-       CASE WHEN tgtype &amp; 2 = 2 THEN 'BEFORE ' ELSE 'AFTER ' END ||
-       CASE tgtype &amp; 60
+       CASE WHEN tgtype & 2 = 2 THEN 'BEFORE ' ELSE 'AFTER ' END ||
+       CASE tgtype & 60
           WHEN 4  THEN 'INSERT'
           WHEN 8  THEN 'DELETE'
           WHEN 16 THEN 'UPDATE'
           ELSE '?'
        END ||
        ' FOR EACH ' ||
-       CASE WHEN tgtype &amp; 1 = 1 THEN 'ROW' ELSE 'STATEMENT' END
+       CASE WHEN tgtype & 1 = 1 THEN 'ROW' ELSE 'STATEMENT' END
           AS firing_conditions
 FROM pg_trigger
-WHERE tgrelid = '&lt;table_name&gt;'::regclass;
-</code></pre>
-<p>The result should show the trigger names and their firing conditions:</p>
-<pre><code>          trigger_name          | internal |     firing_conditions
+WHERE tgrelid = '<table_name>'::regclass;
+</code></pre><p>The result should show the trigger names and their firing conditions:</p>
+<pre><code class="language-">
+          trigger_name          | internal |     firing_conditions
 --------------------------------+----------+---------------------------
  RI_ConstraintTrigger_a_2044997 | t        | AFTER DELETE FOR EACH ROW
  RI_ConstraintTrigger_a_2044998 | t        | AFTER UPDATE FOR EACH ROW
  RI_ConstraintTrigger_c_2044999 | t        | AFTER INSERT FOR EACH ROW
  RI_ConstraintTrigger_c_2045000 | t        | AFTER UPDATE FOR EACH ROW
-</code></pre>
-<p>The <code>_a_</code> stands for action constraints, which are created in the referred
-table. <a href="https://github.com/postgres/postgres/blob/bebe9040388bb2292585eab712fe4d29a71843fb/src/backend/commands/tablecmds.c#L12692">source code</a></p>
-<p>The <code>_c_</code> stands for the &quot;check&quot; constraints, which are created in the
-referring table. <a href="https://github.com/postgres/postgres/blob/bebe9040388bb2292585eab712fe4d29a71843fb/src/backend/commands/tablecmds.c#L12629">source
-code</a></p>
-<h2>Side note about using cascade to drop the column</h2>
-<p>If you try to drop a column that is used as foreign key by another table,
-you'll see an error when not using CASCADE (default is RESTRICT):</p>
-<pre><code class="language-sql">BEGIN;
+</code></pre><p>The <code>_a_</code> stands for action constraints, which are created in the referred table. <a href="https://github.com/postgres/postgres/blob/bebe9040388bb2292585eab712fe4d29a71843fb/src/backend/commands/tablecmds.c#L12692">source code</a></p>
+<p>The <code>_c_</code> stands for the "check" constraints, which are created in the referring table. <a href="https://github.com/postgres/postgres/blob/bebe9040388bb2292585eab712fe4d29a71843fb/src/backend/commands/tablecmds.c#L12629">source code</a></p>
+<h2>Side note about using cascade to drop the column</h0>
+<p>If you try to drop a column that is used as foreign key by another table, you'll see an error when not using CASCADE (default is RESTRICT):</p>
+<pre><code class="language-sql">
+BEGIN;
 
 DROP TABLE IF EXISTS refered CASCADE;
 CREATE TABLE refered (id serial, int_field int unique);
@@ -120,49 +107,46 @@ CREATE TABLE referencing (id serial);
 
 INSERT INTO refered (int_field) SELECT generate_series(1, 10000);
 
-ALTER TABLE &quot;referencing&quot; ADD COLUMN &quot;refered_int_field&quot; int NULL
-CONSTRAINT &quot;delete_this_soon&quot;
-REFERENCES &quot;refered&quot;(&quot;int_field&quot;)
+ALTER TABLE "referencing" ADD COLUMN "refered_int_field" int NULL
+CONSTRAINT "delete_this_soon"
+REFERENCES "refered"("int_field")
 DEFERRABLE INITIALLY DEFERRED;
 
 ALTER TABLE refered DROP COLUMN int_field RESTRICT;
 
 ROLLBACK;
-</code></pre>
-<pre><code>ERROR:  cannot drop column int_field of table refered because other objects
+</code></pre><pre><code class="language-">
+ERROR:  cannot drop column int_field of table refered because other objects
 depend on it.
 
 DETAIL:  constraint delete_this_soon on table referencing depends on column
 int_field of table refered
 
 HINT:  Use DROP ... CASCADE to drop the dependent objects too.
-</code></pre>
-<h2>Locks</h2>
+</code></pre><h2>Locks</h0>
 <p>Here are the locks involved in adding the FK:</p>
-<pre><code> locktype |         mode          | granted | relation |   relname   |                               query                               |  lock_duration  
+<pre><code class="language-">
+ locktype |         mode          | granted | relation |   relname   |                               query                               |  lock_duration  
 ----------+-----------------------+---------+----------+-------------+-------------------------------------------------------------------+-----------------
- relation | AccessShareLock       | t       |  2673969 | referencing | ALTER TABLE &quot;referencing&quot; ADD COLUMN &quot;refered_int_field&quot; int NULL+| 00:00:22.996175
-          |                       |         |          |             | CONSTRAINT &quot;delete_this_soon&quot;                                    +| 
-          |                       |         |          |             | REFERENCES &quot;refered&quot;(&quot;int_field&quot;)                                +| 
+ relation | AccessShareLock       | t       |  2673969 | referencing | ALTER TABLE "referencing" ADD COLUMN "refered_int_field" int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT "delete_this_soon"                                    +| 
+          |                       |         |          |             | REFERENCES "refered"("int_field")                                +| 
           |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
- relation | ShareRowExclusiveLock | t       |  2673969 | referencing | ALTER TABLE &quot;referencing&quot; ADD COLUMN &quot;refered_int_field&quot; int NULL+| 00:00:22.996175
-          |                       |         |          |             | CONSTRAINT &quot;delete_this_soon&quot;                                    +| 
-          |                       |         |          |             | REFERENCES &quot;refered&quot;(&quot;int_field&quot;)                                +| 
+ relation | ShareRowExclusiveLock | t       |  2673969 | referencing | ALTER TABLE "referencing" ADD COLUMN "refered_int_field" int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT "delete_this_soon"                                    +| 
+          |                       |         |          |             | REFERENCES "refered"("int_field")                                +| 
           |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
- relation | AccessExclusiveLock   | t       |  2673969 | referencing | ALTER TABLE &quot;referencing&quot; ADD COLUMN &quot;refered_int_field&quot; int NULL+| 00:00:22.996175
-          |                       |         |          |             | CONSTRAINT &quot;delete_this_soon&quot;                                    +| 
-          |                       |         |          |             | REFERENCES &quot;refered&quot;(&quot;int_field&quot;)                                +| 
+ relation | AccessExclusiveLock   | t       |  2673969 | referencing | ALTER TABLE "referencing" ADD COLUMN "refered_int_field" int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT "delete_this_soon"                                    +| 
+          |                       |         |          |             | REFERENCES "refered"("int_field")                                +| 
           |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
- relation | AccessShareLock       | t       |  2673962 | refered     | ALTER TABLE &quot;referencing&quot; ADD COLUMN &quot;refered_int_field&quot; int NULL+| 00:00:22.996175
-          |                       |         |          |             | CONSTRAINT &quot;delete_this_soon&quot;                                    +| 
-          |                       |         |          |             | REFERENCES &quot;refered&quot;(&quot;int_field&quot;)                                +| 
+ relation | AccessShareLock       | t       |  2673962 | refered     | ALTER TABLE "referencing" ADD COLUMN "refered_int_field" int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT "delete_this_soon"                                    +| 
+          |                       |         |          |             | REFERENCES "refered"("int_field")                                +| 
           |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
- relation | ShareRowExclusiveLock | t       |  2673962 | refered     | ALTER TABLE &quot;referencing&quot; ADD COLUMN &quot;refered_int_field&quot; int NULL+| 00:00:22.996175
-          |                       |         |          |             | CONSTRAINT &quot;delete_this_soon&quot;                                    +| 
-          |                       |         |          |             | REFERENCES &quot;refered&quot;(&quot;int_field&quot;)                                +| 
+ relation | ShareRowExclusiveLock | t       |  2673962 | refered     | ALTER TABLE "referencing" ADD COLUMN "refered_int_field" int NULL+| 00:00:22.996175
+          |                       |         |          |             | CONSTRAINT "delete_this_soon"                                    +| 
+          |                       |         |          |             | REFERENCES "refered"("int_field")                                +| 
           |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED;                                    | 
 (5 rows)
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

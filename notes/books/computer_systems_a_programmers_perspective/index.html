@@ -59,59 +59,31 @@
   <![endif]-->
 </head>
 <body>
-<h1>CSAPP</h1>
-<p>I have started this book somewhere around June 2024. It is thick, and it is
-full of information and homework.</p>
-<p>I am trying to not be too ambitious so I will not commit to reading the whole
-book, though it wouldn't be a tragedy if I end up doing so. The chapters that I
-have chosen to read are already plenty to go through, and they have been
-selected based on where I believe most of my knowledge gaps are:</p>
-<ul>
-<li>Chapter 3: Machine-Level Representation of Programs</li>
-<li>Chapter 4: Processor Architecture</li>
-<li>Chapter 5: Optimising Program Performance</li>
-<li>Chapter 7: Linking</li>
-<li>Chapter 9: Virtual Memory</li>
-</ul>
-<p>I'll also skim through the following chapters, but likely not going to dive too
-deep:</p>
-<ul>
-<li>Chapter 6: The Memory Hierarchy</li>
-<li>Chapter 8: Exceptional Control Flow</li>
-</ul>
-<h2>Tools</h2>
-<p>For assembly code, I much prefer Intel syntax over AT&amp;T. It is annoying that
-<code>gcc</code> and <code>objdump</code> defaults use AT&amp;T, so we need to set the appropriate flags
-in many commands below.</p>
-<h3>Compiling and running <code>.c</code> binaries</h3>
-<pre><code class="language-sh">gcc -Og /tmp/main.c -o /tmp/a.o &amp;&amp; /tmp/a.o
-</code></pre>
-<h3>Compiling <code>.c</code> to <code>.asm</code></h3>
-<pre><code class="language-sh">gcc -S -masm=intel -fno-asynchronous-unwind-tables &lt;options&gt; -o /tmp/main.asm
-</code></pre>
-<p>I've translated the above to a vim command &quot;CToAssembly&quot; for convenience.</p>
-<h3>Showing the compiled bytes for function</h3>
-<pre><code class="language-sh">gdb /tmp/a.o
+<h1>CSAPP</h0>
+<p>I have started this book somewhere around June 2024. It is thick, and it is full of information and homework.</p>
+<p>I am trying to not be too ambitious so I will not commit to reading the whole book, though it wouldn't be a tragedy if I end up doing so. The chapters that I have chosen to read are already plenty to go through, and they have been selected based on where I believe most of my knowledge gaps are:</p>
+<ul><li>Chapter 3: Machine</li><li>Level Representation of Programs</li><li>Chapter 4: Processor Architecture</li><li>Chapter 5: Optimising Program Performance</li><li>Chapter 7: Linking</li><li>Chapter 9: Virtual Memory</li></ul>
+<p>I'll also skim through the following chapters, but likely not going to dive too deep:</p>
+<ul><li>Chapter 6: The Memory Hierarchy</li><li>Chapter 8: Exceptional Control Flow</li></ul>
+<h2>Tools</h0>
+<p>For assembly code, I much prefer Intel syntax over AT&T. It is annoying that <code>gcc</code> and <code>objdump</code> defaults use AT&T, so we need to set the appropriate flags in many commands below.</p>
+<h3>Compiling and running <code>..cc`</code> binaries</h0>
+<pre><code class="language-sh">
+gcc -Og /tmp/main.c -o /tmp/a.o && /tmp/a.o
+</code></pre><h3>Compiling <code>..cc`</code> to <code>..aassmm`</code></h0>
+<pre><code class="language-sh">
+gcc -S -masm=intel -fno-asynchronous-unwind-tables <options> -o /tmp/main.asm
+</code></pre><p>I've translated the above to a vim command "CToAssembly" for convenience.</p>
+<h3>Showing the compiled bytes for function</h0>
+<pre><code class="language-sh">
+gdb /tmp/a.o
 # Display the first 14 hex of the function my_sweet_function.
 # However note that using a disassembler is best! See section below.
 (gdb) x/14xb my_sweet_function
-</code></pre>
-<h3>Disassembling</h3>
-<pre><code class="language-sh">objdump -d --disassembler-options=intel /tmp/a.o
-</code></pre>
-<p>Analogously, I've translated the above to a vim command &quot;Disassembler&quot; for
-convenience.</p>
-<h2>Pertinent notes</h2>
-<p>Calling convention between C and assembly for function calls.
-The order of arguments is:</p>
-<ol>
-<li>rdi</li>
-<li>rsi</li>
-<li>rdx</li>
-<li>rcx</li>
-<li>r8</li>
-<li>r9</li>
-</ol>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+</code></pre><h3>Disassembling</h0>
+<pre><code class="language-sh">
+objdump -d --disassembler-options=intel /tmp/a.o
+</code></pre><p>Analogously, I've translated the above to a vim command "Disassembler" for convenience.</p>
+<h2>Pertinent notes</h0>
+<p>Calling convention between C and assembly for function calls. The order of arguments is:</p>
+<ol><li>rdi</li><li>rsi</li><li>rdx</li><li>rcx</li><li>r8</li><li>r9</li></ol>

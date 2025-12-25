@@ -138,8 +138,7 @@ RETURN_CONST             1 (100)
 
 In theory, a bytecode optimiser could generate the disassembled version of our
 code above once it analysed the function to always return the same constant
-value. This type of optimisation is called [Peephole
-Optimisation](http://web.archive.org/web/20240820050751/https://en.wikipedia.org/wiki/Peephole_optimization),
+value. This type of optimisation is called [Peephole Optimisation](http://web.archive.org/web/20240820050751/https://en.wikipedia.org/wiki/Peephole_optimization),
 a term coined back in 1965.
 
 The problem of optimising the snippet above seems simple, but one immediate

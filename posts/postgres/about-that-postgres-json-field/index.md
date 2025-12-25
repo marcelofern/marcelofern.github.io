@@ -24,8 +24,8 @@ This sounds great, but there are downsides to storing json fields
 The degradation of some database functions grows linearly as a function of
 the json size.
 
-To analyse this behaviour, I set up a sandbox script. The script creates **a
-table with 500,000 rows**, **with varying sizes of json fields** and runs
+To analyse this behaviour, I set up a sandbox script. The script creates
+**a table with 500,000 rows**, **with varying sizes of json fields** and runs
 common operations against it.
 
 The script and the data are included verbatim at the bottom of this post.
@@ -59,9 +59,9 @@ This makes querying these tables less efficient. SELECTs have to do more work
 to scan the same amount of data.
 
 If the json field doesn’t exceed a particular threshold (2KB default but can be
-configurable on a table-per-table basis with `CREATE TABLE ... WITH
-(toast_tuple_target=128)`) it won’t be stored in a toast table. Instead, it
-will be stored inline on the page.
+configurable on a table-per-table basis with `CREATE TABLE ... WITH (toast_tuple_target=128)`)
+it won’t be stored in a toast table. Instead, it will be stored inline on the
+page.
 
 If a table doesn't have a high ratio of HOT updates, the volume of dead
 rows will increase. This further affects performance.

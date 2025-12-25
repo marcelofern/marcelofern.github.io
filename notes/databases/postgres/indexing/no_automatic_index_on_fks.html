@@ -59,28 +59,24 @@
   <![endif]-->
 </head>
 <body>
-<h1>No Automatic Index on Foreign Keys</h1>
-<pre><code>Created at: 2024-08-22
-</code></pre>
-<p>Postgres does not automatically creates indexes for Foreign Keys.</p>
-<p><a href="http://web.archive.org/web/20240822020006/https://www.postgresql.org/message-id/472700FC.7040006%40reedyriver.com">This
-email</a>
-thread from the <code>psql-admin</code> reading list gives an example where adding an
-index for a FK is unnecessary:</p>
-<blockquote>
-<p>Whether or not you want to index non-identifying foreign keys is determined
-by the requirements of the database design.  For example, assume that we have
-a table that contains sales territories, which rarely change. We will use
-this table to create drop down lists that we will use to set territories.
-Now let's create a table for sales person and include an attribute for sales
-territory.  We will create a non-identifying foreign key relationship between
-this value and the sales territories and create proper constraints.  We will
-not index the column in the sales person table because the only thing that
-would use the index is the foreign key constraint and it will rarely fire and
-therefore the index is not worth the cost.</p>
-</blockquote>
+<h1>No Automatic Index on Foreign Keys</h0>
+<pre><code class="language-">
+Created at: 2024-08-22
+</code></pre><p>Postgres does not automatically creates indexes for Foreign Keys.</p>
+<p><a href="http://web.archive.org/web/20240822020006/https://www.postgresql.org/message-id/472700FC.7040006%40reedyriver.com">This email</a> thread from the <code>psql-admin</code> reading list gives an example where adding an index for a FK is unnecessary:</p>
+<blockquote>Whether or not you want to index non-identifying foreign keys is determined</blockquote>
+<blockquote>by the requirements of the database design.  For example, assume that we have</blockquote>
+<blockquote>a table that contains sales territories, which rarely change. We will use</blockquote>
+<blockquote>this table to create drop down lists that we will use to set territories.</blockquote>
+<blockquote>Now let's create a table for sales person and include an attribute for sales</blockquote>
+<blockquote>territory.  We will create a non-identifying foreign key relationship between</blockquote>
+<blockquote>this value and the sales territories and create proper constraints.  We will</blockquote>
+<blockquote>not index the column in the sales person table because the only thing that</blockquote>
+<blockquote>would use the index is the foreign key constraint and it will rarely fire and</blockquote>
+<blockquote>therefore the index is not worth the cost.</blockquote>
 <p>But to not take anyone's word for it, you can run the following:</p>
-<pre><code class="language-sql">CREATE DATABASE sandbox_db;
+<pre><code class="language-sql">
+CREATE DATABASE sandbox_db;
 
 \c sandbox_db
 
@@ -115,13 +111,10 @@ VALUES
 
 -- No FK indexes here
 Indexes:
-    &quot;child_table_pkey&quot; PRIMARY KEY, btree (id)
+    "child_table_pkey" PRIMARY KEY, btree (id)
 Foreign-key constraints:
-    &quot;child_table_parent_id_fkey&quot; FOREIGN KEY (parent_id) REFERENCES parent_table(id)
+    "child_table_parent_id_fkey" FOREIGN KEY (parent_id) REFERENCES parent_table(id)
 
 -- Clean up
 DROP DATABASE sandbox_db;
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

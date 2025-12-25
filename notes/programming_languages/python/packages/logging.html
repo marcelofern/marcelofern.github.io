@@ -59,43 +59,26 @@
   <![endif]-->
 </head>
 <body>
-<h1>Logging</h1>
-<pre><code>Created at: 2025-03-26
-</code></pre>
-<blockquote>
-<p>The key benefit of having the logging API provided by a standard library
-module is that all Python modules can participate in logging, so your
-application log can include your own messages integrated with messages from
-third-party modules.</p>
-</blockquote>
-<h2>How To Use</h2>
+<h1>Logging</h0>
+<pre><code class="language-">
+Created at: 2025-03-26
+</code></pre><blockquote>The key benefit of having the logging API provided by a standard library</blockquote>
+<blockquote>module is that all Python modules can participate in logging, so your</blockquote>
+<blockquote>application log can include your own messages integrated with messages from</blockquote>
+<blockquote>third-party modules.</blockquote>
+<h2>How To Use</h0>
 <p>At the top of your Python file, have this:</p>
-<pre><code class="language-py">import logging
+<pre><code class="language-py">
+import logging
 logger = logging.getLogger(__name__)
-</code></pre>
-<p>You may choose a specific value instead of <code>__name__</code>, but at first, try to
-start with that. If you choose a specific value, use <code>.</code> to denote hierarchy
-between loggers.  For example, given a logger with a name of <code>foo</code>, loggers
-with names of <code>foo.bar</code>, <code>foo.bar.baz</code>, and <code>foo.bam</code> are all descendants of
-<code>foo</code>.</p>
-<p>For logging to be useful, it needs to be configured: setting the levels and
-destinations for each logger, potentially changing how specific modules log,
-often based on command-line arguments or application configuration. In most
-cases, like the one above, only the root logger needs to be so configured,
-since all the lower level loggers at module level eventually forward their
-messages to its handlers. <code>logging.basicConfig()</code> provides a quick way to
-configure the root logger that handles many use cases.</p>
-<h1>Configure the logger to write to stdout</h1>
-<pre><code class="language-python">logging.basicConfig(
+</code></pre><p>You may choose a specific value instead of <code>__name__</code>, but at first, try to start with that. If you choose a specific value, use <code>.</code> to denote hierarchy between loggers.  For example, given a logger with a name of <code>foo</code>, loggers with names of <code>foo.bar</code>, <code>foo.bar.baz</code>, and <code>foo.bam</code> are all descendants of <code>foo</code>.</p>
+<p>For logging to be useful, it needs to be configured: setting the levels and destinations for each logger, potentially changing how specific modules log, often based on command-line arguments or application configuration. In most cases, like the one above, only the root logger needs to be so configured, since all the lower level loggers at module level eventually forward their messages to its handlers. <code>logging.basicConfig()</code> provides a quick way to configure the root logger that handles many use cases.</p>
+<h1>Configure the logger to write to stdout</h0>
+<pre><code class="language-python">
+logging.basicConfig(
     stream=sys.stdout,  # Direct logs to stdout
     level=logging.DEBUG,  # Set the log level to DEBUG
     format='%(asctime)s - %(levelname)s - %(message)s')
 )
-</code></pre>
-<h2>Sources</h2>
-<ul>
-<li>https://docs.python.org/3/library/logging.html</li>
-</ul>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+</code></pre><h2>Sources</h0>
+<ul><li>https://docs.python.org/3/library/logging.html</li></ul>

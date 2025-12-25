@@ -59,31 +59,18 @@
   <![endif]-->
 </head>
 <body>
-<h1>Linux Rice</h1>
-<pre><code>Created: 2020-08-30
+<h1>Linux Rice</h0>
+<pre><code class="language-">
+Created: 2020-08-30
 Updated: 2024-07-06
-</code></pre>
-<h2>Introduction</h2>
-<p>When someone is &quot;ricing&quot; their unix system, they are making functional and
-visual customisations to their desktop. These changes could be anything from
-changing the colour of a status bar to completely restructuring their computer
-environment.</p>
-<p><em><strong>Why?</strong></em></p>
-<ul>
-<li><strong>Productivity</strong>: You can customise your applications and keyboard shortcuts
-to satisfy your work-flow.</li>
-<li><strong>Performance</strong>: You are in control of what gets installed on your
-application and not have to worry about unknown apps running on the
-background.</li>
-<li><strong>Privacy</strong>: It is your system and the defaults in some distributions
-can contain software that can spy on your behaviour like Canonical has done
-in the past.</li>
-<li><strong>Visual Satisfaction</strong>: Whatever colour scheme you like.</li>
-<li><strong>Because it is fun</strong>.</li>
-</ul>
-<h2>How does it look like?</h2>
-<p><img src="dark_theme.png" alt="dark_theme"></p>
-<pre><code class="language-sh">$ neofetch
+</code></pre><h2>Introduction</h0>
+<p>When someone is "ricing" their unix system, they are making functional and visual customisations to their desktop. These changes could be anything from changing the colour of a status bar to completely restructuring their computer environment.</p>
+<p>_<b>Why?</b>_</p>
+<ul><li><b>Productivity</b>: You can customise your applications and keyboard shortcuts to satisfy your work</li><li>flow.</li><li><b>Performance</b> : You are in control of what gets installed on your application and not have to worry about unknown apps running on the background.</li><li><b>Privacy</b> : It is your system and the defaults in some distributions can contain software that can spy on your behaviour like Canonical has done in the past.</li><li><b>Visual Satisfaction</b> : Whatever colour scheme you like.</li><li><b>Because it is fun</b> .</li></ul>
+<h2>How does it look like?</h0>
+<p><img alt="dark_theme" src="dark_theme.png"></p>
+<pre><code class="language-sh">
+$ neofetch
                    -`                    x@x
                   .o+`                   ---
                  `ooo/                   OS: Arch Linux x86_64
@@ -106,75 +93,34 @@ in the past.</li>
 
 du -h /
 # 5.6G
-</code></pre>
-<h2>Workflow Tools</h2>
-<p>Most of my tools revolve around <a href="https://github.com/davatorium/rofi">rofi</a>
-which is an application launcher.</p>
-<p>For example, my &quot;TODO&quot; list is a script that let's me add, read, and remove
-entries from a list via rofi:</p>
-<p><img src="todo.png" alt="todo"></p>
-<p>You can configure rofi to be able to run any script you like.
-Some of my scripts include: two-factor authentication, vpn connections, getting
-a wayback-machine link to a website, compiling my website and rss feed, etc.</p>
-<p><img src="rofi_scripts.png" alt="rofi_scripts"></p>
-<h2>Software used</h2>
-<h3>Neovim</h3>
-<p>I use Neovim for coding (work and personal projects), for taking notes, and
-journaling.</p>
-<p>This website, for example, is entirely written from Neovim. The website is
-built using markdown files that are parsed through a C program capable
-of converting the <code>.md</code> files into <code>.html</code> files.</p>
-<p>After having tried so many auto-generators and converters, I decided to build
-myself a simple and fast one. It was also such a fun C project.</p>
-<p>This is what editing this website feels like along with a snippet of the C
-code used to compile the <code>.md</code> files into <code>.html</code>:</p>
-<p><img src="neovim.png" alt="neovim"></p>
-<h3>Arch Linux</h3>
-<p>Arch has been my daily driver since 2019. Before that, I've used Linux Mint and
-Ubuntu at work; back when I didn't care and didn't know the differences between
-all the flavours of Linux. I have also had to use MacOS for a job where the
-company mandated developers to use Apple machines.</p>
-<p>I have tried other different flavours of Linux on virtual machines in the past,
-but I decided to stick with Arch Linux given how simple it is to customise.</p>
-<p>That means I can use my simple bash script to download and auto-configure my
-system without manual intervention. I can also sync my environment between my
-work laptop and my personal laptop with one command. Apart from the hardware,
-all my machines are identical from a user's experience.</p>
-<p>An basic understanding of Linux is necessary to use this distro. You don't need
-much more than being comfortable around the terminal these days. This is
-because everything you need to learn is already in the arch wiki and arch now
-has assisted installation scripts via <code>archinstall</code>.</p>
+</code></pre><h2>Workflow Tools</h0>
+<p>Most of my tools revolve around <a href="https://github.com/davatorium/rofi">rofi</a> which is an application launcher.</p>
+<p>For example, my "TODO" list is a script that let's me add, read, and remove entries from a list via rofi:</p>
+<p><img alt="todo" src="todo.png"></p>
+<p>You can configure rofi to be able to run any script you like. Some of my scripts include: two-factor authentication, vpn connections, getting a wayback-machine link to a website, compiling my website and rss feed, etc.</p>
+<p><img alt="rofi_scripts" src="rofi_scripts.png"></p>
+<h2>Software used</h0>
+<h3>Neovim</h0>
+<p>I use Neovim for coding (work and personal projects), for taking notes, and journaling.</p>
+<p>This website, for example, is entirely written from Neovim. The website is built using markdown files that are parsed through a C program capable of converting the <code>.md</code> files into <code>.html</code> files.</p>
+<p>After having tried so many auto-generators and converters, I decided to build myself a simple and fast one. It was also such a fun C project.</p>
+<p>This is what editing this website feels like along with a snippet of the C code used to compile the <code>.md</code> files into <code>.html</code>:</p>
+<p><img alt="neovim" src="neovim.png"></p>
+<h3>Arch Linux</h0>
+<p>Arch has been my daily driver since 2019. Before that, I've used Linux Mint and Ubuntu at work; back when I didn't care and didn't know the differences between all the flavours of Linux. I have also had to use MacOS for a job where the company mandated developers to use Apple machines.</p>
+<p>I have tried other different flavours of Linux on virtual machines in the past, but I decided to stick with Arch Linux given how simple it is to customise.</p>
+<p>That means I can use my simple bash script to download and auto-configure my system without manual intervention. I can also sync my environment between my work laptop and my personal laptop with one command. Apart from the hardware, all my machines are identical from a user's experience.</p>
+<p>An basic understanding of Linux is necessary to use this distro. You don't need much more than being comfortable around the terminal these days. This is because everything you need to learn is already in the arch wiki and arch now has assisted installation scripts via <code>archinstall</code>.</p>
 <p>Some other perks of using arch are:</p>
-<ul>
-<li>Rolling releases</li>
-<li>Rich user repository (AUR)</li>
-<li>The fantastic Arch wiki</li>
-<li>No corporations behind it (community support only)</li>
-<li>Helpful community</li>
-</ul>
-<h3>i3-gaps</h3>
-<p>i3-gaps is a fork of the i3wm (tilling window manager) for X11. Instead of
-having stacked windows that overlap (like in microsoft windows, or macOs),
-windows are organized side-by-side as default, having gaps between them.
-The benefits are:</p>
-<ul>
-<li>Able to customise keyboard shortcuts to navigate through windows.</li>
-<li>Easy to setup.</li>
-</ul>
-<h3>polybar</h3>
-<p>Polybar is was the easiest and most user-friendly status bar I could find. With
-a lot of pre-configured setups and out-of-the-box integrations, getting up to
-speed was very simple.</p>
-<h3>rofi</h3>
+<ul><li>Rolling releases</li><li>Rich user repository (AUR)</li><li>The fantastic Arch wiki</li><li>No corporations behind it (community support only)</li><li>Helpful community</li></ul>
+<h3>i3<ul><li>ggaappss</h0>
+ i3</li><li>gaps is a fork of the i3wm (tilling window manager) for X1<ol><li>Instead of having stacked windows that overlap (like in microsoft windows, or macOs), windows are organized side-by-side as default, having gaps between them. The benefits are:</li></ol>
+</li><li>Able to customise keyboard shortcuts to navigate through windows.</li><li>Easy to setup.</li></ul>
+<h3>polybar</h0>
+<p>Polybar is was the easiest and most user-friendly status bar I could find. With a lot of pre-configured setups and out-of-the-box integrations, getting up to speed was very simple.</p>
+<h3>rofi</h0>
 <p>A very simple and configurable application/script launcher.</p>
-<h3>pywal</h3>
+<h3>pywal</h0>
 <p>For setting colours and themes.</p>
-<h2>More about Ricing</h2>
-<p>When it comes to finding inspiration for ricing in Linux, a good place to look
-at is <a href="https://www.reddit.com/r/unixporn/">/r/unixporn</a>. Most of my setup came
-from picking apart different rices that users have shared in that channel. It
-is also a good place to visit once in a while to stay up-to-date with what the
-rest of the community is using and trying.</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+<h2>More about Ricing</h0>
+<p>When it comes to finding inspiration for ricing in Linux, a good place to look at is <a href="https://www.reddit.com/r/unixporn/">/r/unixporn</a>. Most of my setup came from picking apart different rices that users have shared in that channel. It is also a good place to visit once in a while to stay up-to-date with what the rest of the community is using and trying.</p>

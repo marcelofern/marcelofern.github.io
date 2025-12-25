@@ -290,9 +290,9 @@ ON
 If parentheses span multiple lines:
 
 1. The opening parenthesis should terminate the line.
-1. The closing parenthesis should be lined up under
+2. The closing parenthesis should be lined up under
    the first character of the line that starts the multi-line construct.
-1. The contents of the parentheses should be indented one level.
+3. The contents of the parentheses should be indented one level.
 
 For example:
 

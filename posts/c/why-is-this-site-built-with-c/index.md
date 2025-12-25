@@ -238,8 +238,7 @@ The only work I needed to do was to write a C script (which turned out to be
 ~250 LOC) to call md4c functions and parse my `md` files, and then chuck those
 converted files into the GitHub Pages repo.
 
-My website converter script, which is all in this [250
-LOC](https://gist.github.com/marcelofern/896574e055a05d011449b00217600fe6)
+My website converter script, which is all in this [250 LOC](https://gist.github.com/marcelofern/896574e055a05d011449b00217600fe6)
 source file (less md4c) is feature-complete and runs on any compiler that
 supports the C standard from 1999 onwards. There's no platform-dependent code
 and it's portable to Windows, Linux, and MacOS.
@@ -303,7 +302,6 @@ upcoming decades (my last requirement). There is virtually nothing that beats C
 compilers in that area as of today. For any new platform out there the first
 thing that needs to happen is getting a C compiler built along with the
 standard library (which is probably the only standard lib of popular
-programming languages that fits in a [commented book of 500
-pages](https://www.google.com/search?q=C+standard+library+P.J+Plauger)...).
+programming languages that fits in a [commented book of 500 pages](https://www.google.com/search?q=C+standard+library+P.J+Plauger)...).
 Otherwise, nothing can run in the platform. So I'm hoping this bet will
 pay off.

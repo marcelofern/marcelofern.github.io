@@ -1,7 +1,7 @@
 - [GDB tricks](programming_languages/assembly/gdb_tricks.md)
 - [Intel x64 registers](programming_languages/assembly/intel_x64_registers.md)
 - [Sections](programming_languages/assembly/sections.md)
-- [`xchg rax,rax`](programming_languages/assembly/xchg_rax_rax.md)
+- [xchg rax,rax](programming_languages/assembly/xchg_rax_rax.md)
 
 ## Compilers
 

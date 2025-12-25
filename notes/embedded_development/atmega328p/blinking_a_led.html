@@ -60,25 +60,20 @@
 </head>
 <body>
 <p>2024-04-25</p>
-<p>This example blinks the LED in the arduino UNO board that uses ATMega328p.
-It can be compiled using the script in my other notes:</p>
-<ul>
-<li><a href="atmega328p_on_vim.html">ATMega328P on vim</a></li>
-</ul>
-<pre><code class="language-c">#include &lt;avr/io.h&gt;
-#include &lt;util/delay.h&gt;
+<p>This example blinks the LED in the arduino UNO board that uses ATMega328p. It can be compiled using the script in my other notes:</p>
+<ul><li><a href="embedded_development/atmega328p/atmega328p_on_vim.md">ATMega328P on vim</a></li></ul>
+<pre><code class="language-c">
+#include <avr/io.h>
+#include <util/delay.h>
 
 int main(void) {
-  DDRB |= (1 &lt;&lt; DDB5);
+  DDRB |= (1 << DDB5);
   while (1) {
-    PORTB |= (1 &lt;&lt; PB5);
+    PORTB |= (1 << PB5);
     _delay_ms(1000);
 
-    PORTB &amp;= ~(1 &lt;&lt; PB5);
+    PORTB &= ~(1 << PB5);
     _delay_ms(1000);
   }
 }
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

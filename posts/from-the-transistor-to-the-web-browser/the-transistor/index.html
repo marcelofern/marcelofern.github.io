@@ -60,82 +60,34 @@
 </head>
 <body>
 <p>January 4, 2023</p>
-<h2>Mission</h2>
+<h2>Mission</h0>
 <p>Our mission is to answer the following open question:</p>
-<blockquote>
-<p>Describe how FPGAs are buildable using transistors, and that ICs are just
-collections of transistors in a nice reliable package. Understand the LUTs
-and stuff. Talk briefly about the theory of transistors, but all projects
-must build on each other so we can’t build a transistor.</p>
-</blockquote>
-<p>From the question alone there's a lot to unpack. My plan is to break that
-problem down by answering the following questions:</p>
-<ol>
-<li>What is a transistor?</li>
-<li>What is a FPGA? How do LUTs and Flip-flops work?</li>
-<li>How are FPGA buildable using transistors?</li>
-<li>Why are ICs a collection of transistors in a nice reliable package?</li>
-</ol>
-<h2>What is a transistor?</h2>
-<p>Transistors are semiconductor devices that can amplify or switch electrical
-signals and power.</p>
-<p>In electronic circuits, transistors are frequently used as switches. For low
-power applications, they can be used to generate logic gates (AND, OR, XOR,
-etc).</p>
-<p>The endgame is to be a perfect short-circuit when the switch is on, and a
-perfect open circuit when off. The transition between states should be as close
-to instantaneous as possible.</p>
-<p><img src="basic_transistor_circuit.jpg" alt="basic_transistor_circuit"></p>
-<p>The circuit above is called a <strong>grounded-emitter transistor circuit</strong>. As the
-voltage in the input signal rises, the emitter and collector currents rise
-exponentially.</p>
-<p>The voltage in the collector drops because of the reduced resistance between
-the collector and the emitter. If the emitter is ground, then the voltage on
-the collector is the ground voltage, and therefore the transistor is acting as
-a short-circuit. We also say that the transistor is <strong>saturated</strong> because
-current is moving freely from the collector to the emitter.</p>
-<h2>What is an FPGA?</h2>
-<p>FPGA stands for field-programmable gate array. These devices can be
-configurable by a customer <strong>after</strong> manufacturing (hence field-programmable).</p>
-<p>The configuration of a FPGA is specified via a hardware description language
-(HDL). By using HDL, engineers can program their own hardware rather than
-having to run software in a predefined processor. The &quot;code&quot; for the FPGA
-program is stored in a configurable flash memory that gets loaded into the
-FPGA every time it gets energised.</p>
-<p><img src="fpga-architecture.png" alt="fpga-architecture"></p>
-<p>The basic architecture of FPGAs is composed of many Configurable Logic Blocks
-(CLB)</p>
+<blockquote>Describe how FPGAs are buildable using transistors, and that ICs are just</blockquote>
+<blockquote>collections of transistors in a nice reliable package. Understand the LUTs</blockquote>
+<blockquote>and stuff. Talk briefly about the theory of transistors, but all projects</blockquote>
+<blockquote>must build on each other so we can’t build a transistor.</blockquote>
+<p>From the question alone there's a lot to unpack. My plan is to break that problem down by answering the following questions:</p>
+<ol><li>What is a transistor?</li><li>What is a FPGA? How do LUTs and Flip<ul><li>flops work?</li><li>How are FPGA buildable using transistors?</li><li>Why are ICs a collection of transistors in a nice reliable package?</li></ol>
+<h2>W Whhaatt  iiss  aa  ttrraannssiissttoorr??</h0>
+ Transistors are semiconductor devices that can amplify or switch electrical signals and power.</li></ul>
+<p>In electronic circuits, transistors are frequently used as switches. For low power applications, they can be used to generate logic gates (AND, OR, XOR, etc).</p>
+<p>The endgame is to be a perfect short-circuit when the switch is on, and a perfect open circuit when off. The transition between states should be as close to instantaneous as possible.</p>
+<p><img alt="basic_transistor_circuit" src="basic_transistor_circuit.jpg"></p>
+<p>The circuit above is called a <b>grounded-emitter transistor circuit</b>. As the voltage in the input signal rises, the emitter and collector currents rise exponentially.</p>
+<p>The voltage in the collector drops because of the reduced resistance between the collector and the emitter. If the emitter is ground, then the voltage on the collector is the ground voltage, and therefore the transistor is acting as a short-circuit. We also say that the transistor is <b>saturated</b> because current is moving freely from the collector to the emitter.</p>
+<h2>What is an FPGA?</h0>
+<p>FPGA stands for field-programmable gate array. These devices can be configurable by a customer <b>after</b> manufacturing (hence field-programmable).</p>
+<p>The configuration of a FPGA is specified via a hardware description language (HDL). By using HDL, engineers can program their own hardware rather than having to run software in a predefined processor. The "code" for the FPGA program is stored in a configurable flash memory that gets loaded into the FPGA every time it gets energised.</p>
+<p><img alt="fpga-architecture" src="fpga-architecture.png"></p>
+<p>The basic architecture of FPGAs is composed of many Configurable Logic Blocks (CLB)</p>
 <p>In each configurable logic block we have Look Up Tables (LUT) and Flip-flops.</p>
-<p>The LUTs are essentially truth tables. They collect the inputs (a typical
-number of inputs is 6), and based on the truth tables they output a result.
-Keep in mind that LUTs can be used as both a logic engine or a data storage
-unit.</p>
+<p>The LUTs are essentially truth tables. They collect the inputs (a typical number of inputs is 6), and based on the truth tables they output a result. Keep in mind that LUTs can be used as both a logic engine or a data storage unit.</p>
 <p>The flip-flops are register elements that store the result of a LUT.</p>
-<p>As each CLB can be programmed to be independent from each other, FPGAs can
-achieve true parallelism.</p>
-<h2>How are FPGA buildable using transistors?</h2>
-<p>As we've seen from the above, CLBs are the building blocks of FPGAs. As CLBs
-are composed of LUT and Flip-flops, which are in turn composed by transistors,
-FPGAs are built by transistors.</p>
-<h2>Why are ICs a collection of transistors in a nice reliable package?</h2>
-<p><img src="integrated_circuit.jpg" alt="integrated_circuit"></p>
-<p>When you buy an Integrated Circuit (IC) online, you can go to the vendor's
-website and check its schematic. It will usually be represented as a
-combination of transistors, diodes, resistances, capacitors and so on. All of
-these components are enveloped in an encapsulated silicon chip.</p>
-<p>In terms of reliability, ICs are considered reliable because:</p>
-<ol>
-<li>No soldering joints. Meaning the connections are more reliable.</li>
-<li>All components are embedded in a single silicon chip, and finally
-encapsulated. This means that components are less likely to be corrupted by
-corrosion, vibration, etc.</li>
-<li>The IC will be manufactured in a controlled automated factory, giving less
-room for human errors.</li>
-<li>The layout is compact, reducing costs through power, and enhancing performance.</li>
-</ol>
-<p><a href="https://web.archive.org/web/20221122075828/https://www.evilmadscientist.com/2019/uncovering-the-silicon-%CE%BCl914/">Here</a>
-is a great article from evilmadscientist.com show casing how an IC looks like
-in real life once its silicon envelope is opened.</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+<p>As each CLB can be programmed to be independent from each other, FPGAs can achieve true parallelism.</p>
+<h2>How are FPGA buildable using transistors?</h0>
+<p>As we've seen from the above, CLBs are the building blocks of FPGAs. As CLBs are composed of LUT and Flip-flops, which are in turn composed by transistors, FPGAs are built by transistors.</p>
+<h2>Why are ICs a collection of transistors in a nice reliable package?</h0>
+<p><img alt="integrated_circuit" src="integrated_circuit.jpg"></p>
+<p>When you buy an Integrated Circuit (IC) online, you can go to the vendor's website and check its schematic. It will usually be represented as a combination of transistors, diodes, resistances, capacitors and so on. All of these components are enveloped in an encapsulated silicon chip.</p>
+<p>In terms of reliability, ICs are considered reliable because: 1. No soldering joints. Meaning the connections are more reliable. 2. All components are embedded in a single silicon chip, and finally encapsulated. This means that components are less likely to be corrupted by corrosion, vibration, etc. 3. The IC will be manufactured in a controlled automated factory, giving less room for human errors. 4. The layout is compact, reducing costs through power, and enhancing performance.</p>
+<p><a href="https://web.archive.org/web/20221122075828/https://www.evilmadscientist.com/2019/uncovering-the-silicon-%CE%BCl914/">Here</a> is a great article from evilmadscientist.com show casing how an IC looks like in real life once its silicon envelope is opened.</p>

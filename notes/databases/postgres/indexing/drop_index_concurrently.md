@@ -2,8 +2,7 @@
 
 The drop index concurrently happens on stages.
 
-[The original suggestion for
-implementation](http://web.archive.org/web/20240822023238/https://postgrespro.com/list/thread-id/1788181)
+[The original suggestion for implementation](http://web.archive.org/web/20240822023238/https://postgrespro.com/list/thread-id/1788181)
 raised the following:
 
 > 1) set an index as "invalid", to ensure no backend will use it in planning.

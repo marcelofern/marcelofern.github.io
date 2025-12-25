@@ -118,3 +118,4 @@ only operate within that directory.
 Another possibility is the `openat2()` system call. It optionally allows for
 the file to be created at the same time the file is being written, helping with
 atomicity.
+```

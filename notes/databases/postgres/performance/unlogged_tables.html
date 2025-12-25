@@ -59,37 +59,23 @@
   <![endif]-->
 </head>
 <body>
-<h1>Unlogged Tables</h1>
-<pre><code>Created at: 2025-04-22
-</code></pre>
-<p>An unlogged table can be created with the UNLOGGED keyword:</p>
-<pre><code class="language-sql">CREATE UNLOGGED TABLE foo (id int);
-</code></pre>
-<p>You can also change existing tables to unlogged</p>
-<pre><code class="language-sql">-- This can run very quickly!
+<h1>Unlogged Tables</h0>
+<pre><code class="language-">
+Created at: 2025-04-22
+</code></pre><p>An unlogged table can be created with the UNLOGGED keyword:</p>
+<pre><code class="language-sql">
+CREATE UNLOGGED TABLE foo (id int);
+</code></pre><p>You can also change existing tables to unlogged</p>
+<pre><code class="language-sql">
+-- This can run very quickly!
 ALTER TABLE foo SET UNLOGGED;
 
 -- This can run very slowly!
 -- All the table records will be written to the WAL.
 ALTER TABLE foo SET LOGGED;
-</code></pre>
-<h2>Why use unlogged tables?</h2>
-<ol>
-<li>More speed of writes per second, since unlogged table changes aren't written
-to the WAL.</li>
-<li>Less vacuum impact as vacuum are also writes that are logged in the WAL.</li>
-<li>General benefits from having a smaller WAL (smaller backups for example).</li>
-</ol>
+</code></pre><h2>Why use unlogged tables?</h0>
+<ol><li>More speed of writes per second, since unlogged table changes aren't written to the WAL.</li><li>Less vacuum impact as vacuum are also writes that are logged in the WAL.</li><li>General benefits from having a smaller WAL (smaller backups for example).</li></ol>
 <p>But, it comes with a price:</p>
-<ol>
-<li>Tables are truncated (all data is deleted) when a crash happens.</li>
-<li>Such tables can only be accessed on primaries and not on replicas.</li>
-<li>Unlogged tables can't be used in logical replication or physical backups.</li>
-</ol>
-<h2>Resources</h2>
-<ul>
-<li>https://www.crunchydata.com/blog/postgresl-unlogged-tables</li>
-</ul>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+<ol><li>Tables are truncated (all data is deleted) when a crash happens.</li><li>Such tables can only be accessed on primaries and not on replicas.</li><li>Unlogged tables can't be used in logical replication or physical backups.</li></ol>
+<h2>Resources</h0>
+<ul><li>https://www.crunchydata.com/blog/postgresl</li><li>unlogged</li><li>tables</li></ul>

@@ -59,37 +59,19 @@
   <![endif]-->
 </head>
 <body>
-<h1>vmstat</h1>
-<pre><code>Created at: 2024-11-12
-</code></pre>
-<p>vmstat(8): Reports inofmration about processes, memory, pagin, block IO, traps,
-disks and cpu activity.</p>
-<p>The first report produced gives averages since the last reboot.  Additional
-reports give information on a sampling period of length delay.  The process and
-memory reports are instantaneous in either case.</p>
-<p>Although this command is called &quot;virtual memory statistics&quot;, it prints
-system-wide CPU averages in the last columns, along with a count of runnable
-threads in the first column (Gregg).</p>
-<pre><code>vmstat 1
+<h1>vmstat</h0>
+<pre><code class="language-">
+Created at: 2024-11-12
+</code></pre><p>vmstat(8): Reports inofmration about processes, memory, pagin, block IO, traps, disks and cpu activity.</p>
+<p>The first report produced gives averages since the last reboot.  Additional reports give information on a sampling period of length delay.  The process and memory reports are instantaneous in either case.</p>
+<p>Although this command is called "virtual memory statistics", it prints system-wide CPU averages in the last columns, along with a count of runnable threads in the first column (Gregg).</p>
+<pre><code class="language-">
+vmstat 1
 procs -----------memory---------- ---swap-- -----io---- -system-- -------cpu-------
  r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st gu
  1  0      0 6025620  56216 721664    0    0   365    28  902    3  1  1 98  0  0  0
  0  0      0 6025620  56216 721700    0    0     0     0  662 2147  0  1 99  0  0  0
 [...]
-</code></pre>
-<p>The relevant columns for CPU monitoring are:</p>
-<ul>
-<li><code>r</code>: Run-queue length. The total number of runnable threads.</li>
-<li><code>us</code>: User-time percent.</li>
-<li><code>sy</code>: System-time percent (kernel).</li>
-<li><code>id</code>: Idle percent.</li>
-<li><code>wa</code>: Wait I/O percent, which measures CPU idle when threads are blocked on
-disk I/O.</li>
-<li><code>st</code>: Stolen percent, which for virtualised envs shows CPU time spent
-servicing other tenants.</li>
-</ul>
-<p>With the exception of <code>r</code>, all these values are systme-wide averages across all
-CPUs.</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+ </code></pre><p>The relevant columns for CPU monitoring are:</p>
+<ul><li><code>r</code>: Run</li><li>queue length. The total number of runnable threads.</li><li><code>us</code> : User</li><li>time percent.</li><li><code>sy</code> : System</li><li>time percent (kernel).</li><li><code>id</code> : Idle percent.</li><li><code>wa</code> : Wait I/O percent, which measures CPU idle when threads are blocked on disk I/O.</li><li><code>st</code> : Stolen percent, which for virtualised envs shows CPU time spent servicing other tenants.</li></ul>
+<p>With the exception of <code>r</code>, all these values are systme-wide averages across all CPUs.</p>

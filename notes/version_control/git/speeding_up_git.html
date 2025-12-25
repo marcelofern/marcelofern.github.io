@@ -59,41 +59,37 @@
   <![endif]-->
 </head>
 <body>
-<h1>Speeding up git</h1>
-<pre><code>Created at: 2025-06-30
-</code></pre>
-<h2>Working Tree Speed Ups</h2>
-<h3>feature.manyFiles</h3>
-<pre><code class="language-sh"># Tell git that it's dealing with a repo with lots of files.
+<h1>Speeding up git</h0>
+<pre><code class="language-">
+Created at: 2025-06-30
+</code></pre><h2>Working Tree Speed Ups</h0>
+<h3>feature.manyFiles</h0>
+<pre><code class="language-sh">
+# Tell git that it's dealing with a repo with lots of files.
 git config feature.manyFiles true
-</code></pre>
-<p>Along with this, update the index file to version 4</p>
-<pre><code class="language-sh">git update-index --index-version 4
-</code></pre>
-<h3>core.fsmonitor</h3>
+</code></pre><p>Along with this, update the index file to version 4</p>
+<pre><code class="language-sh">
+git update-index --index-version 4
+</code></pre><h3>core.fsmonitor</h0>
 <p>Enables the file system monitor daemon.</p>
-<pre><code class="language-sh">git config core.fsmonitor true
-</code></pre>
-<p>Then check if it's on</p>
-<pre><code class="language-sh">git fsmonitor--daemon status
-</code></pre>
-<h3>core.untrackercache</h3>
-<p>This feature adds an extension to the index that remembers the results of the
-untracked search.</p>
-<pre><code class="language-sh">git config core.untrackedcache true
-</code></pre>
-<h3>git gc</h3>
+<pre><code class="language-sh">
+git config core.fsmonitor true
+</code></pre><p>Then check if it's on</p>
+<pre><code class="language-sh">
+git fsmonitor--daemon status
+</code></pre><h3>core.untrackercache</h0>
+<p>This feature adds an extension to the index that remembers the results of the untracked search.</p>
+<pre><code class="language-sh">
+git config core.untrackedcache true
+</code></pre><h3>git gc</h0>
 <p>It's a good idea to run <code>git gc</code> now and then to garbage collect old stuff.</p>
-<h2>History Speed ups</h2>
-<h2>core.commitgraph</h2>
+<h2>History Speed ups</h0>
+<h2>core.commitgraph</h0>
 <p>use a commit history cache to improve speed of history operations (like <code>log</code>).</p>
-<pre><code class="language-sh">git config core.commitgraph true
+<pre><code class="language-sh">
+git config core.commitgraph true
+</code></pre><h2>fetch.writeCommitGraph</h0>
+<p>Tells <code>git gc</code> to update the commit-graph file during non-trivial garbage collection.</p>
+<pre><code class="language-sh">
+git config fetch.writeCommitGraph true
 </code></pre>
-<h2>fetch.writeCommitGraph</h2>
-<p>Tells <code>git gc</code> to update the commit-graph file during non-trivial garbage
-collection.</p>
-<pre><code class="language-sh">git config fetch.writeCommitGraph true
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

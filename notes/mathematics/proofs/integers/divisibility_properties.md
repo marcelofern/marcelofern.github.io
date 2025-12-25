@@ -15,12 +15,12 @@ When `a` does not divide `b`, we write `a † b`.
 
 **Simple Examples**:
 
-- 2 | 14 because 4 = 2*7 and 7 is an integer.
-- -4 | 20 because 20 = -4*-5 and -5 is an integer.
-- 12 | -48 because -48 = 12*-4 and -4 is an integer.
-- -7 | -7 because -7 = -7*1 and 1 is an integer
+- 2 | 14 because `4 = 2*7` and 7 is an integer.
+- -4 | 20 because `20 = -4*-5` and -5 is an integer.
+- 12 | -48 because -48 = `12*-4` and -4 is an integer.
+- -7 | -7 because -7 = `-7*1` and 1 is an integer
 - 6 † 9 because there is no integer `a` that can divide 9 by 6 and result in an
-  integer. That number would be 1.5 since 9 = 6*1.5 but 1.5 is not an integer.
+  integer. That number would be 1.5 since `9 = 6*1.5` but 1.5 is not an integer.
 
 Special case b = 0:
 

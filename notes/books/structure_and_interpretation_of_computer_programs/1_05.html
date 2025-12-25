@@ -59,12 +59,12 @@
   <![endif]-->
 </head>
 <body>
-<h1>Exercise 1.5</h1>
-<h2>Pre-exercise theory</h2>
-<h3>Applicative-order evaluation</h3>
-<p>In this evaluation, the interpreter evaluates the elements of the operation
-and then applies the procedure. For example:</p>
-<pre><code class="language-scm">(* (+ 2 (* 4 6)) (+ 3 5 7))
+<h1>Exercise <ol><li>55</h0>
+<h2>P Prree<ul><li>eexxeerrcciissee  tthheeoorryy</h0>
+<h3>A Apppplliiccaattiivvee--oorrddeerr  eevvaalluuaattiioonn</h0>
+ In this evaluation, the interpreter evaluates the elements of the operation and then applies the procedure. For example:</li></ol>
+<pre><code class="language-scm">
+(* (+ 2 (* 4 6)) (+ 3 5 7))
 
 ; The interpreter first evaluates (* 4 6)
 ; reducing the operation to:
@@ -78,11 +78,11 @@ and then applies the procedure. For example:</p>
 
 ; And then yields the result
 390
-</code></pre>
-<h3>Normal-order evaluation</h3>
-<p>All the operators are expanded until only &quot;primitives&quot; are left, then, only at
-the end, the reduction is performed:</p>
-<pre><code class="language-scm">(sum-of-squares (+ 5 1) (* 5 2))
+</code></pre></li></ul>
+<h3>Normal<ul><li>oorrddeerr  eevvaalluuaattiioonn</h0>
+ All the operators are expanded until only "primitives" are left, then, only at the end, the reduction is performed:</li></ul>
+<pre><code class="language-scm">
+(sum-of-squares (+ 5 1) (* 5 2))
 
 ; becomes
 (+ (square (+ 5 1)) (square (* 5 2)))
@@ -98,41 +98,32 @@ the end, the reduction is performed:</p>
 
 ; becomes
 136
-</code></pre>
-<h3>Further</h3>
-<p>Lisp uses the applicative-order evaluation because it can avoid multiple
-evaluation of expressions as in the example above with (+ 5 1) and (* 5 2) and
-because normal-order is very complicated when procedures can't be modelled by
-substitution.</p>
-<h2>The question</h2>
-<blockquote>
-<p>Ben Bitdiddle has invented a test to determine whether the interpreter he is
-faced with is using applicative-order evaluation or normal-order evaluation.
-He defines the following two procedures:</p>
-</blockquote>
-<pre><code class="language-scm">(define (p) (p))
+</code></pre><h3>Further</h0>
+<p>Lisp uses the applicative-order evaluation because it can avoid multiple evaluation of expressions as in the example above with <code>(+ 5 1)</code> and <code>(* 5 2)</code> and because normal-order is very complicated when procedures can't be modelled by substitution.</p>
+<h2>The question</h0>
+<blockquote>Ben Bitdiddle has invented a test to determine whether the interpreter he is</blockquote>
+<blockquote>faced with is using applicative-order evaluation or normal-order evaluation.</blockquote>
+<blockquote>He defines the following two procedures:</blockquote>
+<pre><code class="language-scm">
+(define (p) (p))
 
 (define (test x y)
         (if (= x 0) 0 y)
 )
-</code></pre>
-<blockquote>
-<p>Then he evaluates the expression:</p>
-</blockquote>
-<pre><code class="language-scm">(test 0 (p))
-</code></pre>
-<blockquote>
-<p>What behaviour will Ben observe with an interpreter that uses
-applicative-order evaluation? What behaviour will he observe with an
-interpreter that uses normal-order evaluation? Explain your answer. (Assume
-that the evaluation rule for the special form <code>if</code> is the same whether the
-interpreter is using normal or applicative order. The predicate expression is
-evaluated first, and the result determines whether to evaluate the consequent
-or the alternative expression).</p>
-</blockquote>
-<h2>Answer</h2>
+</code></pre><blockquote>Then he evaluates the expression:</blockquote>
+<pre><code class="language-scm">
+(test 0 (p))
+</code></pre><blockquote>What behaviour will Ben observe with an interpreter that uses</blockquote>
+<blockquote>applicative-order evaluation? What behaviour will he observe with an</blockquote>
+<blockquote>interpreter that uses normal-order evaluation? Explain your answer. (Assume</blockquote>
+<blockquote>that the evaluation rule for the special form `if` is the same whether the</blockquote>
+<blockquote>interpreter is using normal or applicative order. The predicate expression is</blockquote>
+<blockquote>evaluated first, and the result determines whether to evaluate the consequent</blockquote>
+<blockquote>or the alternative expression).</blockquote>
+<h2>Answer</h0>
 <p>Using applicative-order evaluation, we have the following reductions:</p>
-<pre><code class="language-scm">; p is evaluated and returns itself.
+<pre><code class="language-scm">
+; p is evaluated and returns itself.
 (test 0 (p))
 
 ; try to evaluate (p) again, because
@@ -141,10 +132,10 @@ or the alternative expression).</p>
 
 ; stays in an infinite loop because
 ; (p) can never be evaluated.
-</code></pre>
-<p>Running the above in guile never returns.</p>
+</code></pre><p>Running the above in guile never returns.</p>
 <p>In normal-order evaluation, everything must be expanded first.</p>
-<pre><code class="language-scm">(test 0 (p))
+<pre><code class="language-scm">
+(test 0 (p))
 
 ; becomes
 (if (= 0 0) 0 (p))
@@ -155,6 +146,3 @@ or the alternative expression).</p>
 ; resolves to:
 0
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

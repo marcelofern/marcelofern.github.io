@@ -60,54 +60,30 @@
 </head>
 <body>
 <p>February 18th, 2024</p>
-<h1>Introduction</h1>
-<p>A collection of notes about making Assembly work more pleasurable with GDB
-debugging.</p>
-<h2>Basics</h2>
+<h1>Introduction</h0>
+<p>A collection of notes about making Assembly work more pleasurable with GDB debugging.</p>
+<h2>Basics</h0>
 <p>Read these before expanding to the next sections.</p>
-<ol>
-<li>Set the layout <code>layout src</code> (or <code>ctrl + x + a</code>).</li>
-<li>Use <code>ni</code> and <code>si</code> (next instruction / step instruction).</li>
-<li>use <code>i r rax</code> (info register rax) to inspect a register.</li>
-<li>flag register is available as <code>i r eflags</code></li>
-<li>run <code>set disassembly-flavor intel</code> so MOV instructions aren't in reverse.</li>
-<li>use <code>x 0x402000</code> to print value starting in memory block 0x402000</li>
-<li>use <code>x/xg 0x402000</code> to do the same but print 64bit in hex decimal.</li>
-<li>You can normally use <code>p</code> for printing .data (casting them in C first!)</li>
-<li>Use <code>p /t $rax</code> to print contents of rax in binary.</li>
-</ol>
-<h2>Layout</h2>
-<p>Layout allows you to have your code and the line being debugged side-by-side on
-the GDB terminal user interface.</p>
+<ol><li>Set the layout <code>layout src</code> (or <code>ctrl + x + a</code>).</li><li>Use <code>ni</code> and <code>si</code> (next instruction / step instruction).</li><li>use <code>i r rax</code> (info register rax) to inspect a register.</li><li>flag register is available as <code>i r eflags</code></li><li>run <code>set disassembly-flavor intel</code> so MOV instructions aren't in reverse.</li><li>use <code>x 0x402000</code> to print value starting in memory block 0x402000</li><li>use <code>x/xg 0x402000</code> to do the same but print 64bit in hex decimal.</li><li>You can normally use <code>p</code> for printing .data (casting them in C first!)</li><li>Use <code>p /t $rax</code> to print contents of rax in binary.</li></ol>
+<h2>Layout</h0>
+<p>Layout allows you to have your code and the line being debugged side-by-side on the GDB terminal user interface.</p>
 <p>You can have the following window configurations:</p>
-<ul>
-<li>source</li>
-<li>assembly</li>
-<li>source and assembly</li>
-<li>source and registers</li>
-<li>assembly and registers</li>
-</ul>
+<ul><li>source</li><li>assembly</li><li>source and assembly</li><li>source and registers</li><li>assembly and registers</li></ul>
 <p>To change the layout you can type <code>layout</code> followed by a configuration.</p>
-<pre><code class="language-sh">(gdb) layout src
-</code></pre>
-<p>Helpful shortcuts:</p>
-<p><strong>ctrl + x + 1</strong>: Use the TUI with only 1 window configuration.
-<strong>ctrl + x + 2</strong>: Use the TUI with at least 2 windows.</p>
-<p>On the command terminal window, you can type <code>focus</code> + name of the window so
-that your keyboard arrows work within the specified window:</p>
-<pre><code class="language-sh">(gdb) focus src
-</code></pre>
-<h2>Printing memory addresses</h2>
-<p>You can use <code>p</code> followed by a C-casting command to find what the byte stored
-in a memory address is. For example:</p>
-<pre><code class="language-sh">(gdb) p (char*)0x402000
-</code></pre>
-<h2>Disassemble</h2>
-<p>Disassembles a specified section of memory. Can be useful for determining
-the assembly code in a routine.</p>
-<pre><code class="language-sh">(gdb) disassemble main // print all instructions of main.
+<pre><code class="language-sh">
+(gdb) layout src
+</code></pre><p>Helpful shortcuts:</p>
+<p><b>ctrl + x + 1</b>: Use the TUI with only 1 window configuration. <b>ctrl + x + 2</b>: Use the TUI with at least 2 windows.</p>
+<p>On the command terminal window, you can type <code>focus</code> + name of the window so that your keyboard arrows work within the specified window:</p>
+<pre><code class="language-sh">
+(gdb) focus src
+</code></pre><h2>Printing memory addresses</h0>
+<p>You can use <code>p</code> followed by a C-casting command to find what the byte stored in a memory address is. For example:</p>
+<pre><code class="language-sh">
+(gdb) p (char*)0x402000
+</code></pre><h2>Disassemble</h0>
+<p>Disassembles a specified section of memory. Can be useful for determining the assembly code in a routine.</p>
+<pre><code class="language-sh">
+(gdb) disassemble main // print all instructions of main.
 (gdb) disassemble /s main // also adds the source code.
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

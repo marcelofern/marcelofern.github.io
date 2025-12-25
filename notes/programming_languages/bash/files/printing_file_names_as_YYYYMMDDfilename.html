@@ -59,11 +59,9 @@
   <![endif]-->
 </head>
 <body>
-<h1>Printing file names as YYYY/MM/DD/filename.ext</h1>
-<pre><code>Created at: 2025-09-14
+<h1>Printing file names as YYYY/MM/DD/filename.ext</h0>
+<pre><code class="language-">
+Created at: 2025-09-14
+</code></pre><pre><code class="language-sh">
+find . -type f -exec stat --format="%y %n" {} \; | awk '{split($1, date, "-"); sub(/^\.\//, "", $4); print date[1] "/" date[2] "/" date[3] "/" $4}'
 </code></pre>
-<pre><code class="language-sh">find . -type f -exec stat --format=&quot;%y %n&quot; {} \; | awk '{split($1, date, &quot;-&quot;); sub(/^\.\//, &quot;&quot;, $4); print date[1] &quot;/&quot; date[2] &quot;/&quot; date[3] &quot;/&quot; $4}'
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

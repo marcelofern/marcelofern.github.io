@@ -102,12 +102,12 @@ very helpful, as it does not provide nuance nor resources to learn more about
 In many cases, denormalisation ends up being worse for performance. For
 example, you might have an Entity that is the root of many different Aggregates
 (as it happens often in complex systems), to denormalise a Value Object for a
-particular Aggregate and store it in the Entity table, *even when many
-Aggregates won't use that data*, means that **all SQL queries** against that
-table that don't require that data **will have to read more buffers** to
-satisfy their query results. Reading more buffers means more potential slow
-disk access. That happens because the page entries are wider now with data that
-is not useful for queries other than the Aggregate that requires it.
+particular Aggregate and store it in the Entity table, *even when many Aggregates won't use that data*,
+means that **all SQL queries** against that table that don't require that data
+**will have to read more buffers** to satisfy their query results. Reading more
+buffers means more potential slow disk access. That happens because the page
+entries are wider now with data that is not useful for queries other than the
+Aggregate that requires it.
 
 The cases where denormalisation works are for Entity tables that rarely are the
 root of many Aggregates and where the use cases for that table require (mostly)

@@ -60,16 +60,12 @@
 </head>
 <body>
 <p>January 30, 2024</p>
-<h1>Definition</h1>
+<h1>Definition</h0>
 <p>How long to wait until the lock is acquired before cancelling the statement.</p>
-<p>Note: Emphasis on the fact that the <code>lock_timeout</code> setting doesn't affect how
-long the lock is held, only how long the transaction is allowed wait in order
-to acquire it.</p>
-<p>Note 2: The timeout counter starts when the transaction joins the queue of
-locks. So if there are 3 transactions waiting to acquire the same lock, the
-4th one wouldn't wait until all 3 transactions are completed before the lock
-timeout counter starts.</p>
-<pre><code class="language-sql">// sets the lock for the whole session
+<p>Note: Emphasis on the fact that the <code>lock_timeout</code> setting doesn't affect how long the lock is held, only how long the transaction is allowed wait in order to acquire it.</p>
+<p>Note 2: The timeout counter starts when the transaction joins the queue of locks. So if there are 3 transactions waiting to acquire the same lock, the 4th one wouldn't wait until all 3 transactions are completed before the lock timeout counter starts.</p>
+<pre><code class="language-sql">
+// sets the lock for the whole session
 SET lock_timeout = '1s';
 
 // sets the lock for the current transaction
@@ -77,11 +73,10 @@ SET LOCAL lock_timeout = 1000;
 
 ALTER TABLE accounts DROP COLUMN amount;
 // ERROR: canceling statement due to lock timeout
-</code></pre>
-<h2>RESET Gotchas</h2>
-<p>Warning: the <code>RESET lock_timeout;</code> operation will reset the SESSION timeout,
-even if it is performed inside a transaction. See below:</p>
-<pre><code class="language-sql">-- This is the default lock_timeout (0s)
+</code></pre><h2>RESET Gotchas</h0>
+<p>Warning: the <code>RESET lock_timeout;</code> operation will reset the SESSION timeout, even if it is performed inside a transaction. See below:</p>
+<pre><code class="language-sql">
+-- This is the default lock_timeout (0s)
 SHOW lock_timeout;
 
 -- Set the SESSION lock timeout (42s)
@@ -109,37 +104,19 @@ COMMIT;
 
 -- Should now be 0s because it was reset inside the transaction.
 SHOW lock_timeout;
-</code></pre>
-<p>Alternative: Inside a transaction, use <code>SET LOCAL lock_timeout TO DEFAULT;</code>
-instead.</p>
+</code></pre><p>Alternative: Inside a transaction, use <code>SET LOCAL lock_timeout TO DEFAULT;</code> instead.</p>
 <p>Further discussions <a href="https://www.postgresql.org/message-id/flat/CAM2F1VM86387XCtNgbTbVQO6PfYBjCHg74XLsfavWJ-o-OZE%2BQ%40mail.gmail.com">here</a></p>
-<h2>Behaviour inside and outside a transaction</h2>
-<p>Basics: <code>SET lock_timeout 100ms</code>  sets the timeout for the whole session,
-whereas <code>SET LOCAL lock_timeout 100ms</code> sets the timeout for the current
-transactions.</p>
-<p>If SET (or equivalently SET SESSION) is issued within a transaction that is
-later aborted, the effects of the SET command disappear when the transaction is
-rolled back. Once the surrounding transaction is committed, the effects will
-persist until the end of the session, unless overridden by another SET.</p>
-<p>The effects of SET LOCAL last only till the end of the current transaction,
-whether committed or not. A special case is SET followed by SET LOCAL within a
-single transaction: the SET LOCAL value will be seen until the end of the
-transaction, but afterwards (if the transaction is committed) the SET value
-will take effect.</p>
-<p>The effects of SET or SET LOCAL are also cancelled by rolling back to a
-savepoint that is earlier than the command.</p>
+<h2>Behaviour inside and outside a transaction</h0>
+<p>Basics: <code>SET lock_timeout 100ms</code>  sets the timeout for the whole session, whereas <code>SET LOCAL lock_timeout 100ms</code> sets the timeout for the current transactions.</p>
+<p>If SET (or equivalently SET SESSION) is issued within a transaction that is later aborted, the effects of the SET command disappear when the transaction is rolled back. Once the surrounding transaction is committed, the effects will persist until the end of the session, unless overridden by another SET.</p>
+<p>The effects of SET LOCAL last only till the end of the current transaction, whether committed or not. A special case is SET followed by SET LOCAL within a single transaction: the SET LOCAL value will be seen until the end of the transaction, but afterwards (if the transaction is committed) the SET value will take effect.</p>
+<p>The effects of SET or SET LOCAL are also cancelled by rolling back to a savepoint that is earlier than the command.</p>
 <p>Source: https://www.postgresql.org/docs/16/runtime-config-client.html</p>
-<h2>When used together with <code>statement_timeout</code></h2>
-<p>Note: If <code>lock_timeout</code> is set to the same value of <code>statement_timeout</code>, the
-<code>lock_timeout</code> value becomes redundant, as <code>statement_timeout</code> trumps the lock.</p>
-<blockquote>
-<p>Unlike <code>statement_timeout</code>, this timeout can only occur while waiting for
-locks. Note that if <code>statement_timeout</code> is nonzero, it is rather pointless to
-set <code>lock_timeout</code> to the same or larger value, since the statement timeout
-would always trigger first. If <code>log_min_error_statement</code> is set to ERROR or
-lower, the statement that timed out will be logged.</p>
-</blockquote>
+<h2>When used together with <code>ssttaatteemmeenntt__ttiimmeeoouutt`</code></h0>
+<p>Note: If <code>lock_timeout</code> is set to the same value of <code>statement_timeout</code>, the <code>lock_timeout</code> value becomes redundant, as <code>statement_timeout</code> trumps the lock.</p>
+<blockquote>Unlike `statement_timeout`, this timeout can only occur while waiting for</blockquote>
+<blockquote>locks. Note that if `statement_timeout` is nonzero, it is rather pointless to</blockquote>
+<blockquote>set `lock_timeout` to the same or larger value, since the statement timeout</blockquote>
+<blockquote>would always trigger first. If `log_min_error_statement` is set to ERROR or</blockquote>
+<blockquote>lower, the statement that timed out will be logged.</blockquote>
 <p>Source: https://www.postgresql.org/docs/16/sql-set.html</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

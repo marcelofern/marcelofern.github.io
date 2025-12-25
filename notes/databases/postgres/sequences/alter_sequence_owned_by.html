@@ -59,61 +59,48 @@
   <![endif]-->
 </head>
 <body>
-<h1>ALTER SEQUENCE ONWED BY</h1>
-<pre><code>Created at: 2025-04-22
-</code></pre>
-<p>When a user creates a table and sets the primary key of that table to follow
-a default from a sequence, the DDL changes can look like this:</p>
-<pre><code class="language-sql">DROP TABLE IF EXISTS foo CASCADE;
+<h1>ALTER SEQUENCE ONWED BY</h0>
+<pre><code class="language-">
+Created at: 2025-04-22
+</code></pre><p>When a user creates a table and sets the primary key of that table to follow a default from a sequence, the DDL changes can look like this:</p>
+<pre><code class="language-sql">
+DROP TABLE IF EXISTS foo CASCADE;
 CREATE SEQUENCE seq;
 CREATE TABLE foo (id INTEGER);
 ALTER TABLE foo ALTER COLUMN id SET DEFAULT nextval('seq');
-</code></pre>
-<p>Once this table is out in the wild, you might have reason to figure out the
-name of the sequence being used by foo.id:</p>
-<pre><code class="language-sql">SELECT pg_get_serial_sequence('foo', 'id');
+</code></pre><p>Once this table is out in the wild, you might have reason to figure out the name of the sequence being used by foo.id:</p>
+<pre><code class="language-sql">
+SELECT pg_get_serial_sequence('foo', 'id');
 -- returns no results
-</code></pre>
-<p>However, this returns no results. <code>pg_get_serial_sequence</code> looks for
-<code>pg_depend</code> entries, and in this case there isn't one.</p>
+</code></pre><p>However, this returns no results. <code>pg_get_serial_sequence</code> looks for <code>pg_depend</code> entries, and in this case there isn't one.</p>
 <p>This can be changed:</p>
-<pre><code class="language-sql">ALTER SEQUENCE seq OWNED BY foo.id;
-</code></pre>
-<p>And now you get results:</p>
-<pre><code> pg_get_serial_sequence
+<pre><code class="language-sql">
+ALTER SEQUENCE seq OWNED BY foo.id;
+</code></pre><p>And now you get results:</p>
+<pre><code class="language-">
+ pg_get_serial_sequence
 ------------------------
  public.seq
-</code></pre>
-<h2>SERIAL fields</h2>
-<p>If using a <code>SERIAL</code> field, Postgres will do that for you for free.
-This:</p>
-<pre><code class="language-sql">CREATE TABLE tablename (
+</code></pre><h2>SERIAL fields</h0>
+<p>If using a <code>SERIAL</code> field, Postgres will do that for you for free. This:</p>
+<pre><code class="language-sql">
+CREATE TABLE tablename (
     colname SERIAL
 );
-</code></pre>
-<p>Is the equivalent of:</p>
-<pre><code class="language-sql">CREATE SEQUENCE tablename_colname_seq AS integer;
+</code></pre><p>Is the equivalent of:</p>
+<pre><code class="language-sql">
+CREATE SEQUENCE tablename_colname_seq AS integer;
 CREATE TABLE tablename (
     colname integer NOT NULL DEFAULT nextval('tablename_colname_seq')
 );
 ALTER SEQUENCE tablename_colname_seq OWNED BY tablename.colname;
-</code></pre>
-<p>The
-<a href="https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-SERIAL">docs</a>
-says:</p>
-<blockquote>
-<p>Lastly, the sequence is marked as “owned by” the column, so that it will be
-dropped if the column or table is dropped.</p>
-</blockquote>
-<h2>Gotcha of SERIAL columns</h2>
-<blockquote>
-<p>Because smallserial, serial and bigserial are implemented using sequences,
-there may be &quot;holes&quot; or gaps in the sequence of values which appears in the
-column, even if no rows are ever deleted. A value allocated from the sequence
-is still &quot;used up&quot; even if a row containing that value is never successfully
-inserted into the table column. This may happen, for example, if the
-inserting transaction rolls back. See nextval() in Section 9.17 for details.</p>
-</blockquote>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+</code></pre><p>The <a href="https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-SERIAL">docs</a> says:</p>
+<blockquote>Lastly, the sequence is marked as “owned by” the column, so that it will be</blockquote>
+<blockquote>dropped if the column or table is dropped.</blockquote>
+<h2>Gotcha of SERIAL columns</h0>
+<blockquote>Because smallserial, serial and bigserial are implemented using sequences,</blockquote>
+<blockquote>there may be "holes" or gaps in the sequence of values which appears in the</blockquote>
+<blockquote>column, even if no rows are ever deleted. A value allocated from the sequence</blockquote>
+<blockquote>is still "used up" even if a row containing that value is never successfully</blockquote>
+<blockquote>inserted into the table column. This may happen, for example, if the</blockquote>
+<blockquote>inserting transaction rolls back. See nextval() in Section 9.17 for details.</blockquote>

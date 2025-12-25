@@ -60,38 +60,32 @@
 </head>
 <body>
 <p>February 28th, 2024</p>
-<p><code>pympler</code> is a library that displays the size of a python object in bytes.
-It is able to recursevily analyse child-objects linked through pointers and
-grab their sizes too.</p>
-<h2>asizeof</h2>
-<blockquote>
-<p>pympler.asizeof can be used to investigate how much memory certain Python
-objects consume. In contrast to sys.getsizeof, asizeof sizes objects
-recursively. You can use one of the asizeof functions to get the size of
-these objects and all associated referents:</p>
-</blockquote>
+<p><code>pympler</code> is a library that displays the size of a python object in bytes. It is able to recursevily analyse child-objects linked through pointers and grab their sizes too.</p>
+<h2>asizeof</h0>
+<blockquote>pympler.asizeof can be used to investigate how much memory certain Python</blockquote>
+<blockquote>objects consume. In contrast to sys.getsizeof, asizeof sizes objects</blockquote>
+<blockquote>recursively. You can use one of the asizeof functions to get the size of</blockquote>
+<blockquote>these objects and all associated referents:</blockquote>
 <p><a href="http://web.archive.org/web/20231217210011/https://pympler.readthedocs.io/en/latest/intro.html">Source</a></p>
-<pre><code>&gt;&gt;&gt; from pympler import asizeof
-&gt;&gt;&gt; obj = [1, 2, (3, 4), 'text']
-&gt;&gt;&gt; asizeof.asizeof(obj)
+<pre><code class="language-">
+>>> from pympler import asizeof
+>>> obj = [1, 2, (3, 4), 'text']
+>>> asizeof.asizeof(obj)
 176
-&gt;&gt;&gt; print(asizeof.asized(obj, detail=1).format())
+>>> print(asizeof.asized(obj, detail=1).format())
 [1, 2, (3, 4), 'text'] size=176 flat=48
     (3, 4) size=64 flat=32
     'text' size=32 flat=32
     1 size=16 flat=16
     2 size=16 flat=16
-</code></pre>
-<h2>clastracker</h2>
-<blockquote>
-<p>The basic tools of the ClassTracker are tracking objects or classes, taking
-snapshots, and printing or dumping statistics. The first step is to decide
-what to track. Then spots of interest for snapshot creation have to be
-identified. Finally, the gathered data can be printed or saved:</p>
-</blockquote>
-<p>The below doesn't work quite well with Django querysets, go to the next section
-on <code>muppy</code> for an alternative.</p>
-<pre><code class="language-python">from pympler.classtracker import ClassTracker
+</code></pre><h2>clastracker</h0>
+<blockquote>The basic tools of the ClassTracker are tracking objects or classes, taking</blockquote>
+<blockquote>snapshots, and printing or dumping statistics. The first step is to decide</blockquote>
+<blockquote>what to track. Then spots of interest for snapshot creation have to be</blockquote>
+<blockquote>identified. Finally, the gathered data can be printed or saved:</blockquote>
+<p>The below doesn't work quite well with Django querysets, go to the next section on <code>muppy</code> for an alternative.</p>
+<pre><code class="language-python">
+from pympler.classtracker import ClassTracker
 tracker = ClassTracker()
 tracker.track_object(AccountQuerySet)
 tracker.create_snapshot()
@@ -100,9 +94,9 @@ list(Account.objects.all())
 
 tracker.create_snapshot()
 tracker.stats.print_summary()
-</code></pre>
-<h2>muppy</h2>
-<pre><code class="language-python">import pympler
+</code></pre><h2>muppy</h0>
+<pre><code class="language-python">
+import pympler
 
 start = pympler.muppy.get_objects()
 
@@ -116,11 +110,11 @@ diff = pympler.muppy.summary.get_diff(sum_start, sum_end)
 pympler.muppy.summary.print_(diff)
 
 # Below may fail without tkinter
-# print(f&quot;Size start in bytes: {pympler.asizeof.asizeof(start)}&quot;)
-# print(f&quot;Size end in bytes: {pympler.asizeof.asizeof(end)}&quot;)
-</code></pre>
-<p>Result:</p>
-<pre><code>                                    types |   # objects |   total size
+# print(f"Size start in bytes: {pympler.asizeof.asizeof(start)}")
+# print(f"Size end in bytes: {pympler.asizeof.asizeof(end)}")
+</code></pre><p>Result:</p>
+<pre><code class="language-">
+                                    types |   # objects |   total size
 ========================================= | =========== | ============
                                      list |          75 |     16.36 MB
                                      dict |       25268 |      9.83 MB
@@ -138,6 +132,3 @@ pympler.muppy.summary.print_(diff)
                               abc.ABCMeta |         111 |    116.20 KB
                             datetime.date |        3084 |     96.38 KB
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

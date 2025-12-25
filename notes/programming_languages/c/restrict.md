@@ -82,8 +82,7 @@ memory to a register, which is more expensive than other x86 instructions.
 Plus, the add instruction needs to wait for the loading instruction before it
 can run, and so the CPU cannot parallelise multiple instructions adequately.
 
-According to [Markus Fasselt's
-paper](https://web.archive.org/web/20231001092447/https://hps.vi4io.org/_media/teaching/wintersemester_2013_2014/epc-1314-fasselt-c-keywords-report.pdf),
+According to [Markus Fasselt's paper](https://web.archive.org/web/20231001092447/https://hps.vi4io.org/_media/teaching/wintersemester_2013_2014/epc-1314-fasselt-c-keywords-report.pdf),
 testing this optimisation in a very large *n*, the speed improvement of the
 optimised assembly can be of 3 times.
 

@@ -59,15 +59,16 @@
   <![endif]-->
 </head>
 <body>
-<h2>Define</h2>
-<h3>Variables</h3>
-<pre><code class="language-scm">(define size 2)
-</code></pre>
-<h3>Procedures</h3>
-<pre><code class="language-scm">(define (cube x) (* x x x))
-</code></pre>
-<h3>Lambdas</h3>
-<pre><code class="language-scm">(lambda (x) (+ x 1))
+<h2>Define</h0>
+<h3>Variables</h0>
+<pre><code class="language-scm">
+(define size 2)
+</code></pre><h3>Procedures</h0>
+<pre><code class="language-scm">
+(define (cube x) (* x x x))
+</code></pre><h3>Lambdas</h0>
+<pre><code class="language-scm">
+(lambda (x) (+ x 1))
 
 ; define and call
 ((lambda (x) (+ x 1)) 1)
@@ -78,54 +79,48 @@
 
 ; or with more local variables
 (let ((x 1) (y 3)) (+ x y)) ; == 4
-</code></pre>
-<h3>Pairs</h3>
-<p>Know as &quot;tuples&quot; in other languages, can be defined using the <code>cons</code> keyword
-which is short for &quot;construct&quot;.</p>
-<pre><code class="language-scm">(define x (cons 1 2))
+</code></pre><h3>Pairs</h0>
+<p>Know as "tuples" in other languages, can be defined using the <code>cons</code> keyword which is short for "construct".</p>
+<pre><code class="language-scm">
+(define x (cons 1 2))
 
 ; a list
 (define my_list (cons 1 (cons 2 (cons 3 4))))
 
-</code></pre>
-<p>The first argument can be fetched with the keyword <code>car</code> which is legacy from
-the IBM 704 days and means &quot;Contents of Address part of Register&quot;.</p>
-<p>TO fetch the scond argument, we use <code>cdr</code> which means &quot;Contents of Decrement
-part of Register&quot;</p>
-<pre><code class="language-scm">(car x)
+</code></pre><p>The first argument can be fetched with the keyword <code>car</code> which is legacy from the IBM 704 days and means "Contents of Address part of Register".</p>
+<p>TO fetch the scond argument, we use <code>cdr</code> which means "Contents of Decrement part of Register"</p>
+<pre><code class="language-scm">
+(car x)
 1
 
 (cdr x)
 2
-</code></pre>
-<h2>Conditionals</h2>
+</code></pre><h2>Conditionals</h0>
 <p>Here are three different options:</p>
-<h3><code>cond</code> only</h3>
-<pre><code class="language-scm">(define (mod x)
+<h3><code>ccoonndd`</code> only</h0>
+<pre><code class="language-scm">
+(define (mod x)
   (cond
-    ((&gt; x 0) x)
-    ((&lt; x 0) (- x))
+    ((> x 0) x)
+    ((< x 0) (- x))
     ((= x 0) 0)
   )
 )
-</code></pre>
-<h3><code>cond</code> and <code>else</code></h3>
-<pre><code class="language-scm">(define (mod x)
+</code></pre><h3><code>ccoonndd`</code> and <code>eellssee`</code></h0>
+<pre><code class="language-scm">
+(define (mod x)
   (cond
-    ((&lt; x 0) (- x))
+    ((< x 0) (- x))
     (else x)
   )
 )
-</code></pre>
-<h3><code>if</code> only</h3>
-<pre><code class="language-scm">(define (mod x)
-  (if (&lt; x 0) (- x) x)
+</code></pre><h3><code>iiff`</code> only</h0>
+<pre><code class="language-scm">
+(define (mod x)
+  (if (< x 0) (- x) x)
 )
-</code></pre>
-<h2>Printing</h2>
-<pre><code class="language-scm">(display &quot;hello world&quot;)
+</code></pre><h2>Printing</h0>
+<pre><code class="language-scm">
+(display "hello world")
 (newline)
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

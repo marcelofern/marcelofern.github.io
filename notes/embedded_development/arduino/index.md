@@ -18,4 +18,4 @@
 - [Arduino uno anatomy](embedded_development/arduino/arduino_uno_anatomy.md)
 
 ## Reverse Engineering
-- [`pinMode`](embedded_development/arduino/pin_mode.md)
+- [pinMode](embedded_development/arduino/pin_mode.md)

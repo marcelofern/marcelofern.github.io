@@ -59,15 +59,14 @@
   <![endif]-->
 </head>
 <body>
-<h1>Print Lock For Query</h1>
-<p>To find which lock is being used by a particular query, first grab the process
-id that is running that query</p>
-<pre><code class="language-sql">SELECT pid, query, state, backend_start FROM pg_stat_activity WHERE state = 'active';
-</code></pre>
-<p>Or alternatively, in psql you can <code>SELECT pg_backend_pid();</code> if you have
-access to that process before you run the query.</p>
+<h1>Print Lock For Query</h0>
+<p>To find which lock is being used by a particular query, first grab the process id that is running that query</p>
+<pre><code class="language-sql">
+SELECT pid, query, state, backend_start FROM pg_stat_activity WHERE state = 'active';
+</code></pre><p>Or alternatively, in psql you can <code>SELECT pg_backend_pid();</code> if you have access to that process before you run the query.</p>
 <p>Then, with that PID, run the following query:</p>
-<pre><code class="language-sql">SELECT
+<pre><code class="language-sql">
+SELECT
     l.locktype,
     l.mode,
     l.granted,
@@ -88,9 +87,9 @@ WHERE
     a.pid = 777;
     -- Or if you have another shell opened to analyse the data, you can perform
     -- a.pid != pg_backend_pid();
-</code></pre>
-<p>That will give you a result like this:</p>
-<pre><code> locktype |         mode          | granted | relation |   relname   |                         query                         |  lock_duration
+</code></pre><p>That will give you a result like this:</p>
+<pre><code class="language-">
+ locktype |         mode          | granted | relation |   relname   |                         query                         |  lock_duration
 ----------+-----------------------+---------+----------+-------------+-------------------------------------------------------+-----------------
  relation | ShareRowExclusiveLock | t       |    24711 | blog_author | ALTER TABLE blog_post                                +| 03:21:38.903972
           |                       |         |          |             | ADD CONSTRAINT fk_post_author FOREIGN KEY (author_id)+|
@@ -112,12 +111,5 @@ WHERE
           |                       |         |          |             | REFERENCES blog_author (id)                          +|
           |                       |         |          |             | DEFERRABLE INITIALLY DEFERRED                        +|
           |                       |         |          |             | NOT VALID;                                            |
-</code></pre>
-<h2>GOTCHA's</h2>
-<p>Make sure to see which <strong>relation</strong> the lock is taking. Some operations might
-take locks in different relations. The CREATE INDEX operation, for example,
-takes a lock onto itself. In this case there will be a relation id but not
-a relname.</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+</code></pre><h2>GOTCHA's</h0>
+<p>Make sure to see which <b>relation</b> the lock is taking. Some operations might take locks in different relations. The CREATE INDEX operation, for example, takes a lock onto itself. In this case there will be a relation id but not a relname.</p>

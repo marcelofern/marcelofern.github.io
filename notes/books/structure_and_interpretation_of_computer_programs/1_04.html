@@ -59,35 +59,24 @@
   <![endif]-->
 </head>
 <body>
-<h1>Exercise 1.4</h1>
-<h2>Pre-exercise theory</h2>
-<p>Compound expressions represent the application of an operator to one or more
-operands.</p>
-<p>For example (* 5 2) is a compound-expression as the operator (+) operates on
-the operands 5 and 2.</p>
-<p>Compound expressions are used all the time in LISP. One example of non-compound
-expression is the evaluation of a literal number like typing <code>421</code> and hitting
-enter in a REPL.</p>
-<h2>The question</h2>
-<blockquote>
-<p>Observe that our model of evaluation allows for combinations whose operators
-are compound expressions. Use this observation to describe the behaviour of
-the following procedure:</p>
-</blockquote>
-<pre><code class="language-scm">(define (a-plus-abs-b a b)
-        ((if (&gt; b 0) + -)) a b
+<h1>Exercise <ol><li>44</h0>
+<h2>P Prree<ul><li>eexxeerrcciissee  tthheeoorryy</h0>
+ Compound expressions represent the application of an operator to one or more operands.</li></ol>
+ For example <code>(* 5 2)</code> is a compound</li><li>expression as the operator (+) operates on the operands 5 and 2.</li></ul>
+<p>Compound expressions are used all the time in LISP. One example of non-compound expression is the evaluation of a literal number like typing <code>421</code> and hitting enter in a REPL.</p>
+<h2>The question</h0>
+<blockquote>Observe that our model of evaluation allows for combinations whose operators</blockquote>
+<blockquote>are compound expressions. Use this observation to describe the behaviour of</blockquote>
+<blockquote>the following procedure:</blockquote>
+<pre><code class="language-scm">
+(define (a-plus-abs-b a b)
+        ((if (> b 0) + -)) a b
 )
-</code></pre>
-<p>The <code>if</code> statement checks if <code>b</code> is greater 0, if so, it returns +, otherwise
-it returns -. This indicates which operation is going to be taken on the
-operands <code>a b</code>.</p>
+</code></pre><p>The <code>if</code> statement checks if <code>b</code> is greater 0, if so, it returns +, otherwise it returns -. This indicates which operation is going to be taken on the operands <code>a b</code>.</p>
 <p>In LISP, the operators <code>+</code> and <code>-</code> are procedures themselves:</p>
-<pre><code class="language-scm">scheme@(guile-user) [9]&gt; +
-$59 = #&lt;procedure + (#:optional _ _ . _)&gt;
-scheme@(guile-user) [9]&gt; -
-$60 = #&lt;procedure - (#:optional _ _ . _)&gt;
-</code></pre>
-<p>So they can be selected using conditional statements.</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+<pre><code class="language-scm">
+scheme@(guile-user) [9]> +
+$59 = #<procedure + (#:optional _ _ . _)>
+scheme@(guile-user) [9]> -
+$60 = #<procedure - (#:optional _ _ . _)>
+</code></pre><p>So they can be selected using conditional statements.</p>

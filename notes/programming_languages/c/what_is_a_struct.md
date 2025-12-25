@@ -51,8 +51,8 @@ member. The compiler may also increase the size of structure if necessary, to
 make it a multiple of the alignment by adding padding at the end of the
 structure. This is known as Tail Padding.
 
-Note that the [rsp-8] will store the instruction pointer when `ret` is hit.
-The struct element `c` itself starts at [rsp-12] and ends at [rsp-11]. This
+Note that the `[rsp-8]` will store the instruction pointer when `ret` is hit.
+The struct element `c` itself starts at `[rsp-12]` and ends at `[rsp-11]`. This
 means that there are 3 bytes of padding at the end.
 
 - 4 bytes between `a` and `b`

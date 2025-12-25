@@ -59,49 +59,41 @@
   <![endif]-->
 </head>
 <body>
-<h1>Advisory Lock</h1>
-<pre><code>Created at: 2024-12-05
-</code></pre>
-<p>From the docs:</p>
-<blockquote>
-<p>PostgreSQL provides a means for creating locks that have application-defined
-meanings. These are called advisory locks, because the system does not
-enforce their use — it is up to the application to use them correctly.
-Advisory locks can be useful for locking strategies that are an awkward fit
-for the MVCC model.</p>
-</blockquote>
-<blockquote>
-<p>For example, a common use of advisory locks is to emulate pessimistic locking
-strategies typical of so-called “flat file” data management systems. While a
-flag stored in a table could be used for the same purpose, advisory locks are
-faster, avoid table bloat, and are automatically cleaned up by the server at
-the end of the session.</p>
-</blockquote>
-<blockquote>
-<p>There are two ways to acquire an advisory lock in PostgreSQL: at session
-level or at transaction level. Unlike standard lock requests, session-level
-advisory lock requests do not honor transaction semantics: a lock acquired
-during a transaction that is later rolled back will still be held following
-the rollback. Transaction-level lock requests, on the other hand, behave more
-like regular lock requests: they are automatically released at the end of the
-transaction, and there is no explicit unlock operation. This behavior is
-often more convenient than the session-level behavior for short-term usage of
-an advisory lock. Session-level and transaction-level lock requests for the
-same advisory lock identifier will block each other in the expected way</p>
-</blockquote>
-<h2>Gotchas</h2>
-<pre><code class="language-sql">SELECT pg_advisory_lock(id) FROM foo WHERE id = 12345; -- ok
-SELECT pg_advisory_lock(id) FROM foo WHERE id &gt; 12345 LIMIT 100; -- danger!
+<h1>Advisory Lock</h0>
+<pre><code class="language-">
+Created at: 2024-12-05
+</code></pre><p>From the docs:</p>
+<blockquote>PostgreSQL provides a means for creating locks that have application-defined</blockquote>
+<blockquote>meanings. These are called advisory locks, because the system does not</blockquote>
+<blockquote>enforce their use — it is up to the application to use them correctly.</blockquote>
+<blockquote>Advisory locks can be useful for locking strategies that are an awkward fit</blockquote>
+<blockquote>for the MVCC model.</blockquote>
+<blockquote>For example, a common use of advisory locks is to emulate pessimistic locking</blockquote>
+<blockquote>strategies typical of so-called “flat file” data management systems. While a</blockquote>
+<blockquote>flag stored in a table could be used for the same purpose, advisory locks are</blockquote>
+<blockquote>faster, avoid table bloat, and are automatically cleaned up by the server at</blockquote>
+<blockquote>the end of the session.</blockquote>
+<blockquote>There are two ways to acquire an advisory lock in PostgreSQL: at session</blockquote>
+<blockquote>level or at transaction level. Unlike standard lock requests, session-level</blockquote>
+<blockquote>advisory lock requests do not honor transaction semantics: a lock acquired</blockquote>
+<blockquote>during a transaction that is later rolled back will still be held following</blockquote>
+<blockquote>the rollback. Transaction-level lock requests, on the other hand, behave more</blockquote>
+<blockquote>like regular lock requests: they are automatically released at the end of the</blockquote>
+<blockquote>transaction, and there is no explicit unlock operation. This behavior is</blockquote>
+<blockquote>often more convenient than the session-level behavior for short-term usage of</blockquote>
+<blockquote>an advisory lock. Session-level and transaction-level lock requests for the</blockquote>
+<blockquote>same advisory lock identifier will block each other in the expected way</blockquote>
+<h2>Gotchas</h0>
+<pre><code class="language-sql">
+SELECT pg_advisory_lock(id) FROM foo WHERE id = 12345; -- ok
+SELECT pg_advisory_lock(id) FROM foo WHERE id > 12345 LIMIT 100; -- danger!
 SELECT pg_advisory_lock(q.id) FROM
 (
-  SELECT id FROM foo WHERE id &gt; 12345 LIMIT 100
+  SELECT id FROM foo WHERE id > 12345 LIMIT 100
 ) q; -- ok
-</code></pre>
-<p>The second form is dangerous because the LIMIT is not guaranteed to be applied
-before the locking function is executed. This might cause some locks to be
-acquired that the application was not expecting, and hence would fail to
-release (until it ends the session).</p>
-<pre><code class="language-sql">-- session-level advisory lock
+</code></pre><p>The second form is dangerous because the LIMIT is not guaranteed to be applied before the locking function is executed. This might cause some locks to be acquired that the application was not expecting, and hence would fail to release (until it ends the session).</p>
+<pre><code class="language-sql">
+-- session-level advisory lock
 SELECT pg_advisory_lock(1234);
 -- session-level advisory lock, but return immediately if lock is already
 -- acquired.
@@ -111,13 +103,12 @@ SELECT pg_try_advisory_lock(1234);
 SELECT pg_advisory_unlock(1234);
 
 -- exclusive transaction-level advisory lock. No unlock option available.
--- Docs say &quot;there is no provision for manual release&quot;.
+-- Docs say "there is no provision for manual release".
 SELECT pg_advisory_xact_lock(1234);
-</code></pre>
-<h2>Finding advisory locks acquired by your process id</h2>
-<p>If you need to know if the application code already acquired the advisory lock
-you are after, you can perform this query:</p>
-<pre><code class="language-sql">BEGIN;
+</code></pre><h2>Finding advisory locks acquired by your process id</h0>
+<p>If you need to know if the application code already acquired the advisory lock you are after, you can perform this query:</p>
+<pre><code class="language-sql">
+BEGIN;
 
 SELECT pg_advisory_xact_lock(-8732361555977846743);
 -- This is the same as the above in 32bit.
@@ -130,9 +121,9 @@ SELECT pg_advisory_xact_lock(4294967296);
 SELECT * FROM pg_locks
 WHERE (
     locktype = 'advisory'
-    AND classid = (-8732361555977846743 &gt;&gt; 32)
+    AND classid = (-8732361555977846743 >> 32)
     -- 4294967295 is 0xFFFFFFFF because our id is too large to fit in 32bits
-    AND objid = (-8732361555977846743 &amp; 4294967295)
+    AND objid = (-8732361555977846743 & 4294967295)
     AND pid != pg_backend_pid()
 );
 
@@ -141,47 +132,47 @@ WHERE (
 SELECT * FROM pg_locks
 WHERE (
     locktype = 'advisory'
-    AND classid = (4294967296 &gt;&gt; 32)
-    AND objid = (4294967296 &amp; 4294967295)
+    AND classid = (4294967296 >> 32)
+    AND objid = (4294967296 & 4294967295)
     AND pid != pg_backend_pid()
 );
 
 SELECT pg_advisory_xact_lock(1302970409);
 ROLLBACK;
-</code></pre>
-<p>In python:</p>
-<pre><code class="language-py">with transaction.atomic():
+</code></pre><p>In python:</p>
+<pre><code class="language-py">
+with transaction.atomic():
     with connection.cursor() as cursor:
         lock_id = 4294967296
-        high_part = lock_id &gt;&gt; 32
-        low_part = lock_id &amp; 0xFFFFFFFF
+        high_part = lock_id >> 32
+        low_part = lock_id & 0xFFFFFFFF
         query = (
-            &quot;&quot;&quot;
+            """
             -- This is the max 32 bit + 1
             SELECT pg_advisory_xact_lock(4294967296);
             SELECT pg_advisory_xact_lock(4294967295);
-            &quot;&quot;&quot;
+            """
         )
         cursor.execute(query)
         lock_query = (
-            f&quot;SELECT * FROM pg_locks WHERE locktype = 'advisory' &quot;
-            f&quot;AND classid = {high_part} &quot;
-            f&quot;AND objid = {low_part} &quot;
-            f&quot;AND pid = pg_backend_pid()&quot;
+            f"SELECT * FROM pg_locks WHERE locktype = 'advisory' "
+            f"AND classid = {high_part} "
+            f"AND objid = {low_part} "
+            f"AND pid = pg_backend_pid()"
         )
         print(lock_query)
         cursor.execute(lock_query)
         print(cursor.fetchall())
-</code></pre>
-<h2>Script for testing advisory session locks:</h2>
-<pre><code class="language-py">import time
+</code></pre><h2>Script for testing advisory session locks:</h0>
+<pre><code class="language-py">
+import time
 import psycopg2
 
 # Change these before running locally.
-DB_NAME = &quot;advisory_lock&quot;
-USER = &quot;marcelo.fernandes&quot;
-PASSWORD = &quot;&quot;
-HOST = &quot;localhost&quot;
+DB_NAME = "advisory_lock"
+USER = "marcelo.fernandes"
+PASSWORD = ""
+HOST = "localhost"
 PORT = 5415
 
 
@@ -198,10 +189,10 @@ def get_cursor_and_connection():
 
 
 def maybe_get_advisory_session_lock(cursor):
-    print(&quot;- Acquiring advisory lock...&quot;)
-    cursor.execute(&quot;SELECT pg_try_advisory_lock(12345);&quot;)
+    print("- Acquiring advisory lock...")
+    cursor.execute("SELECT pg_try_advisory_lock(12345);")
     result = cursor.fetchone()[0]
-    print(f&quot;- result: {result}&quot;)
+    print(f"- result: {result}")
     if result is True:
         time.sleep(60)
         return
@@ -215,9 +206,6 @@ def run():
     conn.close()
 
 
-if __name__ == &quot;__main__&quot;:
+if __name__ == "__main__":
     run()
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

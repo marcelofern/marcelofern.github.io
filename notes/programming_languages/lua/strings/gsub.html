@@ -59,15 +59,13 @@
   <![endif]-->
 </head>
 <body>
-<h1>gsub</h1>
-<pre><code>Created at: 2025-01-27
-</code></pre>
-<p>Official docs: <a href="https://www.lua.org/pil/20.1.html">https://www.lua.org/pil/20.1.html</a>.</p>
-<h2>Gotchas</h2>
-<pre><code class="language-lua">-- Remember to escape the patterns before using it with gsub if you want to
+<h1>gsub</h0>
+<pre><code class="language-">
+Created at: 2025-01-27
+</code></pre><p>Official docs: <a href="https://www.lua.org/pil/20.1.html">https://www.lua.org/pil/20.1.html</a>.</p>
+<h2>Gotchas</h0>
+<pre><code class="language-lua">
+-- Remember to escape the patterns before using it with gsub if you want to
 -- perform something closer to a literal string replacement.
-prefix_to_ignore = prefix_to_ignore:gsub(&quot;([%.%-%/%_])&quot;, &quot;%%%1&quot;)
+prefix_to_ignore = prefix_to_ignore:gsub("([%.%-%/%_])", "%%%1")
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

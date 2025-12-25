@@ -4,8 +4,8 @@
 Created at: 2024-07-29
 ```
 
-Since Postgres 12 (inclusive), the operation `ALTER TABLE .. UPDATE COLUMN ...
-SET NOT NULL` can be managed safely, that is, without locking reads and writes.
+Since Postgres 12 (inclusive), the operation `ALTER TABLE .. UPDATE COLUMN ... SET NOT NULL`
+can be managed safely, that is, without locking reads and writes.
 
 In prior versions of Postgres, this operation would need to scan the whole
 table, and thus, could take a long time.

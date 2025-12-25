@@ -60,38 +60,22 @@
 </head>
 <body>
 <p>January 9, 2023</p>
-<h1>Building an UART with (System)Verilog</h1>
-<p>Sources:</p>
-<ul>
-<li>https://nandland.com/uart-serial-port-module/</li>
-<li>https://www.electronicwings.com/raspberry-pi/raspberry-pi-uart-communication-using-python-and-c</li>
-</ul>
-<h2>What is an UART</h2>
-<p>UART stands for universal asynchronous receiver-transmitter. An UART is a
-computer hardware that facilitates asynchronous serial communication.</p>
-<p>UARTs usually send information bit by bit. Starting from the least significant
-to the most significant one.</p>
+<h1>Building an UART with (System)Verilog</h0>
+<p>Sources: - https://nandland.com/uart-serial-port-module/ - https://www.electronicwings.com/raspberry-pi/raspberry-pi-uart-communication-using-python-and-c</p>
+<h2>What is an UART</h0>
+<p>UART stands for universal asynchronous receiver-transmitter. An UART is a computer hardware that facilitates asynchronous serial communication.</p>
+<p>UARTs usually send information bit by bit. Starting from the least significant to the most significant one.</p>
 <p>There're usually 3 major components in a UART:</p>
-<ol>
-<li><strong>START bit</strong>: Is a bit that indicates that the communication has started.
-Note that if the value of the START bit is 0 it means that the UART
-transmitter is ready to send data, whereas a value of 1 means that it is not
-ready. It can be counter intuitive to some.</li>
-<li><strong>Payload</strong>: This is the information itself, normally a 8-bit (1 byte)
-information is sent, but this can vary from 5-9 bits.</li>
-<li><strong>STOP bit</strong>: Signals that the payload is now completely sent.</li>
-</ol>
-<p><img src="frame_structure.png" alt="frame_structure"></p>
-<h2>Example codes in Verilog</h2>
+<ol><li><b>START bit</b>: Is a bit that indicates that the communication has started. Note that if the value of the START bit is 0 it means that the UART transmitter is ready to send data, whereas a value of 1 means that it is not ready. It can be counter intuitive to some.</li><li><b>Payload</b>: This is the information itself, normally a 8<ul><li>bit (1 byte) information is sent, but this can vary from 5-9 bits.</li><li><b>STOP bit</b>: Signals that the payload is now completely sent.</li></ol>
+<img alt="frame_structure" src="frame_structure.png"></li></ul>
+<h2>Example codes in Verilog</h0>
 <p>For these examples we're going to use:</p>
-<ul>
-<li>10 MHz clock</li>
-<li>125000 bits per second (baud rate)</li>
-</ul>
+<ul><li>10 MHz clock</li><li>125000 bits per second (baud rate)</li></ul>
 <p>This means that each bit will be sent in</p>
 <p>10,000,000 / 125000 = 80 clock cycles.</p>
-<h2>(System)Verilog UART receiver</h2>
-<pre><code class="language-verilog">module uart_transmiter(
+<h2>(System)Verilog UART receiver</h0>
+<pre><code class="language-verilog">
+module uart_transmiter(
   input clock,
   input reset,
   input has_incoming_data,
@@ -110,21 +94,21 @@ information is sent, but this can vary from 5-9 bits.</li>
     case (status)
       IDLE:
         begin
-          start_bit &lt;= 1'b1;
-          stop_bit &lt;= 1'b1;
+          start_bit <= 1'b1;
+          stop_bit <= 1'b1;
           if (has_incoming_data)
             begin
-              status &lt;= START_BIT;
+              status <= START_BIT;
             end
           else
             begin
-              status &lt;= IDLE;
+              status <= IDLE;
             end
         end
 
       START_BIT:
         begin
-          start_bit &lt;=
+          start_bit <=
 
     endcase
   end
@@ -133,6 +117,3 @@ information is sent, but this can vary from 5-9 bits.</li>
 endmodule
 
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

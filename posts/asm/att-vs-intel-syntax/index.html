@@ -59,190 +59,120 @@
   <![endif]-->
 </head>
 <body>
-<h1>Which Assembly Syntax to Choose?</h1>
-<pre><code>Created at: 2024-07-24
+<h1>Which Assembly Syntax to Choose?</h0>
+<pre><code class="language-">
+Created at: 2024-07-24
 Updated at: 2024-08-13
-</code></pre>
-<p><strong>TLDR</strong>: Use the Intel syntax, but AT&amp;T isn't that bad.</p>
-<p>I usually prefer not to post content that is already easily searchable on the
-internet. But the problem is, the really great information on this topic seems
-to be distributed across just a few different places which sometimes are tricky
-to find and often not argumentative enough to prescribe a syntax
-recommendation.</p>
-<p>That means that when I eventually forget why I picked one versus another, I
-have to scramble across various posts to figure out which syntax to use for a
-new project.</p>
-<p>Top results on Google don't help much as many link to Reddit threads. Due to
-the nature of Reddit, the arguments are rare or non-existent.</p>
-<p>As you already figured out from the TLDR at the top, I prefer the Intel syntax.
-I think that a good approach is to be contrarian and start with the differences
-that seem to make the Intel Syntax <strong>look less desirable</strong>. I am a fan of
-honest downsides being up front, and I think it makes an article more honest.
-So here we go.</p>
-<h2>Order of Operands</h2>
-<p>In the Intel syntax, the first operand is the destination and the second
-operand is the source, whereas in AT&amp;T it is the opposite. This is just about
-the most confusing thing when you are comparing AT&amp;T assembly with Intel
-assembly.</p>
-<p>If you don't read assembly often, it is easy to forget which order each syntax
-uses.</p>
-<pre><code>| Intel         | AT&amp;T             |
+</code></pre><p><b>TLDR</b>: Use the Intel syntax, but AT&T isn't that bad.</p>
+<p>I usually prefer not to post content that is already easily searchable on the internet. But the problem is, the really great information on this topic seems to be distributed across just a few different places which sometimes are tricky to find and often not argumentative enough to prescribe a syntax recommendation.</p>
+<p>That means that when I eventually forget why I picked one versus another, I have to scramble across various posts to figure out which syntax to use for a new project.</p>
+<p>Top results on Google don't help much as many link to Reddit threads. Due to the nature of Reddit, the arguments are rare or non-existent.</p>
+<p>As you already figured out from the TLDR at the top, I prefer the Intel syntax. I think that a good approach is to be contrarian and start with the differences that seem to make the Intel Syntax <b>look less desirable</b>. I am a fan of honest downsides being up front, and I think it makes an article more honest. So here we go.</p>
+<h2>Order of Operands</h0>
+<p>In the Intel syntax, the first operand is the destination and the second operand is the source, whereas in AT&T it is the opposite. This is just about the most confusing thing when you are comparing AT&T assembly with Intel assembly.</p>
+<p>If you don't read assembly often, it is easy to forget which order each syntax uses.</p>
+<pre><code class="language-">
+| Intel         | AT&T             |
 | --------------|------------------|
 | mov rax, 0xFF | movq $0xFF, %rax |
-</code></pre>
-<p>I prefer the AT&amp;T syntax here because it flows better in English. E.g. &quot;Move
-the value 0xFF <strong>into</strong> rax&quot;.</p>
-<p>The counter argument here for some people is that they still prefer the Intel
-syntax in this case because it reads like C:</p>
-<pre><code class="language-asm">mov rax, rdx        ; rax = rdx
+</code></pre><p>I prefer the AT&T syntax here because it flows better in English. E.g. "Move the value 0xFF <b>into</b> rax".</p>
+<p>The counter argument here for some people is that they still prefer the Intel syntax in this case because it reads like C:</p>
+<pre><code class="language-asm">
+mov rax, rdx        ; rax = rdx
 sub rbx, rdi        ; rbx -= rdi
-shlx rax, rbx, rdi  ; rax = rbx &lt;&lt; rdi
-</code></pre>
-<p>If that mode of thinking fits your brain well you probably won't see that as a
-problem. For me, I always have to &quot;reverse think&quot;.</p>
-<p><strong>Update (2024-08-13)</strong>: There is another counter argument. I've come to
-realise that ABI rules favour the Intel syntax. So for example the function:</p>
-<pre><code class="language-c">long sum(long foo, long bar);
-// foo -&gt; %rdi
-// bar -&gt; %rsi
-</code></pre>
-<p><code>foo</code> is stored in rdi (&quot;d&quot; standing for destination), and <code>bar</code> is stored in
-rsi (&quot;s&quot; standing for source). The convention is to have the destination first
-then the source, just like in Intel syntax.</p>
-<h2>AT&amp;T is The Default on GCC, objdump, and GDB</h2>
-<p>This point isn't about syntax at all, but I often find tooling characteristics
-relevant when making an important choice and thus I can't ignore them. I spend
-a great deal of time inside gdb and also printing <code>objdump</code>s and if there was a
-major inconvenience about using a syntax that would put a damper on my using of
-<code>gcc</code>, <code>objdump</code> and <code>gdb</code>, I'd probably consider learning a new syntax.</p>
-<p>For historical reasons <code>GAS</code> (the GNU disassembler that is a backend of GCC)
-originally used the AT&amp;T syntax. Support for Intel was only used later, and
-naturally the default remained AT&amp;T syntax.</p>
-<p>This can be changed by configurations, of course, so I have the following
-line in my <code>~/.config/gdb/gdbinit</code> file:</p>
-<pre><code>set disassembly-flavor intel
-</code></pre>
-<p>And when using <code>gcc</code>'s disassembler I use the following:</p>
-<pre><code>gcc -S -masm=intel
-</code></pre>
-<p>And finally for <code>objdump</code> I have to run:</p>
-<pre><code>objdump -Mintel
-</code></pre>
-<p>This isn't a problem on my local machine since I can use aliases. But on
-another dev environment, or when someone is sharing some code from theirs, it
-isn't absurd to expect they'll be using the defaults. This was a strong reason
-for me to commit to learning both syntaxes well. I do have to spin my brain on
-hyperthreaded mode to read AT&amp;T syntax. Writing is a bit harder for me because
-I keep forgetting the instruction suffixes, and the <code>%</code> and <code>$</code> signs as I'm
-more used to writing Intel.</p>
-<h2>Comments</h2>
-<p>Intel syntax uses <code>;</code> for comments. Whereas AT&amp;T uses <code>#</code> or C style comments.
-I do have a slight preference for AT&amp;T style here (C style comments!) but this
-is the last point where I think AT&amp;T syntax is better.</p>
-<p>Now the cons... I will follow course and start with the minor problems and go
-up to bigger problems.</p>
-<h2>Suffixes</h2>
-<p>Many instructions require suffixes on AT&amp;T when the size of operands matter:</p>
-<pre><code class="language-asm"># AT&amp;T operator suffixes
+shlx rax, rbx, rdi  ; rax = rbx << rdi
+</code></pre><p>If that mode of thinking fits your brain well you probably won't see that as a problem. For me, I always have to "reverse think".</p>
+<p><b>Update (2024-08-13)</b>: There is another counter argument. I've come to realise that ABI rules favour the Intel syntax. So for example the function:</p>
+<pre><code class="language-c">
+long sum(long foo, long bar);
+// foo -> %rdi
+// bar -> %rsi
+</code></pre><p><code>foo</code> is stored in rdi ("d" standing for destination), and <code>bar</code> is stored in rsi ("s" standing for source). The convention is to have the destination first then the source, just like in Intel syntax.</p>
+<h2>AT&T is The Default on GCC, objdump, and GDB</h0>
+<p>This point isn't about syntax at all, but I often find tooling characteristics relevant when making an important choice and thus I can't ignore them. I spend a great deal of time inside gdb and also printing <code>objdump</code>s and if there was a major inconvenience about using a syntax that would put a damper on my using of <code>gcc</code>, <code>objdump</code> and <code>gdb</code>, I'd probably consider learning a new syntax.</p>
+<p>For historical reasons <code>GAS</code> (the GNU disassembler that is a backend of GCC) originally used the AT&T syntax. Support for Intel was only used later, and naturally the default remained AT&T syntax.</p>
+<p>This can be changed by configurations, of course, so I have the following line in my <code>~/.config/gdb/gdbinit</code> file:</p>
+<pre><code class="language-">
+set disassembly-flavor intel
+</code></pre><p>And when using <code>gcc</code>'s disassembler I use the following:</p>
+<pre><code class="language-">
+gcc -S -masm=intel
+</code></pre><p>And finally for <code>objdump</code> I have to run:</p>
+<pre><code class="language-">
+objdump -Mintel
+</code></pre><p>This isn't a problem on my local machine since I can use aliases. But on another dev environment, or when someone is sharing some code from theirs, it isn't absurd to expect they'll be using the defaults. This was a strong reason for me to commit to learning both syntaxes well. I do have to spin my brain on hyperthreaded mode to read AT&T syntax. Writing is a bit harder for me because I keep forgetting the instruction suffixes, and the <code>%</code> and <code>$</code> signs as I'm more used to writing Intel.</p>
+<h2>Comments</h0>
+<p>Intel syntax uses <code>;</code> for comments. Whereas AT&T uses <code>#</code> or C style comments. I do have a slight preference for AT&T style here (C style comments!) but this is the last point where I think AT&T syntax is better.</p>
+<p>Now the cons... I will follow course and start with the minor problems and go up to bigger problems.</p>
+<h2>Suffixes</h0>
+<p>Many instructions require suffixes on AT&T when the size of operands matter:</p>
+<pre><code class="language-asm">
+# AT&T operator suffixes
 movb al, bl
 movw ax, bx
 movl eax, ebx
 movq rax, rbx
-</code></pre>
-<p><code>b</code> is for byte, <code>w</code> is for word (16 bits), <code>l</code> is for long-word (32 bits), and
-<code>q</code> is for quadword (64 bits).</p>
-<p>I don't know why the 32bit length is called &quot;long-word&quot;. I imagine it's because
-it was added when 32 bits were seen as the limit and &quot;long&quot; made sense then.</p>
-<p>As soon as we got 64 bits &quot;long&quot; became a confusing word. Specially because C
-has the <code>long</code> keyword and on modern machines <code>sizeof(long)</code> is 64 bits instead
-of 32 bits. In Intel syntax this is called a &quot;double word&quot;, which in my opinion
-is a much clearer nominator.</p>
-<p>This is a minor issue, you get used to it. In the Intel syntax you often don't
-need size specifiers because the operands give you this information implicitly:</p>
-<pre><code class="language-asm">; because esi is 32bits, this is
-; the equivalent of &quot;movl&quot; in AT&amp;T
+</code></pre><p><code>b</code> is for byte, <code>w</code> is for word (16 bits), <code>l</code> is for long-word (32 bits), and <code>q</code> is for quadword (64 bits).</p>
+<p>I don't know why the 32bit length is called "long-word". I imagine it's because it was added when 32 bits were seen as the limit and "long" made sense then.</p>
+<p>As soon as we got 64 bits "long" became a confusing word. Specially because C has the <code>long</code> keyword and on modern machines <code>sizeof(long)</code> is 64 bits instead of 32 bits. In Intel syntax this is called a "double word", which in my opinion is a much clearer nominator.</p>
+<p>This is a minor issue, you get used to it. In the Intel syntax you often don't need size specifiers because the operands give you this information implicitly:</p>
+<pre><code class="language-asm">
+; because esi is 32bits, this is
+; the equivalent of "movl" in AT&T
 mov esi, 8
-</code></pre>
-<p>However other operations in Intel syntax may <em>also</em> require a suffix if the
-operators alone aren't sufficient to determine the size of the operation. For
-example:</p>
-<pre><code class="language-asm">; how many bytes??
+</code></pre><p>However other operations in Intel syntax may <i>also</i> require a suffix if the operators alone aren't sufficient to determine the size of the operation. For example:</p>
+<pre><code class="language-asm">
+; how many bytes??
 mov  [rbp-20], 20
-</code></pre>
-<p>You are moving 20 to the address in memory calculated by the value <code>rbp-20</code>
-but how many bytes from the value &quot;20&quot; are you moving? You need to clarify:</p>
-<pre><code class="language-asm">mov DWORD PTR [rbp-20], 20
-</code></pre>
-<h2>Prefixes</h2>
-<p>Both registers and immediate values have prefixes in AT&amp;T syntax.</p>
-<pre><code class="language-asm"># AT&amp;T
+</code></pre><p>You are moving 20 to the address in memory calculated by the value <code>rbp-20</code> but how many bytes from the value "20" are you moving? You need to clarify:</p>
+<pre><code class="language-asm">
+mov DWORD PTR [rbp-20], 20
+</code></pre><h2>Prefixes</h0>
+<p>Both registers and immediate values have prefixes in AT&T syntax.</p>
+<pre><code class="language-asm">
+# AT&T
 movl $25, %rdi
-</code></pre>
-<p>The fact that Intel doesn't use prefixes for registers and immediate values
-already shows the reader that prefixes aren't necessary.</p>
-<p>The only &quot;downside&quot; I can think of (and please reader correct me if I am
-wrong), is that we can't have symbols with register names in Intel i.e.,
-<code>rax</code> is not a valid symbol name.</p>
+</code></pre><p>The fact that Intel doesn't use prefixes for registers and immediate values already shows the reader that prefixes aren't necessary.</p>
+<p>The only "downside" I can think of (and please reader correct me if I am wrong), is that we can't have symbols with register names in Intel i.e., <code>rax</code> is not a valid symbol name.</p>
 <p>For example this code fails to compile:</p>
-<pre><code class="language-asm">main:
+<pre><code class="language-asm">
+main:
   mov eax, ebx
   call ax
   ret
 ax:
   mov bl, cl
   ret
-</code></pre>
-<p>Changing <code>ax</code> to something other than a register name will fix the code. This
-may only be a problem when writing code manually. But note that if you are
-overriding gcc defaults the following code blows up when running <code>gcc -masm=intel main.c</code></p>
-<pre><code class="language-c">#include &lt;stdio.h&gt;
+</code></pre><p>Changing <code>ax</code> to something other than a register name will fix the code. This may only be a problem when writing code manually. But note that if you are overriding gcc defaults the following code blows up when running <code>gcc -masm=intel main.c</code></p>
+<pre><code class="language-c">
+#include <stdio.h>
 
 long rax(int a, int b) {
-  return 32*a &lt;&lt; b;
+  return 32*a << b;
 }
 
 int main() {
   long a;
   a = rax(42, 42);
-  printf(&quot;%ld&quot;, a);
+  printf("%ld", a);
 }
 // Error:
 // gcc -masm=intel main.c
 // A.s: Assembler messages:
 // Error: .size expression for rax does not evaluate to a constant
 //
-</code></pre>
-<p>That blows up because a symbol (the function named <code>rax</code>) uses the name of a
-register. Changing the name of the function to something else fixes the
-problem.</p>
-<h2>Memory Operands</h2>
-<p>This is the biggest pain point of AT&amp;T. Addressing memory scales.</p>
-<pre><code>Intel, AT&amp;T
+</code></pre><p>That blows up because a symbol (the function named <code>rax</code>) uses the name of a register. Changing the name of the function to something else fixes the problem.</p>
+<h2>Memory Operands</h0>
+<p>This is the biggest pain point of AT&T. Addressing memory scales.</p>
+<pre><code class="language-">
+Intel, AT&T
 instr bar, [base+index*scale+disp], instr disp(base,index,scale),foo
 add rax,[rbx+rcx*0x4-0x22], addq -0x22(%rbx,%rcx,0x4), %rax
-</code></pre>
-<p>Note that displacements aren't the same as immediate values and thus don't
-require a <code>$</code> prefix. I'm sure some will think of it as an inconsistency.</p>
-<p>This is where everything packs together. The suffixes, prefixes, and a strange
-way to calculate memory addresses. At least the form never changes, so once
-you're used the expression it becomes more familiar.</p>
-<h2>Final Remarks</h2>
-<blockquote>
-<p>Is that all? Why! It doesn't look so bad!</p>
-</blockquote>
-<p>Well, it doesn't look so bad because it isn't <em>that</em> bad! But also keep in mind
-that I didn't show you any long snippets of assembly code. Take a file with 200
-lines of assembly and naturally the AT&amp;T syntax will be more visually daunting.</p>
-<p>There are also other arguments I didn't add here regarding documentation.
-Intel manuals naturally use the Intel syntax, and there are plenty of Intel
-manuals out there, so chances are you'll be reading some. Also some of the
-MCUs I've worked with on embedded systems follow a syntax that is closer to
-Intel.</p>
+</code></pre><p>Note that displacements aren't the same as immediate values and thus don't require a <code>$</code> prefix. I'm sure some will think of it as an inconsistency.</p>
+<p>This is where everything packs together. The suffixes, prefixes, and a strange way to calculate memory addresses. At least the form never changes, so once you're used the expression it becomes more familiar.</p>
+<h2>Final Remarks</h0>
+<blockquote>Is that all? Why! It doesn't look so bad!</blockquote>
+<p>Well, it doesn't look so bad because it isn't <i>that</i> bad! But also keep in mind that I didn't show you any long snippets of assembly code. Take a file with 200 lines of assembly and naturally the AT&T syntax will be more visually daunting.</p>
+<p>There are also other arguments I didn't add here regarding documentation. Intel manuals naturally use the Intel syntax, and there are plenty of Intel manuals out there, so chances are you'll be reading some. Also some of the MCUs I've worked with on embedded systems follow a syntax that is closer to Intel.</p>
 <p>If you are writing a new project in Assembly I'd recommend the Intel syntax.</p>
-<p>But considering that you will likely come across both when <em>reading</em> code, my
-recommendation is to learn both syntaxes, and if you don't use assembly that
-often just keep a cheatsheet handy so that you can quickly navigate between the
-discrepancies.</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+<p>But considering that you will likely come across both when <i>reading</i> code, my recommendation is to learn both syntaxes, and if you don't use assembly that often just keep a cheatsheet handy so that you can quickly navigate between the discrepancies.</p>

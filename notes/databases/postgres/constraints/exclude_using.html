@@ -59,30 +59,29 @@
   <![endif]-->
 </head>
 <body>
-<h1>EXCLUDE USING</h1>
-<pre><code>Created at: 2024-10-27
-</code></pre>
-<h2>Definition</h2>
-<blockquote>
-<p>The EXCLUDE clause defines an exclusion constraint, which guarantees that if
-any two rows are compared on the specified column(s) or expression(s) using
-the specified operator(s), not all of these comparisons will return TRUE. If
-all of the specified operators test for equality, this is equivalent to a
-UNIQUE constraint, although an ordinary unique constraint will be faster.
-However, exclusion constraints can specify constraints that are more general
-than simple equality. For example, you can specify a constraint that no two
-rows in the table contain overlapping circles (see Section 8.8) by using the
-&amp;&amp; operator. The operator(s) are required to be commutative.</p>
-</blockquote>
-<pre><code class="language-sql">CREATE TABLE circles (
+<h1>EXCLUDE USING</h0>
+<pre><code class="language-">
+Created at: 2024-10-27
+</code></pre><h2>Definition</h0>
+<blockquote>The EXCLUDE clause defines an exclusion constraint, which guarantees that if</blockquote>
+<blockquote>any two rows are compared on the specified column(s) or expression(s) using</blockquote>
+<blockquote>the specified operator(s), not all of these comparisons will return TRUE. If</blockquote>
+<blockquote>all of the specified operators test for equality, this is equivalent to a</blockquote>
+<blockquote>UNIQUE constraint, although an ordinary unique constraint will be faster.</blockquote>
+<blockquote>However, exclusion constraints can specify constraints that are more general</blockquote>
+<blockquote>than simple equality. For example, you can specify a constraint that no two</blockquote>
+<blockquote>rows in the table contain overlapping circles (see Section 8.8) by using the</blockquote>
+<blockquote>&& operator. The operator(s) are required to be commutative.</blockquote>
+<pre><code class="language-sql">
+CREATE TABLE circles (
     c circle,
-    EXCLUDE USING gist (c WITH &amp;&amp;)
+    EXCLUDE USING gist (c WITH &&)
 );
-</code></pre>
-<p><a href="https://www.postgresql.org/docs/15/ddl-constraints.html#DDL-CONSTRAINTS-EXCLUSION">source</a></p>
-<h2>Internals</h2>
+</code></pre><p><a href="https://www.postgresql.org/docs/15/ddl-constraints.html#DDL-CONSTRAINTS-EXCLUSION">source</a></p>
+<h2>Internals</h0>
 <p>The following script creates a sandbox for testing an exclusion constraint.</p>
-<pre><code class="language-sql">CREATE DATABASE exclusion_test_db;
+<pre><code class="language-sql">
+CREATE DATABASE exclusion_test_db;
 -- then connect via \c exclusion_test_db;
 
 -- Postgres requires a GIST index for exclusion constraints.
@@ -110,73 +109,57 @@ ALTER TABLE bookings
 ADD CONSTRAINT no_date_overlap_for_resource_id
 EXCLUDE USING gist (
     resource_id WITH =,
-    daterange(start_date, end_date, '[]') WITH &amp;&amp;
+    daterange(start_date, end_date, '[]') WITH &&
 );
-</code></pre>
-<p>The creation of this constraint happens in two stages:</p>
-<ul>
-<li>A GIST index is created by Postgres.</li>
-<li>Postgres uses this index to backup the constraint.</li>
-</ul>
+</code></pre><p>The creation of this constraint happens in two stages:</p>
+<ul><li>A GIST index is created by Postgres.</li><li>Postgres uses this index to backup the constraint.</li></ul>
 <p>Most of the time is spent on the index creation.</p>
-<p><img src="perf_exclusion_gist.png" alt="perf_exclusion_gist.png"></p>
+<p><img alt="perf_exclusion_gist.png" src="perf_exclusion_gist.png"></p>
 <p>Compare this with creating a unique constraint:</p>
-<pre><code class="language-sql">ALTER TABLE bookings
-ADD CONSTRAINT &quot;unique_resource_id&quot;
-UNIQUE (&quot;resource_id&quot;);
-</code></pre>
-<p><img src="perf_unique_index.png" alt="perf_unique_index.png"></p>
+<pre><code class="language-sql">
+ALTER TABLE bookings
+ADD CONSTRAINT "unique_resource_id"
+UNIQUE ("resource_id");
+</code></pre><p><img alt="perf_unique_index.png" src="perf_unique_index.png"></p>
 <p>Note that in this case the <code>IndexCheckExclusion</code> is not called. The code says:</p>
-<pre><code class="language-c">    /*
-     * In src/backend/catalog/index.c
-     *
-     * If it's for an exclusion constraint, make a second pass over the heap
-     * to verify that the constraint is satisfied.  We must not do this until
-     * the index is fully valid.  (Broken HOT chains shouldn't matter, though;
-     * see comments for IndexCheckExclusion.)
-     */
-    if (indexInfo-&gt;ii_ExclusionOps != NULL)
-        IndexCheckExclusion(heapRelation, indexRelation, indexInfo);
-</code></pre>
-<p>My question is: Could this second pass over the heap happen another time? It
-takes a considerable amount of time (1/3 of the ATExecAddIndex execution in my
-machine).</p>
+<pre><code class="language-c">
+	/*
+	 * In src/backend/catalog/index.c
+	 *
+	 * If it's for an exclusion constraint, make a second pass over the heap
+	 * to verify that the constraint is satisfied.  We must not do this until
+	 * the index is fully valid.  (Broken HOT chains shouldn't matter, though;
+	 * see comments for IndexCheckExclusion.)
+	 */
+	if (indexInfo->ii_ExclusionOps != NULL)
+		IndexCheckExclusion(heapRelation, indexRelation, indexInfo);
+</code></pre><p>My question is: Could this second pass over the heap happen another time? It takes a considerable amount of time (1/3 of the ATExecAddIndex execution in my machine).</p>
 <p>What I'd like to do is:</p>
-<ol>
-<li>Create the gist index first, CONCURRENTLY.</li>
-<li>Use the existing index to create the constraint, at which point we'd call
-IndexCheckExclusion and perform this second pass.</li>
-</ol>
-<p>For example, when a unique constraint is created from an existing index, we
-first need to create the index:</p>
-<pre><code class="language-sql">CREATE UNIQUE INDEX unique_resource_id ON bookings (resource_id);
-</code></pre>
-<p>Which produces:</p>
-<p><img src="perf_add_index.png" alt="perf_add_index.png"></p>
+<ol><li>Create the gist index first, CONCURRENTLY.</li><li>Use the existing index to create the constraint, at which point we'd call IndexCheckExclusion and perform this second pass.</li></ol>
+<p>For example, when a unique constraint is created from an existing index, we first need to create the index:</p>
+<pre><code class="language-sql">
+CREATE UNIQUE INDEX unique_resource_id ON bookings (resource_id);
+</code></pre><p>Which produces:</p>
+<p><img alt="perf_add_index.png" src="perf_add_index.png"></p>
 <p>Alternatively, if I had used <code>CONCURRENTLY</code>:</p>
-<p><img src="perf_unique_index_concurrently.png" alt="perf_unique_index_concurrently.png"></p>
+<p><img alt="perf_unique_index_concurrently.png" src="perf_unique_index_concurrently.png"></p>
 <p>Followed by an ALTER TABLE ... USING INDEX</p>
-<pre><code class="language-sql">ALTER TABLE bookings
+<pre><code class="language-sql">
+ALTER TABLE bookings
 ADD CONSTRAINT unique_resource_id UNIQUE USING INDEX unique_resource_id;
-</code></pre>
-<p><img src="perf_unique_constraint_idx.png" alt="perf_unique_constraint_idx.png"></p>
-<p>You can see that the operation <code>ATExecAddIndexConstraint</code> is called. The only
-type of index this operation accepts is a unique one:</p>
-<pre><code class="language-c">    /* In src/backend/commands/tablecmds.c */
-    /* this should have been checked at parse time */
-    if (!indexInfo-&gt;ii_Unique)
-        elog(ERROR, &quot;index \&quot;%s\&quot; is not unique&quot;, indexName);
+</code></pre><p><img alt="perf_unique_constraint_idx.png" src="perf_unique_constraint_idx.png"></p>
+<p>You can see that the operation <code>ATExecAddIndexConstraint</code> is called. The only type of index this operation accepts is a unique one:</p>
+<pre><code class="language-c">
+	/* In src/backend/commands/tablecmds.c */
+	/* this should have been checked at parse time */
+	if (!indexInfo->ii_Unique)
+		elog(ERROR, "index \"%s\" is not unique", indexName);
 
 
-    /* Note we currently don't support EXCLUSION constraints here */
-    if (stmt-&gt;primary)
-        constraintType = CONSTRAINT_PRIMARY;
-    else
-        constraintType = CONSTRAINT_UNIQUE;
-</code></pre>
-<p>Why is an EXCLUSION constraint not supported? I can't find the real explanation
-in the commit that added those <a href="https://github.com/postgres/postgres/commit/88452d5ba6b3e8ad49133ac1a660ce0725710f8c">changes</a></p>
+	/* Note we currently don't support EXCLUSION constraints here */
+	if (stmt->primary)
+		constraintType = CONSTRAINT_PRIMARY;
+	else
+		constraintType = CONSTRAINT_UNIQUE;
+</code></pre><p>Why is an EXCLUSION constraint not supported? I can't find the real explanation in the commit that added those <a href="https://github.com/postgres/postgres/commit/88452d5ba6b3e8ad49133ac1a660ce0725710f8c">changes</a></p>
 <p>I started a proposal in the mail list <a href="https://www.postgresql.org/message-id/CAM2F1VO6ymp%2BGGZQxDxAQvftTiqmux%2Br%2BBEpR71fZ7_2gaaPEA%40mail.gmail.com">here</a></p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

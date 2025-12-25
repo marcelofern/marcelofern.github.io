@@ -59,12 +59,10 @@
   <![endif]-->
 </head>
 <body>
-<h1>Querying Sequence Information</h1>
-<pre><code>Created at: 2025-09-01
+<h1>Querying Sequence Information</h0>
+<pre><code class="language-">
+Created at: 2025-09-01
+</code></pre><p>Simply check the <code>pg_sequences</code> view.</p>
+<pre><code class="language-sql">
+SELECT * FROM pg_sequences WHERE sequencename = 'your_sequence_name';
 </code></pre>
-<p>Simply check the <code>pg_sequences</code> view.</p>
-<pre><code class="language-sql">SELECT * FROM pg_sequences WHERE sequencename = 'your_sequence_name';
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

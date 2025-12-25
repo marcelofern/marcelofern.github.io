@@ -213,9 +213,9 @@ aware of these things before you jump on a 1:1 with a report:
 
 - Never interrupt. It frustrates your report and affects the full understanding
   of the message. If you have international people in your team, your way of
-  communication might differ from theirs. Some cultures tend to provide [low
-  context communication whereas others provide high
-  context](https://en.wikipedia.org/wiki/High-context_and_low-context_cultures).
+  communication might differ from theirs. Some cultures tend to provide
+  low context communication whereas others provide high context.
+  [Read more](https://en.wikipedia.org/wiki/High-context_and_low-context_cultures).
 - Defer judgement. Remain open and neutral. If your report is telling you what
   problems they are going through, it is unhelpful to start expressing your
   personal opinions on the problem without being asked to or without taking
@@ -250,8 +250,8 @@ leaves them with a bitter taste in their mouths. Without proper reassurance and
 won't feel reassured and valued in their job.
 
 It might even be the opposite: "why is the company going a long way with such
-events whereas people aren't getting paid enough?". [panem et
-circenses](https://en.wikipedia.org/wiki/Bread_and_circuses)
+events whereas people aren't getting paid enough?".
+[panem et circenses](https://en.wikipedia.org/wiki/Bread_and_circuses)
 
 One of the best kinds of recognition is the financial one, specially when that
 financial acknowledgement is made proactively from the manager-side before

@@ -60,73 +60,57 @@
 </head>
 <body>
 <p>February 22, 2024</p>
-<h2>The problem</h2>
+<h2>The problem</h0>
 <p>Note: check the <code>Solution</code> section at the end.</p>
-<p>When a migration is run with the <code>atomic</code> argument set to <code>False</code>, it is meant
-that the migration itself won't run inside a transaction (at least in theory).</p>
+<p>When a migration is run with the <code>atomic</code> argument set to <code>False</code>, it is meant that the migration itself won't run inside a transaction (at least in theory).</p>
 <p>Say you have this migration:</p>
-<pre><code class="language-python">from django.db import migrations
+<pre><code class="language-python">
+from django.db import migrations
 
 
 class Migration(migrations.Migration):
     atomic = False
     dependencies = [
         (
-            &quot;my_sweet_app&quot;,
-            &quot;0001_initial&quot;,
+            "my_sweet_app",
+            "0001_initial",
         ),
     ]
 
-    create_index = &quot;&quot;&quot;
+    create_index = """
         SET lock_timeout = 10000;
         SET statement_timeout = 20000;
         CREATE INDEX CONCURRENTLY if NOT EXISTS my_sweet_index
-        ON public.&quot;my_sweet_app_table&quot;
+        ON public."my_sweet_app_table"
         USING gist (field_one, field_two, field_three);
-    &quot;&quot;&quot;
-    drop_index = &quot;&quot;&quot;
+    """
+    drop_index = """
         DROP INDEX CONCURRENTLY if EXISTS my_sweet_index;
-    &quot;&quot;&quot;
+    """
 
     operations = [
         migrations.RunSQL(sql=create_index, reverse_sql=drop_index),
     ]
-</code></pre>
-<p>This looks all normal:</p>
-<ol>
-<li>If the CREATE INDEX CONCURRENTLY instruction waits for longer than 10s to
-acquire a lock, it times out.</li>
-<li>If the CREATE INDEX CONCURRENTLY query itself takes longer than 20s to
-complete, it times out.</li>
-</ol>
+</code></pre><p>This looks all normal:</p>
+<ol><li>If the CREATE INDEX CONCURRENTLY instruction waits for longer than 10s to acquire a lock, it times out.</li><li>If the CREATE INDEX CONCURRENTLY query itself takes longer than 20s to complete, it times out.</li></ol>
 <p>However:</p>
-<blockquote>
-<p>If a statement must be executed outside a transaction (such as CREATE
-DATABASE), it cannot be executed in batch with other statements, even if the
-connection is in autocommit mode:</p>
-</blockquote>
-<pre><code class="language-python">&gt;&gt;&gt; conn.autocommit = True
-&gt;&gt;&gt; conn.execute(&quot;CREATE DATABASE foo; SELECT 1&quot;)
+<blockquote>If a statement must be executed outside a transaction (such as CREATE</blockquote>
+<blockquote>DATABASE), it cannot be executed in batch with other statements, even if the</blockquote>
+<blockquote>connection is in autocommit mode:</blockquote>
+<pre><code class="language-python">
+>>> conn.autocommit = True
+>>> conn.execute("CREATE DATABASE foo; SELECT 1")
 
 Traceback (most recent call last):
 ...
 psycopg.errors.ActiveSqlTransaction: CREATE DATABASE cannot run inside a transaction block
-</code></pre>
-<blockquote>
-<p>This happens because PostgreSQL itself will wrap multiple statements in a
-transaction. Note that you will experience a different behaviour in psql
-(psql will split the queries on semicolons and send them to the server
-separately).</p>
-</blockquote>
+</code></pre><blockquote>This happens because PostgreSQL itself will wrap multiple statements in a</blockquote>
+<blockquote>transaction. Note that you will experience a different behaviour in psql</blockquote>
+<blockquote>(psql will split the queries on semicolons and send them to the server</blockquote>
+<blockquote>separately).</blockquote>
 <p>The problem is the same for CREATE INDEX CONCURRENTLY.</p>
-<pre><code>CREATE INDEX CONCURRENTLY cannot run inside a transaction block
-</code></pre>
-<p>Source: <a href="https://www.psycopg.org/psycopg3/docs/basic/from_pg2.html#multiple-statements-in-the-same-query">psycopg</a></p>
-<h2>Solution</h2>
-<ol>
-<li>Don't run multiple statements inside a <code>atomic = False</code> migration.</li>
-<li>Set sane timeouts directly in the psql user that runs migrations.</li>
-</ol>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+<pre><code class="language-">
+CREATE INDEX CONCURRENTLY cannot run inside a transaction block
+</code></pre><p>Source: <a href="https://www.psycopg.org/psycopg3/docs/basic/from_pg2.html#multiple-statements-in-the-same-query">psycopg</a></p>
+<h2>Solution</h0>
+<ol><li>Don't run multiple statements inside a <code>atomic = False</code> migration.</li><li>Set sane timeouts directly in the psql user that runs migrations.</li></ol>

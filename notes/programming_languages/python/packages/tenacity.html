@@ -62,48 +62,47 @@
 <p>February 26th, 2024</p>
 <p>Tenacity is a library that allows you to retry just about anything.</p>
 <p><a href="http://web.archive.org/web/20240206022100/https://tenacity.readthedocs.io/en/latest/">source</a></p>
-<h2>Retry something until it works</h2>
-<pre><code class="language-python">import random
+<h2>Retry something until it works</h0>
+<pre><code class="language-python">
+import random
 import tenacity
 
 @tenacity.retry
 def do_something_unreliable():
-    if random.randint(0, 10) &gt; 1:
-        print(&quot;Sorry, I have failed!&quot;)
-        raise IOError(&quot;Broken sauce, everything is hosed!!!111one&quot;)
+    if random.randint(0, 10) > 1:
+        print("Sorry, I have failed!")
+        raise IOError("Broken sauce, everything is hosed!!!111one")
     else:
-        return &quot;Awesome sauce!&quot;
+        return "Awesome sauce!"
 
 print(do_something_unreliable())
-</code></pre>
-<h2>Stopping after some retries</h2>
-<pre><code class="language-python">@retry(stop=tenacity.stop_after_attempt(7))
+</code></pre><h2>Stopping after some retries</h0>
+<pre><code class="language-python">
+@retry(stop=tenacity.stop_after_attempt(7))
 def stop_after_7_attempts():
-    print(&quot;Stopping after 7 attempts&quot;)
+    print("Stopping after 7 attempts")
     raise Exception
-</code></pre>
-<h2>Waiting with exponential backoff</h2>
-<pre><code class="language-python">@tenacity.retry(
+</code></pre><h2>Waiting with exponential backoff</h0>
+<pre><code class="language-python">
+@tenacity.retry(
     wait=tenacity.wait_exponential(multiplier=1, min=4, max=10)
 )
 def wait_exponential_1():
     print(
-        &quot;Wait 2^x * 1 second between each retry starting with 4 seconds, &quot;
-        &quot;then up to 10 seconds, then 10 seconds afterwards&quot;
+        "Wait 2^x * 1 second between each retry starting with 4 seconds, "
+        "then up to 10 seconds, then 10 seconds afterwards"
     )
     raise Exception
-</code></pre>
-<h2>Retrying based on exception</h2>
-<pre><code class="language-python">@tenacity.retry(retry=tenacity.retry_if_exception_type(IOError))
+</code></pre><h2>Retrying based on exception</h0>
+<pre><code class="language-python">
+@tenacity.retry(retry=tenacity.retry_if_exception_type(IOError))
 def might_io_error():
-    print(&quot;Retry forever with no wait if an IOError occurs, raise any other errors&quot;)
+    print("Retry forever with no wait if an IOError occurs, raise any other errors")
     raise Exception
-</code></pre>
-<h2>Retrying code block</h2>
-<p>Tenacity allows you to retry a code block without the need to wraps it in an
-isolated function. This makes it easy to isolate failing block while sharing
-context. The trick is to combine a for loop and a context manager.</p>
-<pre><code class="language-python">from tenacity import Retrying, RetryError, stop_after_attempt
+</code></pre><h2>Retrying code block</h0>
+<p>Tenacity allows you to retry a code block without the need to wraps it in an isolated function. This makes it easy to isolate failing block while sharing context. The trick is to combine a for loop and a context manager.</p>
+<pre><code class="language-python">
+from tenacity import Retrying, RetryError, stop_after_attempt
 
 try:
     for attempt in Retrying(stop=stop_after_attempt(3)):
@@ -112,6 +111,3 @@ try:
 except RetryError:
     pass
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

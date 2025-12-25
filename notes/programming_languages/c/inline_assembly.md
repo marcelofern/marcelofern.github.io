@@ -16,8 +16,8 @@ If the function takes more than 6 arguments, the remaining ones will be on
 $rsp+8. This is because $rsp+0 stores the value of rip so that the `return`
 statement knows where to go:
 
-7. rsp+8
-8. rsp+8*2
+7. `rsp+8`
+8. `rsp+8*2`
 9. `...`
 
 And finally, the result is stored in rax, if any.
@@ -160,8 +160,8 @@ And very importantly:
 
 **Prefer to name parameters**:
 
-When you specify the optional [Name] field, you become able to refer to that
-input or output using the %[Name] syntax in the assembler template. For
+When you specify the optional `[Name]` field, you become able to refer to that
+input or output using the `%[Name]` syntax in the assembler template. For
 instance:
 
 ```c

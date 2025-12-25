@@ -59,21 +59,15 @@
   <![endif]-->
 </head>
 <body>
-<p>The fixit library allows developers to create their own custom linters, in
-addition to providing &quot;autofixers&quot; for fixing current errors.</p>
+<p>The fixit library allows developers to create their own custom linters, in addition to providing "autofixers" for fixing current errors.</p>
 <p>One common workflow is the following:</p>
-<ol>
-<li>Add new linting rule in existing codebase</li>
-<li>The linter automatically fails due to existing violations.</li>
-<li>Either autofix existing issues, or silence their errors.</li>
-</ol>
-<p>If autofix is not available for the particular linter, errors must be silenced
-before they can be fixed manually.</p>
+<ol><li>Add new linting rule in existing codebase</li><li>The linter automatically fails due to existing violations.</li><li>Either autofix existing issues, or silence their errors.</li></ol>
+<p>If autofix is not available for the particular linter, errors must be silenced before they can be fixed manually.</p>
 <p>There are two ways I have found of doing this:</p>
-<h2>Cloning the module and slapping a comment on it.</h2>
-<p>After you have coded your fixup rule, change the code block that reports
-on the violation to something like this:</p>
-<pre><code class="language-python">    fixit_comment = cst.Comment(&quot;# lint-fixme: MyRuleName&quot;)
+<h2>Cloning the module and slapping a comment on it.</h0>
+<p>After you have coded your fixup rule, change the code block that reports on the violation to something like this:</p>
+<pre><code class="language-python">
+    fixit_comment = cst.Comment("# lint-fixme: MyRuleName")
     new_module = cst.Module(
         body=[
             # existing node that failed the verification.
@@ -82,18 +76,14 @@ on the violation to something like this:</p>
         ]
     )
     self.report(node, replacement=new_module)
-</code></pre>
-<p>And then run the command to &quot;fix&quot; all errors by adding the string comment:</p>
-<pre><code class="language-sh">fixit fix --automatic .
-</code></pre>
-<h2>Using <code>silent-lint-error</code></h2>
+</code></pre><p>And then run the command to "fix" all errors by adding the string comment:</p>
+<pre><code class="language-sh">
+fixit fix --automatic .
+</code></pre><h2>Using <code>ssiilleenntt--lliinntt--eerrrroorr`</code></h0>
 <p>This is a 3rd party package:</p>
-<pre><code class="language-sh">pip install silence-lint-error
-</code></pre>
-<p>And then running:</p>
-<pre><code class="language-sh">silence-lint-error fixit tools.fixit.rules.common:MyCustomRule src/octoenergy/
-</code></pre>
-<p>Where <code>tools.fixit.rules.common</code> is the path denominated in your pyproject.toml</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+<pre><code class="language-sh">
+pip install silence-lint-error
+</code></pre><p>And then running:</p>
+<pre><code class="language-sh">
+silence-lint-error fixit tools.fixit.rules.common:MyCustomRule src/octoenergy/
+</code></pre><p>Where <code>tools.fixit.rules.common</code> is the path denominated in your pyproject.toml</p>

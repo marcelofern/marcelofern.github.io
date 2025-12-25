@@ -59,94 +59,39 @@
   <![endif]-->
 </head>
 <body>
-<h1>Why Is This Site Built With C</h1>
-<pre><code>Created at: 2024-08-26
-</code></pre>
-<p>I've been writing about <strong>things</strong> on a personal website since
-<a href="http://web.archive.org/web/20171124021420/http://marcelonet.com/snippets/">2017</a>.</p>
-<p>Most of what I have written features in the category of notes-to-self. Mostly
-on how to do A or B.</p>
-<p>Only recently I've started polishing notes together and forming posts on
-specific topics.</p>
-<p>One thing I realised was preventing me of writing more frequently wasn't
-the lack of ideas (or motivation), but the trouble of having to deal with
-the website builder and platform I was using at the time.</p>
-<p>GitHub pages didn't exist at the time and the canonical way was to have an
-Apache server running the website in some web provider. I didn't know anything
-about Apache and the little I saw didn't interest me, so I looked for an
-alternative.</p>
-<p>I built my first website with Django (serviced by Nginx) in a server hosted on
-Digital Ocean. This is before the Droplets-era, so I had to rent an Ubuntu
-machine which costed $5.00 USD per month. That was a bit steep for a dev on a
-Brazilian salary considering I had to pay for other services too (registrar,
-email, etc).</p>
-<p>I was highly motivated to post things as I was still fresh in the web
-development world and wanted to know how everything worked. I also had no idea
-what I was doing and wanted my own website to be a sandbox where I could try
-new things out.</p>
-<p>That was my first mistake. Building a &quot;static&quot; website with Django is too
-cumbersome. You have to set up views, templates, run the server, get GitHub
-hooks for resetting the remote server in Digital Ocean when new commits are
-pushed, etc.</p>
-<p>Once the romantic view of a newbie blog-poster faded away, handling the whole
-apparatus to publish a note took more time than writing the note itself.</p>
+<h1>Why Is This Site Built With C</h0>
+<pre><code class="language-">
+Created at: 2024-08-26
+</code></pre><p>I've been writing about <b>things</b> on a personal website since <a href="http://web.archive.org/web/20171124021420/http://marcelonet.com/snippets/">2017</a>.</p>
+<p>Most of what I have written features in the category of notes-to-self. Mostly on how to do A or B.</p>
+<p>Only recently I've started polishing notes together and forming posts on specific topics.</p>
+<p>One thing I realised was preventing me of writing more frequently wasn't the lack of ideas (or motivation), but the trouble of having to deal with the website builder and platform I was using at the time.</p>
+<p>GitHub pages didn't exist at the time and the canonical way was to have an Apache server running the website in some web provider. I didn't know anything about Apache and the little I saw didn't interest me, so I looked for an alternative.</p>
+<p>I built my first website with Django (serviced by Nginx) in a server hosted on Digital Ocean. This is before the Droplets-era, so I had to rent an Ubuntu machine which costed $5.00 USD per month. That was a bit steep for a dev on a Brazilian salary considering I had to pay for other services too (registrar, email, etc).</p>
+<p>I was highly motivated to post things as I was still fresh in the web development world and wanted to know how everything worked. I also had no idea what I was doing and wanted my own website to be a sandbox where I could try new things out.</p>
+<p>That was my first mistake. Building a "static" website with Django is too cumbersome. You have to set up views, templates, run the server, get GitHub hooks for resetting the remote server in Digital Ocean when new commits are pushed, etc.</p>
+<p>Once the romantic view of a newbie blog-poster faded away, handling the whole apparatus to publish a note took more time than writing the note itself.</p>
 <p>At some point I had to make a switch before the website grew too big.</p>
-<p>My second take was to ditch the whole website and start from scratch using
-a static website generator. I decided to use Nuxt because I was using Vue at
-work and the whole set up looked simple to start with.</p>
-<p>It was nice in the beginning. I set it up with GitHub Pages. I only had to
-get the static site that Nuxt creates via a cli command pushed to my git repo
-and GitHub handled the rest for me. That was a major improvement over the
-previous infrastructure. On top of that, I could do cool dynamic things with
-JavaScript being embedded and having the framework to interact with it.</p>
-<p>But I only had one blog post where I needed fancy JavaScript tooling. Soon it
-became painful to maintain the website again. Publishing posts involved writing
-things in Vue and that was just not an ergonomic way to write regular prose.</p>
-<p>Also the framework was a new technology, and maintainers were pushing updates
-that broke backwards compatibility. Handling versioning of Vue and Nuxt along
-with all their JavaScript dependencies was a big pain point and I had to give
-up at some point.</p>
-<h2>Now</h2>
-<p>Learning from these two past mistakes, I came up with a set of requirements for
-my next (and hopefully final) website:</p>
-<ol>
-<li>Starting a post must be as easy as typing into a blank file.</li>
-<li>The website must be statically generated. And Fast.</li>
-<li>There should be little to none dependencies for generating the website.</li>
-<li>It needs to last for at least the next 10 years.</li>
-</ol>
-<p>The first requirement is satisfied by writing using markdown files. Writing
-this blog post in Neovim looks like this:</p>
-<p><img src="markdown.png" alt="markdown"></p>
-<p>The second requirement is a bit trickier, but it is directly related to the
-third.</p>
-<p>Writing posts in markdown means that there needs to be a parser to convert the
-files to html. I could either code this parser myself and have a beautiful
-static site generator with zero dependencies, or I can allow myself a single
-dependency.</p>
-<p>The problem is that the move from zero dependencies to one dependency is huge.
-It feels way bigger than going from 10 dependencies to 100 dependencies.</p>
-<p>The problem is that writing a markdown parser isn't the most trivial
-enterprise. At the same time, the parser was the only dependency I needed to
-have. I managed to convince myself that a dependency was okay and then I moved
-on.</p>
-<p>My first instinct was to reach out to <a href="https://pandoc.org/">Pandoc</a>. I did so
-and implemented a small shell script that could read my directory tree of
-markdown files and transpose them to html.</p>
-<p>That worked fine for about 20 to 30 markdown files. After that, the process of
-converting files to html started to deteriorate in speed. Pandoc is written in
-Haskell, and it is not known for being fast at parsing large volumes of files.</p>
-<p>An alternative for saving time with recompilation was to update my script so
-that only new markdown files or changed ones are marked for recompilation. That
-would involve too much wizardry if I wanted to make the script nice and robust.
-I didn't want to do that. I didn't want my script to grow so much that I would
-need to start adding test cases and coverage.</p>
-<p>I also knew that parsing hundreds or even thousands of small files should be
-doable in single-digit seconds. The problem was that Pandoc slowed everything
-down, so my second requirement was not met.</p>
-<p>More over, the whole Pandoc ecosystem requires <strong>a lot of</strong> of dependencies.
-227 dependencies and over 400MB of installed size to be exact:</p>
-<pre><code>Packages (227) ghc-libs-9.2.8-1  haskell-aeson-2.1.2.1-47  haskell-aeson-pretty-0.8.10-7
+<p>My second take was to ditch the whole website and start from scratch using a static website generator. I decided to use Nuxt because I was using Vue at work and the whole set up looked simple to start with.</p>
+<p>It was nice in the beginning. I set it up with GitHub Pages. I only had to get the static site that Nuxt creates via a cli command pushed to my git repo and GitHub handled the rest for me. That was a major improvement over the previous infrastructure. On top of that, I could do cool dynamic things with JavaScript being embedded and having the framework to interact with it.</p>
+<p>But I only had one blog post where I needed fancy JavaScript tooling. Soon it became painful to maintain the website again. Publishing posts involved writing things in Vue and that was just not an ergonomic way to write regular prose.</p>
+<p>Also the framework was a new technology, and maintainers were pushing updates that broke backwards compatibility. Handling versioning of Vue and Nuxt along with all their JavaScript dependencies was a big pain point and I had to give up at some point.</p>
+<h2>Now</h0>
+<p>Learning from these two past mistakes, I came up with a set of requirements for my next (and hopefully final) website:</p>
+<ol><li>Starting a post must be as easy as typing into a blank file.</li><li>The website must be statically generated. And Fast.</li><li>There should be little to none dependencies for generating the website.</li><li>It needs to last for at least the next 10 years.</li></ol>
+<p>The first requirement is satisfied by writing using markdown files. Writing this blog post in Neovim looks like this:</p>
+<p><img alt="markdown" src="markdown.png"></p>
+<p>The second requirement is a bit trickier, but it is directly related to the third.</p>
+<p>Writing posts in markdown means that there needs to be a parser to convert the files to html. I could either code this parser myself and have a beautiful static site generator with zero dependencies, or I can allow myself a single dependency.</p>
+<p>The problem is that the move from zero dependencies to one dependency is huge. It feels way bigger than going from 10 dependencies to 100 dependencies.</p>
+<p>The problem is that writing a markdown parser isn't the most trivial enterprise. At the same time, the parser was the only dependency I needed to have. I managed to convince myself that a dependency was okay and then I moved on.</p>
+<p>My first instinct was to reach out to <a href="https://pandoc.org/">Pandoc</a>. I did so and implemented a small shell script that could read my directory tree of markdown files and transpose them to html.</p>
+<p>That worked fine for about 20 to 30 markdown files. After that, the process of converting files to html started to deteriorate in speed. Pandoc is written in Haskell, and it is not known for being fast at parsing large volumes of files.</p>
+<p>An alternative for saving time with recompilation was to update my script so that only new markdown files or changed ones are marked for recompilation. That would involve too much wizardry if I wanted to make the script nice and robust. I didn't want to do that. I didn't want my script to grow so much that I would need to start adding test cases and coverage.</p>
+<p>I also knew that parsing hundreds or even thousands of small files should be doable in single-digit seconds. The problem was that Pandoc slowed everything down, so my second requirement was not met.</p>
+<p>More over, the whole Pandoc ecosystem requires <b>a lot of</b> of dependencies. 227 dependencies and over 400MB of installed size to be exact:</p>
+<pre><code class="language-">
+Packages (227) ghc-libs-9.2.8-1  haskell-aeson-2.1.2.1-47  haskell-aeson-pretty-0.8.10-7
                haskell-ansi-terminal-0.11.4-66  haskell-ansi-wl-pprint-0.6.9-418
                haskell-appar-0.1.8-14  haskell-asn1-encoding-0.9.6-230
                haskell-asn1-parse-0.9.5-230  haskell-asn1-types-0.3.4-209  haskell-assoc-1.0.2-266
@@ -252,75 +197,30 @@ down, so my second requirement was not met.</p>
 
 Total Download Size:    65.52 MiB
 Total Installed Size:  473.35 MiB
-</code></pre>
-<p>There are too many dependencies for me to trust the environment will be stable
-for a long time. The last thing I want to do is deal with backward incompatible
-changes on my wee blog.</p>
-<p>I looked for a better alternative and found
-<a href="http://github.com/mity/md4c">md4c</a>, which is a parser written in C with no
-dependencies other than the standard C library. It also has only one header
-file and one source file, making it easy to embed it straight into any C
-project.</p>
-<p>The only work I needed to do was to write a C script (which turned out to be
-~250 LOC) to call md4c functions and parse my <code>md</code> files, and then chuck those
-converted files into the GitHub Pages repo.</p>
-<p>My website converter script, which is all in this <a href="https://gist.github.com/marcelofern/896574e055a05d011449b00217600fe6">250
-LOC</a>
-source file (less md4c) is feature-complete and runs on any compiler that
-supports the C standard from 1999 onwards. There's no platform-dependent code
-and it's portable to Windows, Linux, and MacOS.</p>
-<p>It runs incredibly well. I have 87 markdown files at the moment and parsing all
-those files at the same time from scratch can be done virtually
-instantaneously:</p>
-<pre><code>[~] time ./scripts/website/converter.bin
+</code></pre><p>There are too many dependencies for me to trust the environment will be stable for a long time. The last thing I want to do is deal with backward incompatible changes on my wee blog.</p>
+<p>I looked for a better alternative and found <a href="http://github.com/mity/md4c">md4c</a>, which is a parser written in C with no dependencies other than the standard C library. It also has only one header file and one source file, making it easy to embed it straight into any C project.</p>
+<p>The only work I needed to do was to write a C script (which turned out to be ~250 LOC) to call md4c functions and parse my <code>md</code> files, and then chuck those converted files into the GitHub Pages repo.</p>
+<p>My website converter script, which is all in this <a href="https://gist.github.com/marcelofern/896574e055a05d011449b00217600fe6">250 LOC</a> source file (less md4c) is feature-complete and runs on any compiler that supports the C standard from 1999 onwards. There's no platform-dependent code and it's portable to Windows, Linux, and MacOS.</p>
+<p>It runs incredibly well. I have 87 markdown files at the moment and parsing all those files at the same time from scratch can be done virtually instantaneously:</p>
+<pre><code class="language-">
+[~] time ./scripts/website/converter.bin
 
 real    0m0.115s
 user    0m0.087s
 sys     0m0.091s
-</code></pre>
-<p>This allows me to completely flush the whole repo away and create it from
-scratch in almost no time. I do not have to worry about creating specific
-logic to just re-parse files that have changed or anything fancy like that,
-which reduces the burden of maintenance and makes my script smaller and easier
-to reason about.</p>
-<p>This result was way more reasonable than the amount of time Pandoc took to
-parse a mere amount of 87 markdown files, which was over the double-digit
-mark (of seconds).</p>
-<h2>Outro</h2>
-<p>One popular alternative of current days for this problem is
-<a href="https://gohugo.io/">Hugo</a>. There is nothing inherently bad with Hugo. It is
-decently fast (written in Go) and it is easy to get going for a simple website.
-It seems better than some alternatives like
-<a href="https://github.com/getpelican/pelican">pelican</a> which is written in Python and
-thus will be slower to parse md files.</p>
-<p>However, Hugo doesn't particularly appeal to me because the framework seems
-too big and opinionated for what I need:</p>
-<blockquote>
-<p>Hugo takes data files, i18n bundles, configuration, templates for layouts,
-static files, assets, and content written in Markdown, HTML, AsciiDoctor, or
-Org-mode and renders a static website. Some notable features are multilingual
-support, image processing, asset management, custom output formats, markdown
-render hooks and shortcodes. Nested sections allow for different types of
-content to be separated, e.g. for a website containing a blog and a podcast.</p>
-</blockquote>
-<p><a href="http://web.archive.org/web/20240808001552/https://en.wikipedia.org/wiki/Hugo_(software)">source</a></p>
-<p>There's a lot in there, so much so that big websites that need a lot of
-features (e.g. Smashing Magazine) are capable of relying heavily on Hugo.</p>
-<p>Also as much as Hugo looks satisfiable today, I'm not expecting that it won't
-keep growing and changing in ways that would make me have to keep up with it
-every now and then.</p>
-<p>I just need a parser that performs a one-off job of parsing the given markdown
-file. There is no benefit of bringing a GC-based language into this type of
-problem.</p>
-<p>I also wanted my website to use tech that I know will continue to work in the
-upcoming decades (my last requirement). There is virtually nothing that beats C
-compilers in that area as of today. For any new platform out there the first
-thing that needs to happen is getting a C compiler built along with the
-standard library (which is probably the only standard lib of popular
-programming languages that fits in a <a href="https://www.google.com/search?q=C+standard+library+P.J+Plauger">commented book of 500
-pages</a>...).
-Otherwise, nothing can run in the platform. So I'm hoping this bet will
-pay off.</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+</code></pre><p>This allows me to completely flush the whole repo away and create it from scratch in almost no time. I do not have to worry about creating specific logic to just re-parse files that have changed or anything fancy like that, which reduces the burden of maintenance and makes my script smaller and easier to reason about.</p>
+<p>This result was way more reasonable than the amount of time Pandoc took to parse a mere amount of 87 markdown files, which was over the double-digit mark (of seconds).</p>
+<h2>Outro</h0>
+<p>One popular alternative of current days for this problem is <a href="https://gohugo.io/">Hugo</a>. There is nothing inherently bad with Hugo. It is decently fast (written in Go) and it is easy to get going for a simple website. It seems better than some alternatives like <a href="https://github.com/getpelican/pelican">pelican</a> which is written in Python and thus will be slower to parse md files.</p>
+<p>However, Hugo doesn't particularly appeal to me because the framework seems too big and opinionated for what I need:</p>
+<blockquote>Hugo takes data files, i18n bundles, configuration, templates for layouts,</blockquote>
+<blockquote>static files, assets, and content written in Markdown, HTML, AsciiDoctor, or</blockquote>
+<blockquote>Org-mode and renders a static website. Some notable features are multilingual</blockquote>
+<blockquote>support, image processing, asset management, custom output formats, markdown</blockquote>
+<blockquote>render hooks and shortcodes. Nested sections allow for different types of</blockquote>
+<blockquote>content to be separated, e.g. for a website containing a blog and a podcast.</blockquote>
+<p><a href="http://web.archive.org/web/20240808001552/https://en.wikipedia.org/wiki/Hugo_<a href="software">source</a>)</p>
+<p>There's a lot in there, so much so that big websites that need a lot of features (e.g. Smashing Magazine) are capable of relying heavily on Hugo.</p>
+<p>Also as much as Hugo looks satisfiable today, I'm not expecting that it won't keep growing and changing in ways that would make me have to keep up with it every now and then.</p>
+<p>I just need a parser that performs a one-off job of parsing the given markdown file. There is no benefit of bringing a GC-based language into this type of problem.</p>
+<p>I also wanted my website to use tech that I know will continue to work in the upcoming decades (my last requirement). There is virtually nothing that beats C compilers in that area as of today. For any new platform out there the first thing that needs to happen is getting a C compiler built along with the standard library (which is probably the only standard lib of popular programming languages that fits in a <a href="https://www.google.com/search?q=C+standard+library+P.J+Plauger">commented book of 500 pages</a>...). Otherwise, nothing can run in the platform. So I'm hoping this bet will pay off.</p>

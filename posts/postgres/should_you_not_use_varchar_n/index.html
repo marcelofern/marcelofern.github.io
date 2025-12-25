@@ -59,86 +59,60 @@
   <![endif]-->
 </head>
 <body>
-<h1>Should you not use Postgres varchar(n) by default?</h1>
-<pre><code>Created at: 2025-02-01
-</code></pre>
-<p>The Postgres wiki has a page called <a href="https://wiki.postgresql.org/wiki/Don%27t_Do_This#Don.27t_use_varchar.28n.29_by_default">&quot;Don't Do
-This&quot;</a>
-where general good practices are discussed.</p>
-<p>Amongst them, there is a session titled: <strong>&quot;Don't use varchar(n) by default&quot;</strong>
-which is copied verbatim below:</p>
-<blockquote>
-<p><strong>Why not?</strong>
-varchar(n) is a variable width text field that will throw an error if you try
-and insert a string longer than n characters (not bytes) into it.</p>
-<p>varchar (without the (n)) or text are similar, but without the length limit.
-If you insert the same string into the three field types they will take up
-exactly the same amount of space, and you won't be able to measure any
-difference in performance.</p>
-<p>If what you really need is a text field with an length limit then varchar(n)
-is great, but if you pick an arbitrary length and choose varchar(20) for a
-surname field you're risking production errors in the future when Hubert
-Blaine Wolfe­schlegel­stein­hausen­berger­dorff signs up for service.</p>
-<p>Some databases don't have a type that can hold arbitrary long text, or if
-they do it's not as convenient or efficient or well-supported as varchar(n).
-Users from those databases will often use something like varchar(255) when
-what they really want is text.</p>
-<p>If you need to constrain the value in a field you probably need something
-more specific than a maximum length - maybe a minimum length too, or a
-limited set of characters - and a check constraint can do all of those things
-as well as a maximum string length.</p>
-</blockquote>
-<blockquote>
-<p><strong>When should you?</strong></p>
-</blockquote>
-<blockquote>
-<p>When you want to, really. If what you want is a text field that will throw an
-error if you insert too long a string into it, and you don't want to use an
-explicit check constraint then varchar(n) is a perfectly good type. Just
-don't use it automatically without thinking about it.</p>
-</blockquote>
-<blockquote>
-<p>Also, the varchar type is in the SQL standard, unlike the text type, so it
-might be the best choice for writing super-portable applications.</p>
-</blockquote>
+<h1>Should you not use Postgres varchar(n) by default?</h0>
+<pre><code class="language-">
+Created at: 2025-02-01
+</code></pre><p>The Postgres wiki has a page called <a href="https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_varchar.28n.29_by_default">"Don't Do This"</a> where general good practices are discussed.</p>
+<p>Amongst them, there is a session titled: <b>"Don't use varchar(n) by default"</b> which is copied verbatim below:</p>
+<blockquote>**Why not?**</blockquote>
+<blockquote>varchar(n) is a variable width text field that will throw an error if you try</blockquote>
+<blockquote>and insert a string longer than n characters (not bytes) into it.</blockquote>
+<blockquote></blockquote>
+<blockquote>varchar (without the (n)) or text are similar, but without the length limit.</blockquote>
+<blockquote>If you insert the same string into the three field types they will take up</blockquote>
+<blockquote>exactly the same amount of space, and you won't be able to measure any</blockquote>
+<blockquote>difference in performance.</blockquote>
+<blockquote></blockquote>
+<blockquote>If what you really need is a text field with an length limit then varchar(n)</blockquote>
+<blockquote>is great, but if you pick an arbitrary length and choose varchar(20) for a</blockquote>
+<blockquote>surname field you're risking production errors in the future when Hubert</blockquote>
+<blockquote>Blaine Wolfe­schlegel­stein­hausen­berger­dorff signs up for service.</blockquote>
+<blockquote></blockquote>
+<blockquote>Some databases don't have a type that can hold arbitrary long text, or if</blockquote>
+<blockquote>they do it's not as convenient or efficient or well-supported as varchar(n).</blockquote>
+<blockquote>Users from those databases will often use something like varchar(255) when</blockquote>
+<blockquote>what they really want is text.</blockquote>
+<blockquote></blockquote>
+<blockquote>If you need to constrain the value in a field you probably need something</blockquote>
+<blockquote>more specific than a maximum length - maybe a minimum length too, or a</blockquote>
+<blockquote>limited set of characters - and a check constraint can do all of those things</blockquote>
+<blockquote>as well as a maximum string length.</blockquote>
+<blockquote>**When should you?**</blockquote>
+<blockquote>When you want to, really. If what you want is a text field that will throw an</blockquote>
+<blockquote>error if you insert too long a string into it, and you don't want to use an</blockquote>
+<blockquote>explicit check constraint then varchar(n) is a perfectly good type. Just</blockquote>
+<blockquote>don't use it automatically without thinking about it.</blockquote>
+<blockquote>Also, the varchar type is in the SQL standard, unlike the text type, so it</blockquote>
+<blockquote>might be the best choice for writing super-portable applications.</blockquote>
 <p>The reasons for using <code>varchar</code> (without the (n)) are compelling:</p>
-<ol>
-<li>No performance penalties.</li>
-<li>Reduced risk of errors if you misrepresented the size of the data.</li>
-</ol>
-<p>What the wiki doesn't do a good job of, is steelmanning the downsides of the
-approach it directs towards, namely: <strong>using varchar by default</strong>.</p>
+<ol><li>No performance penalties.</li><li>Reduced risk of errors if you misrepresented the size of the data.</li></ol>
+<p>What the wiki doesn't do a good job of, is steelmanning the downsides of the approach it directs towards, namely: <b>using varchar by default</b>.</p>
 <p>Let's go over them.</p>
-<h2>Denial-of-Service (DoS) via Uncontrolled Data Insertion</h2>
-<p>If you choose a bare <code>varchar</code> for your surname field, you'll need validation
-somewhere in the application to ensure this field doesn't become a vector for
-attacks.</p>
-<p>If a malicious party finds this free-text field without an upper-limit
-validation, they can perform database stuffing by storing enormous volume of
-data in the database, ending on a DoS attack.</p>
-<p>Even if the application pre-validates the data before storing it, this level
-of validation is much weaker as a guarantee of data integrity than delegating
-the job to the database. The database is excellent for data integrity
-guarantees, application code is not.</p>
-<p>Most services have hard constraints on such inputs. For example, the below is
-the limit for names on Twitter:</p>
-<p><img src="img_twitter_limits.png" alt="img_twitter_limits.png"></p>
-<h2>Storing free-text in a database may not be a good idea</h2>
-<p>Databases are optimised for structured data. There are better alternatives for
-storing free-text like S3, CDNs, or even just a dump static file server.</p>
-<p>Having large free-text fields stored on a table will reduce the performance of
-the server, at the minimum you have the overhead of a TOAST table for some
-large rows, but also you are slowing down many db maintenance activities and
-backup tasks for data that you might not always need to have at hand.</p>
-<h2>Increasing the size of a varchar(n) is not a problem</h2>
-<p>Performing an ALTER TABLE to pump the value of <code>n</code> up is a catalogue-only
-operation and won't culminate in a database outage.</p>
-<p>Of course, at that point you might have had a few angry customers complaining
-about errors in the application. You have to ponderate if this is worth over
-the risks of having a DoS via Uncontrolled Data Insertion attack instead.</p>
-<p>There is a real problem though if you want to <strong>decrease</strong> the value of <code>n</code>.
-This will rewrite the table:</p>
-<pre><code class="language-sql">-- This will tell you if a table is being re-written.
+<h2>Denial<ul><li>ooff-</li><li>SSeerrvviiccee  ((DDooSS))  vviiaa  UUnnccoonnttrroolllleedd  DDaattaa  IInnsseerrttiioonn</h0>
+ If you choose a bare <code>varchar</code> for your surname field, you'll need validation somewhere in the application to ensure this field doesn't become a vector for attacks.</li></ul>
+<p>If a malicious party finds this free-text field without an upper-limit validation, they can perform database stuffing by storing enormous volume of data in the database, ending on a DoS attack.</p>
+<p>Even if the application pre-validates the data before storing it, this level of validation is much weaker as a guarantee of data integrity than delegating the job to the database. The database is excellent for data integrity guarantees, application code is not.</p>
+<p>Most services have hard constraints on such inputs. For example, the below is the limit for names on Twitter:</p>
+<p><img alt="img_twitter_limits.png" src="img_twitter_limits.png"></p>
+<h2>Storing free<ul><li>tteexxtt  iinn  aa  ddaattaabbaassee  mmaayy  nnoott  bbee  aa  ggoooodd  iiddeeaa</h0>
+ Databases are optimised for structured data. There are better alternatives for storing free</li><li>text like S3, CDNs, or even just a dump static file server.</li></ul>
+<p>Having large free-text fields stored on a table will reduce the performance of the server, at the minimum you have the overhead of a TOAST table for some large rows, but also you are slowing down many db maintenance activities and backup tasks for data that you might not always need to have at hand.</p>
+<h2>Increasing the size of a varchar(n) is not a problem</h0>
+<p>Performing an ALTER TABLE to pump the value of <code>n</code> up is a catalogue-only operation and won't culminate in a database outage.</p>
+<p>Of course, at that point you might have had a few angry customers complaining about errors in the application. You have to ponderate if this is worth over the risks of having a DoS via Uncontrolled Data Insertion attack instead.</p>
+<p>There is a real problem though if you want to <b>decrease</b> the value of <code>n</code>. This will rewrite the table:</p>
+<pre><code class="language-sql">
+-- This will tell you if a table is being re-written.
 SET client_min_messages=debug1;
 
 DROP TABLE IF EXISTS test;
@@ -151,41 +125,27 @@ INSERT INTO test (str) SELECT generate_series(1, 1000);
 ALTER TABLE test ALTER COLUMN str TYPE varchar(7);
 
 -- Also completely removing `n`, no problem!
--- Caveat: this will trigger a potential &quot;building_index&quot; operation for the
+-- Caveat: this will trigger a potential "building_index" operation for the
 -- TOAST table.
 ALTER TABLE test ALTER COLUMN str TYPE varchar;
 
 -- Decreasing the value of `n`. This is a risky operation!
 ALTER TABLE test ALTER COLUMN str TYPE varchar(4);
--- DEBUG:  rewriting table &quot;test&quot;
-</code></pre>
-<p>I haven't seen cases of having to reduce the value of <code>n</code> before in production.</p>
-<p>But even then, there is a way to set a lower upper bound without downtime
-via check constraints:</p>
-<pre><code class="language-sql">-- [OPTIONAL] you can promote the field to a bare varchar first
+-- DEBUG:  rewriting table "test"
+</code></pre><p>I haven't seen cases of having to reduce the value of <code>n</code> before in production.</p>
+<p>But even then, there is a way to set a lower upper bound without downtime via check constraints:</p>
+<pre><code class="language-sql">
+-- [OPTIONAL] you can promote the field to a bare varchar first
 ALTER TABLE test ALTER COLUMN str TYPE varchar;
 
 -- Add a NOT VALID constraint, so that it does not scan the table while holding
 -- an AccessExclusive Lock.
 ALTER TABLE test
-ADD CONSTRAINT chk_str_length CHECK (LENGTH(str) &lt;= 4)
+ADD CONSTRAINT chk_str_length CHECK (LENGTH(str) <= 4)
 NOT VALID;
 
 -- This will only acquire a ShareUpdateExclusiveLock
 ALTER TABLE test VALIDATE CONSTRAINT chk_str_length;
-</code></pre>
-<p>Note that the check constraint performance may be slower than the native
-<code>varchar(n)</code> check due to the function evaluations behind performing a
-constraint check.</p>
-<h2>Conclusions</h2>
-<ul>
-<li>Think thoroughly about upper/lower bounds of your data before creating a
-field.</li>
-<li>Ponderate between the risks of having length-limit errors versus a potential
-DDoS attack surface.</li>
-<li><strong>Do not</strong> reach out for free-text fields by default. Unless you are always
-adding a CHECK CONSTRAINT to sanitise input limits.</li>
-</ul>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+</code></pre><p>Note that the check constraint performance may be slower than the native <code>varchar(n)</code> check due to the function evaluations behind performing a constraint check.</p>
+<h2>Conclusions</h0>
+<ul><li>Think thoroughly about upper/lower bounds of your data before creating a field.</li><li>Ponderate between the risks of having length</li><li>limit errors versus a potential DDoS attack surface.</li><li><b>Do not</b> reach out for free</li><li>text fields by default. Unless you are always adding a CHECK CONSTRAINT to sanitise input limits.</li></ul>

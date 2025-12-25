@@ -59,34 +59,31 @@
   <![endif]-->
 </head>
 <body>
-<h1>Building a Binary</h1>
-<pre><code>Created at: 2025-02-27
-</code></pre>
-<p>Inside a project created with cargo (Cargo.toml), run:</p>
-<pre><code class="language-sh">cargo build
-</code></pre>
-<p>This will create a binary in <code>target/debug/&lt;bin_name&gt;</code>. Also:</p>
-<blockquote>
-<p>Running cargo build for the first time also causes Cargo to create a new file
-at the top level: Cargo.lock. This file keeps track of the exact versions of
-dependencies in your project. This project doesn’t have dependencies, so the
-file is a bit sparse. You won’t ever need to change this file manually; Cargo
-manages its contents for you.</p>
-</blockquote>
-<h2>Profile</h2>
-<p>You can change the profile in which you want to generate the binary.
-For example:</p>
-<pre><code class="language-sh">cargo build --profile=release
-</code></pre>
-<p>This will create a binary in <code>target/release/&lt;bin_name&gt;</code>. The <code>release</code> command
-will have run with the following settings:</p>
-<pre><code>[profile.release]
+<h1>Building a Binary</h0>
+<pre><code class="language-">
+Created at: 2025-02-27
+</code></pre><p>Inside a project created with cargo (Cargo.toml), run:</p>
+<pre><code class="language-sh">
+cargo build
+</code></pre><p>This will create a binary in <code>target/debug/<bin_name></code>. Also:</p>
+<blockquote>Running cargo build for the first time also causes Cargo to create a new file</blockquote>
+<blockquote>at the top level: Cargo.lock. This file keeps track of the exact versions of</blockquote>
+<blockquote>dependencies in your project. This project doesn’t have dependencies, so the</blockquote>
+<blockquote>file is a bit sparse. You won’t ever need to change this file manually; Cargo</blockquote>
+<blockquote>manages its contents for you.</blockquote>
+<h2>Profile</h0>
+<p>You can change the profile in which you want to generate the binary. For example:</p>
+<pre><code class="language-sh">
+cargo build --profile=release
+</code></pre><p>This will create a binary in <code>target/release/<bin_name></code>. The <code>release</code> command will have run with the following settings:</p>
+<pre><code class="language-">
+[profile.release]
 opt-level = 3  # similar to gcc -O3
 debug = false  # no debug info at all
 # Platform-specific. controls whether debug information, if generated, is
 # either placed in the executable itself or adjacent to it.
 split-debuginfo = '...' 
-strip = &quot;none&quot;  # Whether to strip symbols or debuginfo from binary
+strip = "none"  # Whether to strip symbols or debuginfo from binary
 debug-assertions = false  # enables the debug_assert! macro. Not for prod.
 overflow-checks = false
 lto = false  # longer linker time at the expense of more optimisation
@@ -94,13 +91,9 @@ panic = 'unwind'
 incremental = false  # incremental compilation. Makes compilation faster
 codegen-units = 16
 rpath = false
-</code></pre>
-<h2>check</h2>
-<p>Sometimes, building the binary can take a lot of time.
-If all you want to do is to check that the code would compile, you can run:</p>
-<pre><code class="language-sh">cargo check
+</code></pre><h2>check</h0>
+<p>Sometimes, building the binary can take a lot of time. If all you want to do is to check that the code would compile, you can run:</p>
+<pre><code class="language-sh">
+cargo check
 # cargo check --profile=release
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

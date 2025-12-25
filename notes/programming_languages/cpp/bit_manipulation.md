@@ -118,11 +118,11 @@ and initializes a global variable called "result" based on their values.
 
 The code starts by reserving space on the stack for the function's local
 variables using the "push" and "mov" instructions. It then stores the function
-arguments in the stack at [rbp-4] and [rbp-8].
+arguments in the stack at `[rbp-4]` and `[rbp-8]`.
 
-Next, the code checks if the first argument ([rbp-4]) is equal to 1 using the
+Next, the code checks if the first argument (`[rbp-4]`) is equal to 1 using the
 "cmp" instruction, and jumps to label ".L3" if it is not equal. It then checks
-if the second argument ([rbp-8]) is equal to 65535 using the "cmp" instruction,
+if the second argument (`[rbp-8]`) is equal to 65535 using the "cmp" instruction,
 and also jumps to label ".L3" if it is not equal.
 
 If both conditions are met, the code loads the value of the global variable

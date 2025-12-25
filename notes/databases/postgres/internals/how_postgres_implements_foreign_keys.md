@@ -56,8 +56,7 @@ The `_a_` stands for action constraints, which are created in the referred
 table. [source code](https://github.com/postgres/postgres/blob/bebe9040388bb2292585eab712fe4d29a71843fb/src/backend/commands/tablecmds.c#L12692)
 
 The `_c_` stands for the "check" constraints, which are created in the
-referring table. [source
-code](https://github.com/postgres/postgres/blob/bebe9040388bb2292585eab712fe4d29a71843fb/src/backend/commands/tablecmds.c#L12629)
+referring table. [source code](https://github.com/postgres/postgres/blob/bebe9040388bb2292585eab712fe4d29a71843fb/src/backend/commands/tablecmds.c#L12629)
 
 ## Side note about using cascade to drop the column
 

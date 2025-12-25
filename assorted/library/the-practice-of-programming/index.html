@@ -59,314 +59,152 @@
   <![endif]-->
 </head>
 <body>
-<h1>Review</h1>
-<pre><code>Created at: 2024-07-20
-</code></pre>
-<p>I've been meaning to read other books from Kernighan for a while after reading
-K&amp;R's C programming book and &quot;Unix a Memoir&quot;. The rational is simple: I like
-his direct and simple writing and he has worked with some very important
-historical figures in computer science. Also Rob Pike, who co-authored this
-book, is known for his work on the Go language, and before that, for working at
-Bell Labs.</p>
-<p>This book is relatively old (1999), but I had a sense that much of the advice
-would still be relevant. That was correct. I would put this book in the
-&quot;Classics&quot; category of Computer Science for sure.</p>
-<h2>Summary Page</h2>
+<h1>Review</h0>
+<pre><code class="language-">
+Created at: 2024-07-20
+</code></pre><p>I've been meaning to read other books from Kernighan for a while after reading K&R's C programming book and "Unix a Memoir". The rational is simple: I like his direct and simple writing and he has worked with some very important historical figures in computer science. Also Rob Pike, who co-authored this book, is known for his work on the Go language, and before that, for working at Bell Labs.</p>
+<p>This book is relatively old (1999), but I had a sense that much of the advice would still be relevant. That was correct. I would put this book in the "Classics" category of Computer Science for sure.</p>
+<h2>Summary Page</h0>
 <p>This is the last page of the book, which summarises the advice:</p>
-<ul>
-<li>Style Use descriptive names for globals, short names for locals.</li>
-<li>Be consistent.</li>
-<li>Use active names for functions.</li>
-<li>Be accurate.</li>
-<li>Indent to show structure.</li>
-<li>Use the natural form for expressions (no double negation).</li>
-<li>Parenthesize to resolve ambiguity.</li>
-<li>Break up complex expressions.</li>
-<li>Be clear.</li>
-<li>Be careful with side effects.</li>
-<li>Use a consistent indentation and brace style.</li>
-<li>Use (language) idioms for consistency.</li>
-<li>Use else-ifs for multi-way decisions.</li>
-<li>Avoid function macros.</li>
-<li>Parenthesize the macro body and arguments.</li>
-<li>Give names to magic numbers.</li>
-<li>Define numbers as constants, not macros.</li>
-<li>Use character constants, not integers.</li>
-<li>Use the language to calculate the size of an object.</li>
-<li>Don’t belabor the obvious.</li>
-<li>Comment functions and global data.</li>
-<li>Don’t comment bad code, rewrite it.</li>
-<li>Don’t contradict the code.</li>
-<li>Clarify, don’t confuse.</li>
-<li>Interfaces Hide implementation details.</li>
-<li>Choose a small orthogonal set of primitives.</li>
-<li>Don’t reach behind the user’s back.</li>
-<li>Do the same thing the same way everywhere.</li>
-<li>Free a resource in the same layer that allocated it.</li>
-<li>Detect errors at a low level, handle them at a high level.</li>
-<li>Use exceptions only for exceptional situations.</li>
-<li>Debugging Look for familiar patterns.</li>
-<li>Examine the most recent change.</li>
-<li>Don’t make the same mistake twice.</li>
-<li>Debug it now, not later.</li>
-<li>Get a stack trace.</li>
-<li>Read before typing.</li>
-<li>Explain your code to someone else.</li>
-<li>Make the bug reproducible.</li>
-<li>Divide and conquer.</li>
-<li>Study the numerology of failures.</li>
-<li>Display output to localize your search.</li>
-<li>Write self-checking code.</li>
-<li>Write a log file.</li>
-<li>Draw a picture.</li>
-<li>Use tools.</li>
-<li>Keep records.</li>
-<li>Testing Test code at its boundaries.</li>
-<li>Test pre- and post-conditions.</li>
-<li>Use assertions.</li>
-<li>Program defensively.</li>
-<li>Check error returns.</li>
-<li>Test incrementally.</li>
-<li>Test simple parts first.</li>
-<li>Know what output to expect.</li>
-<li>Verify conservation properties.</li>
-<li>Compare independent implementations.</li>
-<li>Measure test coverage.</li>
-<li>Automate regression testing.</li>
-<li>Create self-contained tests.</li>
-<li>Performance Automate timing measurements.</li>
-<li>Use a profiler.</li>
-<li>Concentrate on the hot spots.</li>
-<li>Draw a picture.</li>
-<li>Use a better algorithm or data structure.</li>
-<li>Enable compiler optimizations.</li>
-<li>Tune the code.</li>
-<li>Don’t optimize what doesn’t matter.</li>
-<li>Collect common subexpressions.</li>
-<li>Replace expensive operations by cheap ones.</li>
-<li>Unroll or eliminate loops.</li>
-<li>Cache frequently-used values.</li>
-<li>Write a special-purpose allocator.</li>
-<li>Buffer input and output.</li>
-<li>Handle special cases separately.</li>
-<li>Precompute results.</li>
-<li>Use approximate values.</li>
-<li>Rewrite in a lower-level language.</li>
-<li>Save space by using the smallest possible data type.</li>
-<li>Don’t store what you can easily recompute.</li>
-<li>Portability Stick to the standard.</li>
-<li>Program in the mainstream.</li>
-<li>Beware of language trouble spots.</li>
-<li>Try several compilers.</li>
-<li>Use standard libraries.</li>
-<li>Use only features available everywhere.</li>
-<li>Avoid conditional compilation.</li>
-<li>Localize system dependencies in separate files.</li>
-<li>Hide system dependencies behind interfaces.</li>
-<li>Use text for data exchange.</li>
-<li>Use a fixed byte order for data exchange.</li>
-<li>Change the name if you change the specification.</li>
-<li>Maintain compatibility with existing programs and data.</li>
-<li>Don’t assume ASCII.</li>
-<li>Don’t assume English.</li>
-</ul>
-<p>The following is a list of highlights from the book that I'll likely reference
-again:</p>
-<h2>Naming things</h2>
-<blockquote>
-<p>Much information comes from context and scope; the broader the scope of a
-variable, the more information should be conveyed by its name.
-Use descriptive names for globals, short names for locals. Global variables,
-by definition, can crop up anywhere in a program, so they need names long
-enough shorter names suffice for local variables; within a function, n may be
-sufficient, npoints is fine, and numberOfPoints is overkill.</p>
-</blockquote>
-<blockquote>
-<p>Use active names for functions. Function names should be based on active
-verbs, perhaps followed by nouns: Functions that return a boolean (true or
-false) value should be named so that the return value is unambiguous.
-Conditional expressions that include negations are always hard to understand
-Use the natural form for expressions. Write expressions as you might speak
-them aloud. Conditional expressions that include negations are always hard to
-understand</p>
-</blockquote>
-<h2>Macros</h2>
-<blockquote>
-<p>Even parenthesizing the macro properly does not address the multiple
-evaluation problem. If an operation is expensive or common enough to be
-wrapped up, use a function.</p>
-</blockquote>
-<blockquote>
-<p>Define numbers as constants, not macros. C programmers have traditionally
-used #define to manage magic number values.</p>
-</blockquote>
-<blockquote>
-<p>And macros are a dangerous way to program because they change the lexical
-structure of the program underfoot. Let the language proper do the work. In C
-and C++, integer constants can be defined with an enum statement, C also has
-const values but they cannot be used as array bounds, so the enum statement
-remains the method of choice in C.</p>
-</blockquote>
-<h2>Sizeof</h2>
-<blockquote>
-<p>For similar reasons, sizeof(array[0]) may be better than sizeof(int) because
-it’s one less thing to change if the type of the array changes.</p>
-</blockquote>
-<blockquote>
-<p>Sizes of data types. The sizes of basic data types in C and C++ are not
-defined; other than the basic rules that sizeof(char) ≤ sizeof(short) ≤
-sizeof(int) ≤ sizeof(long)</p>
-</blockquote>
-<h2>Arrays</h2>
-<blockquote>
-<p>In C and C++, a parameter that is an array of strings can be declared as char
-*array[] or char **array. Although these forms are equivalent, the first
-makes it clearer how the parameter will be used.</p>
-</blockquote>
-<h2>Casting</h2>
-<blockquote>
-<p>The return value of realloc does not need to be cast to its final type
-because C promotes the void* automatically. But C++ does not; there the cast
-is required. One can argue about whether it is safer to cast (cleanliness,
-honesty) or not to cast (the cast can hide genuine errors). We chose to cast
-because it makes the program legal in both C and C++; the price is less
-error-checking from the C compiler, but that is offset by the extra checking
-available from using two compilers.</p>
-</blockquote>
-<h2>Interfaces and Libraries</h2>
-<blockquote>
-<p>This is a pervasive and growing concern in software: as libraries,
-interfaces, and tools become more complicated, they become less understood
-and less controllable. When everything works, rich programming environments
-can be very productive, but when they fail, there is little recourse. Indeed,
-we may not even realize that something is wrong if the problems involve
-performance or subtle logic errors.</p>
-</blockquote>
-<blockquote>
-<p>Without these principles, the result is often the sort of haphazard
-interfaces that frustrate and impede programmers every day.</p>
-</blockquote>
-<h2>Global Variables</h2>
-<blockquote>
-<p>Avoid global variables; wherever possible it is better to pass references to
-all data through function arguments.</p>
-</blockquote>
-<h2>Memory and Allocation</h2>
-<blockquote>
-<p>Free a resource in the same layer that allocated it. One way to control
-resource allocation and reclamation is to have the same library, package, or
-interface that allocates a resource be responsible for freeing it. Another
-way of saying this is that the allocation state of a resource should not
-change across the interface. Our CSV libraries read data from files that have
-already been opened, so they leave them open when they are done. The caller
-of the library needs to close the files.</p>
-</blockquote>
-<blockquote>
-<p>A few machines allow ints to be stored on odd boundaries, but most demand
-that an n-byte primitive data type be stored at an n-byte boundary, for
-example that doubles, which are usually 8 bytes long, are stored at addresses
-that are multiples of 8. On top of this, the compiler writer may make further
-adjustments, such as forcing alignment for performance reasons.</p>
-</blockquote>
-<h2>Errors</h2>
-<blockquote>
-<p>Detect errors at a low level, handle them at a high level. As a general
-principle, errors should be detected at as low a level as possible, but
-handled at a high level. In most cases, the caller should determine how to
-handle an error, not the callee.</p>
-</blockquote>
-<blockquote>
-<p>Exceptions should not be used for handling expected return values. Reading
-from a file will eventually produce an end of file; this should be handled
-with a return value, not by an exception.</p>
-</blockquote>
-<blockquote>
-<p>Exceptions are often overused. Because they distort the flow of control, they
-can lead to convoluted constructions that are prone to bugs. It is hardly
-exceptional to fail to open a file; generating an exception in this case
-strikes us as over-engineering. Exceptions are best reserved for truly
-unexpected events, such as file systems filling up or floating-point errors.</p>
-</blockquote>
-<h2>Follow up Recommendations</h2>
-<blockquote>
-<p>One practical book based on hard-won experience is Large-Scale C++ Software
-Design by John Lakos (Addison-Wesley, 1996), which discusses how to build and
-manage truly large C++ programs. David Hanson’s C Interfaces and
-Implementations (Addison-Wesley, 1997) is a good treatment for C programs.</p>
-</blockquote>
-<h2>Practices</h2>
-<blockquote>
-<p>Read before typing. One effective but under-appreciated debugging technique
-is to read the code very carefully and think about it for a while without
-making changes. There’s a powerful urge to get to the keyboard and start
-modifying the program to see if the bug goes away.</p>
-</blockquote>
-<h2>Portability</h2>
-<blockquote>
-<p>The char type in C and C++ may be signed or unsigned, and need not even have
-exactly 8 bits. Leaving such issues up to the compiler writer may allow more
-efficient implementations and avoid restricting the hardware the language
-will run on, at the risk of making life harder for programmers.</p>
-</blockquote>
-<blockquote>
-<p>Brand new features such as // comments and complex in C, or features specific
-to one architecture such as the keywords near and far, are guaranteed to
-cause trouble. If a feature is so unusual or unclear that to understand it
-you need to consult a “language lawyer”—an expert in reading language
-definitions—don’t use it.</p>
-</blockquote>
-<h2>Sign</h2>
-<blockquote>
-<p>Signedness of char. In C and C++, it is not specified whether the char data
-type is signed or unsigned. This can lead to trouble when combining chars and
-ints, such as in code that calls the int-valued routine getchar().</p>
-</blockquote>
-<blockquote>
-<p>Even if char is signed, however, the code isn’t correct. The comparison will
-succeed at EOF, but a valid input byte of 0xFF will look just like EOF and
-terminate the loop prematurely. So regardless of the sign of char, you must
-always store the return value of getchar in an int for comparison with EOF.</p>
-</blockquote>
-<h2>Side Effects</h2>
-<blockquote>
-<p>Don’t use side effects except for a very few idiomatic constructions like
-a[i++] = 0;</p>
-</blockquote>
-<h2>Boundaries</h2>
-<blockquote>
-<p>Don’t compare a char to EOF. Always use sizeof to compute the size of types
-and objects. Never right shift a signed value. Make sure the data type is big
-enough for the range of values you are storing in it.</p>
-</blockquote>
-<h2>Preprocessor</h2>
-<blockquote>
-<p>regular if statement with a constant condition may work just as well (as
-ifdef): enum { DEBUG = 0 };</p>
-<p>if (DEBUG) {
-printf(...);
-}
-If DEBUG is zero, most compilers won’t generate any code for this, but they
-will check the syntax of the excluded code. An #ifdef, by contrast, can
-conceal syntax errors that will prevent compilation if the #ifdef is later
-enabled.</p>
-</blockquote>
-<h2>\r and \n</h2>
-<blockquote>
-<p>There is one continuing irritation with exchanging text: PC systems use a
-carriage return '\r' and a newline or line-feed '\n' to terminate each line,
-while Unix systems use only newline. The carriage return is an artifact of an
-ancient device called a Teletype that had a carriage-return (CR) operation to
-return the typing mechanism to the beginning of a line, and a separate
-line-feed operation (LF) to advance it to the next line.</p>
-</blockquote>
-<h2>Endianess</h2>
-<blockquote>
-<p>It is not safe to write an int (or short or long) from one computer and read
-it as an int on another computer. For example, if the source computer writes
-with fread(&amp;x, sizeof(x), 1, stdin); the value of x will not be preserved if
-the machines have different byte orders. If x starts as 0x1000 it may arrive
-as 0x0010.</p>
-</blockquote>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+<ul><li>Style Use descriptive names for globals, short names for locals.</li><li>Be consistent.</li><li>Use active names for functions.</li><li>Be accurate.</li><li>Indent to show structure.</li><li>Use the natural form for expressions (no double negation).</li><li>Parenthesize to resolve ambiguity.</li><li>Break up complex expressions.</li><li>Be clear.</li><li>Be careful with side effects.</li><li>Use a consistent indentation and brace style.</li><li>Use (language) idioms for consistency.</li><li>Use else</li><li>ifs for multi</li><li>way decisions.</li><li>Avoid function macros.</li><li>Parenthesize the macro body and arguments.</li><li>Give names to magic numbers.</li><li>Define numbers as constants, not macros.</li><li>Use character constants, not integers.</li><li>Use the language to calculate the size of an object.</li><li>Don’t belabor the obvious.</li><li>Comment functions and global data.</li><li>Don’t comment bad code, rewrite it.</li><li>Don’t contradict the code.</li><li>Clarify, don’t confuse.</li><li>Interfaces Hide implementation details.</li><li>Choose a small orthogonal set of primitives.</li><li>Don’t reach behind the user’s back.</li><li>Do the same thing the same way everywhere.</li><li>Free a resource in the same layer that allocated it.</li><li>Detect errors at a low level, handle them at a high level.</li><li>Use exceptions only for exceptional situations.</li><li>Debugging Look for familiar patterns.</li><li>Examine the most recent change.</li><li>Don’t make the same mistake twice.</li><li>Debug it now, not later.</li><li>Get a stack trace.</li><li>Read before typing.</li><li>Explain your code to someone else.</li><li>Make the bug reproducible.</li><li>Divide and conquer.</li><li>Study the numerology of failures.</li><li>Display output to localize your search.</li><li>Write self</li><li>checking code.</li><li>Write a log file.</li><li>Draw a picture.</li><li>Use tools.</li><li>Keep records.</li><li>Testing Test code at its boundaries.</li><li>Test pre</li><li> and post</li><li>conditions.</li><li>Use assertions.</li><li>Program defensively.</li><li>Check error returns.</li><li>Test incrementally.</li><li>Test simple parts first.</li><li>Know what output to expect.</li><li>Verify conservation properties.</li><li>Compare independent implementations.</li><li>Measure test coverage.</li><li>Automate regression testing.</li><li>Create self</li><li>contained tests.</li><li>Performance Automate timing measurements.</li><li>Use a profiler.</li><li>Concentrate on the hot spots.</li><li>Draw a picture.</li><li>Use a better algorithm or data structure.</li><li>Enable compiler optimizations.</li><li>Tune the code.</li><li>Don’t optimize what doesn’t matter.</li><li>Collect common subexpressions.</li><li>Replace expensive operations by cheap ones.</li><li>Unroll or eliminate loops.</li><li>Cache frequently</li><li>used values.</li><li>Write a special</li><li>purpose allocator.</li><li>Buffer input and output.</li><li>Handle special cases separately.</li><li>Precompute results.</li><li>Use approximate values.</li><li>Rewrite in a lower</li><li>level language.</li><li>Save space by using the smallest possible data type.</li><li>Don’t store what you can easily recompute.</li><li>Portability Stick to the standard.</li><li>Program in the mainstream.</li><li>Beware of language trouble spots.</li><li>Try several compilers.</li><li>Use standard libraries.</li><li>Use only features available everywhere.</li><li>Avoid conditional compilation.</li><li>Localize system dependencies in separate files.</li><li>Hide system dependencies behind interfaces.</li><li>Use text for data exchange.</li><li>Use a fixed byte order for data exchange.</li><li>Change the name if you change the specification.</li><li>Maintain compatibility with existing programs and data.</li><li>Don’t assume ASCII.</li><li>Don’t assume English.</li></ul>
+<p>The following is a list of highlights from the book that I'll likely reference again:</p>
+<h2>Naming things</h0>
+<blockquote>Much information comes from context and scope; the broader the scope of a</blockquote>
+<blockquote>variable, the more information should be conveyed by its name.</blockquote>
+<blockquote>Use descriptive names for globals, short names for locals. Global variables,</blockquote>
+<blockquote>by definition, can crop up anywhere in a program, so they need names long</blockquote>
+<blockquote>enough shorter names suffice for local variables; within a function, n may be</blockquote>
+<blockquote>sufficient, npoints is fine, and numberOfPoints is overkill.</blockquote>
+<blockquote>Use active names for functions. Function names should be based on active</blockquote>
+<blockquote>verbs, perhaps followed by nouns: Functions that return a boolean (true or</blockquote>
+<blockquote>false) value should be named so that the return value is unambiguous.</blockquote>
+<blockquote>Conditional expressions that include negations are always hard to understand</blockquote>
+<blockquote>Use the natural form for expressions. Write expressions as you might speak</blockquote>
+<blockquote>them aloud. Conditional expressions that include negations are always hard to</blockquote>
+<blockquote>understand</blockquote>
+<h2>Macros</h0>
+<blockquote>Even parenthesizing the macro properly does not address the multiple</blockquote>
+<blockquote>evaluation problem. If an operation is expensive or common enough to be</blockquote>
+<blockquote>wrapped up, use a function.</blockquote>
+<blockquote>Define numbers as constants, not macros. C programmers have traditionally</blockquote>
+<blockquote>used #define to manage magic number values.</blockquote>
+<blockquote>And macros are a dangerous way to program because they change the lexical</blockquote>
+<blockquote>structure of the program underfoot. Let the language proper do the work. In C</blockquote>
+<blockquote>and C++, integer constants can be defined with an enum statement, C also has</blockquote>
+<blockquote>const values but they cannot be used as array bounds, so the enum statement</blockquote>
+<blockquote>remains the method of choice in C.</blockquote>
+<h2>Sizeof</h0>
+<blockquote>For similar reasons, sizeof(array[0]) may be better than sizeof(int) because</blockquote>
+<blockquote>it’s one less thing to change if the type of the array changes.</blockquote>
+<blockquote>Sizes of data types. The sizes of basic data types in C and C++ are not</blockquote>
+<blockquote>defined; other than the basic rules that sizeof(char) ≤ sizeof(short) ≤</blockquote>
+<blockquote>sizeof(int) ≤ sizeof(long)</blockquote>
+<h2>Arrays</h0>
+<blockquote>In C and C++, a parameter that is an array of strings can be declared as char</blockquote>
+<blockquote>*array[] or char **array. Although these forms are equivalent, the first</blockquote>
+<blockquote>makes it clearer how the parameter will be used.</blockquote>
+<h2>Casting</h0>
+<blockquote>The return value of realloc does not need to be cast to its final type</blockquote>
+<blockquote>because C promotes the void* automatically. But C++ does not; there the cast</blockquote>
+<blockquote>is required. One can argue about whether it is safer to cast (cleanliness,</blockquote>
+<blockquote>honesty) or not to cast (the cast can hide genuine errors). We chose to cast</blockquote>
+<blockquote>because it makes the program legal in both C and C++; the price is less</blockquote>
+<blockquote>error-checking from the C compiler, but that is offset by the extra checking</blockquote>
+<blockquote>available from using two compilers.</blockquote>
+<h2>Interfaces and Libraries</h0>
+<blockquote>This is a pervasive and growing concern in software: as libraries,</blockquote>
+<blockquote>interfaces, and tools become more complicated, they become less understood</blockquote>
+<blockquote>and less controllable. When everything works, rich programming environments</blockquote>
+<blockquote>can be very productive, but when they fail, there is little recourse. Indeed,</blockquote>
+<blockquote>we may not even realize that something is wrong if the problems involve</blockquote>
+<blockquote>performance or subtle logic errors.</blockquote>
+<blockquote>Without these principles, the result is often the sort of haphazard</blockquote>
+<blockquote>interfaces that frustrate and impede programmers every day.</blockquote>
+<h2>Global Variables</h0>
+<blockquote>Avoid global variables; wherever possible it is better to pass references to</blockquote>
+<blockquote>all data through function arguments.</blockquote>
+<h2>Memory and Allocation</h0>
+<blockquote>Free a resource in the same layer that allocated it. One way to control</blockquote>
+<blockquote>resource allocation and reclamation is to have the same library, package, or</blockquote>
+<blockquote>interface that allocates a resource be responsible for freeing it. Another</blockquote>
+<blockquote>way of saying this is that the allocation state of a resource should not</blockquote>
+<blockquote>change across the interface. Our CSV libraries read data from files that have</blockquote>
+<blockquote>already been opened, so they leave them open when they are done. The caller</blockquote>
+<blockquote>of the library needs to close the files.</blockquote>
+<blockquote>A few machines allow ints to be stored on odd boundaries, but most demand</blockquote>
+<blockquote>that an n-byte primitive data type be stored at an n-byte boundary, for</blockquote>
+<blockquote>example that doubles, which are usually 8 bytes long, are stored at addresses</blockquote>
+<blockquote>that are multiples of 8. On top of this, the compiler writer may make further</blockquote>
+<blockquote>adjustments, such as forcing alignment for performance reasons.</blockquote>
+<h2>Errors</h0>
+<blockquote>Detect errors at a low level, handle them at a high level. As a general</blockquote>
+<blockquote>principle, errors should be detected at as low a level as possible, but</blockquote>
+<blockquote>handled at a high level. In most cases, the caller should determine how to</blockquote>
+<blockquote>handle an error, not the callee.</blockquote>
+<blockquote>Exceptions should not be used for handling expected return values. Reading</blockquote>
+<blockquote>from a file will eventually produce an end of file; this should be handled</blockquote>
+<blockquote>with a return value, not by an exception.</blockquote>
+<blockquote>Exceptions are often overused. Because they distort the flow of control, they</blockquote>
+<blockquote>can lead to convoluted constructions that are prone to bugs. It is hardly</blockquote>
+<blockquote>exceptional to fail to open a file; generating an exception in this case</blockquote>
+<blockquote>strikes us as over-engineering. Exceptions are best reserved for truly</blockquote>
+<blockquote>unexpected events, such as file systems filling up or floating-point errors.</blockquote>
+<h2>Follow up Recommendations</h0>
+<blockquote>One practical book based on hard-won experience is Large-Scale C++ Software</blockquote>
+<blockquote>Design by John Lakos (Addison-Wesley, 1996), which discusses how to build and</blockquote>
+<blockquote>manage truly large C++ programs. David Hanson’s C Interfaces and</blockquote>
+<blockquote>Implementations (Addison-Wesley, 1997) is a good treatment for C programs.</blockquote>
+<h2>Practices</h0>
+<blockquote>Read before typing. One effective but under-appreciated debugging technique</blockquote>
+<blockquote>is to read the code very carefully and think about it for a while without</blockquote>
+<blockquote>making changes. There’s a powerful urge to get to the keyboard and start</blockquote>
+<blockquote>modifying the program to see if the bug goes away.</blockquote>
+<h2>Portability</h0>
+<blockquote>The char type in C and C++ may be signed or unsigned, and need not even have</blockquote>
+<blockquote>exactly 8 bits. Leaving such issues up to the compiler writer may allow more</blockquote>
+<blockquote>efficient implementations and avoid restricting the hardware the language</blockquote>
+<blockquote>will run on, at the risk of making life harder for programmers.</blockquote>
+<blockquote>Brand new features such as // comments and complex in C, or features specific</blockquote>
+<blockquote>to one architecture such as the keywords near and far, are guaranteed to</blockquote>
+<blockquote>cause trouble. If a feature is so unusual or unclear that to understand it</blockquote>
+<blockquote>you need to consult a “language lawyer”—an expert in reading language</blockquote>
+<blockquote>definitions—don’t use it.</blockquote>
+<h2>Sign</h0>
+<blockquote>Signedness of char. In C and C++, it is not specified whether the char data</blockquote>
+<blockquote>type is signed or unsigned. This can lead to trouble when combining chars and</blockquote>
+<blockquote>ints, such as in code that calls the int-valued routine getchar().</blockquote>
+<blockquote>Even if char is signed, however, the code isn’t correct. The comparison will</blockquote>
+<blockquote>succeed at EOF, but a valid input byte of 0xFF will look just like EOF and</blockquote>
+<blockquote>terminate the loop prematurely. So regardless of the sign of char, you must</blockquote>
+<blockquote>always store the return value of getchar in an int for comparison with EOF.</blockquote>
+<h2>Side Effects</h0>
+<blockquote>Don’t use side effects except for a very few idiomatic constructions like</blockquote>
+<blockquote>a[i++] = 0;</blockquote>
+<h2>Boundaries</h0>
+<blockquote>Don’t compare a char to EOF. Always use sizeof to compute the size of types</blockquote>
+<blockquote>and objects. Never right shift a signed value. Make sure the data type is big</blockquote>
+<blockquote>enough for the range of values you are storing in it.</blockquote>
+<h2>Preprocessor</h0>
+<blockquote>regular if statement with a constant condition may work just as well (as</blockquote>
+<blockquote>ifdef): enum { DEBUG = 0 };</blockquote>
+<blockquote></blockquote>
+<blockquote>   if (DEBUG) {</blockquote>
+<blockquote>       printf(...);</blockquote>
+<blockquote>   }</blockquote>
+<blockquote>If DEBUG is zero, most compilers won’t generate any code for this, but they</blockquote>
+<blockquote>will check the syntax of the excluded code. An #ifdef, by contrast, can</blockquote>
+<blockquote>conceal syntax errors that will prevent compilation if the #ifdef is later</blockquote>
+<blockquote>enabled.</blockquote>
+<h2>\r and \n</h0>
+<blockquote>There is one continuing irritation with exchanging text: PC systems use a</blockquote>
+<blockquote>carriage return '\r' and a newline or line-feed '\n' to terminate each line,</blockquote>
+<blockquote>while Unix systems use only newline. The carriage return is an artifact of an</blockquote>
+<blockquote>ancient device called a Teletype that had a carriage-return (CR) operation to</blockquote>
+<blockquote>return the typing mechanism to the beginning of a line, and a separate</blockquote>
+<blockquote>line-feed operation (LF) to advance it to the next line.</blockquote>
+<h2>Endianess</h0>
+<blockquote>It is not safe to write an int (or short or long) from one computer and read</blockquote>
+<blockquote>it as an int on another computer. For example, if the source computer writes</blockquote>
+<blockquote>with fread(&x, sizeof(x), 1, stdin); the value of x will not be preserved if</blockquote>
+<blockquote>the machines have different byte orders. If x starts as 0x1000 it may arrive</blockquote>
+<blockquote>as 0x0010.</blockquote>

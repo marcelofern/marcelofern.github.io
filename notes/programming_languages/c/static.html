@@ -60,19 +60,13 @@
 </head>
 <body>
 <p><code>2024-30-03</code></p>
-<p>The <code>static</code> keyword in C has double meaning. If a variable or a function at
-the top level of a module is declared <code>static</code>, it means that it is a local
-variable (or function) instead of a global one, and thus cannot be used in
-other files.</p>
-<p>Other than that, the <code>static</code> keyword is used to allocate static storage. Those
-are called &quot;static variables&quot;. This use is more nuanced, and is described
-below with additional details.</p>
-<blockquote>
-<p>A static variable is a variable that has been allocated &quot;statically&quot;, meaning
-that its lifetime (or &quot;extent&quot;) is the entire run of the program</p>
-</blockquote>
+<p>The <code>static</code> keyword in C has double meaning. If a variable or a function at the top level of a module is declared <code>static</code>, it means that it is a local variable (or function) instead of a global one, and thus cannot be used in other files.</p>
+<p>Other than that, the <code>static</code> keyword is used to allocate static storage. Those are called "static variables". This use is more nuanced, and is described below with additional details.</p>
+<blockquote>A static variable is a variable that has been allocated "statically", meaning</blockquote>
+<blockquote>that its lifetime (or "extent") is the entire run of the program</blockquote>
 <p>Those variables are allocated at compiling time. For example:</p>
-<pre><code class="language-c">void func() {
+<pre><code class="language-c">
+void func() {
   static int my_var = 0;
   // |my_var| is initialized by the compiler.
   // The final value of |my_var| will be 5.
@@ -87,25 +81,19 @@ int main() {
   func();  // my_var = 5
   return 0;
 }
-</code></pre>
-<p>The <code>func</code> above yields the following Assembly:</p>
-<pre><code class="language-asm">func:
+</code></pre><p>The <code>func</code> above yields the following Assembly:</p>
+<pre><code class="language-asm">
+func:
   add  DWORD PTR my_var.0[rip], 1
   ret
   .local  my_var.0
   .comm  my_var.0,4,4
-</code></pre>
-<p>The <code>.local</code> directive simply points out that the variable <code>my_var.0</code> is only
-visible within the current file or block.</p>
-<p>The <code>.comm</code> defines a common block, which is a memory area that is shared among
-multiple source files or object files. It's often used for declaring global
-variables or shared memory.</p>
-<p>The first 4 is the size of the memory area being reserved for <code>my_var.0</code>. The
-second 4 is the alignment of the memory area. I.e., aligned on a 4-byte
-boundary.</p>
-<p>The suffix <code>.0</code> helps disambiguating when we have two static variables with the
-same name:</p>
-<pre><code class="language-asm">void func() {
+</code></pre><p>The <code>.local</code> directive simply points out that the variable <code>my_var.0</code> is only visible within the current file or block.</p>
+<p>The <code>.comm</code> defines a common block, which is a memory area that is shared among multiple source files or object files. It's often used for declaring global variables or shared memory.</p>
+<p>The first 4 is the size of the memory area being reserved for <code>my_var.0</code>. The second 4 is the alignment of the memory area. I.e., aligned on a 4-byte boundary.</p>
+<p>The suffix <code>.0</code> helps disambiguating when we have two static variables with the same name:</p>
+<pre><code class="language-asm">
+void func() {
   static int my_var = 0;
   my_var++;
 }
@@ -114,9 +102,9 @@ void func2() {
   static int my_var = 0;
   my_var--;
 }
-</code></pre>
-<p>Yields:</p>
-<pre><code class="language-asm">func:
+</code></pre><p>Yields:</p>
+<pre><code class="language-asm">
+func:
   add  DWORD PTR my_var.1[rip], 1
   ret
 func2:
@@ -126,33 +114,32 @@ func2:
   .comm  my_var.0,4,4
   .local  my_var.1
   .comm  my_var.1,4,4
-</code></pre>
-<h2>Trying an array</h2>
-<pre><code class="language-c">void func(int i, int v) {
+</code></pre><h2>Trying an array</h0>
+<pre><code class="language-c">
+void func(int i, int v) {
   static char my_arr[777];
   my_arr[i] = v;
 }
-</code></pre>
-<p>Yields:</p>
-<pre><code class="language-asm">func:
+</code></pre><p>Yields:</p>
+<pre><code class="language-asm">
+func:
   ; some omitted code
   ret
   .size  func, .-func
   .local  my_arr.0
   .comm  my_arr.0,777,32
-</code></pre>
-<p>I am not sure why the alignment is set to 32 bytes here! Different array types
-such as <code>int</code>, <code>float</code>, <code>long long</code> are all yielding 32 bytes.</p>
-<h2>What about jump tables</h2>
+</code></pre><p>I am not sure why the alignment is set to 32 bytes here! Different array types such as <code>int</code>, <code>float</code>, <code>long long</code> are all yielding 32 bytes.</p>
+<h2>What about jump tables</h0>
 <p><code>static</code> can also be helpful to initialise jump tables.</p>
 <p>For example:</p>
-<pre><code class="language-c">unsigned int func(unsigned int idx) {
+<pre><code class="language-c">
+unsigned int func(unsigned int idx) {
   static unsigned int my_table[] = {10, 20, 30, 40};
   return my_table[idx];
 }
-</code></pre>
-<p>Yields the assembly code:</p>
-<pre><code class="language-asm">func:
+</code></pre><p>Yields the assembly code:</p>
+<pre><code class="language-asm">
+func:
   mov  edi, edi
   lea  rax, my_table.0[rip]
   mov  eax, DWORD PTR [rax+rdi*4]
@@ -167,13 +154,11 @@ my_table.0:
   .long  20
   .long  30
   .long  40
-</code></pre>
-<p>Note: Ignore the <code>mov edi, edi</code> instruction as it has a murky intention behind
-it. <a href="http://web.archive.org/web/20240303170320/https://devblogs.microsoft.com/oldnewthing/20110921-00/?p=9583">source</a></p>
-<p>Note 2: <code>my_table.0[rip]</code> is the relative address of my_table.0 to the
-current instruction pointer. <a href="https://www.quora.com/How-does-AMD64-RIP-relative-addressing-work">source</a></p>
+</code></pre><p>Note: Ignore the <code>mov edi, edi</code> instruction as it has a murky intention behind it. <a href="http://web.archive.org/web/20240303170320/https://devblogs.microsoft.com/oldnewthing/20110921-00/?p=9583">source</a></p>
+<p>Note 2: <code>my_table.0[rip]</code> is the relative address of my_table.0 to the current instruction pointer. <a href="https://www.quora.com/How-does-AMD64-RIP-relative-addressing-work">source</a></p>
 <p>Look what happens if we remove the <code>static</code> keyword:</p>
-<pre><code class="language-asm">func:
+<pre><code class="language-asm">
+func:
   sub  rsp, 40
   movdqa  xmm0, XMMWORD PTR .LC0[rip]
   mov  edi, edi
@@ -187,20 +172,17 @@ current instruction pointer. <a href="https://www.quora.com/How-does-AMD64-RIP-r
   jne  .L5
   add  rsp, 40
   ret
-</code></pre>
-<p>It is better to use <code>static</code> in this case, because the array does not need to
-be initiated in the stack for every call to the function and there are way less
-instructions for the CPU to run.</p>
-<h2>What about threads</h2>
-<p>In a multi-threaded environment, local static variables are shared across all
-threads. This may cause race conditions. For example:</p>
-<pre><code class="language-c">#include &lt;pthread.h&gt;
-#include &lt;stdio.h&gt;
+</code></pre><p>It is better to use <code>static</code> in this case, because the array does not need to be initiated in the stack for every call to the function and there are way less instructions for the CPU to run.</p>
+<h2>What about threads</h0>
+<p>In a multi-threaded environment, local static variables are shared across all threads. This may cause race conditions. For example:</p>
+<pre><code class="language-c">
+#include <pthread.h>
+#include <stdio.h>
 
 void fun() {
   static int my_var = 0;
   my_var++;
-  printf(&quot;my_var: %d, tid: %lu\n&quot;, my_var, pthread_self());
+  printf("my_var: %d, tid: %lu\n", my_var, pthread_self());
 }
 
 void *thread_func(void *arg) {
@@ -212,17 +194,17 @@ void *thread_func(void *arg) {
 int main() {
   const int num_threads = 5;
   pthread_t threads[num_threads];
-  for (int i = 0; i &lt; num_threads; i++) {
-    pthread_create(&amp;threads[i], NULL, thread_func, NULL);
+  for (int i = 0; i < num_threads; i++) {
+    pthread_create(&threads[i], NULL, thread_func, NULL);
   }
-  for (int i = 0; i &lt; num_threads; i++) {
+  for (int i = 0; i < num_threads; i++) {
     pthread_join(threads[i], NULL);
   }
   return 0;
 }
-</code></pre>
-<p>Output:</p>
-<pre><code class="language-sh">my_var: 1, tid: 127454730593984
+</code></pre><p>Output:</p>
+<pre><code class="language-sh">
+my_var: 1, tid: 127454730593984
 my_var: 4, tid: 127454730593984
 my_var: 2, tid: 127454738986688
 my_var: 5, tid: 127454738986688
@@ -232,29 +214,29 @@ my_var: 7, tid: 127454755772096
 my_var: 8, tid: 127454755772096
 my_var: 9, tid: 127454747379392
 my_var: 10, tid: 127454747379392
-</code></pre>
-<h2>What about forks</h2>
-<p>Differently from threads, forks <em>do not share</em> local static variables.</p>
-<pre><code class="language-c">#include &lt;stdio.h&gt;
-#include &lt;sys/wait.h&gt;
-#include &lt;unistd.h&gt;
+</code></pre><h2>What about forks</h0>
+<p>Differently from threads, forks <i>do not share</i> local static variables.</p>
+<pre><code class="language-c">
+#include <stdio.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 void fun() {
   static int my_var = 0;
   my_var++;
-  printf(&quot;my_var: %d, pid: %d\n&quot;, my_var, getpid());
+  printf("my_var: %d, pid: %d\n", my_var, getpid());
 }
 
 int main() {
   const int num_processes = 5;
   pid_t pids[num_processes];
 
-  for (int i = 0; i &lt; num_processes; i++) {
+  for (int i = 0; i < num_processes; i++) {
     pids[i] = fork();
 
     if (pids[i] == -1) {
       // Error occurred
-      perror(&quot;fork&quot;);
+      perror("fork");
       return 1;
     } else if (pids[i] == 0) {
       // Child process
@@ -265,15 +247,15 @@ int main() {
   }
 
   // Parent process waits for all child processes to finish
-  for (int i = 0; i &lt; num_processes; i++) {
+  for (int i = 0; i < num_processes; i++) {
     waitpid(pids[i], NULL, 0);
   }
 
   return 0;
 }
-</code></pre>
-<p>Output:</p>
-<pre><code class="language-sh">my_var: 1, pid: 38252
+</code></pre><p>Output:</p>
+<pre><code class="language-sh">
+my_var: 1, pid: 38252
 my_var: 2, pid: 38252
 my_var: 1, pid: 38250
 my_var: 2, pid: 38250
@@ -284,6 +266,3 @@ my_var: 2, pid: 38251
 my_var: 1, pid: 38249
 my_var: 2, pid: 38249
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

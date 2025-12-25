@@ -59,73 +59,37 @@
   <![endif]-->
 </head>
 <body>
-<h1>Initial Setup</h1>
-<pre><code>Created at: 2024-11-05
-</code></pre>
-<p>Problems:</p>
-<ul>
-<li>Brew doesn't automatically add applications to the PATH. It needs to be
-manually added. This is because MacOs &quot;protects&quot; many useful folders like
-<code>/bin</code>, <code>/usr/bin</code>, and <code>/usr/local/bin</code>.</li>
-<li>This protections are silly, and mostly get in your way as a dev. For example,
-I can't create a file in <code>/usr/local/bin</code>. If I want to run programs from the
-terminal I need to keep modifying PATH.</li>
-<li>Apple keeps an old version of <code>bash</code> and does not update it any more due to
-changes in licensing. I have to install the new one via brew and symlink it
-so that I can use it as default (minor, but it took me too long till I found
-this out).</li>
-<li>Executables and apps are slow the first time they run. You can make them open
-much much faster by disabling SIP (which I can't for work). When the app is
-first loaded it is scanned by the syspolicyd process. This is part of Apple's
-Anti-Malware protection. It caches what's been checked, so the second run
-goes faster.</li>
-<li>Macos has also a very old version of openssl, which is incompatible with
-newer versions of other libraries (like Python), further enhancing the
-problem of having a brew dependency mismatching a system dependency.</li>
-<li>If you are a developer, chances are you'll need Xcode. It turns out that you
-can't just &quot;download it&quot;. You need to first create an Apple accound with your
-personal information and bank details, so that you can download it. There are
-several things that break if you don't have Xcode, as it provides many of the
-libs for development on a MacOs.</li>
-</ul>
-<h2>Swap Command key for Ctrl key (maybe, I'm not doing it now.)</h2>
+<h1>Initial Setup</h0>
+<pre><code class="language-">
+Created at: 2024-11-05
+</code></pre><p>Problems: - Brew doesn't automatically add applications to the PATH. It needs to be manually added. This is because MacOs "protects" many useful folders like <code>/bin</code>, <code>/usr/bin</code>, and <code>/usr/local/bin</code>. - This protections are silly, and mostly get in your way as a dev. For example, I can't create a file in <code>/usr/local/bin</code>. If I want to run programs from the terminal I need to keep modifying PATH. - Apple keeps an old version of <code>bash</code> and does not update it any more due to changes in licensing. I have to install the new one via brew and symlink it so that I can use it as default (minor, but it took me too long till I found this out). - Executables and apps are slow the first time they run. You can make them open much much faster by disabling SIP (which I can't for work). When the app is first loaded it is scanned by the syspolicyd process. This is part of Apple's Anti-Malware protection. It caches what's been checked, so the second run goes faster. - Macos has also a very old version of openssl, which is incompatible with newer versions of other libraries (like Python), further enhancing the problem of having a brew dependency mismatching a system dependency. - If you are a developer, chances are you'll need Xcode. It turns out that you can't just "download it". You need to first create an Apple accound with your personal information and bank details, so that you can download it. There are several things that break if you don't have Xcode, as it provides many of the libs for development on a MacOs.</p>
+<h2>Swap Command key for Ctrl key (maybe, I'm not doing it now.)</h0>
 <p>Go to:</p>
-<ul>
-<li>System settings</li>
-<li>Keyboard</li>
-<li>Keyboard Shortcuts</li>
-<li>Modifier Keys</li>
-</ul>
+<ul><li>System settings</li><li>Keyboard</li><li>Keyboard Shortcuts</li><li>Modifier Keys</li></ul>
 <p>And swap ctrl for cmd.</p>
-<h2>Get rid of the annoying Dock</h2>
+<h2>Get rid of the annoying Dock</h0>
 <p>On the terminal:</p>
-<pre><code class="language-sh">defaults write com.apple.dock autohide -bool true &amp;&amp; killall Dock
-defaults write com.apple.dock autohide-delay -float 1000 &amp;&amp; killall Dock
-defaults write com.apple.dock no-bouncing -bool TRUE &amp;&amp; killall Dock
-</code></pre>
-<h2>Get rid of annoying hot corners</h2>
+<pre><code class="language-sh">
+defaults write com.apple.dock autohide -bool true && killall Dock
+defaults write com.apple.dock autohide-delay -float 1000 && killall Dock
+defaults write com.apple.dock no-bouncing -bool TRUE && killall Dock
+</code></pre><h2>Get rid of annoying hot corners</h0>
 <p>On a terminal:</p>
-<pre><code class="language-sh">defaults write com.apple.dock wvous-tl-corner -int 0
+<pre><code class="language-sh">
+defaults write com.apple.dock wvous-tl-corner -int 0
 defaults write com.apple.dock wvous-tr-corner -int 0
 defaults write com.apple.dock wvous-bl-corner -int 0
 defaults write com.apple.dock wvous-br-corner -int 0
 killall Dock
-</code></pre>
-<p><strong>If that didn't work, go through the GUI</strong></p>
-<p>Step 1. Click on the Apple Menu.
-Step 2. Go to &quot;System Settings&quot;.
-Step 3. Click on &quot;Desktop &amp; Dock&quot;.
-Step 4. Choose &quot;Hot Corners&quot; at the bottom.
-Setp 5. Set every corner to a dash <code>-</code> which does nothing.</p>
-<h2>Update the terminal app shell</h2>
-<ol>
-<li>Go to the terminal app, press &quot;cmd + ,&quot; to open settings.</li>
-<li>Change &quot;shells open with&quot; to use /bin/bash.</li>
-</ol>
-<h2>Install brew</h2>
+</code></pre><p><b>If that didn't work, go through the GUI</b></p>
+<p>Step 1. Click on the Apple Menu. Step 2. Go to "System Settings". Step 3. Click on "Desktop & Dock". Step 4. Choose "Hot Corners" at the bottom. Setp 5. Set every corner to a dash <code>-</code> which does nothing.</p>
+<h2>Update the terminal app shell</h0>
+<ol><li>Go to the terminal app, press "cmd + ," to open settings.</li><li>Change "shells open with" to use /bin/bash.</li></ol>
+<h2>Install brew</h0>
 <p>Go to the website and install it.</p>
-<h2>Install dev tools</h2>
-<pre><code class="language-sh">export PATH=/opt/homebrew/bin:$PATH
+<h2>Install dev tools</h0>
+<pre><code class="language-sh">
+export PATH=/opt/homebrew/bin:$PATH
 
 brew install \
     neovim \
@@ -151,43 +115,29 @@ brew install \
 brew install firefox
 brew install --cask nikitabobko/tap/aerospace
 brew install --cask betterdisplay
-</code></pre>
-<p>Notes:</p>
-<ol>
-<li>Allow terminal-notifier to send notifications (type notifications in the
-system settings page). Also set the config to not group!</li>
-</ol>
-<h2>Install My dotfiles</h2>
-<pre><code class="language-sh">~/workspace/dotfiles/scripts/dotfiles.sh install
-</code></pre>
-<p>Note: Change the <code>open_github_file.lua</code> plugin to include the prefix to
-exclude.</p>
-<h2>Change default shell to bash</h2>
-<p>MacOs comes with zsh by default, which isn't a great shell.
-The bash version it comes with is outdated, so we download a new one with
-brew</p>
-<pre><code class="language-sh">chsh -s /opt/homebrew/bin/bash
+</code></pre><p>Notes: 1. Allow terminal-notifier to send notifications (type notifications in the system settings page). Also set the config to not group!</p>
+<h2>Install My dotfiles</h0>
+<pre><code class="language-sh">
+~/workspace/dotfiles/scripts/dotfiles.sh install
+</code></pre><p>Note: Change the <code>open_github_file.lua</code> plugin to include the prefix to exclude.</p>
+<h2>Change default shell to bash</h0>
+<p>MacOs comes with zsh by default, which isn't a great shell. The bash version it comes with is outdated, so we download a new one with brew</p>
+<pre><code class="language-sh">
+chsh -s /opt/homebrew/bin/bash
 
 # Symlink .bashrc to .bash_profile
 ln -s ~/.bashrc ~/.bash_profile
 
 # Just reboot and you'll get the new shell
 sudo reboot now
-</code></pre>
-<p>Also change from zsh to bash in:</p>
-<ul>
-<li>System Settings</li>
-<li>Users &amp; Groups</li>
-<li>Right click your user</li>
-<li>Advanced Options</li>
-<li>Press CMD + SHIFT + G and insert <code>/opt/homebrew/bin/</code></li>
-<li>Select the bash binary.</li>
-</ul>
-<h2>Install Plug (neovim package manager)</h2>
+</code></pre><p>Also change from zsh to bash in:</p>
+<ul><li>System Settings</li><li>Users & Groups</li><li>Right click your user</li><li>Advanced Options</li><li>Press CMD + SHIFT + G and insert <code>/opt/homebrew/bin/</code></li><li>Select the bash binary.</li></ul>
+<h2>Install Plug (neovim package manager)</h0>
 <p>Just follow the website instructions to get the <code>curl</code> script.</p>
-<h2>Basic nice things</h2>
+<h2>Basic nice things</h0>
 <p>Go to Settings - Keyboard and configure:</p>
-<pre><code class="language-sh"># Increase key-repeat
+<pre><code class="language-sh">
+# Increase key-repeat
 defaults write -g KeyRepeat -int 2
 defaults write -g InitialKeyRepeat -int 15
 
@@ -195,55 +145,40 @@ defaults write -g InitialKeyRepeat -int 15
 defaults -currentHost write -g AppleFontSmoothing -int 0
 
 # Disable the sound effects on boot
-sudo nvram SystemAudioVolume=&quot; &quot;
+sudo nvram SystemAudioVolume=" "
 
 # Disable automatic termination of inactive apps
 defaults write NSGlobalDomain NSDisableAutomaticTermination -bool true
 
 sudo reboot now
-</code></pre>
-<h2>Download HomeRow</h2>
+</code></pre><h2>Download HomeRow</h0>
 <p>Change the shortcuts for:</p>
-<ul>
-<li>cmd+shift+o (find link)</li>
-<li>cmd+shift+j (start scrolling)</li>
-</ul>
-<h2>Adjust mouse speed (if needed)</h2>
-<p>Go to &quot;Mouse&quot; on settings.
-Click on &quot;advanced&quot; and remove the pointer acceleration.
-This will enable you to go faster.</p>
-<h2>Adjust monitor (if needed)</h2>
+<ul><li>cmd+shift+o (find link)</li><li>cmd+shift+j (start scrolling)</li></ul>
+<h2>Adjust mouse speed (if needed)</h0>
+<p>Go to "Mouse" on settings. Click on "advanced" and remove the pointer acceleration. This will enable you to go faster.</p>
+<h2>Adjust monitor (if needed)</h0>
 <p>On better display, follow this guide:</p>
 <p>https://github.com/waydabber/BetterDisplay/wiki/Fully-scalable-HiDPI-desktop</p>
-<p>I have to set my home monitor to ~86% resolution.
-Note: You might have to close your macos lid for the black gaps on the side to
-go away!!!</p>
-<h2>Vimum</h2>
+<p>I have to set my home monitor to ~86% resolution. Note: You might have to close your macos lid for the black gaps on the side to go away!!!</p>
+<h2>Vimum</h0>
 <p>Add this mapper rule:</p>
-<pre><code>map q removeTab
-</code></pre>
-<h2>Set up shortucts for firefox</h2>
-<p>Sadly because I have to use <code>cmd</code> instead of <code>ctrl</code>, I have to change Firefox's
-shortcuts.</p>
-<p>System Settings -&gt; Keyboard -&gt; Shortcuts -&gt; App shortcuts</p>
+<pre><code class="language-">
+map q removeTab
+</code></pre><h2>Set up shortucts for firefox</h0>
+<p>Sadly because I have to use <code>cmd</code> instead of <code>ctrl</code>, I have to change Firefox's shortcuts.</p>
+<p>System Settings -> Keyboard -> Shortcuts -> App shortcuts</p>
 <p>Add an entry for Firefox with these settings:</p>
-<p>Reload This Page -&gt; ctrl+r
-New Tab -&gt; ctrl+t
-Close Tab -&gt; ctrl+w
-Reopen Closed Tab -&gt; ctrl+shift+t</p>
-<p>Optional (I'm not using this currently):
-Get an app (free and OS) Called CheatSheet, and with that you can see all the
-shortcuts used by the app, and if you make a rule in the
-Settings-&gt;Keyboard-&gt;Shortcuts using the exact text given in CheatSheet it will
-change it to what you select..</p>
-<h2>Set up shortcuts for grey mode.</h2>
+<p>Reload This Page -> ctrl+r New Tab -> ctrl+t Close Tab -> ctrl+w Reopen Closed Tab -> ctrl+shift+t</p>
+<p>Optional (I'm not using this currently): Get an app (free and OS) Called CheatSheet, and with that you can see all the shortcuts used by the app, and if you make a rule in the Settings->Keyboard->Shortcuts using the exact text given in CheatSheet it will change it to what you select..</p>
+<h2>Set up shortcuts for grey mode.</h0>
 <p>Pre-setup: Enable xcode command line tools:</p>
-<pre><code class="language-sh">xcode-select --install
+<pre><code class="language-sh">
+xcode-select --install
 # Enable command line tools
 sudo xcode-select --switch /Library/Developer/CommandLineTools
 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-</code></pre>
-<pre><code class="language-sh">cd /tmp/
+</code></pre><pre><code class="language-sh">
+cd /tmp/
 git clone --recurse-submodules https://github.com/marcelofern/grayscale
 
 cd grayscale/
@@ -251,13 +186,8 @@ make
 
 # Move the app to the documents folder
 mv build/Build/Products/Release/grayscale.app ~/Documents
-</code></pre>
-<p>grayscale.app will be placed into build/Build/Products/Release.</p>
+</code></pre><p>grayscale.app will be placed into build/Build/Products/Release.</p>
 <p>Open it with</p>
-<pre><code>open grayscale.app
-</code></pre>
-<p>Automatically open grayscale at login by adding it to the list in System
-Settings &gt; General &gt; Login Items</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>
+<pre><code class="language-">
+open grayscale.app
+</code></pre><p>Automatically open grayscale at login by adding it to the list in System Settings > General > Login Items</p>

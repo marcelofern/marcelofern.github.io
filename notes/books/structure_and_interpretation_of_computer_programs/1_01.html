@@ -59,14 +59,13 @@
   <![endif]-->
 </head>
 <body>
-<h1>Exercise 1.1</h1>
-<blockquote>
-<p>Below is a sequence of expressions. What is the result printed by the
-interpreter in response to each expression? Assume that the sequence is to be
-evaluated in the order in which it is presented.</p>
-</blockquote>
-<p>The answers are included below each listing using a comment <code>;</code> character.</p>
-<pre><code class="language-scm">10
+<h1>Exercise <ol><li>11</h0>
+<blockquote>B Beellooww  iiss  aa  sseeqquueennccee  ooff  eexxpprreessssiioonnss..  WWhhaatt  iiss  tthhee  rreessuulltt  pprriinntteedd  bbyy  tthhee</blockquote>
+<blockquote>iinntteerrpprreetteerr  iinn  rreessppoonnssee  ttoo  eeaacchh  eexxpprreessssiioonn??  AAssssuummee  tthhaatt  tthhee  sseeqquueennccee  iiss  ttoo  bbee</blockquote>
+<blockquote>eevvaalluuaatteedd  iinn  tthhee  oorrddeerr  iinn  wwhhiicchh  iitt  iiss  pprreesseenntteedd..</blockquote>
+ The answers are included below each listing using a comment <code>;</code> character.</li></ol>
+<pre><code class="language-scm">
+10
 ; 10
 
 (+ 5 3 4)
@@ -96,8 +95,8 @@ evaluated in the order in which it is presented.</p>
 (= a b)
 ; #f (false, a is not equal to b)
 
-(if (and (&gt; b a) (&lt; b (* a b))) b a)
-; (if (and (&gt; 4 3) (&lt; 4 (* 3 4))) 4 3)
+(if (and (> b a) (< b (* a b))) b a)
+; (if (and (> 4 3) (< 4 (* 3 4))) 4 3)
 ; (if (and (#t) (#t)) 4 3)
 ; 4
 
@@ -108,19 +107,16 @@ evaluated in the order in which it is presented.</p>
 )
 ; 16
 
-(+ 2 (if (&gt; b a) b a))
+(+ 2 (if (> b a) b a))
 ; 6
 
 
 (* (cond
-        ((&gt; a b) a)
-        ((&lt; a b) b)
+        ((> a b) a)
+        ((< a b) b)
         (else -1)
     )
     (+ a 1)
 )
 ; 16
 </code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

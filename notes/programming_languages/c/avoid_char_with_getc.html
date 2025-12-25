@@ -60,54 +60,46 @@
 </head>
 <body>
 <p>2024-06-01</p>
-<h1>Avoid <code>char</code> with <code>getc</code></h1>
-<p>Using a <code>char</code> to represent the output of <code>getc</code> (get char) might sound like
-the right way to do it, but it is not.</p>
+<h1>Avoid <code>cchhaarr`</code> with <code>ggeettcc`</code></h0>
+<p>Using a <code>char</code> to represent the output of <code>getc</code> (get char) might sound like the right way to do it, but it is not.</p>
 <p>Let's show an example. First, create a binary file with the following content:</p>
-<pre><code>10101010 00000000 11111111 01010101 00001111 11000011
+<pre><code class="language-">
+10101010 00000000 11111111 01010101 00001111 11000011
 # or in hex:
 AA00FF550FC3
-</code></pre>
-<p>This can be done in bash:</p>
-<pre><code class="language-sh">echo &quot;AA00FF550FC3&quot; | xxd -r -p &gt; /tmp/file.bin
-</code></pre>
-<p>You can confirm the content by using xxd:</p>
-<pre><code class="language-sh">xxd -b /tmp/file.bin
-</code></pre>
-<p>And a dumb code that will:</p>
-<ul>
-<li>Read one byte using <code>getc</code>.</li>
-<li>Print the byte.</li>
-</ul>
-<pre><code class="language-c">#include &lt;stdio.h&gt;
+</code></pre><p>This can be done in bash:</p>
+<pre><code class="language-sh">
+echo "AA00FF550FC3" | xxd -r -p > /tmp/file.bin
+</code></pre><p>You can confirm the content by using xxd:</p>
+<pre><code class="language-sh">
+xxd -b /tmp/file.bin
+</code></pre><p>And a dumb code that will:</p>
+<ul><li>Read one byte using <code>getc</code>.</li><li>Print the byte.</li></ul>
+<pre><code class="language-c">
+#include <stdio.h>
 
 int main() {
-  FILE* fp = fopen(&quot;/tmp/file.bin&quot;, &quot;rb&quot;);
+  FILE* fp = fopen("/tmp/file.bin", "rb");
 
   char byte;
   while ((byte = getc(fp)) != EOF) {
-    printf(&quot;byte: %x\n&quot;, byte);
+    printf("byte: %x\n", byte);
   };
 
   fclose(fp);
 }
-</code></pre>
-<p>The expected result should have been:</p>
-<pre><code>byte: aa
+</code></pre><p>The expected result should have been:</p>
+<pre><code class="language-">
+byte: aa
 byte: 00
 byte: ff
 byte: 55
 byte: 0f
 byte: c3
-</code></pre>
-<p>But instead you'll get:</p>
-<pre><code>byte: aa
+</code></pre><p>But instead you'll get:</p>
+<pre><code class="language-">
+byte: aa
 byte: 00
-</code></pre>
-<p>This happens because the byte <code>11111111</code> equals <code>EOF</code> which is a macro that
-returns -1. This evaluation breaks the while loop.</p>
+</code></pre><p>This happens because the byte <code>11111111</code> equals <code>EOF</code> which is a macro that returns -1. This evaluation breaks the while loop.</p>
 <p>Instead, one should use either <code>int</code> or <code>uint8_t</code> to get the correct result.</p>
 <p>Note: The same is valid for <code>ungetc</code>!</p>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-</html>

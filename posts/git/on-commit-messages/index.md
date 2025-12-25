@@ -243,7 +243,7 @@ relevant today.
 > Linus Torvalds
 
 This is what a long commit looks like with the default pager (`less` on most
-*nix systems).
+Unix systems).
 
 ![long_commit.png](long_commit.png)
 
@@ -253,17 +253,14 @@ Although `less` supports wrapping text, it may not be on by default depending
 on how your OS came configured.
 
 Every command that takes the commit summary (top line) truncate and become
-unreadable. More examples of such commands are found on Tim Pope's [blog
-post](http://web.archive.org/web/20240930112522/https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
+unreadable. More examples of such commands are found on Tim Pope's [blog post](http://web.archive.org/web/20240930112522/https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
 There isn't much I can add here. I think that it is important to have good
 writing skills for both commit titles and commit messages with the goal of
 keeping them succinct and informative at the same time. You can see for
-yourself how nice [Linux's kernel git
-log](https://github.com/torvalds/linux/commits/master/) reads for inspiration.
+yourself how nice [Linux's kernel git log](https://github.com/torvalds/linux/commits/master/) reads for inspiration.
 
-The kernel has a [restrictive line-length
-limit](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=bc7938deaca7f474918c41a0372a410049bd4e13#n664).
+The kernel has a [restrictive line-length limit](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=bc7938deaca7f474918c41a0372a410049bd4e13#n664).
 
 > the ``summary`` must be no more than 70-75 characters.
 

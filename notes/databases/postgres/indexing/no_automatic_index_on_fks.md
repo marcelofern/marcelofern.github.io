@@ -6,8 +6,7 @@ Created at: 2024-08-22
 
 Postgres does not automatically creates indexes for Foreign Keys.
 
-[This
-email](http://web.archive.org/web/20240822020006/https://www.postgresql.org/message-id/472700FC.7040006%40reedyriver.com)
+[This email](http://web.archive.org/web/20240822020006/https://www.postgresql.org/message-id/472700FC.7040006%40reedyriver.com)
 thread from the `psql-admin` reading list gives an example where adding an
 index for a FK is unnecessary:
 
