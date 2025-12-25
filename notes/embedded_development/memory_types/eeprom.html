@@ -59,48 +59,94 @@
   <![endif]-->
 </head>
 <body>
-<blockquote>In microcontroller-based systems, Erasable Programmable Read-Only Memory, or</blockquote>
-<blockquote>EEPROM, is also part of its ROM; actually, Flash memory is a type of EEPROM.</blockquote>
-<blockquote>The main difference between Flash memory and EEPROM is how they are managed;</blockquote>
-<blockquote>EEPROM can be managed at the byte level (write or erased) while Flash can be</blockquote>
-<blockquote>managed at the block level.</blockquote>
+<blockquote>
+<p>In microcontroller-based systems, Erasable Programmable Read-Only Memory, or
+EEPROM, is also part of its ROM; actually, Flash memory is a type of EEPROM.
+The main difference between Flash memory and EEPROM is how they are managed;
+EEPROM can be managed at the byte level (write or erased) while Flash can be
+managed at the block level.</p>
+</blockquote>
 <p><a href="http://web.archive.org/web/20240414220510/https://docs.arduino.cc/learn/programming/memory-guide/">source</a></p>
-<blockquote>To be pedantic, FLASH memory is merely a form of EEPROM: There is a marketing</blockquote>
-<blockquote>/ branding aspect here. Typically, the distinction used today is that EEPROMS</blockquote>
-<blockquote>are single-byte (or storage word) erasable / rewritable, while FLASH is</blockquote>
-<blockquote>block-based for erase/write operations.</blockquote>
-<blockquote>Relevant to the question:</blockquote>
-<blockquote>- EEPROMs continue to be popular due to maximum erase/write cycle ratings</blockquote>
-<blockquote>  being an order of magnitude or two better than FLASH</blockquote>
-<blockquote>- Due to investments in design typically having been amortized over time, as</blockquote>
-<blockquote>  with any mature technology, the cost of production and testing reduces</blockquote>
-<blockquote>  compared to a newer technology.</blockquote>
-<hr><blockquote>The number of write cycles most EEPROMs can handle generally far exceeds the</blockquote>
-<blockquote>number of write cycles most flash memory can handle.</blockquote>
-<blockquote>EEPROMS can generally handle ~100,000-1,000,000 writes per cell. Flash is</blockquote>
-<blockquote>generally rated to ~1,000-100,000 writes (it varies heavily depending on the</blockquote>
-<blockquote>type of flash).</blockquote>
+<blockquote>
+<p>To be pedantic, FLASH memory is merely a form of EEPROM: There is a marketing
+/ branding aspect here. Typically, the distinction used today is that EEPROMS
+are single-byte (or storage word) erasable / rewritable, while FLASH is
+block-based for erase/write operations.</p>
+</blockquote>
+<blockquote>
+<p>Relevant to the question:</p>
+<ul>
+<li>EEPROMs continue to be popular due to maximum erase/write cycle ratings
+being an order of magnitude or two better than FLASH</li>
+<li>Due to investments in design typically having been amortized over time, as
+with any mature technology, the cost of production and testing reduces
+compared to a newer technology.</li>
+</ul>
+</blockquote>
+<hr>
+<blockquote>
+<p>The number of write cycles most EEPROMs can handle generally far exceeds the
+number of write cycles most flash memory can handle.</p>
+</blockquote>
+<blockquote>
+<p>EEPROMS can generally handle ~100,000-1,000,000 writes per cell. Flash is
+generally rated to ~1,000-100,000 writes (it varies heavily depending on the
+type of flash).</p>
+</blockquote>
 <p><a href="http://web.archive.org/web/20230625055210/https://electronics.stackexchange.com/questions/65503/why-would-one-still-use-normal-eeprom-instead-of-flash">source</a></p>
 <p>Main differences between EEPROM and Flash:</p>
-<h2>EEPROM</h0>
-<ul><li>Erase Mechanism: EEPROM allows individual bytes or words to be erased and rewritten electrically.</li><li>Write Mechanism: EEPROM can be written byte</li><li>by</li><li>byte, offering more flexibility for small changes compared to Flash.</li><li>Speed: EEPROM generally has slower write and erase speeds compared to Flash memory.</li><li>Endurance: EEPROM typically has a higher endurance compared to Flash memory, with tens of thousands to millions of erase/write cycles.</li><li>Usage: EEPROM is often used in applications requiring frequent and small data updates, such as in embedded systems for storing configuration data or firmware updates.</li><li>Cost: EEPROM tends to be more expensive on a per</li><li>bit basis compared to Flash memory due to its lower storage density.</li></ul>
-<h2>Flash</h0>
-<ul><li>Erase Mechanism: Flash memory erases data in blocks, which means larger sections of memory are erased at once. It is organized into blocks, pages, and sectors.</li><li>Write Mechanism: Flash memory requires data to be written in pages, which are larger than the typical byte</li><li>sized writes in EEPROM.</li><li>Speed: Flash memory generally offers faster write and erase speeds compared to EEPROM.</li><li>Endurance: Flash memory typically has a limited number of erase/write cycles, which can be a few thousand to hundreds of thousands depending on the type and quality.</li><li>Usage: Flash memory is commonly used in mass storage devices like USB drives, memory cards, and solid</li><li>state drives (SSDs) due to its higher storage capacity and faster access times.</li><li>Cost: Flash memory is generally more cost</li><li>effective for larger storage capacities compared to EEPROM.</li></ul>
-<h2>AVR example</h0>
-<p>Here's how to declare a variable in the EEPROM memory, and how to read/write to it.</p>
-<pre><code class="language-c">
-#include <avr/eeprom.h>
+<h2>EEPROM</h2>
+<ul>
+<li>Erase Mechanism: EEPROM allows individual bytes or words to be erased and
+rewritten electrically.</li>
+<li>Write Mechanism: EEPROM can be written byte-by-byte, offering more
+flexibility for small changes compared to Flash.</li>
+<li>Speed: EEPROM generally has slower write and erase speeds compared to Flash
+memory.</li>
+<li>Endurance: EEPROM typically has a higher endurance compared to Flash memory,
+with tens of thousands to millions of erase/write cycles.</li>
+<li>Usage: EEPROM is often used in applications requiring frequent and small data
+updates, such as in embedded systems for storing configuration data or
+firmware updates.</li>
+<li>Cost: EEPROM tends to be more expensive on a per-bit basis compared to Flash
+memory due to its lower storage density.</li>
+</ul>
+<h2>Flash</h2>
+<ul>
+<li>Erase Mechanism: Flash memory erases data in blocks, which means larger
+sections of memory are erased at once. It is organized into blocks, pages,
+and sectors.</li>
+<li>Write Mechanism: Flash memory requires data to be written in pages, which are
+larger than the typical byte-sized writes in EEPROM.</li>
+<li>Speed: Flash memory generally offers faster write and erase speeds compared
+to EEPROM.</li>
+<li>Endurance: Flash memory typically has a limited number of erase/write cycles,
+which can be a few thousand to hundreds of thousands depending on the type
+and quality.</li>
+<li>Usage: Flash memory is commonly used in mass storage devices like USB drives,
+memory cards, and solid-state drives (SSDs) due to its higher storage
+capacity and faster access times.</li>
+<li>Cost: Flash memory is generally more cost-effective for larger storage
+capacities compared to EEPROM.</li>
+</ul>
+<h2>AVR example</h2>
+<p>Here's how to declare a variable in the EEPROM memory, and how to read/write
+to it.</p>
+<pre><code class="language-c">#include &lt;avr/eeprom.h&gt;
 
 // Use the EEMEM macro.
 uint8_t EEMEM my_variable = 0x12;
 
 // Read data using eeprom_read_byte.
-uint8_t value = eeprom_read_byte(&my_variable);
+uint8_t value = eeprom_read_byte(&amp;my_variable);
 
 uint8_t new_value = 0xAB;
 // Write data using eeprom_write_byte.
-eeprom_write_byte(&my_variable, new_value);
+eeprom_write_byte(&amp;my_variable, new_value);
 
-printf("my_variable: %d", value);
+printf(&quot;my_variable: %d&quot;, value);
 // my_variable: 171
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

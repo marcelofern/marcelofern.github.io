@@ -59,25 +59,30 @@
   <![endif]-->
 </head>
 <body>
-<h1>Exercise <ol><li>3344</h0>
-<h2>Q Quueessttiioonn</h0>
- Suppose we define the procedure</li></ol>
-<pre><code class="language-scm">
-(define (f g) (g 2))
-</code></pre><p>Then we have</p>
-<pre><code class="language-scm">
-(f square)
+<h1>Exercise 1.34</h1>
+<h2>Question</h2>
+<p>Suppose we define the procedure</p>
+<pre><code class="language-scm">(define (f g) (g 2))
+</code></pre>
+<p>Then we have</p>
+<pre><code class="language-scm">(f square)
 ; 4
 
 (f (lambda (z) (* z (+ z 1))))
 ; 6
-</code></pre><p>What happens if we (perversely) ask the interpreter to evaluate the combination (f f)? Explain?</p>
-<h2>Answer</h0>
-<pre><code class="language-scm">
-(define (f g) (g 2))
+</code></pre>
+<p>What happens if we (perversely) ask the interpreter to evaluate the combination
+(f f)? Explain?</p>
+<h2>Answer</h2>
+<pre><code class="language-scm">(define (f g) (g 2))
 
 ; becomes
 (f 2)
 ; becomes
 (2 2)
-</code></pre><p>Which returns the error <code>Wrong type to apply: 2</code> because 2 is not a procedure, so it yields invalid syntax.</p>
+</code></pre>
+<p>Which returns the error <code>Wrong type to apply: 2</code> because 2 is not a procedure,
+so it yields invalid syntax.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

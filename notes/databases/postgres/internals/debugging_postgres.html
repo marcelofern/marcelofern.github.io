@@ -59,17 +59,18 @@
   <![endif]-->
 </head>
 <body>
-<h1>Debugging Postgres</h0>
-<pre><code class="language-">
-Created at: 2024-10-28
-</code></pre><p>To debug Postgres you must've first built it from source. I have a TBD note about it.</p>
-<p>You also need to build it with debug symbols, otherwise you won't be able to debug through gdb. I recommend building with the <code>ggdb</code> flag.</p>
-<h2>Example: Index Creation</h0>
-<pre><code class="language-sql">
-CREATE DATABASE debug_index_creation;
-</code></pre><p>Then \c into that database and create the following table and data:</p>
-<pre><code class="language-sql">
-DROP TABLE IF EXISTS example_table;
+<h1>Debugging Postgres</h1>
+<pre><code>Created at: 2024-10-28
+</code></pre>
+<p>To debug Postgres you must've first built it from source. I have a TBD note
+about it.</p>
+<p>You also need to build it with debug symbols, otherwise you won't be able to
+debug through gdb. I recommend building with the <code>ggdb</code> flag.</p>
+<h2>Example: Index Creation</h2>
+<pre><code class="language-sql">CREATE DATABASE debug_index_creation;
+</code></pre>
+<p>Then \c into that database and create the following table and data:</p>
+<pre><code class="language-sql">DROP TABLE IF EXISTS example_table;
 CREATE TABLE example_table (
     id SERIAL PRIMARY KEY,
     int_field INT NOT NULL
@@ -80,23 +81,27 @@ INSERT INTO example_table (int_field)
 SELECT generate_series(1, 100000) AS int_field;
 
 VACUUM ANALYZE example_table;
-</code></pre><p>Grab the PID for the session:</p>
-<pre><code class="language-sql">
-select pg_backend_pid();
+</code></pre>
+<p>Grab the PID for the session:</p>
+<pre><code class="language-sql">select pg_backend_pid();
 -- 209878
-</code></pre><p>In a separated shell, attach gdb to the process:</p>
-<pre><code class="language-sh">
-sudo gdb
+</code></pre>
+<p>In a separated shell, attach gdb to the process:</p>
+<pre><code class="language-sh">sudo gdb
 (gdb) attach 209878
 
 # Alternatively:
 sudo gdb -p 209878
-</code></pre><p>Now add a breakpoint in the <code>index_create</code> function:</p>
-<pre><code class="language-">
-(gdb) b index_create
+</code></pre>
+<p>Now add a breakpoint in the <code>index_create</code> function:</p>
+<pre><code>(gdb) b index_create
 Breakpoint 1 at 0x5611109f40a8: file index.c, line 721.
-</code></pre><p>Now back in the psql shell, create the index:</p>
-<pre><code class="language-sh">
-CREATE UNIQUE INDEX unique_int_field ON example_table (int_field);
-</code></pre><p>Now trace at the GDB (press n and/or c so you can hit the breakpoint).</p>
+</code></pre>
+<p>Now back in the psql shell, create the index:</p>
+<pre><code class="language-sh">CREATE UNIQUE INDEX unique_int_field ON example_table (int_field);
+</code></pre>
+<p>Now trace at the GDB (press n and/or c so you can hit the breakpoint).</p>
 <p>Done!</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

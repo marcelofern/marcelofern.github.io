@@ -59,17 +59,20 @@
   <![endif]-->
 </head>
 <body>
-<h1>Composite Primary Keys</h0>
-<pre><code class="language-">
-Created at: 2025-04-14
-</code></pre><h2>Examples</h0>
-<pre><code class="language-sql">
-CREATE TABLE course_grades (
+<h1>Composite Primary Keys</h1>
+<pre><code>Created at: 2025-04-14
+</code></pre>
+<h2>Examples</h2>
+<pre><code class="language-sql">CREATE TABLE course_grades (
     quarter_id INTEGER,
     course_id TEXT,
     student_id INTEGER,
     grade INTEGER,
     PRIMARY KEY(quarter_id, course_id, student_id)
 );
-</code></pre><h2>Resources</h0>
+</code></pre>
+<h2>Resources</h2>
 <p>https://kb.objectrocket.com/postgresql/postgresql-composite-primary-keys-629</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -60,11 +60,12 @@
 </head>
 <body>
 <p>2024-06-12</p>
-<h1>Memory Hierarchy</h0>
-<p>The table below gives some approximate guidelines about performance comparison across different caching layers.</p>
-<p>The <code>speed vs disk</code> refers to how quick the processor can fetch an instruction from the specific memory layer in comparison to fetching it from disk.</p>
-<pre><code class="language-">
-| layer | name                 | speed vs disk | description                     |
+<h1>Memory Hierarchy</h1>
+<p>The table below gives some approximate guidelines about performance comparison
+across different caching layers.</p>
+<p>The <code>speed vs disk</code> refers to how quick the processor can fetch an instruction
+from the specific memory layer in comparison to fetching it from disk.</p>
+<pre><code>| layer | name                 | speed vs disk | description                     |
 |-------|----------------------|---------------|---------------------------------|
 | l0    | registers            | 10**9         | holds words from cache memory.  |
 | l1    | L1 cache (SRAM)      | ~10**9        | holds cache lines from L2 cache |
@@ -73,4 +74,8 @@
 | l4    | Main memory (DRAM)   | 10**7         | holds disk blocks from disk     |
 | l5    | local storage (disk) | BASE          | holds files.                    |
 | l6    | remote storage       | N/A           | distributed servers - etc.      |
-</code></pre><p>These numbers have been taken from the CS:APP book.</p>
+</code></pre>
+<p>These numbers have been taken from the CS:APP book.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

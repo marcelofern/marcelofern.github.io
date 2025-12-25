@@ -59,48 +59,92 @@
   <![endif]-->
 </head>
 <body>
-<h1>Branchless Programming Experiments in C++ and Python</h0>
-<pre><code class="language-">
-Created: 2023-08-22
+<h1>Branchless Programming Experiments in C++ and Python</h1>
+<pre><code>Created: 2023-08-22
 Updated: 2024-07-28
-</code></pre><p>This article talks about high-level theoretical concepts of branchless programming, along with examples of branchless programming in C++ and Python.</p>
-<h2>What's branchless programming and why does it matter?</h0>
-<p>A branchless program is a program that doesn't include any conditional operator (<code>if</code>, <code>else</code>, <code>switch</code>, ...).</p>
-<p>The reason why people would go through the trouble of branchless programming is onefold: performance.</p>
-<p>Modern CPUs try to read future instructions before they are executed so that they can stay ahead of the game. This is called "instruction pipelining", and is meant to implement instruction-level parallelism on single processors.</p>
-<p>However, when the CPU is pipelining and a branch is present, the CPU won't be able to know what path it needs to run, so it takes a guess. When this guess is incorrect, the CPU discards the instructions previously read, and read the new instruction set for the correct path. This takes time and valuable clock cycles.</p>
-<p>UPDATE: According to the author of the CSAPP book, microprocessors are architected in a way to achive branch prediction success rates of about 90%. The author also provides an estimation of 15 to 30 clock cycles of wasted work when the branch prediction fails.</p>
-<h2>How does Instruction Pipelining work?</h0>
-<p>The CPU is composed of multiple processor units. Each processor unit performs an instruction such as adding two numbers, comparing two numbers, jumping to a different part of a program, loading and storing data in memory, etc. Those operations are hardwired into the circuitry of the processor inside the CPU.</p>
-<p>When the CPU is asked to perform an instruction, it will receive an <code>opcode</code>, which is just a unique binary number that the CPU will decode into controlling signals that will orchestrate the behaviour of the CPU.</p>
-<p>The CPU executes an instruction by fetching it from memory (either the computer's memory or the CPU cache), following up by decoding the <code>opcode</code>, executing the instruction itself in the processor, and storing it back to memory.</p>
-<p>In a nutshell, a pipeline is consisted of four stages: <b>fetch</b>, <b>decode</b>, <b>execute</b>, <b>write-back</b>.</p>
-<p>Each one of those stages will be handled by a circuit in the CPU. So whenever a instruction needs to be run, there are <b>4 high-level steps until the result is finally stored in memory.</b></p>
-<h2>Pipeline analogy time</h0>
-<p>Imagine you are going to a buffet restaurant with 4 different dishes. This is a peculiar restaurant, and you need to wait for the person in front of you to go through all the 4 dishes and pay for it before you can go down and start serving yourself.</p>
-<p>This is a waste of time. A better way of serving people is to only wait for the person in front of you to go through the first dish before you start serving yourself.</p>
-<p>This is what CPUs try to do by "pipelining" the work. While one instruction is being <code>decoded</code>, the following one is already being <code>fetched</code>. When the first instruction is decoded and starts being executed, now the second one starts being decoded, and a third one is fetched, and so on so forth...</p>
+</code></pre>
+<p>This article talks about high-level theoretical concepts of branchless
+programming, along with examples of branchless programming in C++ and Python.</p>
+<h2>What's branchless programming and why does it matter?</h2>
+<p>A branchless program is a program that doesn't include any conditional
+operator (<code>if</code>, <code>else</code>, <code>switch</code>, ...).</p>
+<p>The reason why people would go through the trouble of branchless programming is
+onefold: performance.</p>
+<p>Modern CPUs try to read future instructions before they are executed so that
+they can stay ahead of the game. This is called &quot;instruction pipelining&quot;, and
+is meant to implement instruction-level parallelism on single processors.</p>
+<p>However, when the CPU is pipelining and a branch is present, the CPU won't be
+able to know what path it needs to run, so it takes a guess. When this guess is
+incorrect, the CPU discards the instructions previously read, and read the
+new instruction set for the correct path. This takes time and valuable clock
+cycles.</p>
+<p>UPDATE: According to the author of the CSAPP book, microprocessors are
+architected in a way to achive branch prediction success rates of about 90%.
+The author also provides an estimation of 15 to 30 clock cycles of wasted work
+when the branch prediction fails.</p>
+<h2>How does Instruction Pipelining work?</h2>
+<p>The CPU is composed of multiple processor units. Each processor unit performs
+an instruction such as adding two numbers, comparing two numbers, jumping to a
+different part of a program, loading and storing data in memory, etc. Those
+operations are hardwired into the circuitry of the processor inside the CPU.</p>
+<p>When the CPU is asked to perform an instruction, it will receive an <code>opcode</code>,
+which is just a unique binary number that the CPU will decode into
+controlling signals that will orchestrate the behaviour of the CPU.</p>
+<p>The CPU executes an instruction by fetching it from memory (either the
+computer's memory or the CPU cache), following up by decoding the <code>opcode</code>,
+executing the instruction itself in the processor, and storing it back to
+memory.</p>
+<p>In a nutshell, a pipeline is consisted of four stages: <strong>fetch</strong>, <strong>decode</strong>,
+<strong>execute</strong>, <strong>write-back</strong>.</p>
+<p>Each one of those stages will be handled by a circuit in the CPU. So whenever
+a instruction needs to be run, there are <strong>4 high-level steps until the result is finally stored in memory.</strong></p>
+<h2>Pipeline analogy time</h2>
+<p>Imagine you are going to a buffet restaurant with 4 different dishes. This is
+a peculiar restaurant, and you need to wait for the person in front of you to
+go through all the 4 dishes and pay for it before you can go down and start
+serving yourself.</p>
+<p>This is a waste of time. A better way of serving people is to only wait for
+the person in front of you to go through the first dish before you start
+serving yourself.</p>
+<p>This is what CPUs try to do by &quot;pipelining&quot; the work. While one instruction
+is being <code>decoded</code>, the following one is already being <code>fetched</code>. When the
+first instruction is decoded and starts being executed, now the second one
+starts being decoded, and a third one is fetched, and so on so forth...</p>
 <p>This is how it looks visually (image borrowed from wikipedia):</p>
-<p><img alt="pipelining_happy_path" src="pipelining_happy_path.png"></p>
-<p>What happens if the person in front of you in the buffet grabbed all the chips from the buffet plate, and if you had known that in advance, you would go back and put another spoon of mashed potatos on your plate?</p>
-<p>That happens <i>a lot</i> in the CPU when the next instruction depends on the execution of the current one. In this case, the CPU needs to wait for the first instruction to resolve before executing the next one, and this incurs a time penalty.</p>
-<p>In the example below, during cycle 3 the purple instruction can only be decoded once the green one is executed. A bubble is created to represent that during cycle 3 the <code>decode</code> step will be idle, and subsequently on cycle 4 the <code>execute</code> step will be idle and so on so forth until the bubble is out of the pipeline - at which point execution resumes normally.</p>
-<p><img alt="pipelining_sad_path" src="pipelining_sad_path.png"></p>
-<p>Sometimes it is even worse than this, you might have an <code>if/else</code> statement in your code, and the CPU tried to guess which one to load beforehand, but it it guessed the wrong one. Now it has to flush all of those instructions out of the pipeline and load the correct ones.</p>
-<p>Here is where branchless programming comes handy. Code that doesn't have conditionals will likely have less erroneously-guessed instructions loaded as the equivalent code with conditionals.</p>
-<h2>How do branches look in assembly language?</h0>
-<p>Let's start with the strawman example. Here's some simple C++ code with a branch:</p>
-<pre><code class="language-cpp">
-int max(int a, int b) {
-  if (a > b) {
+<p><img src="pipelining_happy_path.png" alt="pipelining_happy_path"></p>
+<p>What happens if the person in front of you in the buffet grabbed all the chips
+from the buffet plate, and if you had known that in advance, you would go back
+and put another spoon of mashed potatos on your plate?</p>
+<p>That happens <em>a lot</em> in the CPU when the next instruction depends on the
+execution of the current one. In this case, the CPU needs to wait for the
+first instruction to resolve before executing the next one, and this incurs a
+time penalty.</p>
+<p>In the example below, during cycle 3 the purple instruction can only be decoded
+once the green one is executed. A bubble is created to represent that during
+cycle 3 the <code>decode</code> step will be idle, and subsequently on cycle 4 the
+<code>execute</code> step will be idle and so on so forth until the bubble is out of
+the pipeline - at which point execution resumes normally.</p>
+<p><img src="pipelining_sad_path.png" alt="pipelining_sad_path"></p>
+<p>Sometimes it is even worse than this, you might have an <code>if/else</code> statement
+in your code, and the CPU tried to guess which one to load beforehand, but it
+it guessed the wrong one. Now it has to flush all of those instructions out of
+the pipeline and load the correct ones.</p>
+<p>Here is where branchless programming comes handy. Code that doesn't have
+conditionals will likely have less erroneously-guessed instructions loaded as
+the equivalent code with conditionals.</p>
+<h2>How do branches look in assembly language?</h2>
+<p>Let's start with the strawman example. Here's some simple C++ code with a
+branch:</p>
+<pre><code class="language-cpp">int max(int a, int b) {
+  if (a &gt; b) {
     return b;
   } else {
     return a;
   }
 };
-</code></pre><p>And the resulting assembly code (note: no optimisation flag turned on):</p>
-<pre><code class="language-assembly">
-max(int, int):
+</code></pre>
+<p>And the resulting assembly code (note: no optimisation flag turned on):</p>
+<pre><code class="language-assembly">max(int, int):
         push    rbp
         mov     rbp, rsp
         mov     DWORD PTR [rbp-4], edi
@@ -115,13 +159,14 @@ max(int, int):
 .L3:
         pop     rbp
         ret
-</code></pre><p>You will notice that we have two conditional jumps. The equivalent branchless code looks like this:</p>
-<pre><code class="language-cpp">
-int max(int a, int b) {
-    return a*(a > b) + b*(b >= a);
+</code></pre>
+<p>You will notice that we have two conditional jumps. The equivalent branchless
+code looks like this:</p>
+<pre><code class="language-cpp">int max(int a, int b) {
+    return a*(a &gt; b) + b*(b &gt;= a);
 };
-</code></pre><pre><code class="language-assembly">
-max(int, int):
+</code></pre>
+<pre><code class="language-assembly">max(int, int):
         push    rbp
         mov     rbp, rsp
         mov     DWORD PTR [rbp-4], edi
@@ -140,50 +185,75 @@ max(int, int):
         add     eax, edx
         pop     rbp
         ret
-</code></pre><p>This looks a bit more convoluted, and it has more instructions. However, we got rid of those jumps.</p>
-<p>This example is terrible, and it's chosen on purpose. The first function, can be very easily optimised by the compiler if we use the flag <code>-O3</code>. Generating this assembly code:</p>
-<pre><code class="language-assembly">
-max(int, int):
+</code></pre>
+<p>This looks a bit more convoluted, and it has more instructions. However, we
+got rid of those jumps.</p>
+<p>This example is terrible, and it's chosen on purpose. The first function, can
+be very easily optimised by the compiler if we use the flag <code>-O3</code>. Generating
+this assembly code:</p>
+<pre><code class="language-assembly">max(int, int):
         cmp     edi, esi
         mov     eax, esi
         cmovle  eax, edi
         ret
-</code></pre><p>Whereas for the second code, even with the optimisation flag on, the underlying assembly code is worse as the compiler can't optimise it further:</p>
-<pre><code class="language-assembly">
-max(int, int):
+</code></pre>
+<p>Whereas for the second code, even with the optimisation flag on, the underlying
+assembly code is worse as the compiler can't optimise it further:</p>
+<pre><code class="language-assembly">max(int, int):
         xor     eax, eax
         cmp     edi, esi
         cmovle  edi, eax
         cmovg   esi, eax
         lea     eax, [rdi+rsi]
         ret
-</code></pre><p>In this case, the branchless C++ code fell apart due to the compiler being really good at optimisations. One of such optimisations is using branchless programming itself! However, this illustrates why it's important to actually see what the compiled code looks like. However, all things being equal, branchless code <b>will</b> be faster on an assembly level, and there will be many times where the compiler can't optimise the code (like when you have <code>volatile</code> variables all over).</p>
-<h2>What about interpreted languages?</h0>
-<p>Many interpreted languages don't have the cleverness for optimisation of a GCC compiler, and in many cases, code ran by the virtual machine is murky to the outsiders eyes. Nevertheless, I work with Python at the moment and it would be interesting to see what happens once branchless programming takes over.</p>
+</code></pre>
+<p>In this case, the branchless C++ code fell apart due to the compiler being
+really good at optimisations. One of such optimisations is using branchless
+programming itself! However, this illustrates why it's important to actually
+see what the compiled code looks like. However, all things being equal,
+branchless code <strong>will</strong> be faster on an assembly level, and there will be many
+times where the compiler can't optimise the code (like when you have <code>volatile</code>
+variables all over).</p>
+<h2>What about interpreted languages?</h2>
+<p>Many interpreted languages don't have the cleverness for optimisation of a GCC
+compiler, and in many cases, code ran by the virtual machine is murky to the
+outsiders eyes. Nevertheless, I work with Python at the moment and it would be
+interesting to see what happens once branchless programming takes over.</p>
 <p>Using the same example in Python we have:</p>
-<pre><code class="language-python">
-def max(a, b):
-    if a > b:
+<pre><code class="language-python">def max(a, b):
+    if a &gt; b:
         return a
     else:
         return b
-</code></pre><p>And this is the disassembled Python byte code into mnemonics:</p>
-<pre><code class="language-">
-  2           0 LOAD_FAST                0 (a)
+</code></pre>
+<p>And this is the disassembled Python byte code into mnemonics:</p>
+<pre><code>  2           0 LOAD_FAST                0 (a)
               2 LOAD_FAST                1 (b)
-              4 COMPARE_OP               4 (>)
+              4 COMPARE_OP               4 (&gt;)
               6 POP_JUMP_IF_FALSE        6 (to 12)
 
   3           8 LOAD_FAST                0 (a)
              10 RETURN_VALUE
 
-  5     >>   12 LOAD_FAST                1 (b)
+  5     &gt;&gt;   12 LOAD_FAST                1 (b)
              14 RETURN_VALUE
-</code></pre><p>First things first, what is happening under the hood? For every bytecode instruction that is executed, the interpreter will branch out many times. The comparison operator <code>></code> for example, requires a branch to check for the opcode equivalent of <code>></code>, another branch to verify if the object being compared has a <code>__gt__</code> method, more branches to verify if both objects being compared are valid for the comparison being performed, and many other branches until the value of the function call is actually computed and returned.</p>
-<p>We cannot compare Python bytecode with a single machine-level instruction, because a single bytecode instruction will perform many machine-level instructions inside the interpreter. Also, some Python bytecode instructions like calling a function are more expensive than other simpler ones like performing a mathematical operation like adding.</p>
-<p>With all the conditional compilation clutter removed from CPython, the code that evaluates a piece of bytecode into a C instruction is as follows:</p>
-<pre><code class="language-c">
-PyObject* _PyEval_EvalFrameDefault(/* ... */ ) {
+</code></pre>
+<p>First things first, what is happening under the hood? For every bytecode
+instruction that is executed, the interpreter will branch out many times.
+The comparison operator <code>&gt;</code> for example, requires a branch to check for the
+opcode equivalent of <code>&gt;</code>, another branch to verify if the object being
+compared has a <code>__gt__</code> method, more branches to verify if both objects
+being compared are valid for the comparison being performed, and many other
+branches until the value of the function call is actually computed and
+returned.</p>
+<p>We cannot compare Python bytecode with a single machine-level instruction,
+because a single bytecode instruction will perform many machine-level
+instructions inside the interpreter. Also, some Python bytecode instructions
+like calling a function are more expensive than other simpler ones like
+performing a mathematical operation like adding.</p>
+<p>With all the conditional compilation clutter removed from CPython, the code
+that evaluates a piece of bytecode into a C instruction is as follows:</p>
+<pre><code class="language-c">PyObject* _PyEval_EvalFrameDefault(/* ... */ ) {
     // context setup
     for (;;) {
         // periodic check
@@ -222,36 +292,66 @@ error:
 }
     // context cleanup
 }
-</code></pre><p>The full implementation is <a href="https://github.com/python/cpython/blob/3.8/Python/ceval.c#L1323">here</a>. The interesting bit is that even for a simple instruction like <code>LOAD_FAST</code>, we can see a branch in the top-level case statement handler.</p>
-<p>This means that to get a rough estimation of how two functions compare, we'll need to check how many bytecode instructions there are, and how expensive those bytecode instructions are.</p>
-<p>At the moment of writing, I haven't found a handy table of Python bytecodes ordered from more-overhead to less-overhead, so we'll analyse one by one.</p>
+</code></pre>
+<p>The full implementation is <a href="https://github.com/python/cpython/blob/3.8/Python/ceval.c#L1323">here</a>.
+The interesting bit is that even for a simple instruction like <code>LOAD_FAST</code>, we
+can see a branch in the top-level case statement handler.</p>
+<p>This means that to get a rough estimation of how two functions compare, we'll
+need to check how many bytecode instructions there are, and how expensive those
+bytecode instructions are.</p>
+<p>At the moment of writing, I haven't found a handy table of Python bytecodes
+ordered from more-overhead to less-overhead, so we'll analyse one by one.</p>
 <p>Our <code>max(a, b)</code> function above had the following instructions:</p>
-<ol><li><code>LOAD_FAST</code> (4x): Performs an index lookup in the local variables array to load the variable. This is pretty fast.</li><li><code>COMPARE_OP</code> (1x): Has a very high overhead when the comparison operator is not just checking object identity as it needs to look at what is in the dunder method for the particular comparison.</li><li><code>POP_JUMP_IF_FALSE</code> (1x): Has a low overhead from the interpreter's perspective as the next position to jump to is not hard to find out by reading the bytecode.</li><li><code>RETURN_VALUE</code> (2x): This just pops the stack, nice and easy.</li></ol>
+<ol>
+<li><code>LOAD_FAST</code> (4x): Performs an index lookup in the local variables array to
+load the variable. This is pretty fast.</li>
+<li><code>COMPARE_OP</code> (1x): Has a very high overhead when the comparison operator
+is not just checking object identity as it needs to look at what is
+in the dunder method for the particular comparison.</li>
+<li><code>POP_JUMP_IF_FALSE</code> (1x): Has a low overhead from the interpreter's
+perspective as the next position to jump to is not hard to find out by
+reading the bytecode.</li>
+<li><code>RETURN_VALUE</code> (2x): This just pops the stack, nice and easy.</li>
+</ol>
 <p>How about the branchless version?</p>
-<pre><code class="language-python">
-def max(a, b):
-    return a*(a > b) + b*(b >= a)
-</code></pre><p>opcodes:</p>
-<pre><code class="language-">
-  2           0 LOAD_FAST                0 (a)
+<pre><code class="language-python">def max(a, b):
+    return a*(a &gt; b) + b*(b &gt;= a)
+</code></pre>
+<p>opcodes:</p>
+<pre><code>  2           0 LOAD_FAST                0 (a)
               2 LOAD_FAST                0 (a)
               4 LOAD_FAST                1 (b)
-              6 COMPARE_OP               4 (>)
+              6 COMPARE_OP               4 (&gt;)
               8 BINARY_MULTIPLY
              10 LOAD_FAST                1 (b)
              12 LOAD_FAST                1 (b)
              14 LOAD_FAST                0 (a)
-             16 COMPARE_OP               5 (>=)
+             16 COMPARE_OP               5 (&gt;=)
              18 BINARY_MULTIPLY
              20 BINARY_ADD
              22 RETURN_VALUE
-</code></pre><p>We already can tell that this will not be light on the interpreter due to having double <code>COMPARE_OP</code> instructions. The other differences here are:</p>
-<ol><li><code>BINARY_MULTIPLY</code>: Surprisingly this has a considerable amount of overhead. The interpreter needs to figure out the types being multiplied and find their underlying multiply function before they can actually be multiplied. So a "binary multiply" does not mean the interpreter will just process a C <code>*</code> between the two operands.</li><li><code>BINARY_ADD</code> is very similar to the above, curiously enough it seems like someone tried to optimise int summation <a href="https://github.com/python/cpython/blob/3.8/Python/ceval.c#L1547">but failed</a>.</li></ol>
-<pre><code class="language-c">
-/* NOTE(haypo): Please don't try to micro-optimize int+int on
+</code></pre>
+<p>We already can tell that this will not be light on the interpreter due to
+having double <code>COMPARE_OP</code> instructions. The other differences here are:</p>
+<ol>
+<li><code>BINARY_MULTIPLY</code>: Surprisingly this has a considerable amount of overhead.
+The interpreter needs to figure out the types being multiplied and find
+their underlying multiply function before they can actually be multiplied.
+So a &quot;binary multiply&quot; does not mean the interpreter will just process a
+C <code>*</code> between the two operands.</li>
+<li><code>BINARY_ADD</code> is very similar to the above, curiously enough it seems like
+someone tried to optimise int summation <a href="https://github.com/python/cpython/blob/3.8/Python/ceval.c#L1547">but failed</a>.</li>
+</ol>
+<pre><code class="language-c">/* NOTE(haypo): Please don't try to micro-optimize int+int on
    CPython using bytecode, it is simply worthless.
    See http://bugs.python.org/issue21955 and
    http://bugs.python.org/issue10044 for the discussion. In short,
    no patch shown any impact on a realistic benchmark, only a minor
    speedup on microbenchmarks. */
-</code></pre><p>In conclusion this kind of branchless optimisation does not quite work with Python. However, due to time, I haven't really analysed other branchless techniques that are superior in many situations like bit masking.</p>
+</code></pre>
+<p>In conclusion this kind of branchless optimisation does not quite work with
+Python. However, due to time, I haven't really analysed other branchless
+techniques that are superior in many situations like bit masking.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

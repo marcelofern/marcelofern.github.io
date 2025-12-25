@@ -59,17 +59,20 @@
   <![endif]-->
 </head>
 <body>
-<h1>Exercise <ol><li>88</h0>
-<h2>Q Quueessttiioonn</h0>
-<blockquote>N Neewwttoonn''ss  mmeetthhoodd  ffoorr  ccuubbee  rroooottss  iiss  bbaasseedd  oonn  tthhee  ffaacctt  tthhaatt  iiff  ``yy``  iiss  aann</blockquote>
-<blockquote>aapppprrooxxiimmaattiioonn  ttoo  tthhee  ccuubbee  rroooott  ooff  ``xx``,,  tthheenn  aa  bbeetttteerr  aapppprrooxxiimmaattiioonn  iiss  ggiivveenn</blockquote>
-<blockquote>bbyy  tthhee  vvaalluuee::</blockquote>
-<code>((x/(y**2)) + 2*y) / (3)</code></li></ol>
-<blockquote>Use this formula to implement a cube-root procedure analogous to the square</blockquote>
-<blockquote>root procedure.</blockquote>
-<h2>Answer</h0>
-<pre><code class="language-scm">
-(define (improve guess x)
+<h1>Exercise 1.8</h1>
+<h2>Question</h2>
+<blockquote>
+<p>Newton's method for cube roots is based on the fact that if <code>y</code> is an
+approximation to the cube root of <code>x</code>, then a better approximation is given
+by the value:</p>
+</blockquote>
+<p><code>((x/(y**2)) + 2*y) / (3)</code></p>
+<blockquote>
+<p>Use this formula to implement a cube-root procedure analogous to the square
+root procedure.</p>
+</blockquote>
+<h2>Answer</h2>
+<pre><code class="language-scm">(define (improve guess x)
         (/ (+ (/ x (* guess guess) )
               (* 2 guess))
            3
@@ -81,7 +84,7 @@
 )
 
 (define (good-enough? guess x)
-        (< (abs (- (cube guess) x)) 0.001)
+        (&lt; (abs (- (cube guess) x)) 0.001)
 )
 
 (define (cube-root-iter guess x)
@@ -95,3 +98,6 @@
         (cube-root-iter 1.0 x)
 )
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -59,15 +59,14 @@
   <![endif]-->
 </head>
 <body>
-<h1>Is This DDL Going To Rewrite The Table</h0>
-<pre><code class="language-">
-Created at: 2024-12-09
-</code></pre><p>There are two ways of finding this out. The first one is via:</p>
-<pre><code class="language-sql">
-SET client_min_messages=debug1;
-</code></pre><p>And the second one is</p>
-<pre><code class="language-sql">
-CREATE OR REPLACE FUNCTION log_rewrite() RETURNS event_trigger
+<h1>Is This DDL Going To Rewrite The Table</h1>
+<pre><code>Created at: 2024-12-09
+</code></pre>
+<p>There are two ways of finding this out. The first one is via:</p>
+<pre><code class="language-sql">SET client_min_messages=debug1;
+</code></pre>
+<p>And the second one is</p>
+<pre><code class="language-sql">CREATE OR REPLACE FUNCTION log_rewrite() RETURNS event_trigger
 LANGUAGE plpgsql as
 $func$
 declare
@@ -80,4 +79,9 @@ end;
 $func$;
 CREATE EVENT TRIGGER has_rewrite
 ON table_rewrite EXECUTE PROCEDURE log_rewrite();
-</code></pre><p>Prefer the second if all you want is to focus on table rewrites and not all the other logs that come from <code>debug1</code>.</p>
+</code></pre>
+<p>Prefer the second if all you want is to focus on table rewrites and not all
+the other logs that come from <code>debug1</code>.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

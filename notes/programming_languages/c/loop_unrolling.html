@@ -59,18 +59,22 @@
   <![endif]-->
 </head>
 <body>
-<h1>Loop unrolling</h0>
-<blockquote>Loop unrolling, also known as loop unwinding, is a loop transformation</blockquote>
-<blockquote>technique that attempts to optimize a program's execution speed at the</blockquote>
-<blockquote>expense of its binary size (...) On modern processors, loop unrolling is</blockquote>
-<blockquote>often counterproductive, as the increased code size can cause more cache</blockquote>
-<blockquote>misses</blockquote>
+<h1>Loop unrolling</h1>
+<blockquote>
+<p>Loop unrolling, also known as loop unwinding, is a loop transformation
+technique that attempts to optimize a program's execution speed at the
+expense of its binary size (...) On modern processors, loop unrolling is
+often counterproductive, as the increased code size can cause more cache
+misses</p>
+</blockquote>
 <p><a href="https://web.archive.org/web/20240229083121/https://en.wikipedia.org/wiki/Loop_unrolling">source</a></p>
-<p>I wanted to make a note about this technique after watching the "Instructions Per Clock" lecture on the Performance-Aware Programming Series by Casey Muratori.</p>
-<h2>Listing 1</h0>
-<p>This is the complete C code that generates an array of 4096 elements and sums their values.</p>
-<pre><code class="language-c">
-#include <stdlib.h>
+<p>I wanted to make a note about this technique after watching the &quot;Instructions
+Per Clock&quot; lecture on the Performance-Aware Programming Series by Casey
+Muratori.</p>
+<h2>Listing 1</h2>
+<p>This is the complete C code that generates an array of 4096 elements and sums
+their values.</p>
+<pre><code class="language-c">#include &lt;stdlib.h&gt;
 
 #define ARRAY_SIZE 4096
 #define FIXED_SEED 42
@@ -78,7 +82,7 @@
 int sum(unsigned int *input, unsigned int size) {
   int sum = 0;
 
-  for (int i = 0; i < size; i++) {
+  for (int i = 0; i &lt; size; i++) {
     sum += input[i];
   }
 
@@ -92,16 +96,17 @@ int main() {
   srand(FIXED_SEED);
 
   // generate the numbers for the array in the range 0-42.
-  for (int i = 0; i < ARRAY_SIZE; i++) {
+  for (int i = 0; i &lt; ARRAY_SIZE; i++) {
     input[i] = rand() % 43;
   }
 
   return sum(input, ARRAY_SIZE);
 }
-</code></pre><p>We will focus on the <code>sum</code> function, which generates the following x64:</p>
-<p>Note: I ran this with <code>-O1</code> optimisation, so that we don't get all the clutter of non-optimised C code.</p>
-<pre><code class="language-asm">
-sum:
+</code></pre>
+<p>We will focus on the <code>sum</code> function, which generates the following x64:</p>
+<p>Note: I ran this with <code>-O1</code> optimisation, so that we don't get all the clutter
+of non-optimised C code.</p>
+<pre><code class="language-asm">sum:
   ; if (unsigned int size) is zero do not waste CPU time and return.
   test  esi, esi
   je  .L4
@@ -135,28 +140,32 @@ sum:
 .L4:
   mov  edx, 0
   jmp  .L1
-</code></pre><p>We will do a little adjustment to the <code>main()</code> function so that we can track the execution time of this code:</p>
-<pre><code class="language-c">
-  // 10^10
-  for (long i = 0; i < 10000000000; i++) {
+</code></pre>
+<p>We will do a little adjustment to the <code>main()</code> function so that we can track
+the execution time of this code:</p>
+<pre><code class="language-c">  // 10^10
+  for (long i = 0; i &lt; 10000000000; i++) {
     sum(input, ARRAY_SIZE);
   }
-</code></pre><p>Which yields the following results:</p>
-<pre><code class="language-sh">
-~ ➤ time /tmp/a.out
+</code></pre>
+<p>Which yields the following results:</p>
+<pre><code class="language-sh">~ ➤ time /tmp/a.out
 /tmp/a.out  2.44s user 0.00s system 99% cpu 2.450 total
-</code></pre><h2>Listing 2</h0>
-<p>The CPU can actually do more than one addition at a time. From Casey's course, we can quote:</p>
-<blockquote>Each CPU has some number of instructions per clock it could be doing at peak,</blockquote>
-<blockquote>and the closer we get to executing that many instructions on our workload,</blockquote>
-<blockquote>the closer we get to maximizing the potential of that CPU. If a CPU can do</blockquote>
-<blockquote>four instructions per clock, but we are only doing two instructions per clock</blockquote>
-<blockquote>on our workload, then there's an extra 2x headroom there.</blockquote>
-<pre><code class="language-c">
-int sum(unsigned int *input, unsigned int size) {
+</code></pre>
+<h2>Listing 2</h2>
+<p>The CPU can actually do more than one addition at a time. From Casey's course,
+we can quote:</p>
+<blockquote>
+<p>Each CPU has some number of instructions per clock it could be doing at peak,
+and the closer we get to executing that many instructions on our workload,
+the closer we get to maximizing the potential of that CPU. If a CPU can do
+four instructions per clock, but we are only doing two instructions per clock
+on our workload, then there's an extra 2x headroom there.</p>
+</blockquote>
+<pre><code class="language-c">int sum(unsigned int *input, unsigned int size) {
   int sum = 0;
 
-  for (int i = 0; i < size; i+=4) {
+  for (int i = 0; i &lt; size; i+=4) {
     sum += input[i];
     sum += input[i+1];
     sum += input[i+2];
@@ -165,9 +174,9 @@ int sum(unsigned int *input, unsigned int size) {
 
   return sum;
 }
-</code></pre><p>The assembly code is very similar, but now the body of the loop has been changed to this:</p>
-<pre><code class="language-asm">
-sum:
+</code></pre>
+<p>The assembly code is very similar, but now the body of the loop has been changed to this:</p>
+<pre><code class="language-asm">sum:
   test  esi, esi
   je  .L4
   mov  rdx, rdi
@@ -193,22 +202,26 @@ sum:
 .L4:
   mov  ecx, 0
   jmp  .L1
-</code></pre><p>However, no substantial improvement was gained:</p>
-<pre><code class="language-sh">
-~ ➤ time /tmp/a.out
+</code></pre>
+<p>However, no substantial improvement was gained:</p>
+<pre><code class="language-sh">~ ➤ time /tmp/a.out
 /tmp/a.out  2.44s user 0.00s system 99% cpu 2.447 total
-</code></pre><p>In this case, we are doing more additions in the body loop, but we created a chain dependency on <code>eax</code>. The CPU needs to wait for the first add on eax to finish before the second can be processed and so on...</p>
-<h2>Listing 3</h0>
-<p>We will remove that chain of dependency on eax by having extra sum values we can use to store values, so that the CPU can parallelise some of the work.</p>
-<p>More on instruction level parallelism can be found in: <a href="https://web.archive.org/web/20240123085058/https://en.wikipedia.org/wiki/Instruction-level_parallelism">source</a></p>
-<pre><code class="language-c">
-int sum(unsigned int *input, unsigned int size) {
+</code></pre>
+<p>In this case, we are doing more additions in the body loop, but we created
+a chain dependency on <code>eax</code>. The CPU needs to wait for the first add on
+eax to finish before the second can be processed and so on...</p>
+<h2>Listing 3</h2>
+<p>We will remove that chain of dependency on eax by having extra sum values we
+can use to store values, so that the CPU can parallelise some of the work.</p>
+<p>More on instruction level parallelism can be found in:
+<a href="https://web.archive.org/web/20240123085058/https://en.wikipedia.org/wiki/Instruction-level_parallelism">source</a></p>
+<pre><code class="language-c">int sum(unsigned int *input, unsigned int size) {
   int sum_1 = 0;
   int sum_2 = 0;
   int sum_3 = 0;
   int sum_4 = 0;
 
-  for (int i = 0; i < size; i+=4) {
+  for (int i = 0; i &lt; size; i+=4) {
     sum_1 += input[i];
     sum_2 += input[i+1];
     sum_3 += input[i+2];
@@ -217,9 +230,9 @@ int sum(unsigned int *input, unsigned int size) {
 
   return sum_1 + sum_2 + sum_3 + sum_4;
 }
-</code></pre><p>We end up with the following assembly code:</p>
-<pre><code class="language-asm">
-sum:
+</code></pre>
+<p>We end up with the following assembly code:</p>
+<pre><code class="language-asm">sum:
   test  esi, esi
   je  .L4
   mov  rax, rdi
@@ -252,26 +265,26 @@ sum:
   mov  edi, 0
   mov  edx, 0
   jmp  .L2
-</code></pre><p>Which yields:</p>
-<pre><code class="language-sh">
-~ ➤ time /tmp/a.out
+</code></pre>
+<p>Which yields:</p>
+<pre><code class="language-sh">~ ➤ time /tmp/a.out
 /tmp/a.out  2.40s user 0.00s system 99% cpu 2.409 total
-</code></pre><p>Not thrilling...</p>
-<h2>Listing 4</h0>
+</code></pre>
+<p>Not thrilling...</p>
+<h2>Listing 4</h2>
 <p>Let's go back to our original listing:</p>
-<pre><code class="language-c">
-int sum(unsigned int *input, unsigned int size) {
+<pre><code class="language-c">int sum(unsigned int *input, unsigned int size) {
   int sum = 0;
 
-  for (int i = 0; i < size; i++) {
+  for (int i = 0; i &lt; size; i++) {
     sum += input[i];
   }
 
   return sum;
 }
-</code></pre><p>Let's now run it with <code>-O3</code> to see what GCC gives us.</p>
-<pre><code class="language-asm">
-sum:
+</code></pre>
+<p>Let's now run it with <code>-O3</code> to see what GCC gives us.</p>
+<pre><code class="language-asm">sum:
   ; check if (unsigned int size) is zero and just return if so.
   mov  ecx, esi
   test  esi, esi
@@ -350,4 +363,9 @@ sum:
   xor  edx, edx
   xor  eax, eax
   jmp  .L3
-</code></pre><p>A lot of new instructions in there, so I took the time to comment on what they do.</p>
+</code></pre>
+<p>A lot of new instructions in there, so I took the time to comment on what they
+do.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

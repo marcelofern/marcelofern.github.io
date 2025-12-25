@@ -59,18 +59,18 @@
   <![endif]-->
 </head>
 <body>
-<h1>/proc</h0>
-<pre><code class="language-">
-Created at: 2024-10-21
-</code></pre><p>The <code>/proc</code> folder is a file-system interface for kernel statistics.</p>
-<p>Some monitoring tools like <code>top</code> extract the statistics from these files in order to show an overview of what processes are consuming what.</p>
-<pre><code class="language-">
-$ ls /proc
+<h1>/proc</h1>
+<pre><code>Created at: 2024-10-21
+</code></pre>
+<p>The <code>/proc</code> folder is a file-system interface for kernel statistics.</p>
+<p>Some monitoring tools like <code>top</code> extract the statistics from these files in
+order to show an overview of what processes are consuming what.</p>
+<pre><code>$ ls /proc
 1/    180/  2233/  3203/  44561/  534758/  568383/  603/    83/  key-users
 100/  181/  2250/  3216/  44625/  54/      568575/  604/    830/ kmsg
-</code></pre><p>Each folder above represents a process.</p>
-<pre><code class="language-">
-$ ls /proc/162
+</code></pre>
+<p>Each folder above represents a process.</p>
+<pre><code>$ ls /proc/162
 arch_status         cwd@               map_files/  oom_score_adj  stack
 attr/               environ            maps        pagemap        stat
 autogroup           exe@               mem         personality    statm
@@ -82,13 +82,29 @@ comm                ksm_merging_pages  ns/         sessionid      timers
 coredump_filter     ksm_stat           numa_maps   setgroups      timerslack_ns
 cpu_resctrl_groups  limits             oom_adj     smaps          uid_map
 cpuset              loginuid           oom_score   smaps_rollup   wchan
-</code></pre><ul><li>cmdline </li><li> arguments used to start program.</li><li>stat </li><li> process statistics (used by top).</li><li>cwd </li><li> current working directory for the process.</li><li>environ </li><li> environment variables inside the process (zero</li><li>delimited).</li><li>fd/ </li><li> directory containing open file descriptors for the process.</li><li>exe </li><li> symbolic link to process executable.</li><li>maps </li><li> memory mapping of the process.</li><li>mem </li><li> virtual memory of the process.</li></ul>
-<p>The list of files available will depend on the kernel version and CONFIG options.</p>
-<p>The <code>/proc</code> folder also provides general statistics about the kernel. For example:</p>
-<ul><li>/proc/cpuinfo </li><li> informations about CPU</li><li>/proc/meminfo </li><li> information about the physical memory</li><li>/proc/vmstat </li><li> information about the virtual memory</li><li>...</li></ul>
+</code></pre>
+<ul>
+<li>cmdline - arguments used to start program.</li>
+<li>stat - process statistics (used by top).</li>
+<li>cwd - current working directory for the process.</li>
+<li>environ - environment variables inside the process (zero-delimited).</li>
+<li>fd/ - directory containing open file descriptors for the process.</li>
+<li>exe - symbolic link to process executable.</li>
+<li>maps - memory mapping of the process.</li>
+<li>mem - virtual memory of the process.</li>
+</ul>
+<p>The list of files available will depend on the kernel version and CONFIG
+options.</p>
+<p>The <code>/proc</code> folder also provides general statistics about the kernel.
+For example:</p>
+<ul>
+<li>/proc/cpuinfo - informations about CPU</li>
+<li>/proc/meminfo - information about the physical memory</li>
+<li>/proc/vmstat - information about the virtual memory</li>
+<li>...</li>
+</ul>
 <p>These can be found with: <code>cd /proc; ls -Fd [a-z]*</code></p>
-<pre><code class="language-">
-$ cd /proc; ls -Fd [a-z]*
+<pre><code>$ cd /proc; ls -Fd [a-z]*
 acpi/       dma             keys         mtrr          sysrq-trigger
 asound/     driver/         key-users    net@          sysvipc/
 bootconfig  dynamic_debug/  kmsg         pagetypeinfo  thread-self@
@@ -102,6 +118,13 @@ cpuinfo     ioports         misc         softirqs      zoneinfo
 crypto      irq/            modules      stat
 devices     kallsyms        mounts@      swaps
 diskstats   kcore           mtd          sys/
-</code></pre><p>You can also write to certain <code>/proc</code> files to change kernel variables.</p>
-<h2>References</h0>
-<ul><li>proc(5) man page.</li><li><a href="https://docs.kernel.org/filesystems/proc.html">linux official docs on /proc</a></li></ul>
+</code></pre>
+<p>You can also write to certain <code>/proc</code> files to change kernel variables.</p>
+<h2>References</h2>
+<ul>
+<li>proc(5) man page.</li>
+<li><a href="https://docs.kernel.org/filesystems/proc.html">linux official docs on /proc</a></li>
+</ul>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

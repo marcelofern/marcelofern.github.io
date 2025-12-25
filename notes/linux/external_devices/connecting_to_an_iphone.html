@@ -59,11 +59,10 @@
   <![endif]-->
 </head>
 <body>
-<h1>Connecting to an iphone</h0>
-<pre><code class="language-">
-Created at: 2025-09-15
-</code></pre><pre><code class="language-sh">
-# Install the libimobiledevice, usbmuxd, and ifuse packages.
+<h1>Connecting to an iphone</h1>
+<pre><code>Created at: 2025-09-15
+</code></pre>
+<pre><code class="language-sh"># Install the libimobiledevice, usbmuxd, and ifuse packages.
 yay libimobiledevice
 yay usbmuxd
 yay ifuse
@@ -83,12 +82,15 @@ cd /tmp/iphone/DCIM
 
 # After you're done, unmount the filesystem:
 fusermount -u /tmp/iphone
-</code></pre><h2>Troubleshooting</h0>
-<pre><code class="language-sh">
-# If you do not see the popup, you can start the pairing process manually.
+</code></pre>
+<h2>Troubleshooting</h2>
+<pre><code class="language-sh"># If you do not see the popup, you can start the pairing process manually.
 # Connect the device, unlock the screen and run:
 idevicepair pair
 
 # You can verify the pairing has succeeded by running:
 idevicepair validate
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

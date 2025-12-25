@@ -59,14 +59,18 @@
   <![endif]-->
 </head>
 <body>
-<h1>SET NOT NULL</h0>
-<pre><code class="language-">
-Created at: 2024-07-29
-</code></pre><p>Since Postgres 12 (inclusive), the operation <code>ALTER TABLE .. UPDATE COLUMN ... SET NOT NULL</code> can be managed safely, that is, without locking reads and writes.</p>
-<p>In prior versions of Postgres, this operation would need to scan the whole table, and thus, could take a long time.</p>
-<p>According to this <a href="http://web.archive.org/web/20240521033839/https://dba.stackexchange.com/questions/267947/how-can-i-set-a-column-to-not-null-without-locking-the-table-during-a-table-scan">source</a>, Postgres can now prove the correctness of NOT NULL simply by checking an existing constraint.</p>
-<pre><code class="language-sql">
-DROP TABLE IF EXISTS foo;
+<h1>SET NOT NULL</h1>
+<pre><code>Created at: 2024-07-29
+</code></pre>
+<p>Since Postgres 12 (inclusive), the operation <code>ALTER TABLE .. UPDATE COLUMN ... SET NOT NULL</code>
+can be managed safely, that is, without locking reads and writes.</p>
+<p>In prior versions of Postgres, this operation would need to scan the whole
+table, and thus, could take a long time.</p>
+<p>According to this
+<a href="http://web.archive.org/web/20240521033839/https://dba.stackexchange.com/questions/267947/how-can-i-set-a-column-to-not-null-without-locking-the-table-during-a-table-scan">source</a>,
+Postgres can now prove the correctness of NOT NULL simply by checking an
+existing constraint.</p>
+<pre><code class="language-sql">DROP TABLE IF EXISTS foo;
 CREATE TABLE foo (bar INTEGER);
 INSERT INTO foo (bar) SELECT generate_series(1, 1000);
 -- The below still requires ACCESS EXCLUSIVE lock, but doesn't require a full
@@ -88,7 +92,7 @@ ALTER TABLE foo VALIDATE CONSTRAINT foo_not_null;
 -- Requires ACCESS EXCLUSIVE LOCK, but foo_not_null proves that there is no
 -- NULL in this column and a full table scan is not required. Therefore, the
 -- ALTER TABLE command should be fast.
--- If you are not on Postgres >=12, you should skip this as it will take a lot
+-- If you are not on Postgres &gt;=12, you should skip this as it will take a lot
 -- of time, and the current CHECK constraint might be good enough.
 ALTER TABLE foo ALTER COLUMN bar SET NOT NULL;
 
@@ -96,3 +100,6 @@ ALTER TABLE foo ALTER COLUMN bar SET NOT NULL;
 -- This takes an ACCESS EXCLUSIVE lock, but should run very fast.
 ALTER TABLE foo DROP CONSTRAINT foo_not_null;
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

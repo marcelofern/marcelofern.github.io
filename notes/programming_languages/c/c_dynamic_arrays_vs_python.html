@@ -60,13 +60,12 @@
 </head>
 <body>
 <p>September 30, 2023</p>
-<h2>The C code</h0>
+<h2>The C code</h2>
 <p>The code is very short, and is pasted here as is:</p>
-<pre><code class="language-c">
-#include <stdlib.h>
-#include <stdio.h>
-#include <err.h>
-#include <string.h>
+<pre><code class="language-c">#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;err.h&gt;
+#include &lt;string.h&gt;
 
 #define INITIAL_SIZE 256
 
@@ -82,33 +81,33 @@ typedef struct DynamicArray {
 DynamicArray* init_darray() {
   void* items = malloc(sizeof(void*) * INITIAL_SIZE);
   if (items == NULL) {
-    err(EXIT_FAILURE, "DynamicArray->items initialisation");
+    err(EXIT_FAILURE, &quot;DynamicArray-&gt;items initialisation&quot;);
   }
   DynamicArray* array = (DynamicArray*) malloc(sizeof(DynamicArray));
   if (array == NULL) {
-    err(EXIT_FAILURE, "DynamicArray initialisation");
+    err(EXIT_FAILURE, &quot;DynamicArray initialisation&quot;);
   }
-  array->items = items;
-  array->len = 0;
-  array->capacity = INITIAL_SIZE;
+  array-&gt;items = items;
+  array-&gt;len = 0;
+  array-&gt;capacity = INITIAL_SIZE;
   return array;
 };
 
 
 void insert_darray(DynamicArray* darray, void* item) {
-  if ((darray->len + 1) >= darray->capacity) {
-    int current_capacity = darray->capacity;
+  if ((darray-&gt;len + 1) &gt;= darray-&gt;capacity) {
+    int current_capacity = darray-&gt;capacity;
     int new_capacity = current_capacity * 2;
     void* tmp;
-    tmp = realloc(darray->items, sizeof(void*) * new_capacity);
+    tmp = realloc(darray-&gt;items, sizeof(void*) * new_capacity);
     if (tmp == NULL) {
-      err(EXIT_FAILURE, "DynamicArray item insertion");
+      err(EXIT_FAILURE, &quot;DynamicArray item insertion&quot;);
     }
-    darray->items = tmp;
-    darray->capacity = new_capacity;
+    darray-&gt;items = tmp;
+    darray-&gt;capacity = new_capacity;
   }
-  darray->items[darray->len] = item;
-  darray->len += 1;
+  darray-&gt;items[darray-&gt;len] = item;
+  darray-&gt;len += 1;
 };
 
 
@@ -116,40 +115,44 @@ void free_darray(DynamicArray* darray) {
   if (darray == NULL) {
     return;
   }
-  for (int i = 0; i < darray->len; i++) {
-    free(darray->items[i]);
+  for (int i = 0; i &lt; darray-&gt;len; i++) {
+    free(darray-&gt;items[i]);
   }
-  free(darray->items);
+  free(darray-&gt;items);
   free(darray);
 };
-</code></pre><p>In order to initialise an array of one's, we can do the following:</p>
-<pre><code class="language-c">
-// insert 1,000 ints with value `1` in the array.
-for (int i = 0; i < 1000000000; i++) {
+</code></pre>
+<p>In order to initialise an array of one's, we can do the following:</p>
+<pre><code class="language-c">// insert 1,000 ints with value `1` in the array.
+for (int i = 0; i &lt; 1000000000; i++) {
   int* item = (int*) malloc(sizeof(int));
   *item = 1;
   insert_darray(int_array, item);
 }
 free_darray(int_array);
-</code></pre><h2>The equivalent Python code</h0>
+</code></pre>
+<h2>The equivalent Python code</h2>
 <p>Python is bolted-on with many syntax sugary things:</p>
-<pre><code class="language-python">
-int_array = [1 for i in range(1_000_000_000)]
-</code></pre><h2>The performance comparison</h0>
+<pre><code class="language-python">int_array = [1 for i in range(1_000_000_000)]
+</code></pre>
+<h2>The performance comparison</h2>
 <p>I've just fired a very cheeky test to compute an array of a billion integers:</p>
-<pre><code class="language-sh">
-time python array.py
->> 18.01s user 1.06s system 99% cpu 19.167 total
-</code></pre><p>We only care about the <code>user</code> time, because that's the time the actual CPU spent running the script. Now the C code:</p>
-<pre><code class="language-sh">
-time ./a.out
->>> 4.04s user 2.96s system 99% cpu 7.042 total
-</code></pre><p>To be honest, this doesn't look like a huge difference for an array of a billion elements in a test like this. But we think about economy of scale, this compounds a lot.</p>
-<h2>What about an array of user<ul><li>ddeeffiinneedd  ttyyppeess??</h0>
- We were using <code>int</code> objects. This can be a bit of a cheat, specially because Python can have many optimisations in place for pure int objects.</li></ul>
+<pre><code class="language-sh">time python array.py
+&gt;&gt; 18.01s user 1.06s system 99% cpu 19.167 total
+</code></pre>
+<p>We only care about the <code>user</code> time, because that's the time the actual CPU
+spent running the script. Now the C code:</p>
+<pre><code class="language-sh">time ./a.out
+&gt;&gt;&gt; 4.04s user 2.96s system 99% cpu 7.042 total
+</code></pre>
+<p>To be honest, this doesn't look like a huge difference for an array of a
+billion elements in a test like this. But we think about economy of scale,
+this compounds a lot.</p>
+<h2>What about an array of user-defined types?</h2>
+<p>We were using <code>int</code> objects. This can be a bit of a cheat, specially because
+Python can have many optimisations in place for pure int objects.</p>
 <p>Let's create a class and see how it performs instead:</p>
-<pre><code class="language-python">
-class MySweetClass:
+<pre><code class="language-python">class MySweetClass:
     field_a: int
     field_b: int
     field_c: int
@@ -160,14 +163,15 @@ class MySweetClass:
         self.field_c = c
 
 int_array = [MySweetClass(1,1,1) for i in range(10_000_000)]
-</code></pre><p>Note: I had to change the range to 10 million, because anything more than that blew up my laptop.</p>
+</code></pre>
+<p>Note: I had to change the range to 10 million, because anything more than that
+blew up my laptop.</p>
 <p>This gives us:</p>
-<pre><code class="language-sh">
-time python array.py
->>> 6.14s user 0.29s system 99% cpu 6.438 total
-</code></pre><p>As for our C code:</p>
-<pre><code class="language-c">
-typedef struct MySweetType {
+<pre><code class="language-sh">time python array.py
+&gt;&gt;&gt; 6.14s user 0.29s system 99% cpu 6.438 total
+</code></pre>
+<p>As for our C code:</p>
+<pre><code class="language-c">typedef struct MySweetType {
   int field_a;
   int field_b;
   int field_c;
@@ -176,26 +180,27 @@ typedef struct MySweetType {
 int main() {
   DynamicArray* array = init_darray();
 
-  for (int i = 0; i < 10000000; i++) {
+  for (int i = 0; i &lt; 10000000; i++) {
     MySweetType* item = (MySweetType*) malloc(sizeof(MySweetType));
-    item->field_a = 1;
-    item->field_b = 1;
-    item->field_c = 1;
+    item-&gt;field_a = 1;
+    item-&gt;field_b = 1;
+    item-&gt;field_c = 1;
     insert_darray(array, item);
   }
   free_darray(array);
 }
-</code></pre><p>We've got:</p>
-<pre><code class="language-sh">
-a.out  0.18s user 0.11s system 99% cpu 0.292 total
-</code></pre><p>In fact, I can still run 1 billion entries for about the same time penalty Python would've ran only 10 million.</p>
-<pre><code class="language-sh">
-a.out  6.19s user 3.37s system 98% cpu 9.744 total
-</code></pre><h2>Bonus: How about C++ vectors?</h0>
+</code></pre>
+<p>We've got:</p>
+<pre><code class="language-sh">a.out  0.18s user 0.11s system 99% cpu 0.292 total
+</code></pre>
+<p>In fact, I can still run 1 billion entries for about the same time penalty
+Python would've ran only 10 million.</p>
+<pre><code class="language-sh">a.out  6.19s user 3.37s system 98% cpu 9.744 total
+</code></pre>
+<h2>Bonus: How about C++ vectors?</h2>
 <p>Here's the C++ code:</p>
-<pre><code class="language-cpp">
-#include <vector>
-#include <memory>
+<pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;memory&gt;
 
 class MySweetClass {
 public:
@@ -211,18 +216,35 @@ public:
 };
 
 int main() {
-  std::vector<std::unique_ptr<MySweetClass>> array;
+  std::vector&lt;std::unique_ptr&lt;MySweetClass&gt;&gt; array;
 
-  for (int i = 0; i < 100000000; i++) {
-    std::unique_ptr<MySweetClass> my_class = std::make_unique<MySweetClass>(1, 1, 1);
+  for (int i = 0; i &lt; 100000000; i++) {
+    std::unique_ptr&lt;MySweetClass&gt; my_class = std::make_unique&lt;MySweetClass&gt;(1, 1, 1);
     array.push_back(std::move(my_class));
   }
 }
-</code></pre><p>Yields these results for a billion entries:</p>
-<pre><code class="language-sh">
-/tmp/a.out  4.97s user 3.30s system 97% cpu 8.510 total
-</code></pre><p>This is faster than the C code. At this point I'm not exactly sure why. My guess is that the <vector> and the <unique_ptr> are highly optimised for this kind of use case.</p>
-<h2>What I need to try further</h0>
-<ul><li>I imagine that the C code will be doing less load operations from memory than the Python code. A further step would be to try and figure out this number as the load</li><li>from</li><li>memory operations would be taking a good chunk of time.</li><li>Check if I could use 128bit registers for doing the arithmetics in C, this would further enhance performance of the C code.</li><li>The Python docs has a page on the <code>array</code> feature and expresses it as a efficient way of doing arrays for numeric values. This can perhaps better enhance the performance of our Python code.</li></ul>
-<h2>Conclusion (for now)</h0>
-<p>Don't use Python (joking). But the truth is, as soon as you need an array of something that is not an int in Python, the performance does go downhill.</p>
+</code></pre>
+<p>Yields these results for a billion entries:</p>
+<pre><code class="language-sh">/tmp/a.out  4.97s user 3.30s system 97% cpu 8.510 total
+</code></pre>
+<p>This is faster than the C code. At this point I'm not exactly sure why. My
+guess is that the <vector> and the &lt;unique_ptr&gt; are highly optimised for
+this kind of use case.</p>
+<h2>What I need to try further</h2>
+<ul>
+<li>I imagine that the C code will be doing less load operations from memory than
+the Python code. A further step would be to try and figure out this number as
+the load-from-memory operations would be taking a good chunk of time.</li>
+<li>Check if I could use 128bit registers for doing the arithmetics in C, this
+would further enhance performance of the C code.</li>
+<li>The Python docs has a page on the <code>array</code> feature and expresses it as a
+efficient way of doing arrays for numeric values. This can perhaps better
+enhance the performance of our Python code.</li>
+</ul>
+<h2>Conclusion (for now)</h2>
+<p>Don't use Python (joking).
+But the truth is, as soon as you need an array of something that is not an int
+in Python, the performance does go downhill.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

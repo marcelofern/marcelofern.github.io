@@ -59,15 +59,15 @@
   <![endif]-->
 </head>
 <body>
-<h1>bpftrace</h0>
-<pre><code class="language-">
-Created at: 2024-11-17
-</code></pre><p>bpftrace(8):</p>
-<p>bpftrace is a high-level tracing language and runtime for Linux based on eBPF. It supports static and dynamic tracing for both the kernel and user-space.</p>
-<h2>One liners</h0>
-<pre><code class="language-sh">
-# Trace new processes with arguments:
-bpftrace -e 'tracepoint:syscalls:sys_enter_execve { join(args->argv); }'
+<h1>bpftrace</h1>
+<pre><code>Created at: 2024-11-17
+</code></pre>
+<p>bpftrace(8):</p>
+<p>bpftrace is a high-level tracing language and runtime for Linux based on eBPF.
+It supports static and dynamic tracing for both the kernel and user-space.</p>
+<h2>One liners</h2>
+<pre><code class="language-sh"># Trace new processes with arguments:
+bpftrace -e 'tracepoint:syscalls:sys_enter_execve { join(args-&gt;argv); }'
 
 # Count syscalls by process:
 bpftrace -e 'tracepoint:raw_syscalls:sys_enter { @[pid, comm] = count(); }'
@@ -89,5 +89,8 @@ bpftrace -e 'profile:hz:49 /pid == 189/ { @[ustack] = count(); }'
 bpftrace -e 'profile:hz:49 /pid == 5216/ { @[ustack(5)] = count(); }'
 
 # Sample user-level stacks at 49 Hertz, for processes named “mysqld”:
-bpftrace -e 'profile:hz:49 /comm == "mysqld"/ { @[ustack] = count(); }'
+bpftrace -e 'profile:hz:49 /comm == &quot;mysqld&quot;/ { @[ustack] = count(); }'
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -60,23 +60,29 @@
 </head>
 <body>
 <p>2024-05-31</p>
-<h1>Disabling Suspended Mode</h0>
-<p>I usually swap between both my work laptop and my personal laptop using an USB hub. That means that both computers remain with their lids closed at all times.</p>
-<p>The problem is that when I disconnect my USB hub to plug it into the other laptop, the now-disconnected laptop goes on sleep mode. This means that when I come again to reconnect it, I have to manually open the lid so that the usb hub gets recognised.</p>
-<h2>Disabling Suspend</h0>
-<pre><code class="language-bash">
-# Create a new folder
+<h1>Disabling Suspended Mode</h1>
+<p>I usually swap between both my work laptop and my personal laptop using an USB
+hub. That means that both computers remain with their lids closed at all times.</p>
+<p>The problem is that when I disconnect my USB hub to plug it into the other
+laptop, the now-disconnected laptop goes on sleep mode. This means that when I
+come again to reconnect it, I have to manually open the lid so that the usb hub
+gets recognised.</p>
+<h2>Disabling Suspend</h2>
+<pre><code class="language-bash"># Create a new folder
 sudo mkdir /etc/systemd/sleep.conf.d/
 # And the new file
 sudo touch /etc/systemd/sleep.conf.d/disable-sleep.conf
-</code></pre><p>Update that file to include the contents of:</p>
-<pre><code class="language-conf">
-[Sleep]
+</code></pre>
+<p>Update that file to include the contents of:</p>
+<pre><code class="language-conf">[Sleep]
 AllowSuspend=no
 AllowHibernation=no
 AllowHybridSleep=no
 AllowSuspendThenHibernate=no
-</code></pre><pre><code class="language-sh">
-# Reload the systemd daemon
+</code></pre>
+<pre><code class="language-sh"># Reload the systemd daemon
 sudo systemctl daemon-reload
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

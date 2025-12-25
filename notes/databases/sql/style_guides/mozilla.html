@@ -59,37 +59,46 @@
   <![endif]-->
 </head>
 <body>
-<h1>Mozilla SQL Style Guide</h0>
+<h1>Mozilla SQL Style Guide</h1>
 <p>Source: https://docs.telemetry.mozilla.org/concepts/sql_style</p>
-<h2>Reserved Words</h0>
+<h2>Reserved Words</h2>
 <p>Always use uppercase for reserved keywords like <code>SELECT</code>, <code>WHERE</code>, or <code>AS</code>.</p>
-<h2>Variable Names</h0>
-<ol><li>Use consistent and descriptive identifiers and names.</li><li>Use lower case names with underscores, such as <code>first_name</code>. Do not use camelCase.</li><li>Functions, such as <code>cardinality</code>, <code>approx_distinct</code>, or <code>substr</code>,<a href="https://www.postgresql.org/docs/10/static/sql<ul><li>syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS">are identifiers</a> and should be treated like variable names.</li><li>Names must begin with a letter and may not end in an underscore.</li><li>Only use letters, numbers, and underscores in variable names.</li></ol>
-<h2>B Bee  EExxpplliicciitt</h0>
- When choosing between explicit or implicit syntax, prefer explicit.</li></ul>
-<h3>Aliasing</h0>
-<p>Always include the <code>AS</code> keyword when aliasing a variable or table name, it's easier to read when explicit.</p>
-<p><b>Good</b></p>
-<pre><code class="language-sql">
-SELECT
+<h2>Variable Names</h2>
+<ol>
+<li>Use consistent and descriptive identifiers and names.</li>
+<li>Use lower case names with underscores, such as <code>first_name</code>.
+Do not use camelCase.</li>
+<li>Functions, such as <code>cardinality</code>, <code>approx_distinct</code>, or <code>substr</code>,
+<a href="https://www.postgresql.org/docs/10/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS">are identifiers</a>
+and should be treated like variable names.</li>
+<li>Names must begin with a letter and may not end in an underscore.</li>
+<li>Only use letters, numbers, and underscores in variable names.</li>
+</ol>
+<h2>Be Explicit</h2>
+<p>When choosing between explicit or implicit syntax, prefer explicit.</p>
+<h3>Aliasing</h3>
+<p>Always include the <code>AS</code> keyword when aliasing a variable or table name,
+it's easier to read when explicit.</p>
+<p><strong>Good</strong></p>
+<pre><code class="language-sql">SELECT
   date(submission_timestamp) AS day
 FROM
   telemetry.main
 LIMIT
   10
-</code></pre><p><b>Bad</b></p>
-<pre><code class="language-sql">
-SELECT
+</code></pre>
+<p><strong>Bad</strong></p>
+<pre><code class="language-sql">SELECT
   date(submission_timestamp) day
 FROM
   telemetry.main
 LIMIT
   10
-</code></pre><h3>Joins</h0>
+</code></pre>
+<h3>Joins</h3>
 <p>Always include the <code>JOIN</code> type rather than relying on the default join.</p>
-<p><b>Good</b></p>
-<pre><code class="language-sql">
--- BigQuery Standard SQL Syntax
+<p><strong>Good</strong></p>
+<pre><code class="language-sql">-- BigQuery Standard SQL Syntax
 SELECT
   submission_date,
   experiment.key AS experiment_id,
@@ -100,15 +109,15 @@ FROM
 CROSS JOIN
   UNNEST(experiments.key_value) AS experiment
 WHERE
-  submission_date > '2019-07-01'
+  submission_date &gt; '2019-07-01'
   AND sample_id = '10'
 GROUP BY
   submission_date,
   experiment_id,
   experiment_branch
-</code></pre><p><b>Bad</b></p>
-<pre><code class="language-sql">
--- BigQuery Standard SQL Syntax
+</code></pre>
+<p><strong>Bad</strong></p>
+<pre><code class="language-sql">-- BigQuery Standard SQL Syntax
 SELECT
   submission_date,
   experiment.key AS experiment_id,
@@ -118,16 +127,21 @@ FROM
   telemetry.clients_daily,
   UNNEST(experiments.key_value) AS experiment -- Implicit JOIN
 WHERE
-  submission_date > '2019-07-01'
+  submission_date &gt; '2019-07-01'
   AND sample_id = '10'
 GROUP BY
   1, 2, 3 -- Implicit grouping column names
-</code></pre><h3>Grouping Columns</h0>
-<p>In the previous example, implicit grouping columns were discouraged, but there are cases where it makes sense.</p>
-<p>In some SQL flavors (such as <a href="https://prestodb.github.io/docs/current/sql/select.html">Presto</a>) grouping elements must refer to the expression before any aliasing is done. If you are grouping by a complex expression it may be desirable to use implicit grouping columns rather than repeating the expression.</p>
-<p><b>Good</b></p>
-<pre><code class="language-sql">
--- BigQuery SQL Syntax
+</code></pre>
+<h3>Grouping Columns</h3>
+<p>In the previous example, implicit grouping columns were discouraged, but there
+are cases where it makes sense.</p>
+<p>In some SQL flavors (such as
+<a href="https://prestodb.github.io/docs/current/sql/select.html">Presto</a>) grouping
+elements must refer to the expression before any aliasing is done. If you are
+grouping by a complex expression it may be desirable to use implicit grouping
+columns rather than repeating the expression.</p>
+<p><strong>Good</strong></p>
+<pre><code class="language-sql">-- BigQuery SQL Syntax
 SELECT
   submission_date,
   normalized_channel IN ('nightly', 'aurora', 'beta') AS is_prerelease,
@@ -135,13 +149,13 @@ SELECT
 FROM
   telemetry.clients_daily
 WHERE
-  submission_date > '2019-07-01'
+  submission_date &gt; '2019-07-01'
 GROUP BY
   submission_date,
   is_prerelease -- Grouping by aliases is supported in BigQuery
-</code></pre><p><b>Good</b></p>
-<pre><code class="language-sql">
--- Presto SQL Syntax
+</code></pre>
+<p><strong>Good</strong></p>
+<pre><code class="language-sql">-- Presto SQL Syntax
 SELECT
   submission_date,
   normalized_channel IN ('nightly', 'aurora', 'beta') AS is_prerelease,
@@ -149,12 +163,12 @@ SELECT
 FROM
   telemetry.clients_daily
 WHERE
-  submission_date > '20190701'
+  submission_date &gt; '20190701'
 GROUP BY
   1, 2 -- Implicit grouping avoids repeating expressions
-</code></pre><p><b>Bad</b></p>
-<pre><code class="language-sql">
--- Presto SQL Syntax
+</code></pre>
+<p><strong>Bad</strong></p>
+<pre><code class="language-sql">-- Presto SQL Syntax
 SELECT
   submission_date,
   normalized_channel IN ('nightly', 'aurora', 'beta') AS is_prerelease,
@@ -162,107 +176,118 @@ SELECT
 FROM
   telemetry.clients_daily
 WHERE
-  submission_date > '20190701'
+  submission_date &gt; '20190701'
 GROUP BY
   submission_date,
   normalized_channel IN ('nightly', 'aurora', 'beta')
-</code></pre><h2>Left Align Root Keywords</h0>
-<p>Root keywords should all start on the same character boundary. This is counter to the common "rivers" pattern <a href="https://www.sqlstyle.guide/#spaces">described here</a>.</p>
-<p><b>Good</b>:</p>
-<pre><code class="language-sql">
-SELECT
+</code></pre>
+<h2>Left Align Root Keywords</h2>
+<p>Root keywords should all start on the same character boundary.
+This is counter to the common &quot;rivers&quot; pattern
+<a href="https://www.sqlstyle.guide/#spaces">described here</a>.</p>
+<p><strong>Good</strong>:</p>
+<pre><code class="language-sql">SELECT
   client_id,
   submission_date
 FROM
   main_summary
 WHERE
   sample_id = '42'
-  AND submission_date > '20180101'
+  AND submission_date &gt; '20180101'
 LIMIT
   10
-</code></pre><p><b>Bad</b>:</p>
-<pre><code class="language-sql">
-SELECT client_id,
+</code></pre>
+<p><strong>Bad</strong>:</p>
+<pre><code class="language-sql">SELECT client_id,
        submission_date
   FROM main_summary
  WHERE sample_id = '42'
-   AND submission_date > '20180101'
-</code></pre><h2>Code Blocks</h0>
-<p>Root keywords should be on their own line. For example:</p>
-<p><b>Good</b>:</p>
-<pre><code class="language-sql">
-SELECT
+   AND submission_date &gt; '20180101'
+</code></pre>
+<h2>Code Blocks</h2>
+<p>Root keywords should be on their own line.
+For example:</p>
+<p><strong>Good</strong>:</p>
+<pre><code class="language-sql">SELECT
   client_id,
   submission_date
 FROM
   main_summary
 WHERE
-  submission_date > '20180101'
+  submission_date &gt; '20180101'
   AND sample_id = '42'
 LIMIT
   10
-</code></pre><p>It's acceptable to include an argument on the same line as the root keyword, if there is exactly one argument.</p>
-<p><b>Acceptable</b>:</p>
-<pre><code class="language-sql">
-SELECT
+</code></pre>
+<p>It's acceptable to include an argument on the same line as the root keyword,
+if there is exactly one argument.</p>
+<p><strong>Acceptable</strong>:</p>
+<pre><code class="language-sql">SELECT
   client_id,
   submission_date
 FROM main_summary
 WHERE
-  submission_date > '20180101'
+  submission_date &gt; '20180101'
   AND sample_id = '42'
 LIMIT 10
-</code></pre><p>Do not include multiple arguments on one line.</p>
-<p><b>Bad</b>:</p>
-<pre><code class="language-sql">
-SELECT client_id, submission_date
+</code></pre>
+<p>Do not include multiple arguments on one line.</p>
+<p><strong>Bad</strong>:</p>
+<pre><code class="language-sql">SELECT client_id, submission_date
 FROM main_summary
 WHERE
-  submission_date > '20180101'
+  submission_date &gt; '20180101'
   AND sample_id = '42'
 LIMIT 10
-</code></pre><p><b>Bad</b></p>
-<pre><code class="language-sql">
-SELECT
+</code></pre>
+<p><strong>Bad</strong></p>
+<pre><code class="language-sql">SELECT
   client_id,
   submission_date
 FROM main_summary
-WHERE submission_date > '20180101'
+WHERE submission_date &gt; '20180101'
   AND sample_id = '42'
 LIMIT 10
-</code></pre><h2>Join Conditions</h0>
-<p>The <code>ON</code> and <code>USING</code> keywords should start on a new line indented one level more than the join keyword and be followed by the join conditions starting on the same line. For example:</p>
-<p><b>Good</b>:</p>
-<pre><code class="language-sql">
-...
+</code></pre>
+<h2>Join Conditions</h2>
+<p>The <code>ON</code> and <code>USING</code> keywords should start on a new line indented one level
+more than the join keyword and be followed by the join conditions starting on
+the same line. For example:</p>
+<p><strong>Good</strong>:</p>
+<pre><code class="language-sql">...
 FROM
   telemetry_stable.main_v4
 LEFT JOIN
   static.normalized_os_name
   ON main_v4.environment.system.os.name = normalized_os_name.os_name
-</code></pre><p><b>Bad</b>:</p>
-<pre><code class="language-sql">
-...
+</code></pre>
+<p><strong>Bad</strong>:</p>
+<pre><code class="language-sql">...
 FROM
   telemetry_stable.main_v4
 LEFT JOIN
   static.normalized_os_name ON main_v4.environment.system.os.name = normalized_os_name.os_name
-</code></pre><p><b>Bad</b>:</p>
-<pre><code class="language-sql">
-...
+</code></pre>
+<p><strong>Bad</strong>:</p>
+<pre><code class="language-sql">...
 FROM
   telemetry_stable.main_v4
 LEFT JOIN
   static.normalized_os_name
 ON
   main_v4.environment.system.os.name = normalized_os_name.os_name
-</code></pre><h2>Parentheses</h0>
+</code></pre>
+<h2>Parentheses</h2>
 <p>If parentheses span multiple lines:</p>
-<ol><li>The opening parenthesis should terminate the line.</li><li>The closing parenthesis should be lined up under the first character of the line that starts the multi<ul><li>line construct.</li><li>The contents of the parentheses should be indented one level.</li></ol>
- For example:</li></ul>
-<p><b>Good</b></p>
-<pre><code class="language-sql">
-WITH sample AS (
+<ol>
+<li>The opening parenthesis should terminate the line.</li>
+<li>The closing parenthesis should be lined up under
+the first character of the line that starts the multi-line construct.</li>
+<li>The contents of the parentheses should be indented one level.</li>
+</ol>
+<p>For example:</p>
+<p><strong>Good</strong></p>
+<pre><code class="language-sql">WITH sample AS (
   SELECT
     client_id,
   FROM
@@ -270,18 +295,18 @@ WITH sample AS (
   WHERE
     sample_id = '42'
 )
-</code></pre><p><b>Bad</b> (Terminating parenthesis on shared line)</p>
-<pre><code class="language-sql">
-WITH sample AS (
+</code></pre>
+<p><strong>Bad</strong> (Terminating parenthesis on shared line)</p>
+<pre><code class="language-sql">WITH sample AS (
   SELECT
     client_id,
   FROM
     main_summary
   WHERE
     sample_id = '42')
-</code></pre><p><b>Bad</b> (No indent)</p>
-<pre><code class="language-sql">
-WITH sample AS (
+</code></pre>
+<p><strong>Bad</strong> (No indent)</p>
+<pre><code class="language-sql">WITH sample AS (
 SELECT
   client_id,
 FROM
@@ -289,25 +314,27 @@ FROM
 WHERE
   sample_id = '42'
 )
-</code></pre><h2>Boolean at the Beginning of Line</h0>
-<p><code>AND</code> and <code>OR</code> should always be at the beginning of the line. For example:</p>
-<p><b>Good</b></p>
-<pre><code class="language-sql">
-...
+</code></pre>
+<h2>Boolean at the Beginning of Line</h2>
+<p><code>AND</code> and <code>OR</code> should always be at the beginning of the line.
+For example:</p>
+<p><strong>Good</strong></p>
+<pre><code class="language-sql">...
 WHERE
-  submission_date > 20180101
+  submission_date &gt; 20180101
   AND sample_id = '42'
-</code></pre><p><b>Bad</b></p>
-<pre><code class="language-sql">
-...
+</code></pre>
+<p><strong>Bad</strong></p>
+<pre><code class="language-sql">...
 WHERE
-  submission_date > 20180101 AND
+  submission_date &gt; 20180101 AND
   sample_id = '42'
-</code></pre><h2>Nested Queries</h0>
-<p>Do not use nested queries. Instead, use common table expressions to improve readability.</p>
-<p><b>Good</b>:</p>
-<pre><code class="language-sql">
-WITH sample AS (
+</code></pre>
+<h2>Nested Queries</h2>
+<p>Do not use nested queries.
+Instead, use common table expressions to improve readability.</p>
+<p><strong>Good</strong>:</p>
+<pre><code class="language-sql">WITH sample AS (
   SELECT
     client_id,
     submission_date
@@ -320,9 +347,9 @@ WITH sample AS (
 SELECT *
 FROM sample
 LIMIT 10
-</code></pre><p><b>Bad</b>:</p>
-<pre><code class="language-sql">
-SELECT *
+</code></pre>
+<p><strong>Bad</strong>:</p>
+<pre><code class="language-sql">SELECT *
 FROM (
   SELECT
     client_id,
@@ -333,6 +360,11 @@ FROM (
     sample_id = '42'
 )
 LIMIT 10
-</code></pre><h2>About this Document</h0>
+</code></pre>
+<h2>About this Document</h2>
 <p>This document was heavily influenced by https://www.sqlstyle.guide/</p>
-<p>Changes to the style guide should be reviewed by at least one member of both the Data Engineering team and the Data Science team.</p>
+<p>Changes to the style guide should be reviewed by at least one member of
+both the Data Engineering team and the Data Science team.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

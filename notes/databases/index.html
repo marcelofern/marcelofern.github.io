@@ -59,58 +59,167 @@
   <![endif]-->
 </head>
 <body>
-<h2>Postgres</h0>
-<h3>Constraints</h0>
-<ul><li><a href="databases/postgres/constraints/set_constraints.md">SET CONSTRAINTS</a></li><li><a href="databases/postgres/constraints/set_not_null.md">SET NOT NULL</a></li><li><a href="databases/postgres/constraints/exclude_using.md">EXCLUDE USING</a></li><li><a href="databases/postgres/constraints/composite_primary_keys.md">Composite Primary Keys</a></li><li><a href="databases/postgres/constraints/conditional_and_expression_unique_constraints.md">Conditional and expression unique constraints</a></li><li><a href="databases/postgres/constraints/unique_set_of_columns.md">Unique set of columns</a></li></ul>
-<h3>Outages</h0>
-<ul><li><a href="databases/postgres/outages/fks_without_downtime.md">FKs Without Downtime</a></li><li><a href="databases/postgres/outages/long_transactions.md">Long Transactions</a></li><li><a href="databases/postgres/outages/default.md">DEFAULT</a></li><li><a href="databases/postgres/outages/drop_column_with_index.md">Drop Column With Index</a></li><li><a href="databases/postgres/outages/check_constraints_without_downtime.md">CHECK Constraints Without Downtime</a></li><li><a href="databases/postgres/outages/unique_constraints_without_downtime.md">UNIQUE Constraints Without Downtime</a></li><li><a href="databases/postgres/outages/is_this_ddl_going_to_rewrite_the_table.md">Is This DDL Going To Rewrite The Table?</a></li><li><a href="databases/postgres/outages/renaming_a_table_using_view.md">Renaming A Table Using VIEW</a></li><li><a href="databases/postgres/outages/changing_the_precision_of_a_field_without_downtime.md">Changing the precision of a field without downtime</a></li><li><a href="databases/postgres/outages/changing_serial_column_to_identity_without_downtime.md">Changing SERIAL column to IDENTITY Without Downtime</a></li></ul>
-<h3>Indexing</h0>
-<ul><li><a href="databases/postgres/indexing/indexing_for_like.md">Indexing for LIKE</a></li><li><a href="databases/postgres/indexing/concurrent_index_during_vacuum.md">Concurrent index during vacuum</a></li><li><a href="databases/postgres/indexing/postgres_brin_index.md">Postgres BRIN index</a></li><li><a href="databases/postgres/indexing/no_automatic_index_on_fks.md">No Automatic Index on FKs</a></li><li><a href="databases/postgres/indexing/drop_index_concurrently.md">DROP INDEX CONCURRENTLY</a></li><li><a href="databases/postgres/indexing/composed_index_vs_denormalised_column_index.md">Composed index vs denormalised column index</a></li><li><a href="databases/postgres/indexing/reindex_concurrently.md">REINDEX CONCURRENTLY</a></li><li><a href="databases/postgres/indexing/visualising_a_btree_index.md">Visualising a btree index</a></li><li><a href="databases/postgres/indexing/nulls_not_distinct.md">NULLS NOT DISTINCT</a></li></ul>
-<h3>Planning</h0>
-<ul><li><a href="databases/postgres/planning/a-psql-planner-primmer.md">A PSQL Planner Primer</a></li></ul>
-<h3>Locks</h0>
-<ul><li><a href="databases/postgres/locks/lock_timeout.md">lock_timeout</a></li><li><a href="databases/postgres/locks/locks_cheatsheet.md">Locks cheatsheet</a></li><li><a href="databases/postgres/locks/print_lock_for_query.md">Print lock for query</a></li><li><a href="databases/postgres/locks/deadlock_demonstration.md">Deadlock Demonstration</a></li><li><a href="databases/postgres/locks/advisory_lock.md">Advisory Lock</a></li><li><a href="databases/postgres/locks/drop_trigger_locks.md">Drop trigger locks</a></li></ul>
-<h3>Triggers</h0>
-<ul><li><a href="databases/postgres/triggers/get_definition_of_a_trigger.md">Get definition of a trigger</a></li></ul>
-<h3>Testing</h0>
-<ul><li><a href="databases/postgres/testing/postgres_docker_container.md">Postgres Docker Container</a></li></ul>
-<h3>Performance</h0>
-<ul><li><a href="databases/postgres/performance/or_queries.md">OR queries</a></li><li><a href="databases/postgres/performance/json_filtering_vs_text_casting.md">JSON filtering vs text casting</a></li><li><a href="databases/postgres/performance/table_bloat.md">Table bloat</a></li><li><a href="databases/postgres/performance/slow_order_by_and_limit.md">Slow ORDER BY and LIMIT</a></li><li><a href="databases/postgres/performance/fastest_way_to_find_if_table_is_empty.md">Fastest way to find if table is empty</a></li><li><a href="databases/postgres/performance/uuids_vs_id.md">UUID vs ID</a></li><li><a href="databases/postgres/performance/unlogged_tables.md">Unlogged Tables</a></li></ul>
-<h3>Internals</h0>
-<ul><li><a href="databases/postgres/internals/building_from_source.md">Building From Source</a></li><li><a href="databases/postgres/internals/profiling_postgres_on_linux.md">Profiling Postgres On Linux</a></li><li><a href="databases/postgres/internals/profiling_postgres_on_mac.md">Profiling Postgres On Mac</a></li><li><a href="databases/postgres/internals/debugging_postgres.md">Debugging Postgres</a></li><li><a href="databases/postgres/internals/how_postgres_implements_foreign_keys.md">How Postgres Implements Foreign Keys</a></li><li><a href="databases/postgres/internals/swapping_a_table_with_its_copy.md">Swapping a Table With its Copy</a></li><li><a href="databases/postgres/internals/page_pruning.md">Page Pruning</a></li><li><a href="databases/postgres/internals/fillfactor.md">Fillfactor</a></li></ul>
-<h3>Disk</h0>
-<ul><li><a href="databases/postgres/disk/how_table_data_is_stored_in_disk.md">How table data is stored in disk</a></li></ul>
-<h3>Extensions</h0>
-<ul><li><a href="databases/postgres/extensions/pg_repack.md">pg_repack</a></li><li><a href="databases/postgres/extensions/pgcrypto.md">pgcrypto</a></li><li><a href="databases/postgres/extensions/how_extensions_are_created.md">how extensions are created</a></li></ul>
-<h3>Third Party Packages</h0>
-<ul><li><a href="databases/postgres/third_party_packages/pgroll.md">pgroll</a></li></ul>
-<h3>Transactions</h0>
-<ul><li><a href="databases/postgres/transactions/transaction_isolation.md">Transaction Isolation</a></li><li><a href="databases/postgres/transaction/read_only_transactions.md">Read only transactions</a></li></ul>
-<h3>PSQL</h0>
-<ul><li><a href="databases/postgres/psql/a_basic_psql_workflow.md">A Basic psql Workflow</a></li></ul>
-<h3>Vacuum</h0>
-<ul><li><a href="databases/postgres/vacuum/vacuum_phases.md">VACUUM Phases</a></li><li><a href="databases/postgres/vacuum/replication_slots_blocking_vacuum.md">Replication slots blocking VACUUM</a></li><li><a href="databases/postgres/vacuum/faster_autovacuum.md">Faster autovacuum</a></li></ul>
-<h3>Replication</h0>
-<ul><li><a href="databases/postgres/replication/basics.md">Replication basics</a></li></ul>
-<h3>Documentation</h0>
-<ul><li><a href="databases/postgres/documentation/postgres_documentation_syntax.md">Postgres Documentation Syntax</a></li></ul>
-<h3>Fields</h0>
-<ul><li><a href="databases/postgres/fields/choosing_between_varchar_and_varchar_n.md">Choosing between varchar and varchar(n)</a></li><li><a href="databases/postgres/fields/identity_columns.md">Identity columns</a></li><li><a href="databases/postgres/fields/updating_jsonb_columns.md">Updating jsonb columns</a></li></ul>
-<h3>WAL</h0>
-<ul><li><a href="databases/postgres/wal/basics.md">WAL basics</a></li></ul>
-<h3>Sequences</h0>
-<ul><li><a href="databases/postgres/sequences/alter_sequence_owned_by.md">ALTER SEQUENCE OWNED BY</a></li><li><a href="databases/postgres/sequences/alter_sequence_cycle.md">ALTER SEQUENCE CYCLE</a></li><li><a href="databases/postgres/sequences/querying_sequence_information.md">Querying sequence information</a></li></ul>
-<h3>Functions</h0>
-<ul><li><a href="databases/postgres/functions/get_definition_of_a_function.md">Get definition of a function</a></li></ul>
-<h3>Isolation</h0>
-<ul><li><a href="databases/postgres/isolation/temporary_tables.md">Temporary tables</a></li></ul>
-<h3>Statistics</h0>
-<ul><li><a href="databases/postgres/statistics/table_statistics.md">table statistics</a></li></ul>
-<h3>Schemas</h0>
-<ul><li><a href="databases/postgres/schemas/basics.md">schemas basics</a></li></ul>
-<h3>Varchar</h0>
-<ul><li><a href="databases/postgres/varchar/when_does_varchar_schema_changes_become_risky.md">when does varchar schema changes become risky</a></li></ul>
-<h3>Permissions</h0>
-<ul><li><a href="databases/postgres/permissions/schemas.md">schemas</a></li><li><a href="databases/postgres/permissions/tables.md">tables</a></li><li><a href="databases/postgres/permissions/functions.md">functions</a></li><li><a href="databases/postgres/permissions/roles.md">roles</a></li></ul>
-<h2>SQL</h0>
-<ul><li><a href="databases/sql/style_guides/mozilla.md">Mozilla SQL Style Guide</a></li></ul>
+<h2>Postgres</h2>
+<h3>Constraints</h3>
+<ul>
+<li><a href="postgres/constraints/set_constraints.html">SET CONSTRAINTS</a></li>
+<li><a href="postgres/constraints/set_not_null.html">SET NOT NULL</a></li>
+<li><a href="postgres/constraints/exclude_using.html">EXCLUDE USING</a></li>
+<li><a href="postgres/constraints/composite_primary_keys.html">Composite Primary Keys</a></li>
+<li><a href="postgres/constraints/conditional_and_expression_unique_constraints.html">Conditional and expression unique constraints</a></li>
+<li><a href="postgres/constraints/unique_set_of_columns.html">Unique set of columns</a></li>
+</ul>
+<h3>Outages</h3>
+<ul>
+<li><a href="postgres/outages/fks_without_downtime.html">FKs Without Downtime</a></li>
+<li><a href="postgres/outages/long_transactions.html">Long Transactions</a></li>
+<li><a href="postgres/outages/default.html">DEFAULT</a></li>
+<li><a href="postgres/outages/drop_column_with_index.html">Drop Column With Index</a></li>
+<li><a href="postgres/outages/check_constraints_without_downtime.html">CHECK Constraints Without Downtime</a></li>
+<li><a href="postgres/outages/unique_constraints_without_downtime.html">UNIQUE Constraints Without Downtime</a></li>
+<li><a href="postgres/outages/is_this_ddl_going_to_rewrite_the_table.html">Is This DDL Going To Rewrite The Table?</a></li>
+<li><a href="postgres/outages/renaming_a_table_using_view.html">Renaming A Table Using VIEW</a></li>
+<li><a href="postgres/outages/changing_the_precision_of_a_field_without_downtime.html">Changing the precision of a field without downtime</a></li>
+<li><a href="postgres/outages/changing_serial_column_to_identity_without_downtime.html">Changing SERIAL column to IDENTITY Without Downtime</a></li>
+</ul>
+<h3>Indexing</h3>
+<ul>
+<li><a href="postgres/indexing/indexing_for_like.html">Indexing for LIKE</a></li>
+<li><a href="postgres/indexing/concurrent_index_during_vacuum.html">Concurrent index during vacuum</a></li>
+<li><a href="postgres/indexing/postgres_brin_index.html">Postgres BRIN index</a></li>
+<li><a href="postgres/indexing/no_automatic_index_on_fks.html">No Automatic Index on FKs</a></li>
+<li><a href="postgres/indexing/drop_index_concurrently.html">DROP INDEX CONCURRENTLY</a></li>
+<li><a href="postgres/indexing/composed_index_vs_denormalised_column_index.html">Composed index vs denormalised column index</a></li>
+<li><a href="postgres/indexing/reindex_concurrently.html">REINDEX CONCURRENTLY</a></li>
+<li><a href="postgres/indexing/visualising_a_btree_index.html">Visualising a btree index</a></li>
+<li><a href="postgres/indexing/nulls_not_distinct.html">NULLS NOT DISTINCT</a></li>
+</ul>
+<h3>Planning</h3>
+<ul>
+<li><a href="postgres/planning/a-psql-planner-primmer.html">A PSQL Planner Primer</a></li>
+</ul>
+<h3>Locks</h3>
+<ul>
+<li><a href="postgres/locks/lock_timeout.html">lock_timeout</a></li>
+<li><a href="postgres/locks/locks_cheatsheet.html">Locks cheatsheet</a></li>
+<li><a href="postgres/locks/print_lock_for_query.html">Print lock for query</a></li>
+<li><a href="postgres/locks/deadlock_demonstration.html">Deadlock Demonstration</a></li>
+<li><a href="postgres/locks/advisory_lock.html">Advisory Lock</a></li>
+<li><a href="postgres/locks/drop_trigger_locks.html">Drop trigger locks</a></li>
+</ul>
+<h3>Triggers</h3>
+<ul>
+<li><a href="postgres/triggers/get_definition_of_a_trigger.html">Get definition of a trigger</a></li>
+</ul>
+<h3>Testing</h3>
+<ul>
+<li><a href="postgres/testing/postgres_docker_container.html">Postgres Docker Container</a></li>
+</ul>
+<h3>Performance</h3>
+<ul>
+<li><a href="postgres/performance/or_queries.html">OR queries</a></li>
+<li><a href="postgres/performance/json_filtering_vs_text_casting.html">JSON filtering vs text casting</a></li>
+<li><a href="postgres/performance/table_bloat.html">Table bloat</a></li>
+<li><a href="postgres/performance/slow_order_by_and_limit.html">Slow ORDER BY and LIMIT</a></li>
+<li><a href="postgres/performance/fastest_way_to_find_if_table_is_empty.html">Fastest way to find if table is empty</a></li>
+<li><a href="postgres/performance/uuids_vs_id.html">UUID vs ID</a></li>
+<li><a href="postgres/performance/unlogged_tables.html">Unlogged Tables</a></li>
+</ul>
+<h3>Internals</h3>
+<ul>
+<li><a href="postgres/internals/building_from_source.html">Building From Source</a></li>
+<li><a href="postgres/internals/profiling_postgres_on_linux.html">Profiling Postgres On Linux</a></li>
+<li><a href="postgres/internals/profiling_postgres_on_mac.html">Profiling Postgres On Mac</a></li>
+<li><a href="postgres/internals/debugging_postgres.html">Debugging Postgres</a></li>
+<li><a href="postgres/internals/how_postgres_implements_foreign_keys.html">How Postgres Implements Foreign Keys</a></li>
+<li><a href="postgres/internals/swapping_a_table_with_its_copy.html">Swapping a Table With its Copy</a></li>
+<li><a href="postgres/internals/page_pruning.html">Page Pruning</a></li>
+<li><a href="postgres/internals/fillfactor.html">Fillfactor</a></li>
+</ul>
+<h3>Disk</h3>
+<ul>
+<li><a href="postgres/disk/how_table_data_is_stored_in_disk.html">How table data is stored in disk</a></li>
+</ul>
+<h3>Extensions</h3>
+<ul>
+<li><a href="postgres/extensions/pg_repack.html">pg_repack</a></li>
+<li><a href="postgres/extensions/pgcrypto.html">pgcrypto</a></li>
+<li><a href="postgres/extensions/how_extensions_are_created.html">how extensions are created</a></li>
+</ul>
+<h3>Third Party Packages</h3>
+<ul>
+<li><a href="postgres/third_party_packages/pgroll.html">pgroll</a></li>
+</ul>
+<h3>Transactions</h3>
+<ul>
+<li><a href="postgres/transactions/transaction_isolation.html">Transaction Isolation</a></li>
+<li><a href="postgres/transaction/read_only_transactions.html">Read only transactions</a></li>
+</ul>
+<h3>PSQL</h3>
+<ul>
+<li><a href="postgres/psql/a_basic_psql_workflow.html">A Basic psql Workflow</a></li>
+</ul>
+<h3>Vacuum</h3>
+<ul>
+<li><a href="postgres/vacuum/vacuum_phases.html">VACUUM Phases</a></li>
+<li><a href="postgres/vacuum/replication_slots_blocking_vacuum.html">Replication slots blocking VACUUM</a></li>
+<li><a href="postgres/vacuum/faster_autovacuum.html">Faster autovacuum</a></li>
+</ul>
+<h3>Replication</h3>
+<ul>
+<li><a href="postgres/replication/basics.html">Replication basics</a></li>
+</ul>
+<h3>Documentation</h3>
+<ul>
+<li><a href="postgres/documentation/postgres_documentation_syntax.html">Postgres Documentation Syntax</a></li>
+</ul>
+<h3>Fields</h3>
+<ul>
+<li><a href="postgres/fields/choosing_between_varchar_and_varchar_n.html">Choosing between varchar and varchar(n)</a></li>
+<li><a href="postgres/fields/identity_columns.html">Identity columns</a></li>
+<li><a href="postgres/fields/updating_jsonb_columns.html">Updating jsonb columns</a></li>
+</ul>
+<h3>WAL</h3>
+<ul>
+<li><a href="postgres/wal/basics.html">WAL basics</a></li>
+</ul>
+<h3>Sequences</h3>
+<ul>
+<li><a href="postgres/sequences/alter_sequence_owned_by.html">ALTER SEQUENCE OWNED BY</a></li>
+<li><a href="postgres/sequences/alter_sequence_cycle.html">ALTER SEQUENCE CYCLE</a></li>
+<li><a href="postgres/sequences/querying_sequence_information.html">Querying sequence information</a></li>
+</ul>
+<h3>Functions</h3>
+<ul>
+<li><a href="postgres/functions/get_definition_of_a_function.html">Get definition of a function</a></li>
+</ul>
+<h3>Isolation</h3>
+<ul>
+<li><a href="postgres/isolation/temporary_tables.html">Temporary tables</a></li>
+</ul>
+<h3>Statistics</h3>
+<ul>
+<li><a href="postgres/statistics/table_statistics.html">table statistics</a></li>
+</ul>
+<h3>Schemas</h3>
+<ul>
+<li><a href="postgres/schemas/basics.html">schemas basics</a></li>
+</ul>
+<h3>Varchar</h3>
+<ul>
+<li><a href="postgres/varchar/when_does_varchar_schema_changes_become_risky.html">when does varchar schema changes become risky</a></li>
+</ul>
+<h3>Permissions</h3>
+<ul>
+<li><a href="postgres/permissions/schemas.html">schemas</a></li>
+<li><a href="postgres/permissions/tables.html">tables</a></li>
+<li><a href="postgres/permissions/functions.html">functions</a></li>
+<li><a href="postgres/permissions/roles.html">roles</a></li>
+</ul>
+<h2>SQL</h2>
+<ul>
+<li><a href="sql/style_guides/mozilla.html">Mozilla SQL Style Guide</a></li>
+</ul>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -59,22 +59,47 @@
   <![endif]-->
 </head>
 <body>
-<h1>Transaction Isolation</h0>
-<pre><code class="language-">
-Created at: 2024-11-14
-</code></pre><p>Postgres only implements three out of the four transaction isolation levels from the SQL standard. PostgreSQL's Read Uncommitted mode behaves like Read Committed. Note that read committed is the default.</p>
+<h1>Transaction Isolation</h1>
+<pre><code>Created at: 2024-11-14
+</code></pre>
+<p>Postgres only implements three out of the four transaction isolation levels
+from the SQL standard. PostgreSQL's Read Uncommitted mode behaves like Read
+Committed. Note that read committed is the default.</p>
 <p>The different levels mean to restrict the existence of the following issues:</p>
-<ul><li>dirty read: A transaction reads data written by a concurrent uncommitted transaction.</li></ul>
-<ul><li>nonrepeatable read: A transaction re</li><li>reads the same row twice and finds that data has been modified by another transaction (that committed since the initial read) and thus the first transaction has different results between each query.</li></ul>
-<ul><li>phantom read: A transaction re</li><li>executes a query returning a set of rows that satisfy a search condition and finds that the set of rows satisfying the condition has changed due to another recently</li><li>committed transaction.</li></ul>
-<ul><li>serialization anomaly: The result of successfully committing a group of transactions is inconsistent with all possible orderings of running those transactions one at a time.</li></ul>
+<ul>
+<li><p>dirty read: A transaction reads data written by a concurrent uncommitted
+transaction.</p>
+</li>
+<li><p>nonrepeatable read: A transaction re-reads the same row twice and finds that
+data has been modified by another transaction (that committed since the
+initial read) and thus the first transaction has different results between
+each query.</p>
+</li>
+<li><p>phantom read: A transaction re-executes a query returning a set of rows that
+satisfy a search condition and finds that the set of rows satisfying the
+condition has changed due to another recently-committed transaction.</p>
+</li>
+<li><p>serialization anomaly: The result of successfully committing a group of
+transactions is inconsistent with all possible orderings of running those
+transactions one at a time.</p>
+</li>
+</ul>
 <p>A summary table is provided:</p>
-<p>Isolation Level    Dirty Read     Nonrepeatable Read   Phantom Read   Serialization Anomaly ------------------ -------------- -------------------- -------------- --------------------- Read uncommitted   Allowed        but not in PG        Possible       Possible Read committed     Not possible   Possible             Possible       Possible Repeatable read    Not possible   Not possible         Allowed        but not in PG Serializable       Not possible   Not possible         Not possible   Not possible</p>
-<h2>Important note</h0>
-<p>Some PostgreSQL data types and functions have special rules regarding transactional behavior. In particular, changes made to a sequence (and therefore the counter of a column declared using serial) are immediately visible to all other transactions and are not rolled back if the transaction that made the changes aborts. <a href="https://www.postgresql.org/docs/current/transaction-iso.html">1</a>.</p>
-<h2>Changing the transaction isolation with SET TRANSACTION</h0>
-<pre><code class="language-">
-marcelo.fernandes=# \help SET TRANSACTION
+<p>Isolation Level    Dirty Read     Nonrepeatable Read   Phantom Read   Serialization Anomaly</p>
+<hr>
+<p>Read uncommitted   Allowed        but not in PG        Possible       Possible
+Read committed     Not possible   Possible             Possible       Possible
+Repeatable read    Not possible   Not possible         Allowed        but not in PG
+Serializable       Not possible   Not possible         Not possible   Not possible</p>
+<h2>Important note</h2>
+<p>Some PostgreSQL data types and functions have special rules regarding
+transactional behavior. In particular, changes made to a sequence (and
+therefore the counter of a column declared using serial) are immediately
+visible to all other transactions and are not rolled back if the transaction
+that made the changes aborts.
+<a href="https://www.postgresql.org/docs/current/transaction-iso.html">1</a>.</p>
+<h2>Changing the transaction isolation with SET TRANSACTION</h2>
+<pre><code>marcelo.fernandes=# \help SET TRANSACTION
 Command:     SET TRANSACTION
 Description: set the characteristics of the current transaction
 Syntax:
@@ -89,6 +114,13 @@ where transaction_mode is one of:
     [ NOT ] DEFERRABLE
 
 URL: https://www.postgresql.org/docs/15/sql-set-transaction.html
-</code></pre><p>NOTE: <blockquote>TThhee  ttrraannssaaccttiioonn  iissoollaattiioonn  lleevveell  ccaannnnoott  bbee  cchhaannggeedd  aafftteerr  tthhee  ffiirrsstt  qquueerryy  oorr</blockquote>
-<blockquote>ddaattaa--mmooddiiffiiccaattiioonn  ssttaatteemmeenntt  ((SSEELLEECCTT,,  IINNSSEERRTT,,  DDEELLEETTEE,,  UUPPDDAATTEE,,  MMEERRGGEE,,  FFEETTCCHH,,  oorr</blockquote>
-<blockquote>CCOOPPYY))  ooff  aa  ttrraannssaaccttiioonn  hhaass  bbeeeenn  eexxeeccuutteedd..</p>
+</code></pre>
+<p>NOTE:</p>
+<blockquote>
+<p>The transaction isolation level cannot be changed after the first query or
+data-modification statement (SELECT, INSERT, DELETE, UPDATE, MERGE, FETCH, or
+COPY) of a transaction has been executed.</p>
+</blockquote>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

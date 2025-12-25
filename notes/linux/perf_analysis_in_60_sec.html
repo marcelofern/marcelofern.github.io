@@ -59,42 +59,50 @@
   <![endif]-->
 </head>
 <body>
-<h1>Linux Performance Analysis in 60 Seconds</h0>
-<p>This is a snippet from Brendan Gregg's Systems Performance (Enterprise and the Cloud) book.</p>
-<p>These are commands aimed to help in the first 60 seconds of an performance-related incident.</p>
-<h2>uptime</h0>
-<pre><code class="language-">
-$ uptime
+<h1>Linux Performance Analysis in 60 Seconds</h1>
+<p>This is a snippet from Brendan Gregg's Systems Performance (Enterprise and the
+Cloud) book.</p>
+<p>These are commands aimed to help in the first 60 seconds of an
+performance-related incident.</p>
+<h2>uptime</h2>
+<pre><code>$ uptime
  19:13:24 up  9:41,  2 users,  load average: 0.67, 1.52, 1.82
-</code></pre><p>This command not only tells you how long the system has been running for, it also tells you how many users are logged on, and the system load averages for the past 1, 5, and 15 minutes.</p>
-<p>From this information you can tell if the load in the system has increased over time.</p>
+</code></pre>
+<p>This command not only tells you how long the system has been running for, it
+also tells you how many users are logged on, and the system load averages for
+the past 1, 5, and 15 minutes.</p>
+<p>From this information you can tell if the load in the system has increased over
+time.</p>
 <p>From the man page:</p>
-<blockquote>System load averages is the average number of processes that are either in a</blockquote>
-<blockquote>runnable or uninterruptible state.  A process in a runnable state is either</blockquote>
-<blockquote>using the CPU or waiting to use the CPU.  A process in uninterruptible state</blockquote>
-<blockquote>is waiting for some I/O access, eg waiting for disk.  The averages are taken</blockquote>
-<blockquote>over the three time intervals.  Load averages are not normalized for the</blockquote>
-<blockquote>number of CPUs in a system, so a load average of 1 means a single CPU system</blockquote>
-<blockquote>is loaded all the time while on a 4 CPU system it means it was idle 75% of</blockquote>
-<blockquote>the time.</blockquote>
-<h2>dmesg <ul><li>TT  ||  ttaaiill</h0>
- This command shows kernel errors (including OOM events). The <code>-T</code> flag means "print time stamps in human</li><li>readable format.</li></ul>
-<pre><code class="language-">
-$ dmesg -T | tail
+<blockquote>
+<p>System load averages is the average number of processes that are either in a
+runnable or uninterruptible state.  A process in a runnable state is either
+using the CPU or waiting to use the CPU.  A process in uninterruptible state
+is waiting for some I/O access, eg waiting for disk.  The averages are taken
+over the three time intervals.  Load averages are not normalized for the
+number of CPUs in a system, so a load average of 1 means a single CPU system
+is loaded all the time while on a 4 CPU system it means it was idle 75% of
+the time.</p>
+</blockquote>
+<h2>dmesg -T | tail</h2>
+<p>This command shows kernel errors (including OOM events).
+The <code>-T</code> flag means &quot;print time stamps in human-readable format.</p>
+<pre><code>$ dmesg -T | tail
 [Mon Oct 14 11:16:53 2024] firefox[112390]: segfault at 0 ip 00005894f819b3b5 sp 00007fff95682d90 error 6 in firefox[5894f817c000+c1000] likely on CPU 7 (core 3, socket 0)
-[Mon Oct 14 11:40:50 2024] perf: interrupt took too long (2508 > 2500), lowering kernel.perf_event_max_sample_rate to 79500
+[Mon Oct 14 11:40:50 2024] perf: interrupt took too long (2508 &gt; 2500), lowering kernel.perf_event_max_sample_rate to 79500
 [Mon Oct 14 16:53:09 2024] usb 3-6.3: New USB device strings: Mfr=1, Product=2, SerialNumber=0
-</code></pre><h2>vmstat <ul><li>SSMM  11</h0>
- System</li><li>wide statistics (even though it is named after virtual memory)</li></ul>
-<pre><code class="language-">
-$ vmstat -SM 1
+</code></pre>
+<h2>vmstat -SM 1</h2>
+<p>System-wide statistics (even though it is named after virtual memory)</p>
+<pre><code>$ vmstat -SM 1
 procs -----------memory---------- ---swap-- -----io---- -system-- -------cpu-------
  r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st gu
  3  0     27   4238    432   5893    0    0   201   517 2772   12  7  2 91  0  0  0
-</code></pre><p><code>-SM</code> means to print memory in mebibytes. <code>1</code> is the delay in which to keep probing the system.</p>
+</code></pre>
+<p><code>-SM</code> means to print memory in mebibytes.
+<code>1</code> is the delay in which to keep probing the system.</p>
 <p>Here is what each field means:</p>
-<pre><code class="language-">
-Procs
+<pre><code>Procs
     r: The number of runnable processes (running or waiting for run time).
     b: The number of processes blocked waiting for I/O to complete.
 
@@ -128,10 +136,10 @@ CPU
     wa: Time spent waiting for IO.  Prior to Linux 2.5.41, included in idle.
     st: Time stolen from a virtual machine.  Prior to Linux 2.6.11, unknown.
     gu: Time spent running KVM guest code (guest time, including guest nice).
-</code></pre><h2>mpstat <ul><li>PP  AALLLL  11</h0>
- Shows per</li><li>cpu balance. A single busy CPU can indicate poor thread scalling</li></ul>
-<pre><code class="language-">
-$ mpstat -P ALL 1
+</code></pre>
+<h2>mpstat -P ALL 1</h2>
+<p>Shows per-cpu balance. A single busy CPU can indicate poor thread scalling</p>
+<pre><code>$ mpstat -P ALL 1
 Linux 6.6.52-1-lts (archlinux)  10/14/2024      _x86_64_        (8 CPU)
 
 07:35:57 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
@@ -144,21 +152,24 @@ Linux 6.6.52-1-lts (archlinux)  10/14/2024      _x86_64_        (8 CPU)
 07:35:58 PM    5    0.00    0.00    0.00    0.00    0.00    1.00    0.00    0.00    0.00   99.00
 07:35:58 PM    6    1.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   99.00
 07:35:58 PM    7    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
-</code></pre><p><code>-P ALL</code> means show statistics for all processors. <code>1</code> means to re-query every 1 second.mp</p>
-<h2>pidstat 1</h0>
-<p>Per-process CPU usage. Used to identify unexpected CPU consumers, and user/system CPU time for each process.</p>
-<pre><code class="language-">
-Linux 6.6.52-1-lts (archlinux)  10/14/2024      _x86_64_        (8 CPU)
+</code></pre>
+<p><code>-P ALL</code> means show statistics for all processors.
+<code>1</code> means to re-query every 1 second.mp</p>
+<h2>pidstat 1</h2>
+<p>Per-process CPU usage. Used to identify unexpected CPU consumers, and
+user/system CPU time for each process.</p>
+<pre><code>Linux 6.6.52-1-lts (archlinux)  10/14/2024      _x86_64_        (8 CPU)
 
 07:38:39 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
 07:38:40 PM     0       679    0.99    0.99    0.00    0.00    1.98     1  falcon-sensor-b
 07:38:40 PM     0       995    0.99    0.00    0.00    0.00    0.99     1  osqueryd
 07:38:40 PM  1000      2455    1.98    0.00    0.00    0.00    1.98     0  Xorg
 07:38:40 PM  1000    212098    0.99    0.99    0.00    0.00    1.98     6  pidstat
-</code></pre><h2>iostat <ul><li>ssxxzz  11</h0>
- Displays disk I/O stats. IOPS (IO operations per second) and throughput, average wait time, % busy.</li></ul>
-<pre><code class="language-">
-$ iostat -sxz 1
+</code></pre>
+<h2>iostat -sxz 1</h2>
+<p>Displays disk I/O stats. IOPS (IO operations per second) and throughput,
+average wait time, % busy.</p>
+<pre><code>$ iostat -sxz 1
 Linux 6.6.52-1-lts (archlinux)  10/14/2024      _x86_64_        (8 CPU)
 
 avg-cpu:  %user   %nice %system %iowait  %steal   %idle
@@ -172,21 +183,27 @@ dm-3             52.29    696.20     0.00    3.43    13.31    0.18   0.49
 dm-4              0.04      1.13     0.00    0.31    30.40    0.00   0.00
 dm-5              0.26      1.81     0.00    0.09     6.92    0.00   0.00
 nvme0n1          31.54    701.71    21.16    0.68    22.25    0.02   0.43
-</code></pre><ul><li><code>-s</code> Displays a short (narrow) version of the report that should fit in 80 characters wide screens.</li><li><code>-x</code> Displays extended statistics.</li><li><code>-z</code> Tells iostat to omit output for any devices for which there was no activity during the sample period. You can omit this for a more static view.</li></ul>
-<h2>free <ul><li>mm</h0>
- Memory usage including the file system cache.</li></ul>
-<pre><code class="language-">
-$ free -m
+</code></pre>
+<ul>
+<li><code>-s</code> Displays a short (narrow) version of the report that should fit in 80
+characters wide screens.</li>
+<li><code>-x</code> Displays extended statistics.</li>
+<li><code>-z</code> Tells iostat to omit output for any devices for which there was no
+activity during the sample period. You can omit this for a more static view.</li>
+</ul>
+<h2>free -m</h2>
+<p>Memory usage including the file system cache.</p>
+<pre><code>$ free -m
 free: Multiple unit options don't make sense.
 $ free
                total        used        free      shared  buff/cache   available
 Mem:           15717        6331        4121         738        6341        9385
 Swap:            511          27         484
 Total:         16229        6358        4606
-</code></pre><h2>sar <ul><li>nn  DDEEVV  11</h0>
- Network device I/O: packets and throughput.</li></ul>
-<pre><code class="language-">
-$ sar -n DEV 1
+</code></pre>
+<h2>sar -n DEV 1</h2>
+<p>Network device I/O: packets and throughput.</p>
+<pre><code>$ sar -n DEV 1
 Linux 6.6.52-1-lts (archlinux)  10/14/2024      _x86_64_        (8 CPU)
 
 07:49:29 PM     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil
@@ -203,10 +220,10 @@ Linux 6.6.52-1-lts (archlinux)  10/14/2024      _x86_64_        (8 CPU)
 07:49:30 PM veth950bf0a      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
 07:49:30 PM enp0s13f0u3u1      0.00      2.00      0.00      0.22      0.00      0.00      0.00      0.00
 07:49:30 PM   zcctun0      1.00      1.00      0.04      0.05      0.00      0.00      0.00      0.00
-</code></pre><h2>sar <ul><li>nn  TTCCPP,,EETTCCPP  11</h0>
- TCP statistics: connection rates, retransmits.</li></ul>
-<pre><code class="language-">
-[tmp] sar -n TCP,ETCP 1
+</code></pre>
+<h2>sar -n TCP,ETCP 1</h2>
+<p>TCP statistics: connection rates, retransmits.</p>
+<pre><code>[tmp] sar -n TCP,ETCP 1
 Linux 6.6.52-1-lts (archlinux)  10/14/2024      _x86_64_        (8 CPU)
 
 07:50:31 PM  active/s passive/s    iseg/s    oseg/s
@@ -229,5 +246,10 @@ Linux 6.6.52-1-lts (archlinux)  10/14/2024      _x86_64_        (8 CPU)
 
 07:50:34 PM  active/s passive/s    iseg/s    oseg/s
 07:50:35 PM      2.00      0.00   1057.00    467.00
-</code></pre><h2>top</h0>
-<p>You already know it ;-) System overview.</p>
+</code></pre>
+<h2>top</h2>
+<p>You already know it ;-)
+System overview.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

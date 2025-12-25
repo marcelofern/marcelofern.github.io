@@ -60,41 +60,46 @@
 </head>
 <body>
 <p>The C standard #46th undefined behaviour has the following description:</p>
-<blockquote>Addition or subtraction of a pointer into, or just beyond, an array object</blockquote>
-<blockquote>and an integer type produces a result that does not point into, or just</blockquote>
-<blockquote>beyond, the same array object.</blockquote>
+<blockquote>
+<p>Addition or subtraction of a pointer into, or just beyond, an array object
+and an integer type produces a result that does not point into, or just
+beyond, the same array object.</p>
+</blockquote>
 <p>Problematic code:</p>
-<pre><code class="language-c">
-enum { TABLESIZE = 100 };
+<pre><code class="language-c">enum { TABLESIZE = 100 };
 static int table[TABLESIZE];
 
 int *f(int index) {
-    if (index < TABLESIZE) {
-        return table + index;
-    }
-    return NULL;
-}
-</code></pre><p>The <code>index</code> argument value may be negative, given that <code>int</code> is signed. That would cause undefined behaviour.</p>
-<p>Better code:</p>
-<pre><code class="language-c">
-enum { TABLESIZE = 100 };
-static int table[TABLESIZE];
-
-int *f(int index) {
-    if (index >= 0 && index < TABLESIZE) {
-        return table + index;
-    }
-    return NULL;
-}
-</code></pre><p>An even better code would use a type that cannot be negative, such as <code>size_t</code>:</p>
-<pre><code class="language-c">
-#include <stddef.h>
-enum { TABLESIZE = 100 };
-static int table[TABLESIZE];
-int *f(size_t index) {
-    if (index < TABLESIZE) {
+    if (index &lt; TABLESIZE) {
         return table + index;
     }
     return NULL;
 }
 </code></pre>
+<p>The <code>index</code> argument value may be negative, given that <code>int</code> is signed. That
+would cause undefined behaviour.</p>
+<p>Better code:</p>
+<pre><code class="language-c">enum { TABLESIZE = 100 };
+static int table[TABLESIZE];
+
+int *f(int index) {
+    if (index &gt;= 0 &amp;&amp; index &lt; TABLESIZE) {
+        return table + index;
+    }
+    return NULL;
+}
+</code></pre>
+<p>An even better code would use a type that cannot be negative, such as <code>size_t</code>:</p>
+<pre><code class="language-c">#include &lt;stddef.h&gt;
+enum { TABLESIZE = 100 };
+static int table[TABLESIZE];
+int *f(size_t index) {
+    if (index &lt; TABLESIZE) {
+        return table + index;
+    }
+    return NULL;
+}
+</code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

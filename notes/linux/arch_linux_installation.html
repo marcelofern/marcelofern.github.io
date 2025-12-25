@@ -60,22 +60,24 @@
 </head>
 <body>
 <p>2024-05-29</p>
-<h1>Arch Linux Installation</h0>
-<h2>Uploading a .iso to a USB drive</h0>
+<h1>Arch Linux Installation</h1>
+<h2>Uploading a .iso to a USB drive</h2>
 <p>Identify the usb drive with the <code>lsblk</code> command:</p>
-<pre><code class="language-sh">
-lsblk
-</code></pre><p>Ensure the USB drive is unmounted and using vfat:</p>
-<pre><code class="language-sh">
-sudo umount /dev/sdX1
+<pre><code class="language-sh">lsblk
+</code></pre>
+<p>Ensure the USB drive is unmounted and using vfat:</p>
+<pre><code class="language-sh">sudo umount /dev/sdX1
 sudo mkfs.vfat -F 32 /dev/sdX
-</code></pre><p>You can use the archlinux tutorial from here, or keep following the instructions below (up to you). <a href="http://web.archive.org/web/20240516115931/https://wiki.archlinux.org/title/USB_flash_installation_medium">Arch wiki</a></p>
+</code></pre>
+<p>You can use the archlinux tutorial from here, or keep following the
+instructions below (up to you).
+<a href="http://web.archive.org/web/20240516115931/https://wiki.archlinux.org/title/USB_flash_installation_medium">Arch wiki</a></p>
 <p>Find the name of the USB drive:</p>
-<pre><code class="language-sh">
-ls -l /dev/disk/by-id/usb-*
-</code></pre><p>NOTE: Do not pick any of the names with <code>part-X</code> as suffix. Select only the "main" one that is not a partition.</p>
-<pre><code class="language-sh">
-sudo dd if=path/to/your.iso of=/dev/sdX1 bs=4M status=progress
+<pre><code class="language-sh">ls -l /dev/disk/by-id/usb-*
+</code></pre>
+<p>NOTE: Do not pick any of the names with <code>part-X</code> as suffix. Select only the
+&quot;main&quot; one that is not a partition.</p>
+<pre><code class="language-sh">sudo dd if=path/to/your.iso of=/dev/sdX1 bs=4M status=progress
 sudo dd bs=4M if=path/to/archlinux-version-x86_64.iso of=/dev/disk/by-id/usb-My_flash_drive conv=fsync oflag=direct status=progress
 
 # Notes:
@@ -83,17 +85,29 @@ sudo dd bs=4M if=path/to/archlinux-version-x86_64.iso of=/dev/disk/by-id/usb-My_
 # of = The output file.
 # bs = sets the block size to 4 megabytes.
 # status = shows the operation progress.
-</code></pre><p>Run <code>sync</code> to ensure all data is written to the USB drive.</p>
-<pre><code class="language-sh">
-sync
-</code></pre><h2>Booting from USB drive</h0>
-<p>In a thinkpad, you can press F12 during device startup to go to the boot menu. You can also try pressing <code>Esc</code> if your boot mode is set to "quick" in the BIOS.</p>
+</code></pre>
+<p>Run <code>sync</code> to ensure all data is written to the USB drive.</p>
+<pre><code class="language-sh">sync
+</code></pre>
+<h2>Booting from USB drive</h2>
+<p>In a thinkpad, you can press F12 during device startup to go to the boot menu.
+You can also try pressing <code>Esc</code> if your boot mode is set to &quot;quick&quot; in the
+BIOS.</p>
 <p>If your computer is running windows you can also:</p>
-<ol><li>Go to the <code>Settings</code> app, and search for <code>Windows Update</code>.</li><li>Click on <code>Advanced Options</code>.</li><li>Click on <code>Recovery</code>.</li><li>Click on <code>Advanced startup</code> and then <code>Restart now</code>.</li><li>The options menu will pop up, click on <code>Troubleshoot</code>.</li><li>Select <code>Advanced options</code>.</li><li>Select <code>UEFI Firmware Settings</code> and click <code>Restart</code>.</li><li>Press the necessary key to enter the BIOS (enter) followed by the option in the menu.</li></ol>
-<h2>Installing the OS</h0>
+<ol>
+<li>Go to the <code>Settings</code> app, and search for <code>Windows Update</code>.</li>
+<li>Click on <code>Advanced Options</code>.</li>
+<li>Click on <code>Recovery</code>.</li>
+<li>Click on <code>Advanced startup</code> and then <code>Restart now</code>.</li>
+<li>The options menu will pop up, click on <code>Troubleshoot</code>.</li>
+<li>Select <code>Advanced options</code>.</li>
+<li>Select <code>UEFI Firmware Settings</code> and click <code>Restart</code>.</li>
+<li>Press the necessary key to enter the BIOS (enter) followed by the option in
+the menu.</li>
+</ol>
+<h2>Installing the OS</h2>
 <p>You'll need internet connection. If using wifi, run:</p>
-<pre><code class="language-sh">
-iwctl
+<pre><code class="language-sh">iwctl
 
 # list device names
 [iwd] device list
@@ -106,7 +120,19 @@ iwctl
 [iwd] station name get-networks
 # connect to a network
 [iwd] station name connect SSID
-</code></pre><p>Finally run <code>archinstall</code>.</p>
-<pre><code class="language-sh">
-archinstall
-</code></pre><p>Notes: 0. Remove your USB disk to not interfere with lsbk during install. 1. Use <code>us</code> keyboard layout and locale to avoid dmenu errors. 2. Use ext4 filesystem for stability. 3. Do not create a separate partition for <code>/home</code>. 4. Make sure to copy wifi config to installation. 5. Repeat a few times if the installation failed (yeah...)</p>
+</code></pre>
+<p>Finally run <code>archinstall</code>.</p>
+<pre><code class="language-sh">archinstall
+</code></pre>
+<p>Notes:
+0. Remove your USB disk to not interfere with lsbk during install.</p>
+<ol>
+<li>Use <code>us</code> keyboard layout and locale to avoid dmenu errors.</li>
+<li>Use ext4 filesystem for stability.</li>
+<li>Do not create a separate partition for <code>/home</code>.</li>
+<li>Make sure to copy wifi config to installation.</li>
+<li>Repeat a few times if the installation failed (yeah...)</li>
+</ol>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

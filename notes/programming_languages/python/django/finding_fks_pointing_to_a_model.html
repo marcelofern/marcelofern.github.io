@@ -59,11 +59,10 @@
   <![endif]-->
 </head>
 <body>
-<h1>Finding FKs Pointing To a Model</h0>
-<pre><code class="language-">
-Created at: 2025-04-09
-</code></pre><pre><code class="language-py">
-from django.apps import apps
+<h1>Finding FKs Pointing To a Model</h1>
+<pre><code>Created at: 2025-04-09
+</code></pre>
+<pre><code class="language-py">from django.apps import apps
 from django.db import models
 
 def find_foreign_keys(app, model_name):
@@ -78,5 +77,8 @@ def find_foreign_keys(app, model_name):
 
     return referencing_models
 
-find_foreign_keys("events", "externalevent")
+find_foreign_keys(&quot;events&quot;, &quot;externalevent&quot;)
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -60,13 +60,12 @@
 </head>
 <body>
 <p>Problematic code:</p>
-<pre><code class="language-c">
-#include <stdlib.h>
+<pre><code class="language-c">#include &lt;stdlib.h&gt;
 static int *table = NULL;
 static size_t size = 0;
 
 int insert_in_table(size_t pos, int value) {
-    if (size < pos) {
+    if (size &lt; pos) {
         int *tmp;
         size = pos + 1; // updating the size before success is bad!
         tmp = (int *)realloc(table, sizeof(*table) * size);
@@ -78,18 +77,18 @@ int insert_in_table(size_t pos, int value) {
     table[pos] = value;
     return 0;
 }
-</code></pre><p>Better code:</p>
-<pre><code class="language-c">
-#include <stdint.h>
-#include <stdlib.h>
+</code></pre>
+<p>Better code:</p>
+<pre><code class="language-c">#include &lt;stdint.h&gt;
+#include &lt;stdlib.h&gt;
 static int *table = NULL;
 static size_t size = 0;
 
 int insert_in_table(size_t pos, int value) {
-    if (size <= pos) {
+    if (size &lt;= pos) {
         // position shouldn't wrap!
         // realloc multiplication shouldn't wrap!
-        if ((SIZE_MAX - 1 < pos) || ((pos + 1) > SIZE_MAX / sizeof(*table))) {
+        if ((SIZE_MAX - 1 &lt; pos) || ((pos + 1) &gt; SIZE_MAX / sizeof(*table))) {
             return -1;
         }
         int *tmp = (int *)realloc(table, sizeof(*table) * (pos + 1));
@@ -104,3 +103,6 @@ int insert_in_table(size_t pos, int value) {
     return 0;
 }
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

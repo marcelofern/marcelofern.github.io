@@ -60,14 +60,22 @@
 </head>
 <body>
 <p>July 10, 2022</p>
-<p>I've decided to start reading this book to get more insight into how to incorporate Lua into Neovim</p>
-<h2>Contents</h0>
-<ul><li><ol><li><a href="#chapter-1">Chapter Getting started</a> - <a href="#chapter-4">Chapter 4. Strings</a> - <a href="#chapter-5">Chapter 5. Tables</a> - <a href="#chapter-6">Chapter 6. Functions</a> - <a href="#chapter-18">Chapter 18. Generic for</a> - <a href="#chapter-20">Chapter 20. Metatables and Metamethods</a> - <a href="#chapter-21">Chapter 21. Object-Oriented Programming</a></li></ol>
-<h2>C Chhaapptteerr  11</h0>
-<h3>GGeettttiinngg  SSttaarrtteedd</h0>
-<pre><code class="language-lua">
--- file test.lua
-print("Hello World")
+<p>I've decided to start reading this book to get more insight into how to
+incorporate Lua into Neovim</p>
+<h2>Contents</h2>
+<ul>
+<li><a href="#chapter-1">Chapter 1. Getting started</a></li>
+<li><a href="#chapter-4">Chapter 4. Strings</a></li>
+<li><a href="#chapter-5">Chapter 5. Tables</a></li>
+<li><a href="#chapter-6">Chapter 6. Functions</a></li>
+<li><a href="#chapter-18">Chapter 18. Generic for</a></li>
+<li><a href="#chapter-20">Chapter 20. Metatables and Metamethods</a></li>
+<li><a href="#chapter-21">Chapter 21. Object-Oriented Programming</a></li>
+</ul>
+<h2>Chapter 1</h2>
+<h3>Getting Started</h3>
+<pre><code class="language-lua">-- file test.lua
+print(&quot;Hello World&quot;)
 
 -- defines a factorial function
 function factorial(n)
@@ -78,38 +86,73 @@ function factorial(n)
   end
 end
 
-print("enter a number:")
-a = io.read("*n")
+print(&quot;enter a number:&quot;)
+a = io.read(&quot;*n&quot;)
 print(factorial(a))
 
 -- types
-type(nil) --> nil
-type(true) --> boolean
-</code></pre></li></ul>
-<p>You can run the code above by passing the <code>test.lua</code> file to the Lua interpreter of your choice.</p>
-<pre><code class="language-bash">
-luajit test.lua
+type(nil) --&gt; nil
+type(true) --&gt; boolean
+</code></pre>
+<p>You can run the code above by passing the <code>test.lua</code> file to the Lua
+interpreter of your choice.</p>
+<pre><code class="language-bash">luajit test.lua
 
 # If you want to open an iterative session after running the code, use the
 # -i flag. This is usually helpful for debugging.
 luajit -i test.lua
-</code></pre><p>List of reserved words:</p>
-<ul><li>and</li><li>break</li><li>do</li><li>else</li><li>elseif</li><li>end</li><li>false</li><li>for</li><li>function</li><li>goto</li><li>if</li><li>in</li><li>local</li><li>nil</li><li>not</li><li>or</li><li>repeat</li><li>return</li><li>then</li><li>true</li><li>until</li><li>while</li></ul>
-<p>List of basic types: - nil - boolean - number - string - userdata (type(io.stdin)) - function - table - thread</p>
-<pre><code class="language-lua">
-type(a) --> nil. It does not return an error.
+</code></pre>
+<p>List of reserved words:</p>
+<ul>
+<li>and</li>
+<li>break</li>
+<li>do</li>
+<li>else</li>
+<li>elseif</li>
+<li>end</li>
+<li>false</li>
+<li>for</li>
+<li>function</li>
+<li>goto</li>
+<li>if</li>
+<li>in</li>
+<li>local</li>
+<li>nil</li>
+<li>not</li>
+<li>or</li>
+<li>repeat</li>
+<li>return</li>
+<li>then</li>
+<li>true</li>
+<li>until</li>
+<li>while</li>
+</ul>
+<p>List of basic types:</p>
+<ul>
+<li>nil</li>
+<li>boolean</li>
+<li>number</li>
+<li>string</li>
+<li>userdata (type(io.stdin))</li>
+<li>function</li>
+<li>table</li>
+<li>thread</li>
+</ul>
+<pre><code class="language-lua">type(a) --&gt; nil. It does not return an error.
 a = 10
-type(a) --> number
-a = "string"
-type(a) --> string
-</code></pre><h3>Exercises</h0>
-<p>Run the factorial example. What happens to your program if you enter a negative number? Modify the example to avoid this problem.</p>
+type(a) --&gt; number
+a = &quot;string&quot;
+type(a) --&gt; string
+</code></pre>
+<h3>Exercises</h3>
+<p>Run the factorial example. What happens to your program if you enter a negative
+number? Modify the example to avoid this problem.</p>
 <p>A: The program raises a <code>stack overlow</code> error.</p>
-<p><code>factorial.lua</code> <pre><code class="language-lua">
-#!/usr/bin/luajit</p>
+<p><code>factorial.lua</code></p>
+<pre><code class="language-lua">#!/usr/bin/luajit
 
 function factorial(n)
-  if n < 0 then
+  if n &lt; 0 then
     return nil
   elseif n == 0 then
     return 1
@@ -118,80 +161,80 @@ function factorial(n)
   end
 end
 
-print("enter a number:")
-a = io.read("*n")
+print(&quot;enter a number:&quot;)
+a = io.read(&quot;*n&quot;)
 print(factorial(a))
-</code></pre><p>Write a simple script that prints its own name without knowing it in advance.</p>
-<pre><code class="language-lua">
-#!/usr/bin/luajit
+</code></pre>
+<p>Write a simple script that prints its own name without knowing it in advance.</p>
+<pre><code class="language-lua">#!/usr/bin/luajit
 
 function print_file_name()
   print(arg[0])
 end
 
 print_file_name()
-</code></pre><h2>Chapter 4</h0>
-<h3>Strings</h0>
-<pre><code class="language-lua">
--- The length operator is `#`
-a = "hello"
-print(#a) --> 5
-print(#"test") --> 4
+</code></pre>
+<h2>Chapter 4</h2>
+<h3>Strings</h3>
+<pre><code class="language-lua">-- The length operator is `#`
+a = &quot;hello&quot;
+print(#a) --&gt; 5
+print(#&quot;test&quot;) --&gt; 4
 
 -- the lib string also has a length function
-print(string.len("morning!")) --> 8
+print(string.len(&quot;morning!&quot;)) --&gt; 8
 
 -- String concatenation happens with `..`
-print("hello " .. "world")
+print(&quot;hello &quot; .. &quot;world&quot;)
 
 -- long strings use [[ and ]]
 body = [[
-<body>
-  <a href="https://marcelofern.com">Marcelo Fern</a>
-</body>
+&lt;body&gt;
+  &lt;a href=&quot;https://marcelofern.com&quot;&gt;Marcelo Fern&lt;/a&gt;
+&lt;/body&gt;
 ]]
-</code></pre><pre><code class="language-lua">
--- or [[= (followed by any number of = signs)
+</code></pre>
+<pre><code class="language-lua">-- or [[= (followed by any number of = signs)
 -- and =]]. This is useful when you need to
 -- stringfy text that includes ]]
 text = [[===
 This text has ]]
 ===]]
-</code></pre><pre><code class="language-lua">
--- coercions
-print(10 .. 20) --> 1020
+</code></pre>
+<pre><code class="language-lua">-- coercions
+print(10 .. 20) --&gt; 1020
 
 -- string to number
-tonumber("   -3 ") --> -3
-tonumber(" i2 ") --> nil
+tonumber(&quot;   -3 &quot;) --&gt; -3
+tonumber(&quot; i2 &quot;) --&gt; nil
 
 -- number to string
-tostring(3) --> "3"
+tostring(3) --&gt; &quot;3&quot;
 
 -- formatting a string
-string.format("x = %d y = %d", 10, 20) --> x= 10 y = 20
+string.format(&quot;x = %d y = %d&quot;, 10, 20) --&gt; x= 10 y = 20
 
 -- search in string
-x, y = string.find("hello world", "wor") --> 7 9
-string.find("hello world", "war") --> nil
-</code></pre><h2>Chapter 5</h0>
-<h3>Tables</h0>
+x, y = string.find(&quot;hello world&quot;, &quot;wor&quot;) --&gt; 7 9
+string.find(&quot;hello world&quot;, &quot;war&quot;) --&gt; nil
+</code></pre>
+<h2>Chapter 5</h2>
+<h3>Tables</h3>
 <p>Tables are the only data structuring mechanism in Lua.</p>
-<pre><code class="language-lua">
-#!/usr/bin/luajit
+<pre><code class="language-lua">#!/usr/bin/luajit
 
 a = {}
-a["x"] = 10
-print(a["x"]) --> 10
+a[&quot;x&quot;] = 10
+print(a[&quot;x&quot;]) --&gt; 10
 
 b = {}
 b.x = 20
-print(b.x) --> 20
-</code></pre><p>Implementing lists / arrays:</p>
-<pre><code class="language-lua">
-numbers = {10, 20, 30, 40, 50}
-print(numbers[1]) --> 10 Indexes in Lua start at 1.
-print(#numbers) --> 5 The # calculates the length.
+print(b.x) --&gt; 20
+</code></pre>
+<p>Implementing lists / arrays:</p>
+<pre><code class="language-lua">numbers = {10, 20, 30, 40, 50}
+print(numbers[1]) --&gt; 10 Indexes in Lua start at 1.
+print(#numbers) --&gt; 5 The # calculates the length.
 
 -- note that # is unreliable for lists with holes.
 
@@ -204,48 +247,48 @@ end
 for k, v in ipairs(numbers) do
   print(k, v)
 end
---> 1 10
---> 2 20
---> 3 30
---> 4 40
---> 5 50
+--&gt; 1 10
+--&gt; 2 20
+--&gt; 3 30
+--&gt; 4 40
+--&gt; 5 50
 
 -- append an element at the end of an array
 numbers[#numbers + 1] = 60
-print(numbers[6]) --> 60
+print(numbers[6]) --&gt; 60
 -- or use table.insert
 table.insert(numbers, 70)
-print(numbers[7]) --> 70
+print(numbers[7]) --&gt; 70
 
 -- remove the last element of an array, returning it as a result
-print(table.remove(numbers)) --> 70
-print(numbers[#numbers]) --> 60
+print(table.remove(numbers)) --&gt; 70
+print(numbers[#numbers]) --&gt; 60
 -- you can also call `table.remove` with
 -- the number of the index you want to remove.
 -- in that case, the holes will be filled up
 -- i.e., each element after the removed one
 -- will be brought one position down.
-</code></pre><p>Implementing a dictionary</p>
-<pre><code class="language-lua">
-name = {first="Marcelo", last="Fernandes"}
-print(name.first .. " " .. name.last) --> Marcelo Fernandes
+</code></pre>
+<p>Implementing a dictionary</p>
+<pre><code class="language-lua">name = {first=&quot;Marcelo&quot;, last=&quot;Fernandes&quot;}
+print(name.first .. &quot; &quot; .. name.last) --&gt; Marcelo Fernandes
 
 -- traverse all key-value pairs
 for k, v in pairs(name) do
   print(k, v)
 end
---> first Marcelo
---> last Fernandes
+--&gt; first Marcelo
+--&gt; last Fernandes
 
-name.first = nil --> Remove the key from the table.
+name.first = nil --&gt; Remove the key from the table.
 
 -- To use strings:
-sum = {["+"] = "add"}
-print(sum["+"]) --> "add"
-</code></pre><h2>Chapter 6</h0>
-<h3>Functions</h0>
-<pre><code class="language-lua">
-function add(array)
+sum = {[&quot;+&quot;] = &quot;add&quot;}
+print(sum[&quot;+&quot;]) --&gt; &quot;add&quot;
+</code></pre>
+<h2>Chapter 6</h2>
+<h3>Functions</h3>
+<pre><code class="language-lua">function add(array)
   local sum = 0
   for i=1, #array do
     sum = sum + array[i]
@@ -253,10 +296,10 @@ function add(array)
   return sum
 end
 
-print(add({20, 20})) --> 40
-</code></pre><p>Variadic functions (variable number of arguments)</p>
-<pre><code class="language-lua">
-function add(...)
+print(add({20, 20})) --&gt; 40
+</code></pre>
+<p>Variadic functions (variable number of arguments)</p>
+<pre><code class="language-lua">function add(...)
   local sum = 0
   for _, v in pairs({...}) do
     sum = sum + v
@@ -264,27 +307,30 @@ function add(...)
   return sum
 end
 
-print(add(3, 4, 5, 6, 7)) --> 25
-</code></pre><h3>Exercices</h0>
-<p>Write a function that takes an array and prints all its elements <pre><code class="language-lua">
-#!/usr/bin/luajit</p>
+print(add(3, 4, 5, 6, 7)) --&gt; 25
+</code></pre>
+<h3>Exercices</h3>
+<p>Write a function that takes an array and prints all its elements</p>
+<pre><code class="language-lua">#!/usr/bin/luajit
 
 function print_array(array)
   print(unpack(array))
 end
 
 print(print_array({3, 4, 5, 6, 7}))
-</code></pre><p>Write a function that takes an arbitrary number of values and returns all of them, with the exception of the first one.</p>
-<pre><code class="language-lua">
-function all_but_first(first, ...)
+</code></pre>
+<p>Write a function that takes an arbitrary number of values and returns all of
+them, with the exception of the first one.</p>
+<pre><code class="language-lua">function all_but_first(first, ...)
   return ...
 end
 
-print(all_but_first(1, 2, 10)) --> 2 10
-print(all_but_first(1, "5", "word")) --> "5" "word"
-</code></pre><p>Write a function that takes an arbitrary number of values and returns all of them, with the exception of the last one.</p>
-<pre><code class="language-lua">
-#!/usr/bin/luajit
+print(all_but_first(1, 2, 10)) --&gt; 2 10
+print(all_but_first(1, &quot;5&quot;, &quot;word&quot;)) --&gt; &quot;5&quot; &quot;word&quot;
+</code></pre>
+<p>Write a function that takes an arbitrary number of values and returns all of
+them, with the exception of the last one.</p>
+<pre><code class="language-lua">#!/usr/bin/luajit
 
 function all_but_last(...)
   array = {...}
@@ -292,12 +338,12 @@ function all_but_last(...)
   return unpack(array)
 end
 
-print(all_but_last(1, 2, 10)) --> 1 2
-print(all_but_last(1, "5", "word")) --> 1 "5"
-</code></pre><h2>Chapter 18</h0>
-<h3>Generic for</h0>
-<pre><code class="language-lua">
--- given a function to iterate
+print(all_but_last(1, 2, 10)) --&gt; 1 2
+print(all_but_last(1, &quot;5&quot;, &quot;word&quot;)) --&gt; 1 &quot;5&quot;
+</code></pre>
+<h2>Chapter 18</h2>
+<h3>Generic for</h3>
+<pre><code class="language-lua">-- given a function to iterate
 -- over an array using closures
 function array_iterator(array)
   local i = 0
@@ -322,9 +368,9 @@ end
 for element in array_iterator(array) do
   print(element)
 end
-</code></pre><p>Stateless iterators:</p>
-<pre><code class="language-lua">
-#!/usr/bin/luajit
+</code></pre>
+<p>Stateless iterators:</p>
+<pre><code class="language-lua">#!/usr/bin/luajit
 
 local function array_iterator(array, index)
   index = index + 1
@@ -343,32 +389,33 @@ array = {10, 20, 30}
 for index, element in stateless_array_iterator(array) do
   print(index, element)
 end
-</code></pre><h2>Chapter 20</h0>
-<h3>Metatables and metamethods</h0>
-<pre><code class="language-lua">
--- setting and getting metatables
+</code></pre>
+<h2>Chapter 20</h2>
+<h3>Metatables and metamethods</h3>
+<pre><code class="language-lua">-- setting and getting metatables
 table = {}
 second_table = {}
 
 setmetatable(second_table, table)
-print(getmetatable(second_table) == table) --> true
+print(getmetatable(second_table) == table) --&gt; true
 
 -- a table can be its own metatable
 
 setmetatable(table, table)
-print(getmetatable(table) == table) --> true
-</code></pre><h2>Chapter 21</h0>
-<h3>Object<ul><li>OOrriieenntteedd  PPrrooggrraammmmiinngg</h0>
- Whenever a <code>:</code> is present on a function name, Lua injects a <code>self</code> keyword in the body of the function:</li></ul>
-<pre><code class="language-lua">
-Account = {balance=0}
+print(getmetatable(table) == table) --&gt; true
+</code></pre>
+<h2>Chapter 21</h2>
+<h3>Object-Oriented Programming</h3>
+<p>Whenever a <code>:</code> is present on a function name, Lua injects a <code>self</code> keyword
+in the body of the function:</p>
+<pre><code class="language-lua">Account = {balance=0}
 function Account:withdraw(amount)
   self.balance = self.balance - amount
 end
 
 acc = Account
 acc:withdraw(10)
-print(acc.balance) --> -10
+print(acc.balance) --&gt; -10
 
 -- the above is only syntax sugar.
 -- you can achieve the same as:
@@ -380,19 +427,19 @@ end
 acc = Account
 -- pass the extra argument here.
 acc.withdraw(acc, 10)
-print(acc.balance) --> -10
-</code></pre><p>Creating classes</p>
-<pre><code class="language-lua">
--- Lua uses the idea of prototypes like
+print(acc.balance) --&gt; -10
+</code></pre>
+<p>Creating classes</p>
+<pre><code class="language-lua">-- Lua uses the idea of prototypes like
 -- JavaScript. To set the prototype of
 -- an object, do this:
 setmetatable(A, {__index = B})
 -- now A looks up to B for
 -- all operations that it does
 -- not have.
-</code></pre><p>Thus we can create account objects:</p>
-<pre><code class="language-lua">
--- defaults
+</code></pre>
+<p>Thus we can create account objects:</p>
+<pre><code class="language-lua">-- defaults
 Account = {balance=0}
 
 -- methods
@@ -410,10 +457,10 @@ end
 
 acc = Account.new()
 acc:withdraw(50)
-print(acc.balance) --> -50
-</code></pre><p>You can improve this by setting the prototype in the constructor directly</p>
-<pre><code class="language-lua">
--- defaults
+print(acc.balance) --&gt; -50
+</code></pre>
+<p>You can improve this by setting the prototype in the constructor directly</p>
+<pre><code class="language-lua">-- defaults
 Account = {balance=0}
 
 -- constructors
@@ -434,10 +481,10 @@ end
 
 acc = Account:new()
 acc:withdraw(70)
-print(acc.balance) --> -70
-</code></pre><p>Inheritance:</p>
-<pre><code class="language-lua">
-#!/usr/bin/luajit
+print(acc.balance) --&gt; -70
+</code></pre>
+<p>Inheritance:</p>
+<pre><code class="language-lua">#!/usr/bin/luajit
 
 -- defaults
 Account = {balance=0}
@@ -454,8 +501,8 @@ end
 
 -- methods
 function Account:withdraw(amount)
-  if amount > self.balance then
-    error("insufficient funds")
+  if amount &gt; self.balance then
+    error(&quot;insufficient funds&quot;)
   end
   self.balance = self.balance - amount
 end
@@ -471,8 +518,8 @@ SpecialAccount = Account:new()
 -- methods
 -- override withdraw
 function SpecialAccount:withdraw(amount)
-  if (amount - self.balance) >= self:get_limit() then
-    error("insufficient funds")
+  if (amount - self.balance) &gt;= self:get_limit() then
+    error(&quot;insufficient funds&quot;)
   end
   self.balance = self.balance - amount
 end
@@ -483,8 +530,11 @@ end
 
 special_acc = SpecialAccount:new({limit=1000})
 special_acc:withdraw(999)
-print(special_acc.balance) --> -999
+print(special_acc.balance) --&gt; -999
 
 -- this line returns an error
 special_acc:withdraw(1000)
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

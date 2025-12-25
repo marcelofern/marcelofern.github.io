@@ -59,11 +59,10 @@
   <![endif]-->
 </head>
 <body>
-<h1>CLI basics</h0>
-<pre><code class="language-">
-Created at: 2025-11-02
-</code></pre><pre><code class="language-sh">
-# Starts the iterative CLI
+<h1>CLI basics</h1>
+<pre><code>Created at: 2025-11-02
+</code></pre>
+<pre><code class="language-sh"># Starts the iterative CLI
 ngspice
 
 # Loads a circuit netlist
@@ -72,11 +71,11 @@ source /tmp/my_circuit.ps
 # Runs an operation point analysis
 op
 
-# Runs a transient analysis <step size>, <total length>
+# Runs a transient analysis &lt;step size&gt;, &lt;total length&gt;
 tran 50u 50m
 
 # Print a specific node
-print <node name>
+print &lt;node name&gt;
 
 # Print all nodes
 print all
@@ -87,3 +86,6 @@ plot in
 # Plot all nodes
 plot all
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

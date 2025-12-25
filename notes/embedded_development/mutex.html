@@ -60,74 +60,119 @@
 </head>
 <body>
 <p>2024-05-11</p>
-<p>Mutex (mutual exclusion) is also referred to as <b>lock</b>.</p>
-<p>They are considered a synchronisation primitive, used to prevent data (state) of being mutated by multiple threads at the same time.</p>
-<p>Mutexes are similar to Semaphores as in they allow to control who has access to a particular resource in a scenario where multiple threads are trying to mutate shared data.</p>
-<p>However, mutexes are used when only one thread can access a particular resource, whereas semaphores are more general, and allow a number N of threads (but no more) to access a particular resource.</p>
-<h2>Locking strategies</h0>
+<p>Mutex (mutual exclusion) is also referred to as <strong>lock</strong>.</p>
+<p>They are considered a synchronisation primitive, used to prevent data (state)
+of being mutated by multiple threads at the same time.</p>
+<p>Mutexes are similar to Semaphores as in they allow to control who has access to
+a particular resource in a scenario where multiple threads are trying to mutate
+shared data.</p>
+<p>However, mutexes are used when only one thread can access a particular
+resource, whereas semaphores are more general, and allow a number N of threads
+(but no more) to access a particular resource.</p>
+<h2>Locking strategies</h2>
 <p>There are mainly two locking strategies. Advisory locks versus Mandatory locks.</p>
-<p>In advisory locks, each thread of execution waits to request the lock before accessing the underlying data.</p>
-<p>In mandatory locks, an exception is raised if a thread tries to read data that has been locked.</p>
-<h2>Binary Semaphore</h0>
+<p>In advisory locks, each thread of execution waits to request the lock before
+accessing the underlying data.</p>
+<p>In mandatory locks, an exception is raised if a thread tries to read data that
+has been locked.</p>
+<h2>Binary Semaphore</h2>
 <p>Binary semaphores are the simplest types of lock.</p>
-<p>They are implemented as a variable that has two states, "0" (unlocked) or "1" (locked).</p>
-<h2>Spinlock</h0>
-<p>A spinlock is a particular kind of lock that waits (spins) until the resource can be acquired.</p>
-<p>This mechanism is only efficient if the threads are blocked for a short period of time given that it saves the programmer the overhead of having to re-schedule the thread to acquire the resource again, later on, using the operating system resources.</p>
-<h2>Implementation</h0>
-<blockquote>Locks typically require hardware support for efficient implementation. This</blockquote>
-<blockquote>support usually takes the form of one or more atomic instructions such as</blockquote>
-<blockquote>"test-and-set", "fetch-and-add" or "compare-and-swap". These instructions</blockquote>
-<blockquote>allow a single process to test if the lock is free, and if free, acquire the</blockquote>
-<blockquote>lock in a single atomic operation.</blockquote>
-<blockquote>The reason an atomic operation is required is because of concurrency, where</blockquote>
-<blockquote>more than one task executes the same logic. For example, consider the</blockquote>
-<blockquote>following C code: </blockquote>
-<pre><code class="language-c">
-if (lock == 0) {
+<p>They are implemented as a variable that has two states, &quot;0&quot; (unlocked) or &quot;1&quot;
+(locked).</p>
+<h2>Spinlock</h2>
+<p>A spinlock is a particular kind of lock that waits (spins) until the resource
+can be acquired.</p>
+<p>This mechanism is only efficient if the threads are blocked for a short period
+of time given that it saves the programmer the overhead of having to
+re-schedule the thread to acquire the resource again, later on, using the
+operating system resources.</p>
+<h2>Implementation</h2>
+<blockquote>
+<p>Locks typically require hardware support for efficient implementation. This
+support usually takes the form of one or more atomic instructions such as
+&quot;test-and-set&quot;, &quot;fetch-and-add&quot; or &quot;compare-and-swap&quot;. These instructions
+allow a single process to test if the lock is free, and if free, acquire the
+lock in a single atomic operation.</p>
+</blockquote>
+<blockquote>
+<p>The reason an atomic operation is required is because of concurrency, where
+more than one task executes the same logic. For example, consider the
+following C code:</p>
+</blockquote>
+<pre><code class="language-c">if (lock == 0) {
     // lock free, set it
     lock = myPID;
 }
-</code></pre><blockquote>The above example does not guarantee that the task has the lock, since more</blockquote>
-<blockquote>than one task can be testing the lock at the same time. Since both tasks will</blockquote>
-<blockquote>detect that the lock is free, both tasks will attempt to set the lock, not</blockquote>
-<blockquote>knowing that the other task is also setting the lock.</blockquote>
-<p><a href="https://en.wikipedia.org/wiki/Lock_<a href="computer_science">source</a>)</p>
-<h2>Granularity</h0>
-<p>A coarse lock is a lock that covers a big piece of data or resource. For example, a lock on an entire table. This type of lock often generates lower lock overhead when a single process is used, but the performance quickly deteriorates on a multi-user concurrency scenario.</p>
-<p>The more coarse the lock, the higher the changes of it stopping another process of running.</p>
-<p>Granular locking, on the other hand, reduces the problem of locking contention. An example is locking a row or a cell of a table. This performs better in a multi-user scenario, but creates more lock overhead and increases the chances of deadlocks.</p>
-<h2>Pessimistic Locking</h0>
+</code></pre>
+<blockquote>
+<p>The above example does not guarantee that the task has the lock, since more
+than one task can be testing the lock at the same time. Since both tasks will
+detect that the lock is free, both tasks will attempt to set the lock, not
+knowing that the other task is also setting the lock.</p>
+</blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Lock_(computer_science)">source</a></p>
+<h2>Granularity</h2>
+<p>A coarse lock is a lock that covers a big piece of data or resource. For
+example, a lock on an entire table. This type of lock often generates lower
+lock overhead when a single process is used, but the performance quickly
+deteriorates on a multi-user concurrency scenario.</p>
+<p>The more coarse the lock, the higher the changes of it stopping another process
+of running.</p>
+<p>Granular locking, on the other hand, reduces the problem of locking contention.
+An example is locking a row or a cell of a table. This performs better in a
+multi-user scenario, but creates more lock overhead and increases the chances
+of deadlocks.</p>
+<h2>Pessimistic Locking</h2>
 <p>To update a record on a table, a user may acquire a pessimistic lock.</p>
-<p>The pessimistic lock will prevent any other user of manipulating that record at the same time. Only when the first user releases the lock that the second user can manipulate the record.</p>
-<p>In this scenario, the second user may wait for a long time before being allowed to acquire a lock themselves, which may impact the overall performance of the system.</p>
-<p>This type of locking is best suited for environments with a great number of concurrent database requests. This works well if the cost of acquiring the lock isn't as high as rolling back a transaction when lock timeouts occur.</p>
-<h2>Optimistic locking</h0>
-<blockquote>this allows multiple concurrent users access to the database whilst the</blockquote>
-<blockquote>system keeps a copy of the initial-read made by each user. When a user wants</blockquote>
-<blockquote>to update a record, the application determines whether another user has</blockquote>
-<blockquote>changed the record since it was last read. The application does this by</blockquote>
-<blockquote>comparing the initial-read held in memory to the database record to verify</blockquote>
-<blockquote>any changes made to the record. Any discrepancies between the initial-read</blockquote>
-<blockquote>and the database record violates concurrency rules and hence causes the</blockquote>
-<blockquote>system to disregard any update request. An error message is generated and the</blockquote>
-<blockquote>user is asked to start the update process again. It improves database</blockquote>
-<blockquote>performance by reducing the amount of locking required, thereby reducing the</blockquote>
-<blockquote>load on the database server. It works efficiently with tables that require</blockquote>
-<blockquote>limited updates since no users are locked out. However, some updates may</blockquote>
-<blockquote>fail. The downside is constant update failures due to high volumes of update</blockquote>
-<blockquote>requests from multiple concurrent users - it can be frustrating for users.</blockquote>
-<p><a href="http://web.archive.org/web/20240506200934/https://en.wikipedia.org/wiki/Lock_<a href="computer_science">source</a>)</p>
-<h2>Deadlock</h0>
-<blockquote>In an operating system, a deadlock occurs when a process or thread enters a</blockquote>
-<blockquote>waiting state because a requested system resource is held by another waiting</blockquote>
-<blockquote>process, which in turn is waiting for another resource held by another</blockquote>
-<blockquote>waiting process.[3] If a process remains indefinitely unable to change its</blockquote>
-<blockquote>state because resources requested by it are being used by another process</blockquote>
-<blockquote>that itself is waiting, then the system is said to be in a deadlock.[4]</blockquote>
-<blockquote>In a communications system, deadlocks occur mainly due to loss or corruption</blockquote>
-<blockquote>of signals rather than contention for resources.</blockquote>
+<p>The pessimistic lock will prevent any other user of manipulating that record at
+the same time. Only when the first user releases the lock that the second user
+can manipulate the record.</p>
+<p>In this scenario, the second user may wait for a long time before being allowed
+to acquire a lock themselves, which may impact the overall performance of the
+system.</p>
+<p>This type of locking is best suited for environments with a great number of
+concurrent database requests. This works well if the cost of acquiring the lock
+isn't as high as rolling back a transaction when lock timeouts occur.</p>
+<h2>Optimistic locking</h2>
+<blockquote>
+<p>this allows multiple concurrent users access to the database whilst the
+system keeps a copy of the initial-read made by each user. When a user wants
+to update a record, the application determines whether another user has
+changed the record since it was last read. The application does this by
+comparing the initial-read held in memory to the database record to verify
+any changes made to the record. Any discrepancies between the initial-read
+and the database record violates concurrency rules and hence causes the
+system to disregard any update request. An error message is generated and the
+user is asked to start the update process again. It improves database
+performance by reducing the amount of locking required, thereby reducing the
+load on the database server. It works efficiently with tables that require
+limited updates since no users are locked out. However, some updates may
+fail. The downside is constant update failures due to high volumes of update
+requests from multiple concurrent users - it can be frustrating for users.</p>
+</blockquote>
+<p><a href="http://web.archive.org/web/20240506200934/https://en.wikipedia.org/wiki/Lock_(computer_science)">source</a></p>
+<h2>Deadlock</h2>
+<blockquote>
+<p>In an operating system, a deadlock occurs when a process or thread enters a
+waiting state because a requested system resource is held by another waiting
+process, which in turn is waiting for another resource held by another
+waiting process.[3] If a process remains indefinitely unable to change its
+state because resources requested by it are being used by another process
+that itself is waiting, then the system is said to be in a deadlock.[4]</p>
+</blockquote>
+<blockquote>
+<p>In a communications system, deadlocks occur mainly due to loss or corruption
+of signals rather than contention for resources.</p>
+</blockquote>
 <p>An example of dead lock is as follow:</p>
 <p>Imagine there are two processes locking the same resources in different orders:</p>
-<ul><li>Process A (PA): locks resource R1, then locks resource R2. Then releases both</li><li>Process B (PB): locks resource R2, then locks resource R<ol><li>Then releases both</li></ol>
- In the beginning of both processes, they lock R1 (PA) and R2 (PB), but then when they move on to the next step to lock R2 (PA) and R1 (PB), the processes lock each other, creating a deadlock.</li></ul>
+<ul>
+<li>Process A (PA): locks resource R1, then locks resource R2. Then releases both</li>
+<li>Process B (PB): locks resource R2, then locks resource R1. Then releases both</li>
+</ul>
+<p>In the beginning of both processes, they lock R1 (PA) and R2 (PB), but then
+when they move on to the next step to lock R2 (PA) and R1 (PB), the processes
+lock each other, creating a deadlock.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

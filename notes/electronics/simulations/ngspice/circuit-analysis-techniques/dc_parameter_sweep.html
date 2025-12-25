@@ -59,14 +59,14 @@
   <![endif]-->
 </head>
 <body>
-<h1>DC Parameter Sweep</h0>
-<pre><code class="language-">
-Created at: 2025-11-16
-</code></pre><p>For this circuit:</p>
-<p><img alt="dc_sweep_example_1.png" src="dc_sweep_example_1.png"></p>
-<p>We can do a DC parameter sweep varying the current source from 0 to 100mA in increments of 1mA:</p>
-<pre><code class="language-spice">
-DC parameter sweep
+<h1>DC Parameter Sweep</h1>
+<pre><code>Created at: 2025-11-16
+</code></pre>
+<p>For this circuit:</p>
+<p><img src="dc_sweep_example_1.png" alt="dc_sweep_example_1.png"></p>
+<p>We can do a DC parameter sweep varying the current source from 0 to 100mA in
+increments of 1mA:</p>
+<pre><code class="language-spice">DC parameter sweep
 
 * The fixed voltage source and R1
 V6 a 0 6V
@@ -94,5 +94,9 @@ dc Ix 0.00 0.100 0.001
 plot (I(VdummyR1) * I(VdummyR1)) * 100 (I(VdummyR2) * I(VdummyR2)) * 64 ylabel POWER_CURVE
 
 .endc
-</code></pre><p>Which plots the following:</p>
-<p><img alt="dc_sweep_example_1_plot.png" src="dc_sweep_example_1_plot.png"></p>
+</code></pre>
+<p>Which plots the following:</p>
+<p><img src="dc_sweep_example_1_plot.png" alt="dc_sweep_example_1_plot.png"></p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

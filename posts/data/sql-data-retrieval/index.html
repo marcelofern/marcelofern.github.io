@@ -60,11 +60,11 @@
 </head>
 <body>
 <p>September 18, 2020</p>
-<h2>Single Table Data Retrieval</h0>
-<p>Simple queries can be executed by the SELECT statement. This statement is the equivalent of the relation algebra's Selection, Projection, and Join.</p>
+<h2>Single Table Data Retrieval</h2>
+<p>Simple queries can be executed by the SELECT statement. This statement is the
+equivalent of the relation algebra's Selection, Projection, and Join.</p>
 <p>The SELECT statement has the following form:</p>
-<pre><code class="language-sql">
-SELECT [DISTINCT | ALL] {* | [columnExpression [AS newName]] [,...]}
+<pre><code class="language-sql">SELECT [DISTINCT | ALL] {* | [columnExpression [AS newName]] [,...]}
 
 FROM TableName [alias] [,,..]
 
@@ -73,148 +73,252 @@ FROM TableName [alias] [,,..]
 [GROUP BY columnList][HAVING condition]
 
 [ORDER BY columnList]
-</code></pre><p>The order of the clauses in a SELECT statement cannot be changed. SELECT and FROM are the only mandatory clauses.</p>
+</code></pre>
+<p>The order of the clauses in a SELECT statement cannot be changed. SELECT and
+FROM are the only mandatory clauses.</p>
 <p>The sequence that data is processed in a SELECT statement is:</p>
-<ol><li><code>FROM</code>: which table or tables will be used.</li><li><code>WHERE</code>: filters the rows based on a condition.</li><li><code>GROUP BY</code>: Creates groups of rows with the same column value.</li><li><code>HAVING</code>: Filter the groups based on a condition.</li><li><code>SELECT</code>: Specifies the columns that will show up in the output.</li><li><code>ORDER BY</code>: The output ordering based on a column.</li></ol>
-<h2>WHERE clause</h0>
-<p>The WHERE clause filters out rows that don't respect a condition. There are 5 basic conditions (or predicates) for the WHERE clause:</p>
-<ol><li><b>Comparison</b>: Between two expressions:<pre><code class="language-sql">
-WHERE score > 80 (greater than)
-WHERE score <> 80 (not equal to - ISO standard)
+<ol>
+<li><code>FROM</code>: which table or tables will be used.</li>
+<li><code>WHERE</code>: filters the rows based on a condition.</li>
+<li><code>GROUP BY</code>: Creates groups of rows with the same column value.</li>
+<li><code>HAVING</code>: Filter the groups based on a condition.</li>
+<li><code>SELECT</code>: Specifies the columns that will show up in the output.</li>
+<li><code>ORDER BY</code>: The output ordering based on a column.</li>
+</ol>
+<h2>WHERE clause</h2>
+<p>The WHERE clause filters out rows that don't respect a condition.
+There are 5 basic conditions (or predicates) for the WHERE clause:</p>
+<ol>
+<li><strong>Comparison</strong>: Between two expressions:</li>
+</ol>
+<pre><code class="language-sql">WHERE score &gt; 80 (greater than)
+WHERE score &lt;&gt; 80 (not equal to - ISO standard)
 WHERE score != 80 (not equal to)
-WHERE (score != 80) AND (score > 24)
-</code></pre></li><li><b>Range</b>: If a value falls within a range of values:<pre><code class="language-sql">
-WHERE score BETWEEN 40 AND 60
-WHERE score > = 10 and score < 20
-</code></pre></li><li><b>Membership</b>: If the value belongs to a defined set:<pre><code class="language-sql">
-WHERE name IN ('Messi', 'Ronaldo')
-</code></pre></li><li><b>Pattern Match</b>: If the value matches a given string pattern:<pre><code class="language-sql">
-WHERE name LIKE 'M%' (names starting with M)
+WHERE (score != 80) AND (score &gt; 24)
+</code></pre>
+<ol start="2">
+<li><strong>Range</strong>: If a value falls within a range of values:</li>
+</ol>
+<pre><code class="language-sql">WHERE score BETWEEN 40 AND 60
+WHERE score &gt; = 10 and score &lt; 20
+</code></pre>
+<ol start="3">
+<li><strong>Membership</strong>: If the value belongs to a defined set:</li>
+</ol>
+<pre><code class="language-sql">WHERE name IN ('Messi', 'Ronaldo')
+</code></pre>
+<ol start="4">
+<li><strong>Pattern Match</strong>: If the value matches a given string pattern:</li>
+</ol>
+<pre><code class="language-sql">WHERE name LIKE 'M%' (names starting with M)
 WHERE name LIKE 'M___' (names starting with M and with exactly 4 characters)
 WHERE name LIKE '%son%' (names that included son)
 WHERE position LIKE '15#%' ESCAPE '#' (escaping the % character)
-</code></pre></li><li><b>Null</b>: if the value is NULL<pre><code class="language-sql">
-WHERE profession is NULL
+</code></pre>
+<ol start="5">
+<li><strong>Null</strong>: if the value is NULL</li>
+</ol>
+<pre><code class="language-sql">WHERE profession is NULL
 WHERE target IS NOT NULL
-</code></pre></li></ol>
-<h2>ORDER BY clause</h0>
+</code></pre>
+<h2>ORDER BY clause</h2>
 <p>Columns can be ordered by one or many columns.</p>
-<pre><code class="language-sql">
-ORDER BY salary DESC
+<pre><code class="language-sql">ORDER BY salary DESC
 ORDER BY age, salary ASC
-</code></pre><h2>GROUP BY clause</h0>
-<p>The GROUP BY clause groups the data from a SELECT table and creates a single summary row for each group. Each group is composed by different values from the column that is "grouped by".</p>
-<pre><code class="language-sql">
-GROUP BY class HAVING COUNT(student) > 1
-</code></pre><h2>Aggregation functions</h0>
-<p>Aggregation functions are used for executing an operation on a table column, and retrieving a single result based on that operation.</p>
-<ul><li>COUNT: fetches the number of values in a specified column.</li><li>SUM: fetches the sum of the values in a specified column.</li><li>AVG: fetches the average of the values in a specified column.</li><li>MIN: fetches the smallest values in a specified column.</li><li>MAX: fetches the largest value in a specified column.</li></ul>
-<h2>Subqueries</h0>
-<p>Subqueries can be created by nesting SELECT statements. The results from the inner queried are used to determine the final results for the outter query. This operation is called <b>subselect</b> Additionally, SELECTs can be used in WHERE and HAVING clauses to filter out results. This operation is called <b>subquery</b> or <b>nested query</b>.</p>
-<ul><li>Scalar subquery: returns a single column and a single row. I.e, a single value. Example:<pre><code class="language-sql">
-SELECT fName, lName
+</code></pre>
+<h2>GROUP BY clause</h2>
+<p>The GROUP BY clause groups the data from a SELECT table and creates a single
+summary row for each group. Each group is composed by different values from the
+column that is &quot;grouped by&quot;.</p>
+<pre><code class="language-sql">GROUP BY class HAVING COUNT(student) &gt; 1
+</code></pre>
+<h2>Aggregation functions</h2>
+<p>Aggregation functions are used for executing an operation on a table column,
+and retrieving a single result based on that operation.</p>
+<ul>
+<li>COUNT: fetches the number of values in a specified column.</li>
+<li>SUM: fetches the sum of the values in a specified column.</li>
+<li>AVG: fetches the average of the values in a specified column.</li>
+<li>MIN: fetches the smallest values in a specified column.</li>
+<li>MAX: fetches the largest value in a specified column.</li>
+</ul>
+<h2>Subqueries</h2>
+<p>Subqueries can be created by nesting SELECT statements. The results from the
+inner queried are used to determine the final results for the outter query.
+This operation is called <strong>subselect</strong> Additionally, SELECTs can be used in
+WHERE and HAVING clauses to filter out results. This operation is called
+<strong>subquery</strong> or <strong>nested query</strong>.</p>
+<ul>
+<li>Scalar subquery: returns a single column and a single row. I.e, a single value.
+Example:</li>
+</ul>
+<pre><code class="language-sql">SELECT fName, lName
 FROM Student
 WHERE collegeNo = (SELECT collegeNo FROM College WHERE street = ‘Austin St’);
-</code></pre></li><li>Row subquery: returns multiple columns but a single row</li><li>Table subquery: returns one or more columns and multiple rows.<pre><code class="language-sql">
-SELECT fName, lName
+</code></pre>
+<ul>
+<li>Row subquery: returns multiple columns but a single row</li>
+<li>Table subquery: returns one or more columns and multiple rows.</li>
+</ul>
+<pre><code class="language-sql">SELECT fName, lName
 FROM Parent
 WHERE chieldId IN (SELECT studentId from Student WHERE collegeNo = (SELECT collegeNo FROM College WHERE street = 'Austin St'));
-</code></pre></li></ul>
+</code></pre>
 <p>Additionally, the key-word EXISTS is designed to be used only with sub-queries. The result of a query containing the EXISTS key-word is a true/false boolean.</p>
-<pre><code class="language-sql">
-SELECT staffId, fName
+<pre><code class="language-sql">SELECT staffId, fName
 FROM Staff s
 WHERE EXISTS (SELECT * FROM Branch b WHERE s.branchId = b.branchId AND city = 'London');
-</code></pre><p>Which is the same as:</p>
-<pre><code class="language-sql">
-SELECT staffId, fName
+</code></pre>
+<p>Which is the same as:</p>
+<pre><code class="language-sql">SELECT staffId, fName
 FROM Staff s, Branch b
 WHERE s.branchId = b.branchId AND city = 'London';
-</code></pre><h2>Multi Table Data Retrieval</h0>
-<p>Multi table data queries can be performed using a join operation. The idea is to combine information from different tables by looking at their related rows. The related rows will be the ones where the different tables have the same value for a given column</p>
-<p>The join operation is used when the result of an SQL query displays information about columns from more than one table. If this is not the case, and only the columns from a single table are required in the result, a subquery is more appropriate.</p>
-<h2>Simple Join / Inner Join</h0>
-<p>A simple join can be performed by including more than one table in the FROM clause. The tables must be split by comma and the table name can be followed by an alias:</p>
-<pre><code class="language-sql">
-SELECT p.city, fName, lName, presidentId
+</code></pre>
+<h2>Multi Table Data Retrieval</h2>
+<p>Multi table data queries can be performed using a join operation. The idea is
+to combine information from different tables by looking at their related rows.
+The related rows will be the ones where the different tables have the same
+value for a given column</p>
+<p>The join operation is used when the result of an SQL query displays information
+about columns from more than one table. If this is not the case, and only the
+columns from a single table are required in the result, a subquery is more
+appropriate.</p>
+<h2>Simple Join / Inner Join</h2>
+<p>A simple join can be performed by including more than one table in the FROM
+clause. The tables must be split by comma and the table name can be followed by
+an alias:</p>
+<pre><code class="language-sql">SELECT p.city, fName, lName, presidentId
 FROM Player p, Team t
 WHERE p.id = t.captainId;
-</code></pre><p>This can also be written as:</p>
-<pre><code class="language-sql">
-SELECT p.city, fName, lName, presidentId
+</code></pre>
+<p>This can also be written as:</p>
+<pre><code class="language-sql">SELECT p.city, fName, lName, presidentId
 FROM Player p JOIN Team t
 ON (p.id = t.captainId);
-</code></pre><p>Or:</p>
-<pre><code class="language-sql">
-SELECT p.city, fName, lName, presidentId
+</code></pre>
+<p>Or:</p>
+<pre><code class="language-sql">SELECT p.city, fName, lName, presidentId
 FROM Player p INNER JOIN Team t
 ON (p.id = t.captainId);
-</code></pre><p>Given that the city column is defined on both tables, we need to specify which one we are pulling data from, hence we use the alias in front of the column name. The other columns are defined only in one of the tables. Although this example would work, the best practice is to include the alias in front of every column name to clarify which table the column is coming from.</p>
-<p>To join those tables, we specify the WHERE/ON clause to search for matching columns from both tables.</p>
+</code></pre>
+<p>Given that the city column is defined on both tables, we need to specify which
+one we are pulling data from, hence we use the alias in front of the column
+name. The other columns are defined only in one of the tables. Although this
+example would work, the best practice is to include the alias in front of every
+column name to clarify which table the column is coming from.</p>
+<p>To join those tables, we specify the WHERE/ON clause to search for matching
+columns from both tables.</p>
 <p>An example of a join operation with 3 tables:</p>
-<pre><code class="language-sql">
-SELECT b.branchId, s.StaffId, s.fName, p.propertyId
+<pre><code class="language-sql">SELECT b.branchId, s.StaffId, s.fName, p.propertyId
 FROM Branch b, Staff s, Property p
 WHERE b.branchId = s.branchId AND s.staffId = p.staffId
 ORDER BY b.branchId, s.staffId, p.propertyId;
-</code></pre><p>Or:</p>
-<pre><code class="language-sql">
-SELECT b.branchId, s.StaffId, s.fName, p.propertyId
+</code></pre>
+<p>Or:</p>
+<pre><code class="language-sql">SELECT b.branchId, s.StaffId, s.fName, p.propertyId
 FROM Branch b
 INNER JOIN Staff s ON (b.branchId = s.branchId)
 INNER JOIN Property p ON (s.staffId = p.staffId)
-</code></pre><h2>JOIN Clause</h0>
-<p>A JOIN between tables results in a Cartesian product. The Cartesian product between two tables is a third table that consists of all possible pairs of rows from the two tables. The third table will have all the columns from the first table followed by all the columns from the second table.</p>
+</code></pre>
+<h2>JOIN Clause</h2>
+<p>A JOIN between tables results in a Cartesian product. The Cartesian product
+between two tables is a third table that consists of all possible pairs of
+rows from the two tables. The third table will have all the columns from the
+first table followed by all the columns from the second table.</p>
 <p>The Cartesian product can be obtained by:</p>
-<pre><code class="language-sql">
-SELECT [DISTINCT | ALL] {* | columnList}
+<pre><code class="language-sql">SELECT [DISTINCT | ALL] {* | columnList}
 FROM Table1 CROSS JOIN Table2
-</code></pre><h2>Outer Joins</h0>
-<p>So far, we have presented join operations that retrieve related rows from different tables when they have matching columns. The outer join is used when we want to retain the rows that do not satisfy the join condition as well as the ones that do satisfy the join condition.</p>
+</code></pre>
+<h2>Outer Joins</h2>
+<p>So far, we have presented join operations that retrieve related rows from
+different tables when they have matching columns. The outer join is used when
+we want to retain the rows that do not satisfy the join condition as well as
+the ones that do satisfy the join condition.</p>
 <p>There are 3 different types of outer joins: Left, Right, and Full:</p>
-<ol><li> Left: The left outer join will keep the rows from the first table that don't meet the joining criteria while setting the second table column values to NULL<pre><code class="language-sql">
-SELECT b.name, p.name, p.ownerName
+<ol>
+<li>Left: The left outer join will keep the rows from the first table that don't
+meet the joining criteria while setting the second table column values to
+NULL</li>
+</ol>
+<pre><code class="language-sql">SELECT b.name, p.name, p.ownerName
 FROM Branch b LEFT OUTER JOIN Property p ON b.city = p.city
-</code></pre> The property name and ownerName would be set to NULL for the cases where b.city =! p.city</li></ol>
-<p>2. Right: The right outer join will keep the rows from the second table that don't meet the joining criteria while setting the first table columns value to NULL <pre><code class="language-sql">
-SELECT b.name, p.name, p.ownerName
+</code></pre>
+<p>The property name and ownerName would be set to NULL for the cases where b.city
+=! p.city</p>
+<ol start="2">
+<li>Right: The right outer join will keep the rows from the second table that
+don't meet the joining criteria while setting the first table columns value
+to NULL</li>
+</ol>
+<pre><code class="language-sql">SELECT b.name, p.name, p.ownerName
 FROM Branch b RIGHT OUTER JOIN Property p ON b.city = p.city
-</code></pre> The branch name would be set to NULL for the cases where b.city =! p.city</p>
-<p>3. Full: Includes not only the matching results but also results from both tables that do not match the join condition. <pre><code class="language-sql">
-SELECT b.name, p.name, p.ownerName
+</code></pre>
+<p>The branch name would be set to NULL for the cases where b.city =! p.city</p>
+<ol start="3">
+<li>Full: Includes not only the matching results but also results from both
+tables that do not match the join condition.</li>
+</ol>
+<pre><code class="language-sql">SELECT b.name, p.name, p.ownerName
 FROM Branch b FULL OUTER JOIN Property p ON b.city = p.city
-</code></pre> Some rows would have the branch name set to NULL whereas some rows would have the property name and ownerName set to NULL (both happening when b.city =! p.city).</p>
-<h2>Non<ul><li>eeqquuii  jjooiinn</h0>
- Some times there isn't a primary key </li><li> foreign key relationship between tables, but there might be some other ways in which we want to relate data. For those cases, the condition "equal to" won't surface and we have to resort to a different kind of conditional operator. This particular JOIN scenario is named NON</li><li>EQUI JOIN.</li></ul>
+</code></pre>
+<p>Some rows would have the branch name set to NULL whereas some rows would have
+the property name and ownerName set to NULL (both happening when b.city =!
+p.city).</p>
+<h2>Non-equi join</h2>
+<p>Some times there isn't a primary key - foreign key relationship between tables,
+but there might be some other ways in which we want to relate data. For those
+cases, the condition &quot;equal to&quot; won't surface and we have to resort to a
+different kind of conditional operator. This particular JOIN scenario is named
+NON-EQUI JOIN.</p>
 <p>Example:</p>
-<pre><code class="language-sql">
-SELECT playerId, scores
+<pre><code class="language-sql">SELECT playerId, scores
 FROM Player, Score
 WHERE Score BETWEEN 20 AND 50;
-</code></pre><h2>Self Join</h0>
-<p>Used for the cases where we need to fetch data from a recursive relationship. We then SELF-JOIN the table (Joining the table to itself).</p>
+</code></pre>
+<h2>Self Join</h2>
+<p>Used for the cases where we need to fetch data from a recursive relationship.
+We then SELF-JOIN the table (Joining the table to itself).</p>
 <p>Example - List the book code for each pair of book that has the same price:</p>
-<pre><code class="language-sql">
-SELECT f.BOOK_CODE, s.BOOK_CODE, f.PRICE
+<pre><code class="language-sql">SELECT f.BOOK_CODE, s.BOOK_CODE, f.PRICE
 FROM BOOK f, BOOK s
-WHERE f.PRICE = s.PRICE AND f.BOOK_CODE <> s.BOOK_CODE
+WHERE f.PRICE = s.PRICE AND f.BOOK_CODE &lt;&gt; s.BOOK_CODE
 ORDER BY f.BOOK_CODE, s.BOOK_CODE;
-</code></pre><h2>Combining results (UNION, INTERSECT, EXCEPT)</h0>
+</code></pre>
+<h2>Combining results (UNION, INTERSECT, EXCEPT)</h2>
 <p>Combining operators follow the corresponding format:</p>
-<pre><code class="language-sql">
-operator [ALL] [CORRESPONDING [BY {column1 [, ...]}]]
-</code></pre><p>If CORRESPONDING BY is specified, then the union is performed on the named column(s). If CORRESPONDING is specified but not with the BY clause, the set of operation is performed on the columns that are common to both tables.</p>
-<ul><li>Union: creates a resulting table with all rows that belong to a either a table A or a table B along with the rows that appear on both tables.<pre><code class="language-sql">
-(SELECT * FROM Staff WHERE city IS NOT NULL)
+<pre><code class="language-sql">operator [ALL] [CORRESPONDING [BY {column1 [, ...]}]]
+</code></pre>
+<p>If CORRESPONDING BY is specified, then the union is performed on the named
+column(s). If CORRESPONDING is specified but not with the BY clause, the set of
+operation is performed on the columns that are common to both tables.</p>
+<ul>
+<li>Union: creates a resulting table with all rows that belong to a either a table
+A or a table B along with the rows that appear on both tables.</li>
+</ul>
+<pre><code class="language-sql">(SELECT * FROM Staff WHERE city IS NOT NULL)
 UNION CORRESPONDING BY city
 (SELECT * FROM Warehouse WHERE city IS NOT NULL)
-</code></pre></li><li>Intersection: creates a resulting table with only all rows that are common to both tables A and B.<pre><code class="language-sql">
-(SELECT city FROM Staff)
+</code></pre>
+<ul>
+<li>Intersection: creates a resulting table with only all rows that are common to
+both tables A and B.</li>
+</ul>
+<pre><code class="language-sql">(SELECT city FROM Staff)
 INTERSECT
 (SELECT city FROM Branch)
-</code></pre></li><li>Difference (except): retrieves a table with all rows that are in table A but not in table B.<pre><code class="language-sql">
-(SELECT name FROM Customer)
+</code></pre>
+<ul>
+<li>Difference (except): retrieves a table with all rows that are in table A but
+not in table B.</li>
+</ul>
+<pre><code class="language-sql">(SELECT name FROM Customer)
 EXCEPT
 (SELECT name FROM Staff)
-</code></pre></li></ul>
-<p>One important thing to keep in mind is that two tables can only be combined if they have the same structure. Tables with the same structure are called union-compatible. This implies that the tables have the same number of columns and that those columns have the same data types and lengths.</p>
+</code></pre>
+<p>One important thing to keep in mind is that two tables can only be combined if
+they have the same structure. Tables with the same structure are called
+union-compatible. This implies that the tables have the same number of columns
+and that those columns have the same data types and lengths.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -59,10 +59,25 @@
   <![endif]-->
 </head>
 <body>
-<h1>Source Transformations</h0>
-<pre><code class="language-">
-Created at: 2025-11-18
-</code></pre><ol><li>A common goal in source transformation is to end with either all current sources or all voltage sources to make nodal/mesh analysis easier.</li><li>The resistor value does not change during a source transformation <ul><li>but the currents or voltages <b>won't</b> be the same as before.</li><li>If the voltage/current associated with a resistor is used as a controlling variable for a dependent source it should not be included in any source transformation.</li><li>Same as above for any particular element of interest.</li><li>The head of the current source arrow corresponds to the "+" terminal of a voltage source.</li></ol>
- Make sure that the resistor is really in parallel for a I</li><li>>V transformation or that the resistor is in series for a V</li><li>>I transformation.</li></ul>
-<h2>Examples</h0>
-<p><img alt="source_transformation_1.png" src="source_transformation_1.png"></p>
+<h1>Source Transformations</h1>
+<pre><code>Created at: 2025-11-18
+</code></pre>
+<ol>
+<li>A common goal in source transformation is to end with either all current
+sources or all voltage sources to make nodal/mesh analysis easier.</li>
+<li>The resistor value does not change during a source transformation - but the
+currents or voltages <strong>won't</strong> be the same as before.</li>
+<li>If the voltage/current associated with a resistor is used as a controlling
+variable for a dependent source it should not be included in any source
+transformation.</li>
+<li>Same as above for any particular element of interest.</li>
+<li>The head of the current source arrow corresponds to the &quot;+&quot; terminal of a
+voltage source.</li>
+</ol>
+<p>Make sure that the resistor is really in parallel for a I-&gt;V transformation or
+that the resistor is in series for a V-&gt;I transformation.</p>
+<h2>Examples</h2>
+<p><img src="source_transformation_1.png" alt="source_transformation_1.png"></p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

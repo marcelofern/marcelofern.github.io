@@ -59,19 +59,25 @@
   <![endif]-->
 </head>
 <body>
-<h1>Swapping a Table With its Copy</h0>
-<pre><code class="language-">
-Created at: 2025-02-14
-</code></pre><p>NOTE: THIS IS A WORK IN PROGRESS. THE FOLLOWING SCRIPT DOES NOT FULLY WORK YET.</p>
+<h1>Swapping a Table With its Copy</h1>
+<pre><code>Created at: 2025-02-14
+</code></pre>
+<p>NOTE: THIS IS A WORK IN PROGRESS. THE FOLLOWING SCRIPT DOES NOT FULLY WORK YET.</p>
 <p>Current discussions are happening in the Postgres mailing list <a href="https://www.postgresql.org/message-id/flat/CAM2F1VONo8M9gcybhmf8-CdmRUC2QrFGZkZLYF-%2BuLZuhRKaxQ%40mail.gmail.com#52fb0644ea84c647e3521bd04476e566">here</a></p>
-<h2>Why Would You Need To Swap a Table With its Copy?</h0>
-<p>Some Postgres schema changes can't be performed without acquiring an access exclusive lock while the whole table is being scanned.</p>
-<p>One example of such schema change is adding exclusion constraints. Different from check constraints (that can be created as NOT VALID and validated later) and unique constraints (that can be created from an index), exclusion constraints will need to scan the whole table and add an underlying index to service the constraint while holding an access exclusive lock.</p>
+<h2>Why Would You Need To Swap a Table With its Copy?</h2>
+<p>Some Postgres schema changes can't be performed without acquiring an access
+exclusive lock while the whole table is being scanned.</p>
+<p>One example of such schema change is adding exclusion constraints. Different
+from check constraints (that can be created as NOT VALID and validated later)
+and unique constraints (that can be created from an index), exclusion
+constraints will need to scan the whole table and add an underlying index to
+service the constraint while holding an access exclusive lock.</p>
 <p>This is cost prohibitive in large and frequently-used tables.</p>
-<p>One alternative is to create a copy (clone) of the original table, add the constraint on the copy, keep both tables in sync, and then swap them when you are ready!</p>
-<h2>Example</h0>
-<pre><code class="language-sql">
--- Create the original table that will be later swapped by its copy.
+<p>One alternative is to create a copy (clone) of the original table, add the
+constraint on the copy, keep both tables in sync, and then swap them when you
+are ready!</p>
+<h2>Example</h2>
+<pre><code class="language-sql">-- Create the original table that will be later swapped by its copy.
 DROP TABLE IF EXISTS original CASCADE;
 CREATE TABLE original (
     id SERIAL PRIMARY KEY,
@@ -322,7 +328,7 @@ ORDER BY X.relname;
 -- toast_indexrelid | 2134319
 
 -- Lock the pg_depend rows where 'original' and 'copy' depend on something else
--- Only look for the "normal" and "internal" (toast) relationships.
+-- Only look for the &quot;normal&quot; and &quot;internal&quot; (toast) relationships.
 SELECT 1 FROM pg_depend
 WHERE objid IN (('original')::regclass, ('copy')::regclass)
 FOR UPDATE;
@@ -355,7 +361,7 @@ ALTER TABLE copy RENAME TO original;
 ALTER TABLE temp_original RENAME TO copy;
 -- DROP TABLE copy CASCADE;
 
--- Insert a couple of rows in the new "original" to verify it works
+-- Insert a couple of rows in the new &quot;original&quot; to verify it works
 INSERT INTO original (id, name, value) values (10001, 'my_new_row', 10);
 SELECT * from original order by id DESC;
 
@@ -364,23 +370,26 @@ SELECT * from original order by id DESC;
 -- TODO (major): The FKs on the related tables weren't updated to use the new
 -- table
 -- \d table_with_fk
---                                Table "public.table_with_fk"
+--                                Table &quot;public.table_with_fk&quot;
 --    Column    |  Type   | Collation | Nullable |                  Default
 -- -------------+---------+-----------+----------+-------------------------------------------
 --  id          | integer |           | not null | nextval('table_with_fk_id_seq'::regclass)
 --  original_id | integer |           | not null |
 -- Indexes:
---     "table_with_fk_pkey" PRIMARY KEY, btree (id)
+--     &quot;table_with_fk_pkey&quot; PRIMARY KEY, btree (id)
 -- 
 -- \d table_with_not_valid_fk
---                                Table "public.table_with_not_valid_fk"
+--                                Table &quot;public.table_with_not_valid_fk&quot;
 --    Column    |  Type   | Collation | Nullable |                       Default
 -- -------------+---------+-----------+----------+-----------------------------------------------------
 --  id          | integer |           | not null | nextval('table_with_not_valid_fk_id_seq'::regclass)
 --  original_id | integer |           | not null |
 -- Indexes:
---     "table_with_not_valid_fk_pkey" PRIMARY KEY, btree (id)
+--     &quot;table_with_not_valid_fk_pkey&quot; PRIMARY KEY, btree (id)
 
 -- Roll this back so that your postgres db doesn't get potentially messed up.
 ROLLBACK;
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -59,33 +59,35 @@
   <![endif]-->
 </head>
 <body>
-<h1>Deadlock Demonstration</h0>
-<pre><code class="language-">
-Created at: 2024-12-05
-</code></pre><p>Given the following table:</p>
-<pre><code class="language-sql">
-DROP TABLE IF EXISTS foo;
+<h1>Deadlock Demonstration</h1>
+<pre><code>Created at: 2024-12-05
+</code></pre>
+<p>Given the following table:</p>
+<pre><code class="language-sql">DROP TABLE IF EXISTS foo;
 CREATE TABLE foo (id SERIAL, val integer UNIQUE);
 
 INSERT INTO foo (val) SELECT generate_series(1, 1000);
-</code></pre><p>Open two psql shells, let's call them A and B.</p>
+</code></pre>
+<p>Open two psql shells, let's call them A and B.</p>
 <p>on A perform:</p>
-<pre><code class="language-sql">
-BEGIN;
+<pre><code class="language-sql">BEGIN;
 SELECT * FROM foo WHERE val = 1 FOR UPDATE;
-</code></pre><p>And on B perform:</p>
-<pre><code class="language-sql">
-BEGIN;
+</code></pre>
+<p>And on B perform:</p>
+<pre><code class="language-sql">BEGIN;
 SELECT * FROM foo WHERE val = 2 FOR UPDATE;
-</code></pre><p>Go back to A and perform:</p>
-<pre><code class="language-sql">
-UPDATE foo SET val = 42 WHERE val = 2
-</code></pre><p>And go back to B and perform:</p>
-<pre><code class="language-sql">
-UPDATE foo SET val = 777 WHERE val = 1
-</code></pre><p>You should see an error like:</p>
-<pre><code class="language-">
-ERROR:  deadlock detected
+</code></pre>
+<p>Go back to A and perform:</p>
+<pre><code class="language-sql">UPDATE foo SET val = 42 WHERE val = 2
+</code></pre>
+<p>And go back to B and perform:</p>
+<pre><code class="language-sql">UPDATE foo SET val = 777 WHERE val = 1
+</code></pre>
+<p>You should see an error like:</p>
+<pre><code>ERROR:  deadlock detected
 DETAIL:  Process 49152 waits for ShareLock on transaction 74166; blocked by process 51444.
 Process 51444 waits for ShareLock on transaction 74165; blocked by process 49152.
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

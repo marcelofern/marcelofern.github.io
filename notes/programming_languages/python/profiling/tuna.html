@@ -60,15 +60,19 @@
 </head>
 <body>
 <p>2024-03-25</p>
-<p>I am using <code>tuna</code> for import-time profiling in Python. This isn't the only use case for <code>tuna</code>, it can also print profilers for runtime.</p>
-<p>The Python <code>-X</code> flag sets an implementation-specific option. Setting <code>-X</code> with the option <code>importtime</code> returns how long each import takes.</p>
+<p>I am using <code>tuna</code> for import-time profiling in Python. This isn't the only
+use case for <code>tuna</code>, it can also print profilers for runtime.</p>
+<p>The Python <code>-X</code> flag sets an implementation-specific option. Setting <code>-X</code>
+with the option <code>importtime</code> returns how long each import takes.</p>
 <p>For example:</p>
-<pre><code class="language-python">
-python -X importtime -c 'import asyncio'
-</code></pre><p>When using a Django application, this is the command I use:</p>
-<pre><code class="language-python">
-python -X importtime ./manage.py check > /tmp/importtime_output
-</code></pre><p>And then:</p>
-<pre><code class="language-sh">
-tuna /tmp/importtime_output
+<pre><code class="language-python">python -X importtime -c 'import asyncio'
 </code></pre>
+<p>When using a Django application, this is the command I use:</p>
+<pre><code class="language-python">python -X importtime ./manage.py check &gt; /tmp/importtime_output
+</code></pre>
+<p>And then:</p>
+<pre><code class="language-sh">tuna /tmp/importtime_output
+</code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

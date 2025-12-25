@@ -59,19 +59,24 @@
   <![endif]-->
 </head>
 <body>
-<h1>pgcrypto</h0>
-<pre><code class="language-">
-Created at: 2024-11-14
-</code></pre><h2>Building From Source</h0>
-<p>If you installed postgres from source, you'll have a folder called "contrib". This is where the <code>pgcrypto</code> extension lives.</p>
-<pre><code class="language-">
-cd contrib/pgcrypto
-make && make install
-</code></pre><h2>MacOs users only:</h0>
-<p>Make sure you are linking homebrew (follow my note for installing postgres from source), and if you have error about missing symbols, add the following at the end of the <code>gcc</code> command that is printed for <code>make</code> (at the top of the stdout):</p>
-<pre><code class="language-sh">
-gcc -Wall ... -lz -lssl -lcrypto
-</code></pre><p>And then:</p>
-<pre><code class="language-sh">
-make install
+<h1>pgcrypto</h1>
+<pre><code>Created at: 2024-11-14
 </code></pre>
+<h2>Building From Source</h2>
+<p>If you installed postgres from source, you'll have a folder called &quot;contrib&quot;.
+This is where the <code>pgcrypto</code> extension lives.</p>
+<pre><code>cd contrib/pgcrypto
+make &amp;&amp; make install
+</code></pre>
+<h2>MacOs users only:</h2>
+<p>Make sure you are linking homebrew (follow my note for installing postgres from
+source), and if you have error about missing symbols, add the following at the
+end of the <code>gcc</code> command that is printed for <code>make</code> (at the top of the stdout):</p>
+<pre><code class="language-sh">gcc -Wall ... -lz -lssl -lcrypto
+</code></pre>
+<p>And then:</p>
+<pre><code class="language-sh">make install
+</code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

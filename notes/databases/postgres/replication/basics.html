@@ -59,39 +59,58 @@
   <![endif]-->
 </head>
 <body>
-<h1>Basics of Replication</h0>
-<pre><code class="language-">
-Created at: 2025-05-25
-</code></pre><p>Source: https://www.highgo.ca/2023/04/03/setting-up-a-postgresql-replica-server-locally/</p>
-<h2>Physical Replication With Streaming</h0>
-<ol><li>Log onto psql with an admin user.</li><li>Create a replication user and a table to play with.<pre><code class="language-sql">
-   CREATE ROLE rep_user WITH REPLICATION LOGIN PASSWORD 'rep_pass';
-   CREATE TABLE t1(a INT, b INT);
-   INSERT INTO t1 VALUES (1,2);
-   </code></pre></li><li>Update the <code>build/data/postgresql.conf</code> by adding this line:<pre><code class="language-">
-   listen_addresses = 'localhost'
-   </code></pre></li><li>Update the <code>build/data/pg_hba.conf</code> by adding this line:<pre><code class="language-">
-   host  replication   rep_user  localhost   md5
-   </code></pre></li><li>Run <code>pg_basebackup</code> to create a <code>rep/</code> folder with the replica data.<pre><code class="language-">
-   build/bin/pg_basebackup -h localhost \
-                           -U rep_user \
-                           -X stream \
-                           -C \
-                           -S replica_1 \
-                           -v \
-                           -R \
-                           -W \
-                           -D build/rep
-   </code></pre></li><li>Update <code>build/rep/postgresql.conf</code> and set the port number to something different than the main server.<pre><code class="language-">
-   port = 5454
-   </code></pre></li><li>Still in <code>build/rep/postgresql.conf</code> set primary_conninfo to (change the user accordingly):<pre><code class="language-">
-   primary_conninfo = 'dbname=postgres user=postgres host=localhost port=5432 sslmode=disable'
-   </code></pre></li><li>Create the <code>sandby.signal</code> file:<pre><code class="language-">
-   touch build/rep/standby.signal
-   </code></pre></li><li>Restart the primary Postgres server.</li><li>In a second terminal, start the replica.<pre><code class="language-">
-    build/bin/pg_ctl -D build/rep start
-    </code></pre></li><li>Log onto the replica with:<pre><code class="language-">
-    build/bin/psql --port=5454 --dbname=postgres
-    </code></pre></li><li>Stop the replica with:<pre><code class="language-">
-    build/bin/pg_ctl -D build/rep stop
-    </code></pre></li></ol>
+<h1>Basics of Replication</h1>
+<pre><code>Created at: 2025-05-25
+</code></pre>
+<p>Source:
+https://www.highgo.ca/2023/04/03/setting-up-a-postgresql-replica-server-locally/</p>
+<h2>Physical Replication With Streaming</h2>
+<ol>
+<li>Log onto psql with an admin user.</li>
+<li>Create a replication user and a table to play with.<pre><code class="language-sql">CREATE ROLE rep_user WITH REPLICATION LOGIN PASSWORD 'rep_pass';
+CREATE TABLE t1(a INT, b INT);
+INSERT INTO t1 VALUES (1,2);
+</code></pre>
+</li>
+<li>Update the <code>build/data/postgresql.conf</code> by adding this line:<pre><code>listen_addresses = 'localhost'
+</code></pre>
+</li>
+<li>Update the <code>build/data/pg_hba.conf</code> by adding this line:<pre><code>host  replication   rep_user  localhost   md5
+</code></pre>
+</li>
+<li>Run <code>pg_basebackup</code> to create a <code>rep/</code> folder with the replica data.<pre><code>build/bin/pg_basebackup -h localhost \
+                        -U rep_user \
+                        -X stream \
+                        -C \
+                        -S replica_1 \
+                        -v \
+                        -R \
+                        -W \
+                        -D build/rep
+</code></pre>
+</li>
+<li>Update <code>build/rep/postgresql.conf</code> and set the port number to something
+different than the main server.<pre><code>port = 5454
+</code></pre>
+</li>
+<li>Still in <code>build/rep/postgresql.conf</code> set primary_conninfo to (change the
+user accordingly):<pre><code>primary_conninfo = 'dbname=postgres user=postgres host=localhost port=5432 sslmode=disable'
+</code></pre>
+</li>
+<li>Create the <code>sandby.signal</code> file:<pre><code>touch build/rep/standby.signal
+</code></pre>
+</li>
+<li>Restart the primary Postgres server.</li>
+<li>In a second terminal, start the replica.<pre><code>build/bin/pg_ctl -D build/rep start
+</code></pre>
+</li>
+<li>Log onto the replica with:<pre><code>build/bin/psql --port=5454 --dbname=postgres
+</code></pre>
+</li>
+<li>Stop the replica with:<pre><code>build/bin/pg_ctl -D build/rep stop
+</code></pre>
+</li>
+</ol>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

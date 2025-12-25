@@ -59,14 +59,16 @@
   <![endif]-->
 </head>
 <body>
-<h1>Read only transaction</h0>
-<pre><code class="language-">
-Created at: 2025-07-14
-</code></pre><h2>Simply:</h0>
-<pre><code class="language-sql">
-BEGIN TRANSACTION;
+<h1>Read only transaction</h1>
+<pre><code>Created at: 2025-07-14
+</code></pre>
+<h2>Simply:</h2>
+<pre><code class="language-sql">BEGIN TRANSACTION;
 SET TRANSACTION READ ONLY;
 
 -- or you can also:
 SET TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

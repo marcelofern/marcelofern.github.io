@@ -59,39 +59,55 @@
   <![endif]-->
 </head>
 <body>
-<h1>Slow ORDER BY and LIMIT</h0>
-<pre><code class="language-">
-Created at: 2025-01-14
-</code></pre><p>Interesting problem at work. Given the following query:</p>
-<pre><code class="language-sql">
-EXPLAIN ANALYSE
+<h1>Slow ORDER BY and LIMIT</h1>
+<pre><code>Created at: 2025-01-14
+</code></pre>
+<p>Interesting problem at work. Given the following query:</p>
+<pre><code class="language-sql">EXPLAIN ANALYSE
 SELECT posted_date FROM foo
 WHERE bar_id IN (1258296)
 ORDER BY posted_date ASC
 LIMIT 1;
-</code></pre><p>This table has an index on <code>bar_id</code> and another one on <code>posted_date</code></p>
-<p>The output showed a very interesting plan: <pre><code class="language-">
- Limit  (cost=0.57..2348.08 rows=1 width=4) (actual time=328296.674..328296.675 rows=1 loops=1)
-   ->  Index Scan using posted_date_idx on foo  (cost=0.57..56941182.70 rows=24256 width=4) (actual time=328296.673..328296.673 rows=1 loops=1)
+</code></pre>
+<p>This table has an index on <code>bar_id</code> and another one on <code>posted_date</code></p>
+<p>The output showed a very interesting plan:</p>
+<pre><code> Limit  (cost=0.57..2348.08 rows=1 width=4) (actual time=328296.674..328296.675 rows=1 loops=1)
+   -&gt;  Index Scan using posted_date_idx on foo  (cost=0.57..56941182.70 rows=24256 width=4) (actual time=328296.673..328296.673 rows=1 loops=1)
          Filter: (bar_id = 1258296)
          Rows Removed by Filter: 57895884
  Planning Time: 0.145 ms
  Execution Time: 328296.702 ms
-</code></pre></p>
-<p>It actually looked at the "posted_date" index first, which is huge (57 million rows filtered out), instead of looking at the bar_id_index and filtering out the results, getting the first.</p>
-<p>Removing the <code>LIMIT 1</code> actually made the query run faster, because the selected plan was better:</p>
-<pre><code class="language-">
- Sort  (cost=25927.45..25988.09 rows=24256 width=4) (actual time=63.582..65.982 rows=38677 loops=1)
+</code></pre>
+<p>It actually looked at the &quot;posted_date&quot; index first, which is huge (57 million
+rows filtered out), instead of looking at the bar_id_index and filtering out
+the results, getting the first.</p>
+<p>Removing the <code>LIMIT 1</code> actually made the query run faster, because the selected
+plan was better:</p>
+<pre><code> Sort  (cost=25927.45..25988.09 rows=24256 width=4) (actual time=63.582..65.982 rows=38677 loops=1)
    Sort Key: posted_date
    Sort Method: quicksort  Memory: 3349kB
-   ->  Index Scan using bar_id_idx on foo  (cost=0.57..24160.88 rows=24256 width=4) (actual time=8.653..57.713 rows=38677 loops=1)
+   -&gt;  Index Scan using bar_id_idx on foo  (cost=0.57..24160.88 rows=24256 width=4) (actual time=8.653..57.713 rows=38677 loops=1)
          Index Cond: (bar_id = 1258296)
  Planning Time: 0.984 ms
  Execution Time: 68.305 ms
- </code></pre><h2>Why did this happen?</h0>
-<p>Even though the first query (the bad one) had a smaller cost (2348 vs 25988), it performed badly due to how Postgres decided to plan that query.</p>
-<p>In this case, Postgres decided to traverse the <code>posted_date_idx</code> from the bottom up, fetching every row and verifying if the <code>bar_id</code> value matched. If so, the query is done. No sorting required as the first match represents the last posted_date for that bar_id.</p>
-<p>The alternative (without LIMIT 1), means that Postgres has to go through the <code>bar_id_idx</code> instead, fetch all the matching <code>bar_id</code> rows, performs a quick sort, and returns the first result.</p>
-<p>Postgres thinks that this would be more _costly_ than the alternative - even though in real terms it isn't.</p>
-<h2>How to fix this?</h0>
-<p>One possibility is to add a composite index, with the <code>bar_id</code> first, and the <code>posted_date</code> last. In that case, Postgres just has to look at the first <code>bar_id</code> entry in the index, which would have the highest <code>posted_date</code> value and be done.</p>
+</code></pre>
+<h2>Why did this happen?</h2>
+<p>Even though the first query (the bad one) had a smaller cost (2348 vs 25988),
+it performed badly due to how Postgres decided to plan that query.</p>
+<p>In this case, Postgres decided to traverse the <code>posted_date_idx</code> from the
+bottom up, fetching every row and verifying if the <code>bar_id</code> value matched. If
+so, the query is done. No sorting required as the first match represents the
+last posted_date for that bar_id.</p>
+<p>The alternative (without LIMIT 1), means that Postgres has to go through the
+<code>bar_id_idx</code> instead, fetch all the matching <code>bar_id</code> rows, performs a quick
+sort, and returns the first result.</p>
+<p>Postgres thinks that this would be more <em>costly</em> than the alternative - even
+though in real terms it isn't.</p>
+<h2>How to fix this?</h2>
+<p>One possibility is to add a composite index, with the <code>bar_id</code> first, and the
+<code>posted_date</code> last. In that case, Postgres just has to look at the first
+<code>bar_id</code> entry in the index, which would have the highest <code>posted_date</code> value
+and be done.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

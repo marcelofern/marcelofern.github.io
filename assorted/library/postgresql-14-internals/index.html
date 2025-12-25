@@ -60,51 +60,87 @@
 </head>
 <body>
 <p>January 5, 2024</p>
-<h2>Introduction</h0>
-<h3>Catalog</h0>
-<p>Metadata for cluster objects such as tables, indexes, data types, or functions, is stored in tables that live in the system catalog. These tables are regular tables, they can be dropped, inserted in, and messed up in general ways.</p>
-<p>The command <code>CREATE DATABASE</code> inserts a row into the <code>pg_database</code> catalog, and actually creates the database on disk.</p>
-<ul><li>https://www.postgresql.org/docs/current/catalogs.html</li><li>https://www.postgresql.org/docs/current/catalog</li><li>pg</li><li>database.html</li></ul>
+<h2>Introduction</h2>
+<h3>Catalog</h3>
+<p>Metadata for cluster objects such as tables, indexes, data types, or functions,
+is stored in tables that live in the system catalog. These tables are regular
+tables, they can be dropped, inserted in, and messed up in general ways.</p>
+<p>The command <code>CREATE DATABASE</code> inserts a row into the <code>pg_database</code> catalog,
+and actually creates the database on disk.</p>
+<ul>
+<li>https://www.postgresql.org/docs/current/catalogs.html</li>
+<li>https://www.postgresql.org/docs/current/catalog-pg-database.html</li>
+</ul>
 <p>All system catalog tables begin with the <code>pg_</code> prefix, like we saw above.</p>
-<p>Trivia: In all system catalog tables, PK column is called oid (object identifier).</p>
-<h3>Schemas</h0>
+<p>Trivia: In all system catalog tables, PK column is called oid (object
+identifier).</p>
+<h3>Schemas</h3>
 <p>Schemas are namespaces for storing all objects of a db.</p>
-<ul><li><b>public</b>: default schema for user objects (unless overwritten)</li><li><b>pg_catalog</b> : system catalog tables</li><li><b>information_schema</b> : alternative view of the system catalog (SQL standard)</li></ul>
-<ul><li>https://www.postgresql.org/docs/current/ddl</li><li>schemas.html</li></ul>
-<h3>Tablespaces</h0>
-<p>Tablespaces define physical data layout. It is a directory in a file system. Data can be distributed in such a way so that archive data is stored on slow disks whilst data actively updated goes to fast disks.</p>
-<h3>Relations</h0>
-<p>Tables and indexes both consist of rows. This is true for B-tree nodes as well. Sequences and materialised views also follow this structure.</p>
-<p>In PostgreSQL all those objects are referred by the generic term _relation_, which can be a bit confusing due to relational theory terminology.</p>
-<h3>Files and Forks</h0>
+<ul>
+<li><p><strong>public</strong>: default schema for user objects (unless overwritten)</p>
+</li>
+<li><p><strong>pg_catalog</strong>: system catalog tables</p>
+</li>
+<li><p><strong>information_schema</strong>: alternative view of the system catalog (SQL standard)</p>
+</li>
+<li><p>https://www.postgresql.org/docs/current/ddl-schemas.html</p>
+</li>
+</ul>
+<h3>Tablespaces</h3>
+<p>Tablespaces define physical data layout. It is a directory in a file system.
+Data can be distributed in such a way so that archive data is stored on slow
+disks whilst data actively updated goes to fast disks.</p>
+<h3>Relations</h3>
+<p>Tables and indexes both consist of rows. This is true for B-tree nodes as well.
+Sequences and materialised views also follow this structure.</p>
+<p>In PostgreSQL all those objects are referred by the generic term <em>relation</em>,
+which can be a bit confusing due to relational theory terminology.</p>
+<h3>Files and Forks</h3>
 <p>All information relating to a table is stored in several different forks:</p>
-<ul><li>https://www.postgresql.org/docs/current/storage</li><li>file</li><li>layout.html</li></ul>
-<p>Once a file (fork) grows over 1GB, another file of this fork is created ( sometimes these are called segments). The sequence number of the segment is added to the end of its filename.</p>
-<p>The limit of 1GB is historically established to support file systems that couldn't handle large files. This can be changed when building Postgres via <code>./configure --with-segsize</code></p>
+<ul>
+<li>https://www.postgresql.org/docs/current/storage-file-layout.html</li>
+</ul>
+<p>Once a file (fork) grows over 1GB, another file of this fork is created (
+sometimes these are called segments). The sequence number of the segment is
+added to the end of its filename.</p>
+<p>The limit of 1GB is historically established to support file systems that
+couldn't handle large files. This can be changed when building Postgres via
+<code>./configure --with-segsize</code></p>
 <p>Checking the file path where a table is stored:</p>
-<pre><code class="language-sql">
-SELECT pg_relation_filepath('accounts_account');
-</code></pre><pre><code class="language-">
- pg_relation_filepath
+<pre><code class="language-sql">SELECT pg_relation_filepath('accounts_account');
+</code></pre>
+<pre><code> pg_relation_filepath
 ----------------------
  base/16384/19623
-</code></pre><p>And check the size of the file <pre><code class="language-sql">
-SELECT size FROM pg_stat_file('base/16384/19623');
-</code></pre> <pre><code class="language-">
- size
+</code></pre>
+<p>And check the size of the file</p>
+<pre><code class="language-sql">SELECT size FROM pg_stat_file('base/16384/19623');
+</code></pre>
+<pre><code> size
 ------
  8192
-</code></pre></p>
-<p>There are 3 categories of forks: - Main fork: Where the data for the table and indexes live - Free Space Map: Keeps track of free space within pages. Used to quickly find a page that can accommodate new inserted data. - Visibility map: For showing whether the page needs to be vacuumed or frozen.</p>
-<h3>Pages</h0>
-<p>Files are split into pages (also known as blocks). These are the minimum amount of data that can be read or written. The size of a page is usually 8kb. This can be changed during build time, but no many people do this.</p>
-<h3>TOAST (The Oversized Attributes Storage Technique)</h0>
-<p>Each row of a table must fit a single page. No row can continue in the next page. To store long rows, TOAST is used.</p>
-<p>There're many techniques involved in this. You can slice long attribute values into a separate service table, or compress a long value so that it fits the page, or you can do both.</p>
-<p>For index, TOAST only uses compression. This limits the size of the key that can be indexed.</p>
+</code></pre>
+<p>There are 3 categories of forks:</p>
+<ul>
+<li>Main fork: Where the data for the table and indexes live</li>
+<li>Free Space Map: Keeps track of free space within pages. Used to quickly find
+a page that can accommodate new inserted data.</li>
+<li>Visibility map: For showing whether the page needs to be vacuumed or frozen.</li>
+</ul>
+<h3>Pages</h3>
+<p>Files are split into pages (also known as blocks). These are the minimum
+amount of data that can be read or written. The size of a page is usually 8kb.
+This can be changed during build time, but no many people do this.</p>
+<h3>TOAST (The Oversized Attributes Storage Technique)</h3>
+<p>Each row of a table must fit a single page. No row can continue in the next
+page. To store long rows, TOAST is used.</p>
+<p>There're many techniques involved in this. You can slice long attribute values
+into a separate service table, or compress a long value so that it fits the
+page, or you can do both.</p>
+<p>For index, TOAST only uses compression. This limits the size of the key that
+can be indexed.</p>
 <p>To check the TOAST strategy for a table, you can perform this query:</p>
-<pre><code class="language-sql">
-SELECT
+<pre><code class="language-sql">SELECT
     attname,
     atttypid::regtype,
     CASE attstorage
@@ -114,93 +150,139 @@ SELECT
         WHEN 'x' THEN 'extended'
     END AS storage
 FROM pg_attribute
-WHERE attrelid = 'accounts_account'::regclass AND attnum > 0;
-</code></pre><ul><li>plain: TOAST is not used.</li><li>main: Attributes are compressed first, and moved to the TOAST table if compression didn't help.</li><li>external: Stored in the TOAST table without compression.</li><li>extended: Compressed and stored in the TOAST table.</li></ul>
-<p>Sometimes it's useful to change the default strategy for some columns. If the column stores a JPEG image, for example, you can set the external strategy for this column to avoid unnecessarily compression to the data. You can change it like this:</p>
-<pre><code class="language-sql">
-ALTER TABLE t ALTER COLUMN d SET STORAGE external;
-</code></pre><p>To find the TOAST table you can perform:</p>
-<pre><code class="language-sql">
-SELECT relnamespace::regnamespace, relname
+WHERE attrelid = 'accounts_account'::regclass AND attnum &gt; 0;
+</code></pre>
+<ul>
+<li>plain: TOAST is not used.</li>
+<li>main: Attributes are compressed first, and moved to the TOAST table if
+compression didn't help.</li>
+<li>external: Stored in the TOAST table without compression.</li>
+<li>extended: Compressed and stored in the TOAST table.</li>
+</ul>
+<p>Sometimes it's useful to change the default strategy for some columns. If the
+column stores a JPEG image, for example, you can set the external strategy
+for this column to avoid unnecessarily compression to the data. You can change
+it like this:</p>
+<pre><code class="language-sql">ALTER TABLE t ALTER COLUMN d SET STORAGE external;
+</code></pre>
+<p>To find the TOAST table you can perform:</p>
+<pre><code class="language-sql">SELECT relnamespace::regnamespace, relname
 FROM pg_class
 WHERE oid = (
     SELECT reltoastrelid
     FROM pg_class WHERE relname = 'accounts_account'
 );
-</code></pre><pre><code class="language-">
- relnamespace |    relname
+</code></pre>
+<pre><code> relnamespace |    relname
 --------------+----------------
  pg_toast     | pg_toast_16453
- </code></pre><pre><code class="language-sh">
-\d+ pg_toast.pg_toast_16453
-</code></pre><pre><code class="language-">
-   Column   |  Type   | Storage
+</code></pre>
+<pre><code class="language-sh">\d+ pg_toast.pg_toast_16453
+</code></pre>
+<pre><code>   Column   |  Type   | Storage
 ------------+---------+---------
  chunk_id   | oid     | plain
  chunk_seq  | integer | plain
  chunk_data | bytea   | plain
-</code></pre><p>You can also check the index associated with the TOAST table</p>
-<pre><code class="language-sql">
-SELECT indexrelid::regclass FROM pg_index
+</code></pre>
+<p>You can also check the index associated with the TOAST table</p>
+<pre><code class="language-sql">SELECT indexrelid::regclass FROM pg_index
 WHERE indrelid = (
     SELECT oid
     FROM pg_class WHERE relname = 'pg_toast_16453'
 );
-</code></pre><p>A TOAST table increases the min number of fork files used by the table up to eight: three for the main table, three for the TOAST table, and two for the TOAST index.</p>
-<p><b>TIP</b>: If long attributes do not participate in the query, the TOAST table will not be read at all. It is one of the reasons why you should avoid using the asterisk <code>(SELECT *)</code> in production solutions.</p>
-<p><b>TIP</b>: It's not a good idea to keep bulky data in Postgres, specially if the data is being actively used and does not require transactional logic (like pdfs). This is because compression and slicing require a lot of resources.</p>
-<h3>Processes and Memory</h0>
-<p>Upon initialisation, postgres launches the postgres process, also known as postmaster. It creates all the other processes via <code>fork</code>, and monitors them, restarting these children processes if they fail.</p>
-<p>The postmaster allocates shared memory that is available to all processes. Buffer cache takes the greater part of the shared memory, which is often stored in RAM for speed.</p>
-<p>In the event of a power outage or OS crash, postgres keeps a write-ahead log (WAL), which makes it possible to repeat lost operations when necessary.</p>
-<p>The postmaster also listen for incoming connections, creating a separate backend process. This poses a few problems:</p>
-<ul><li>Each process needs RAM for caching.</li><li>If connections are frequent (and short), their cost is unreasonably high.</li><li>Performance declines as the number of clients grows.</li></ul>
-<h2>Isolation</h0>
-<h3>Isolation Levels and Anomalies</h0>
-<p>The SQL standard has four isolation levels. These are defined by the anomalies that may or may not occur in concurrent transaction execution.</p>
-<h4>Lost Update</h0>
-<p>Occurs when two transactions read the same table row, then one of the transactions updates the row, and then, the second transaction also updates the same row without considering any changes made by the first transaction. Thus, the first transaction update is lost. This anomaly is forbidden from the standard.</p>
-<p>Example: Transaction one wants to add $100 to the account balance of $1000, and transaction B wants to add $200. The total after the transactions kick in should be $1300, but somehow the first transaction update is ignored and the balance ends up as $1200.</p>
-<h4>Dirty Read and Read Uncommitted</h0>
-<p>Dirty read happens when one transaction reads the uncommitted reads from another transaction. The standard allows dirty reads at the Read Uncommitted level. These are forbidden in Postgres by design.</p>
-<h4>Non<ul><li>RReeppeeaattaabbllee  RReeaaddss  aanndd  RReeaadd  CCoommmmiitttteedd</h0>
- Non</li><li>repeatable read anomaly happens when a transaction needs to read from the same row twice, and another transaction has updated or deleted the data in the meanwhile. The standard allows this anomaly at the Read Uncommitted and Read Committed levels. Note that the Read Commited isolation level is the default.</li></ul>
-<h4>Phantom Reads and Repeatable Read</h0>
-<p>Occurs when the same transaction executes two identical queries, while another transaction adds more rows (or removes) from that would satisfy the query.</p>
-<p>The standard allows phantom reads at the Read Uncommitted, Read Committed, and Repeatable Read isolation levels.</p>
-<h2>Pages and Tuples</h0>
-<h3>Page structure</h0>
-<h4>Page Header</h0>
+</code></pre>
+<p>A TOAST table increases the min number of fork files used by the table up to
+eight: three for the main table, three for the TOAST table, and two for the
+TOAST index.</p>
+<p><strong>TIP</strong>: If long attributes do not participate in the query, the TOAST table
+will not be read at all. It is one of the reasons why you should avoid using
+the asterisk <code>(SELECT *)</code> in production solutions.</p>
+<p><strong>TIP</strong>: It's not a good idea to keep bulky data in Postgres, specially if
+the data is being actively used and does not require transactional logic
+(like pdfs). This is because compression and slicing require a lot of
+resources.</p>
+<h3>Processes and Memory</h3>
+<p>Upon initialisation, postgres launches the postgres process, also known as
+postmaster. It creates all the other processes via <code>fork</code>, and monitors them,
+restarting these children processes if they fail.</p>
+<p>The postmaster allocates shared memory that is available to all processes.
+Buffer cache takes the greater part of the shared memory, which is often stored
+in RAM for speed.</p>
+<p>In the event of a power outage or OS crash, postgres keeps a write-ahead log
+(WAL), which makes it possible to repeat lost operations when necessary.</p>
+<p>The postmaster also listen for incoming connections, creating a separate
+backend process. This poses a few problems:</p>
+<ul>
+<li>Each process needs RAM for caching.</li>
+<li>If connections are frequent (and short), their cost is unreasonably high.</li>
+<li>Performance declines as the number of clients grows.</li>
+</ul>
+<h2>Isolation</h2>
+<h3>Isolation Levels and Anomalies</h3>
+<p>The SQL standard has four isolation levels. These are defined by the anomalies
+that may or may not occur in concurrent transaction execution.</p>
+<h4>Lost Update</h4>
+<p>Occurs when two transactions read the same table row, then one of the
+transactions updates the row, and then, the second transaction also updates
+the same row without considering any changes made by the first transaction.
+Thus, the first transaction update is lost. This anomaly is forbidden from the
+standard.</p>
+<p>Example: Transaction one wants to add $100 to the account balance of $1000,
+and transaction B wants to add $200. The total after the transactions kick in
+should be $1300, but somehow the first transaction update is ignored and the
+balance ends up as $1200.</p>
+<h4>Dirty Read and Read Uncommitted</h4>
+<p>Dirty read happens when one transaction reads the uncommitted reads from
+another transaction. The standard allows dirty reads at the Read Uncommitted
+level. These are forbidden in Postgres by design.</p>
+<h4>Non-Repeatable Reads and Read Committed</h4>
+<p>Non-repeatable read anomaly happens when a transaction needs to read from the
+same row twice, and another transaction has updated or deleted the data in the
+meanwhile. The standard allows this anomaly at the Read Uncommitted and Read
+Committed levels. Note that the Read Commited isolation level is the default.</p>
+<h4>Phantom Reads and Repeatable Read</h4>
+<p>Occurs when the same transaction executes two identical queries, while another
+transaction adds more rows (or removes) from that would satisfy the query.</p>
+<p>The standard allows phantom reads at the Read Uncommitted, Read Committed, and
+Repeatable Read isolation levels.</p>
+<h2>Pages and Tuples</h2>
+<h3>Page structure</h3>
+<h4>Page Header</h4>
 <p>Located at the lowest addresses of a page, and has a fixed size.</p>
-<pre><code class="language-sql">
-CREATE EXTENSION pageinspect;
+<pre><code class="language-sql">CREATE EXTENSION pageinspect;
 
 select lower, upper, special, pagesize
 from page_header(get_raw_page('accounts_account', 0));
-</code></pre><pre><code class="language-txt">
-| lower | upper | special | pagesize |
+</code></pre>
+<pre><code class="language-txt">| lower | upper | special | pagesize |
 |-------|-------|---------|----------|
 | 152   | 6904  | 8192    | 8192     |
-</code></pre><h4>Special Space</h0>
-<p>Located at the highest addresses of a page. It is used by some indexes to store auxiliary info.</p>
-<h4>Tuples</h0>
-<p>Rows that contain the actual data stored in the db and some metadata. Located just before the special space.</p>
-<h4>Item Pointers</h0>
+</code></pre>
+<h4>Special Space</h4>
+<p>Located at the highest addresses of a page. It is used by some indexes to store
+auxiliary info.</p>
+<h4>Tuples</h4>
+<p>Rows that contain the actual data stored in the db and some metadata. Located
+just before the special space.</p>
+<h4>Item Pointers</h4>
 <p>An array of pointers to tuples. Located after the header.</p>
-<h3>Savepoints</h0>
-<p>SQL supports canceling operations within a transaction without aborting the transaction as a whole.</p>
-<pre><code class="language-sql">
-SAVEPOINT my_save_point;
+<h3>Savepoints</h3>
+<p>SQL supports canceling operations within a transaction without aborting
+the transaction as a whole.</p>
+<pre><code class="language-sql">SAVEPOINT my_save_point;
 // Do stuff that will be rolled back.
 ROLLBACK TO my_save_point;
-</code></pre><h2>Snapshots</h0>
-<h3>Definition</h0>
-<p>A data page can contain several versions of the same row. Each transaction must see at most 1 of such versions. Visible versions of all different rows constitute a Snapshot.</p>
-<h2>Locks</h0>
-<h3>Relation<ul><li>lleevveell  lloocckkss</h0>
- What types of locks can work together:</li></ul>
-<pre><code class="language-">
-| LOCK                   | AS  | RS  | RE  | SUE | S   | SRE | E   | AE | QUERY                                                  |
+</code></pre>
+<h2>Snapshots</h2>
+<h3>Definition</h3>
+<p>A data page can contain several versions of the same row. Each transaction must
+see at most 1 of such versions. Visible versions of all different rows
+constitute a Snapshot.</p>
+<h2>Locks</h2>
+<h3>Relation-level locks</h3>
+<p>What types of locks can work together:</p>
+<pre><code>| LOCK                   | AS  | RS  | RE  | SUE | S   | SRE | E   | AE | QUERY                                                  |
 |------------------------|-----|-----|-----|-----|-----|-----|-----|-----|-------------------------------------------------------|
 | Access Share           |     |     |     |     |     |     |     |  X  | SELECT                                                |
 | Row Share              |     |     |     |     |     |     |  X  |  X  | SELECT FOR UPDATE/SHARE                               |
@@ -209,4 +291,8 @@ ROLLBACK TO my_save_point;
 | Share                  |     |     |  X  |  X  |     |  X  |  X  |  X  | CREATE INDEX                                          |
 | Exclusive              |     |  X  |  X  |  X  |  X  |  X  |  X  |  X  | REFRESH MAT.VIEW CONCURRENTLY                         |
 | Access Exclusive       |  X  |  X  |  X  |  X  |  X  |  X  |  X  |  X  | DROP/TRUNCATE/VACUUM FULL/LOCK TABLE/REFRESH MAT.VIEW |
-</code></pre><p>The first 4 modes allow concurrent modifications, the other four do not.</p>
+</code></pre>
+<p>The first 4 modes allow concurrent modifications, the other four do not.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

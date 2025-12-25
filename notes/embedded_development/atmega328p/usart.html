@@ -60,12 +60,15 @@
 </head>
 <body>
 <p>2024-04-25</p>
-<p>In section 19 for the ATMega328p datasheet, you can find detailed information about the USART functionality available in the microcontroller. It's recommended to at least scan through that section to see what is available.</p>
-<p>The following will break down and distil the information necessary to set up a USART communication with baud rate of 9,600 and 8bit-long messages.</p>
-<h2>Initialising</h0>
-<p>In section 19.5, there are instructions for initialising USART, along with C and Assembly code snippets. The C code is pasted below as is:</p>
-<pre><code class="language-c">
-#define FOSC 1843200 // Clock Speed
+<p>In section 19 for the ATMega328p datasheet, you can find detailed information
+about the USART functionality available in the microcontroller. It's
+recommended to at least scan through that section to see what is available.</p>
+<p>The following will break down and distil the information necessary to set up
+a USART communication with baud rate of 9,600 and 8bit-long messages.</p>
+<h2>Initialising</h2>
+<p>In section 19.5, there are instructions for initialising USART, along with
+C and Assembly code snippets. The C code is pasted below as is:</p>
+<pre><code class="language-c">#define FOSC 1843200 // Clock Speed
 #define BAUD 9600
 // See table 19.1 on the datasheet for this equation.
 #define MYUBRR FOSC/16/BAUD-1
@@ -78,38 +81,61 @@ void main(void)
 void USART_Init(unsigned int ubrr)
 {
     /*Set baud rate */
-    UBRR0H = (unsigned char)(ubrr>>8);
+    UBRR0H = (unsigned char)(ubrr&gt;&gt;8);
     UBRR0L = (unsigned char)ubrr;
     /* Enable receiver and transmitter */
-    UCSR0B = (1<<RXEN0)|(1<<TXEN0);
+    UCSR0B = (1&lt;&lt;RXEN0)|(1&lt;&lt;TXEN0);
     /* Set frame format: 8data, 2stop bit */
-    UCSR0C = (1<<USBS0)|(3<<UCSZ00);
+    UCSR0C = (1&lt;&lt;USBS0)|(3&lt;&lt;UCSZ00);
 }
-</code></pre><ul><li><code>FOSC</code> is the System oscillator clock frequency. In ATMega328p, that will be 16MHz and can be accessed via the macro definition F_CPU.</li><li><code>BAUD</code> is the baud rate in bits per second.</li><li><code>MYUBRR</code> is the baud rate register setting, which in Asynchronous normal mode is calculated by <code>(FOSC/(16*BAUD)) - 1</code>. This value will end up between (0, 4095).</li><li><code>UBRR0H</code> and <code>UBRR0L</code> are the registers where the UBRR value will be put into. Given that the value is between 0 and 4095, it needs two 8bit registers to fit.</li><li><code>UCSR0B</code> is the USART control and status register B. You can read more about it on section 19.10.3.</li><li><code>TXENn</code> is a bit that represents "Transmitter enable n".</li><li><code>UCSR0C</code> is the USART control and status register C.</li><li>The UCSZn1:0 bits combined with the UCSZn2 bit in UCSRnB sets the number of data bits (character size) in a frame the receiver and transmitter use.</li></ul>
-<p>For more information on where that equation came from, visit the table 19.1 on the ATMega328p datasheet.</p>
-<h2>Calculating the UBRR value for ATMega328p</h0>
-<ul><li><code>FOSC</code> in ATMega328p is 16MHz.</li><li><code>BAUD</code> will be the same, we'll keep it at 9600 bits per second.</li></ul>
+</code></pre>
+<ul>
+<li><code>FOSC</code> is the System oscillator clock frequency. In ATMega328p, that will be
+16MHz and can be accessed via the macro definition F_CPU.</li>
+<li><code>BAUD</code> is the baud rate in bits per second.</li>
+<li><code>MYUBRR</code> is the baud rate register setting, which in Asynchronous normal mode
+is calculated by <code>(FOSC/(16*BAUD)) - 1</code>. This value will end up between (0,
+4095).</li>
+<li><code>UBRR0H</code> and <code>UBRR0L</code> are the registers where the UBRR value will be put
+into. Given that the value is between 0 and 4095, it needs two 8bit registers
+to fit.</li>
+<li><code>UCSR0B</code> is the USART control and status register B. You can read more about
+it on section 19.10.3.</li>
+<li><code>TXENn</code> is a bit that represents &quot;Transmitter enable n&quot;.</li>
+<li><code>UCSR0C</code> is the USART control and status register C.</li>
+<li>The UCSZn1:0 bits combined with the UCSZn2 bit in UCSRnB sets the number of
+data bits (character size) in a frame the receiver and transmitter use.</li>
+</ul>
+<p>For more information on where that equation came from, visit the table 19.1 on
+the ATMega328p datasheet.</p>
+<h2>Calculating the UBRR value for ATMega328p</h2>
+<ul>
+<li><code>FOSC</code> in ATMega328p is 16MHz.</li>
+<li><code>BAUD</code> will be the same, we'll keep it at 9600 bits per second.</li>
+</ul>
 <p>Thus we have:</p>
-<pre><code class="language-c">
-#define BAUD 9600
+<pre><code class="language-c">#define BAUD 9600
 // F_CPU is passed in during compilation -DF_CPU=16000000UL
 #define UBRR_VALUE = (F_CPU/(16UL * BAUD)) - 1
-</code></pre><p>The <code>UBRR_VALUE</code> is split between registers <code>UBRR0H</code> and <code>UBRR0L</code>, and they can be set with like this:</p>
-<pre><code class="language-c">
-// Our ubrr in decimal is 103, which in binary is 00000000 01100111.
+</code></pre>
+<p>The <code>UBRR_VALUE</code> is split between registers <code>UBRR0H</code> and <code>UBRR0L</code>, and
+they can be set with like this:</p>
+<pre><code class="language-c">// Our ubrr in decimal is 103, which in binary is 00000000 01100111.
 // In this case the high bits will be 00000000.
 // The low bits will be 01100111.
-UBRR0H = (unsigned char)(ubrr >> 8);
+UBRR0H = (unsigned char)(ubrr &gt;&gt; 8);
 UBRR0L = (unsigned char)(ubrr);
-</code></pre><p>In our case, the ATMega328p will only be transmitting, and not receiving, so we'll set up the UCSR0B with TXEN0:</p>
-<pre><code class="language-c">
-UCSR0B = 1 << TXEN0;
-</code></pre><p>And we will be transmitting 8bit messages, so we'll set up UCSR0C with UCSZ00:</p>
-<pre><code class="language-c">
-UCSR0C = 3 << UCSZ00;
-</code></pre><p>The whole code for this bit is:</p>
-<pre><code class="language-c">
-void usart_init(uint16_t ubrr) {
+</code></pre>
+<p>In our case, the ATMega328p will only be transmitting, and not receiving,
+so we'll set up the UCSR0B with TXEN0:</p>
+<pre><code class="language-c">UCSR0B = 1 &lt;&lt; TXEN0;
+</code></pre>
+<p>And we will be transmitting 8bit messages, so we'll set up UCSR0C with
+UCSZ00:</p>
+<pre><code class="language-c">UCSR0C = 3 &lt;&lt; UCSZ00;
+</code></pre>
+<p>The whole code for this bit is:</p>
+<pre><code class="language-c">void usart_init(uint16_t ubrr) {
   /* Initialises USART communication.
    *
    * - Use Asynchronous normal mode.
@@ -119,35 +145,43 @@ void usart_init(uint16_t ubrr) {
    * More details are in section 19 of the ATMega328p datasheet.
    *
    */
-  UBRR0H = (unsigned char)(ubrr >> 8);
+  UBRR0H = (unsigned char)(ubrr &gt;&gt; 8);
   UBRR0L = (unsigned char)(ubrr);
-  UCSR0B = 1 << TXEN0;
-  UCSR0C = 3 << UCSZ00;
+  UCSR0B = 1 &lt;&lt; TXEN0;
+  UCSR0C = 3 &lt;&lt; UCSZ00;
 }
-</code></pre><h2>Sending data to the terminal</h0>
+</code></pre>
+<h2>Sending data to the terminal</h2>
 <p>From section 19.6.1 in the datasheet:</p>
-<blockquote>A data transmission is initiated by loading the transmit buffer with the data</blockquote>
-<blockquote>to be transmitted. The CPU can load the transmit buffer by writing to the</blockquote>
-<blockquote>UDRn I/O location. The buffered data in the transmit buffer will be moved to</blockquote>
-<blockquote>the shift register when the shift register is ready to send a new frame. The</blockquote>
-<blockquote>shift register is loaded with new data if it is in idle state (no ongoing</blockquote>
-<blockquote>transmission) or immediately after the last stop bit of the previous frame is</blockquote>
-<blockquote>transmitted. When the shift register is loaded with new data, it will</blockquote>
-<blockquote>transfer one complete frame at the rate given by the baud register, U2Xn bit</blockquote>
-<blockquote>or by XCKn depending on mode of operation.</blockquote>
+<blockquote>
+<p>A data transmission is initiated by loading the transmit buffer with the data
+to be transmitted. The CPU can load the transmit buffer by writing to the
+UDRn I/O location. The buffered data in the transmit buffer will be moved to
+the shift register when the shift register is ready to send a new frame. The
+shift register is loaded with new data if it is in idle state (no ongoing
+transmission) or immediately after the last stop bit of the previous frame is
+transmitted. When the shift register is loaded with new data, it will
+transfer one complete frame at the rate given by the baud register, U2Xn bit
+or by XCKn depending on mode of operation.</p>
+</blockquote>
 <p>The following C code example is provided:</p>
-<pre><code class="language-c">
-void USART_Transmit(unsigned char data)
+<pre><code class="language-c">void USART_Transmit(unsigned char data)
 {
     /* Wait for empty transmit buffer */
-    while (!(UCSRnA & (1<<UDREn)));
+    while (!(UCSRnA &amp; (1&lt;&lt;UDREn)));
     /* Put data into buffer, sends the data */
     UDRn = data;
 }
-</code></pre><ul><li><code>UCSRnA</code> is the USART control and status register A.</li><li><code>UDREn</code> is a bit flag that indicates if the transmit buffer (UDRn) is ready to receive new data. If UDREn is one, the buffer is empty and ready to be written.</li><li><code>UDRn</code> is the transmit buffer.</li></ul>
+</code></pre>
+<ul>
+<li><code>UCSRnA</code> is the USART control and status register A.</li>
+<li><code>UDREn</code> is a bit flag that indicates if the transmit buffer (UDRn) is ready
+to receive new data. If UDREn is one, the buffer is empty and ready to be
+written.</li>
+<li><code>UDRn</code> is the transmit buffer.</li>
+</ul>
 <p>We will use that same function, just changing n to 0:</p>
-<pre><code class="language-c">
-void usart_transmit(unsigned char data) {
+<pre><code class="language-c">void usart_transmit(unsigned char data) {
     /* Transmit 8bit data via USART
      *
      * Waits until UCSR0A is ready to receive data,
@@ -155,18 +189,22 @@ void usart_transmit(unsigned char data) {
      *
      * More details are in section 19.6.1 of the ATmega328p datasheet.
      */
-    while (!(UCSR0A & (1<<UDRE0)));
+    while (!(UCSR0A &amp; (1&lt;&lt;UDRE0)));
     UDR0 = data;
 }
-</code></pre><h2>Setting up the data stream</h0>
-<p>We want the USART message to be print to the linux terminal of the machine we are using the ATMega328p with.</p>
-<p>We need to tell our program, that the output of <code>stdio</code> functions must be redirected to a stream of our choice. This stream will be the USART transmitter function we built in the previous step (<code>usart_transmit</code>)</p>
+</code></pre>
+<h2>Setting up the data stream</h2>
+<p>We want the USART message to be print to the linux terminal of the machine we
+are using the ATMega328p with.</p>
+<p>We need to tell our program, that the output of <code>stdio</code> functions must be
+redirected to a stream of our choice. This stream will be the USART
+transmitter function we built in the previous step (<code>usart_transmit</code>)</p>
 <p>This can be achieved as follows:</p>
-<pre><code class="language-c">
-static FILE uartout = FDEV_SETUP_STREAM(usart_transmit, NULL, _FDEV_SETUP_WRITE);
-</code></pre><p>However, we need to change the <code>usart_transmit</code> function signature to suit the protocol.</p>
-<pre><code class="language-diff">
-- void usart_transmit(unsigned char data) {
+<pre><code class="language-c">static FILE uartout = FDEV_SETUP_STREAM(usart_transmit, NULL, _FDEV_SETUP_WRITE);
+</code></pre>
+<p>However, we need to change the <code>usart_transmit</code> function signature to suit
+the protocol.</p>
+<pre><code class="language-diff">- void usart_transmit(unsigned char data) {
 + int usart_transmit(char data, struct __file* stream) {
    /* Transmit 8bit data via USART.
     *
@@ -175,18 +213,20 @@ static FILE uartout = FDEV_SETUP_STREAM(usart_transmit, NULL, _FDEV_SETUP_WRITE)
     *
     * More details are in section 19.6.1 of the ATmega328p datasheet.
     */
-   while (!(UCSR0A & (1<<UDRE0)));
+   while (!(UCSR0A &amp; (1&lt;&lt;UDRE0)));
    UDR0 = data;
 +  return 0;
 }
-</code></pre><h2>The code</h0>
+</code></pre>
+<h2>The code</h2>
 <p>The following script can be compiled using the script in my other note:</p>
-<ul><li><a href="embedded_development/atmega328p/atmega328p_on_vim.md">ATMega328P on vim</a></li></ul>
-<pre><code class="language-c">
-#include <avr/io.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <util/delay.h>
+<ul>
+<li><a href="atmega328p_on_vim.html">ATMega328P on vim</a></li>
+</ul>
+<pre><code class="language-c">#include &lt;avr/io.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;util/delay.h&gt;
 
 #define BAUD 9600
 #define UBRR_VALUE ((F_CPU / (16UL * BAUD)) - 1)
@@ -199,7 +239,7 @@ int usart_transmit(char data, struct __file *stream) {
    *
    * More details are in section 19.6.1 of the ATmega328p datasheet.
    */
-  while (!(UCSR0A & (1 << UDRE0)))
+  while (!(UCSR0A &amp; (1 &lt;&lt; UDRE0)))
     ;
   UDR0 = data;
   return 0;
@@ -217,30 +257,38 @@ void usart_init(uint16_t ubrr) {
    * More details are in section 19 of the ATMega328p datasheet.
    *
    */
-  UBRR0H = (unsigned char)(ubrr >> 8);
+  UBRR0H = (unsigned char)(ubrr &gt;&gt; 8);
   UBRR0L = (unsigned char)(ubrr);
-  UCSR0B = 1 << TXEN0;
-  UCSR0C = 3 << UCSZ00;
+  UCSR0B = 1 &lt;&lt; TXEN0;
+  UCSR0C = 3 &lt;&lt; UCSZ00;
 }
 
 int main(void) {
   usart_init(UBRR_VALUE);
-  stdout = &uartout;
+  stdout = &amp;uartout;
   int times = 0;
   while(1) {
-    printf("Hello folks! %d\r\n", times);
+    printf(&quot;Hello folks! %d\r\n&quot;, times);
     _delay_ms(2000);
     times += 1;
   }
   return 0;
 }
 
-</code></pre><h2>Checking the output</h0>
-<p>You will have to use picocom to verify what has been pushed to your terminal via USART:</p>
-<pre><code class="language-sh">
-picocom -b9600 /dev/ttyUSB0
-</code></pre><p>Where <code>/dev/ttyUSB0</code> is the port your device is connected to, which can be found via:</p>
-<pre><code class="language-sh">
-ls /dev/tty*
-</code></pre><h2>Useful resources</h0>
-<ul><li><a href="http://web.archive.org/web/20231001155615/https://www.gridbugs.org/programming-an-arduino-the-hard-way/">source</a></li></ul>
+</code></pre>
+<h2>Checking the output</h2>
+<p>You will have to use picocom to verify what has been pushed to your terminal
+via USART:</p>
+<pre><code class="language-sh">picocom -b9600 /dev/ttyUSB0
+</code></pre>
+<p>Where <code>/dev/ttyUSB0</code> is the port your device is connected to, which can be
+found via:</p>
+<pre><code class="language-sh">ls /dev/tty*
+</code></pre>
+<h2>Useful resources</h2>
+<ul>
+<li><a href="http://web.archive.org/web/20231001155615/https://www.gridbugs.org/programming-an-arduino-the-hard-way/">source</a></li>
+</ul>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

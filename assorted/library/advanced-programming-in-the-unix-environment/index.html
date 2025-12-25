@@ -59,23 +59,26 @@
   <![endif]-->
 </head>
 <body>
-<h2>Unix System Overview</h0>
-<h3>Log in</h0>
-<p>When a user logs into unix, the system looks for an entry in the password file at <code>/etc/passwd</code>.</p>
-<pre><code class="language-">
-Marcelo:x:1000:1000:Marcelo Fernandes:/home/Marcelo:/usr/bin/zsh
-</code></pre><p>The format is based on a 7-value colon separated string:</p>
-<pre><code class="language-">
-<login name>:<encrypted password>:<id>:<group id>:<comment field>:<home dir>:<shell bin>
-</code></pre><p>Note that the password itself is stored in another file.</p>
-<h3>Files and Directories</h0>
-<p>Two filenames are created when a new directory is created. The <code>.</code> (dot) file, and the <code>..</code> (dot dot) file. This means that directories in Linux are like doubly linked lists, as you can navigate up and down from any nested directory.</p>
+<h2>Unix System Overview</h2>
+<h3>Log in</h3>
+<p>When a user logs into unix, the system looks for an entry in the password
+file at <code>/etc/passwd</code>.</p>
+<pre><code>Marcelo:x:1000:1000:Marcelo Fernandes:/home/Marcelo:/usr/bin/zsh
+</code></pre>
+<p>The format is based on a 7-value colon separated string:</p>
+<pre><code>&lt;login name&gt;:&lt;encrypted password&gt;:&lt;id&gt;:&lt;group id&gt;:&lt;comment field&gt;:&lt;home dir&gt;:&lt;shell bin&gt;
+</code></pre>
+<p>Note that the password itself is stored in another file.</p>
+<h3>Files and Directories</h3>
+<p>Two filenames are created when a new directory is created.
+The <code>.</code> (dot) file, and the <code>..</code> (dot dot) file. This means that directories
+in Linux are like doubly linked lists, as you can navigate up and down from
+any nested directory.</p>
 <p>An implementation of <code>ls</code>:</p>
-<pre><code class="language-c">
-#include <dirent.h>
-#include <err.h>
-#include <stdio.h>
-#include <stdlib.h>
+<pre><code class="language-c">#include &lt;dirent.h&gt;
+#include &lt;err.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
 
 int main(int argc, char *argv[]) {
 
@@ -83,52 +86,68 @@ int main(int argc, char *argv[]) {
   struct dirent *dirp;
 
   if (argc != 2) {
-    err(EXIT_FAILURE, "usage: ls directory_name\n");
+    err(EXIT_FAILURE, &quot;usage: ls directory_name\n&quot;);
   }
 
   if ((dp = opendir(argv[1])) == NULL)
-    err(EXIT_FAILURE, "can't open %s\n", argv[1]);
+    err(EXIT_FAILURE, &quot;can't open %s\n&quot;, argv[1]);
 
   while ((dirp = readdir(dp)) != NULL)
-    printf("%s\n", dirp->d_name);
+    printf(&quot;%s\n&quot;, dirp-&gt;d_name);
 
   closedir(dp);
   exit(0);
 }
-</code></pre><h3>Input and Output</h0>
-<p>File descriptors are small non-negative ints representing files. By convention, all shells open three descriptors: standard input (fd = 0), standard output (fd = 1), and standard error (fd = 2).</p>
-<p>Most shells provide a way to redirect the result of commands to another file:</p>
-<pre><code class="language-sh">
-ls > file.list
-</code></pre><h3>Programs and Processes</h0>
+</code></pre>
+<h3>Input and Output</h3>
+<p>File descriptors are small non-negative ints representing files. By convention,
+all shells open three descriptors: standard input (fd = 0), standard output (fd
+= 1), and standard error (fd = 2).</p>
+<p>Most shells provide a way to redirect the result of commands
+to another file:</p>
+<pre><code class="language-sh">ls &gt; file.list
+</code></pre>
+<h3>Programs and Processes</h3>
 <p>Every program has a process ID:</p>
-<pre><code class="language-c">
-#include <stdio.h>
-#include <unistd.h>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
 
 int main() {
-  printf("Here's my process id: %d\n", getpid());
+  printf(&quot;Here's my process id: %d\n&quot;, getpid());
 }
-</code></pre><h3>Error Handling</h0>
-<p>When one of the functions in the UNIX system errs, the integer <code>errno</code> is usually set to a value that tells you why.</p>
-<pre><code class="language-c">
-#include <errno.h>
-</code></pre><p>A good way of printing the errno, is via <code>perror</code>:</p>
-<pre><code class="language-c">
-#include <errno.h>
-#include <stdio.h>
+</code></pre>
+<h3>Error Handling</h3>
+<p>When one of the functions in the UNIX system errs, the integer <code>errno</code> is
+usually set to a value that tells you why.</p>
+<pre><code class="language-c">#include &lt;errno.h&gt;
+</code></pre>
+<p>A good way of printing the errno, is via <code>perror</code>:</p>
+<pre><code class="language-c">#include &lt;errno.h&gt;
+#include &lt;stdio.h&gt;
 
 int main() {
     errno = 1;
-    perror("Oh my god!");
+    perror(&quot;Oh my god!&quot;);
 }
-</code></pre><p>Which prints:</p>
-<blockquote>Oh my god!: Operation not permitted</blockquote>
-<p>The bit that says "Operation not permitted" can also be fetched via:</p>
-<pre><code class="language-c">
-#include <string.h>
+</code></pre>
+<p>Which prints:</p>
+<blockquote>
+<p>Oh my god!: Operation not permitted</p>
+</blockquote>
+<p>The bit that says &quot;Operation not permitted&quot; can also be fetched via:</p>
+<pre><code class="language-c">#include &lt;string.h&gt;
 
 char *strerror(int errnum);
-</code></pre><h3>Time Values</h0>
-<p>When measuring the execution time of a process, a UNIX system maintains three values:</p>
-<ol><li>Clock time: Amount of time the process takes to run, in total.</li><li>User CPU time: CPU time attributed to user instructions.</li><li>System CPU time: CPU time attributed to the kernel executing in behalf of the user.</li></ol>
+</code></pre>
+<h3>Time Values</h3>
+<p>When measuring the execution time of a process, a UNIX system maintains three
+values:</p>
+<ol>
+<li>Clock time: Amount of time the process takes to run, in total.</li>
+<li>User CPU time: CPU time attributed to user instructions.</li>
+<li>System CPU time: CPU time attributed to the kernel executing in behalf of
+the user.</li>
+</ol>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

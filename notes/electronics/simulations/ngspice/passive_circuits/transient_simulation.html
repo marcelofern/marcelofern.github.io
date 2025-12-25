@@ -59,16 +59,19 @@
   <![endif]-->
 </head>
 <body>
-<h1>Transient Simulation</h0>
-<pre><code class="language-">
-Created at: 2025-11-02
-</code></pre><p>Transient circuit simulation analyses how a circuit's voltage, current, and other properties change over time, typically in response to a sudden input signal like a switch being turned on. It analysis changes that happen quickly.</p>
-<p>Not to be confused with AC analysis, which analyses characteristics in the frequency domain, such as gain and impedance, by varying the input signal's frequency. In transient circuit analysis, the time is variable.</p>
+<h1>Transient Simulation</h1>
+<pre><code>Created at: 2025-11-02
+</code></pre>
+<p>Transient circuit simulation analyses how a circuit's voltage, current, and
+other properties change over time, typically in response to a sudden input
+signal like a switch being turned on. It analysis changes that happen quickly.</p>
+<p>Not to be confused with AC analysis, which analyses characteristics in the
+frequency domain, such as gain and impedance, by varying the input signal's
+frequency. In transient circuit analysis, the time is variable.</p>
 <p>Given the following circuit (dual rc ladder):</p>
-<p><img alt="dual_rc_ladder.png" src="dual_rc_ladder.png"></p>
+<p><img src="dual_rc_ladder.png" alt="dual_rc_ladder.png"></p>
 <p>Which can be expressed by</p>
-<pre><code class="language-sp">
-.title dual rc ladder
+<pre><code class="language-sp">.title dual rc ladder
 
 V1 in 0 dc 0 PULSE (0 5 1u 1u 1u 1 1)
 R1 int in 10k
@@ -76,10 +79,13 @@ R2 out int 1k
 C1 int 0 1u
 C2 out 0 100n
 .end
-</code></pre><p>To start the transient simulation:</p>
-<pre><code class="language-ps">
-tran 50u 50m
-</code></pre><p>To plot the nodes:</p>
-<pre><code class="language-ps">
-plot in int out
 </code></pre>
+<p>To start the transient simulation:</p>
+<pre><code class="language-ps">tran 50u 50m
+</code></pre>
+<p>To plot the nodes:</p>
+<pre><code class="language-ps">plot in int out
+</code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

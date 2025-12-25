@@ -59,19 +59,37 @@
   <![endif]-->
 </head>
 <body>
-<h1>Resistor for LED</h0>
-<pre><code class="language-">
-Created at: 2024-04-29
-</code></pre><p>From a LED's datasheet, you will find two attributes:</p>
-<ul><li>Forward voltage <code>Vf</code>. Typically 2V</li><li>3V.</li><li>Forward current <code>If</code>. Typically 10mA </li><li> 30mA.</li></ul>
-<ul><li><a href="http://web.archive.org/web/20231001211621/https://www.lumex.com/datasheet/SSL-LX5093ID">example datasheet</a></li></ul>
-<p>You want to avoid any current above the value of <code>If</code> to make sure your LED does not burn. For that, you will need a resistor connected <b>in series</b>.</p>
-<p>In terms of minimum current to pass through the LED for indoor use, high-efficiency LEDs can light up with as little as 1 mA.</p>
+<h1>Resistor for LED</h1>
+<pre><code>Created at: 2024-04-29
+</code></pre>
+<p>From a LED's datasheet, you will find two attributes:</p>
+<ul>
+<li><p>Forward voltage <code>Vf</code>. Typically 2V-3V.</p>
+</li>
+<li><p>Forward current <code>If</code>. Typically 10mA - 30mA.</p>
+</li>
+<li><p><a href="http://web.archive.org/web/20231001211621/https://www.lumex.com/datasheet/SSL-LX5093ID">example datasheet</a></p>
+</li>
+</ul>
+<p>You want to avoid any current above the value of <code>If</code> to make sure your LED
+does not burn. For that, you will need a resistor connected <strong>in series</strong>.</p>
+<p>In terms of minimum current to pass through the LED for indoor use,
+high-efficiency LEDs can light up with as little as 1 mA.</p>
 <p>So the equation to find a resistor is basically:</p>
-<blockquote>R = (Vin - Vf) / (If)</blockquote>
+<blockquote>
+<p>R = (Vin - Vf) / (If)</p>
+</blockquote>
 <p>For common values of <code>Vin</code> = 5V, <code>Vf</code> = 2V, and <code>If</code> = 20mA:</p>
-<blockquote>R = (5 - 2) / (0.02)</blockquote>
-<blockquote>R = 150 Ohms</blockquote>
-<p>With lower voltages you will need less resistance, and with higher voltages you will need higher resistances.</p>
-<h2>Reading resources</h0>
-<ul><li><a href="http://web.archive.org/web/20240422070418/https://en.wikipedia.org/wiki/LED_circuit">parallel LEDs?</a></li></ul>
+<blockquote>
+<p>R = (5 - 2) / (0.02)
+R = 150 Ohms</p>
+</blockquote>
+<p>With lower voltages you will need less resistance, and with higher voltages you
+will need higher resistances.</p>
+<h2>Reading resources</h2>
+<ul>
+<li><a href="http://web.archive.org/web/20240422070418/https://en.wikipedia.org/wiki/LED_circuit">parallel LEDs?</a></li>
+</ul>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

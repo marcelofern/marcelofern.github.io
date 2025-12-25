@@ -59,49 +59,81 @@
   <![endif]-->
 </head>
 <body>
-<h1>On Git Commit Messages</h0>
-<pre><code class="language-">
-Created at: 2024-10-05
-</code></pre><p>There are two web pages that provide a great summary on Git Commits best practice.</p>
+<h1>On Git Commit Messages</h1>
+<pre><code>Created at: 2024-10-05
+</code></pre>
+<p>There are two web pages that provide a great summary on Git Commits best
+practice.</p>
 <p>I recommend reading them before going through the rest of this post:</p>
-<ul><li><a href="http://web.archive.org/web/20241003132241/https://wiki.openstack.org/wiki/GitCommitMessages">Git Commit Good Practice - OpenStack</a></li><li><a href="http://web.archive.org/web/20240930112522/https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">Tim Pope's note about commit messages</a></li></ul>
-<p>Those articles are "old". One is from 2008 and the other is from 2014. This means that the following occasional comment pops up now and then:</p>
-<blockquote>_It's 2024, do we **really** have to restrict ourselves to 72-long commit</blockquote>
-<blockquote>titles? I think it's acceptable to simply:_</blockquote>
-<pre><code class="language-">
-git -m "ISSUE:1234X Add date of birth, salary, ethnicity, pronouns, height (in centimetres), salary text fields, and more, to the request loan submit form for Chameleon MVP."
-</code></pre><blockquote>_We also have so many good tools around git that make it easier to see the</blockquote>
-<blockquote>changes and the diffs. We can also link to rich context on JIRA and Asana,</blockquote>
-<blockquote>why are we focusing so much on terminal limitations?_</blockquote>
-<blockquote></blockquote>
-<blockquote>_We are agile and always fix forward. We never have use for the old bits of</blockquote>
-<blockquote>git like git bisect, git revert, or even git log... What do these do</blockquote>
-<blockquote>again?!..._</blockquote>
-<p>Given that I have little to contribute to the excellent content in the articles above, I'll limit my contribution to talking about the reason these posts have aged so well.</p>
-<h2>A Disclaimer</h0>
-<p>Learning a tool like git takes time. To make the most of git, one needs to learn it well. The same way there are programmers who debug exclusively with <code>print()</code>, there are programmers who only use three git commands: <code>pull</code>, <code>commit</code>, and <code>push</code>.</p>
-<p>That is fine. You can go a long way without ever needing more advanced git commands (or debugging tools). That also means, however, that the justifications behind good-practice advice will be harder to understand. I will try to make those clearer in this post even if you don't go beyond these three git commands.</p>
-<p>The tragedy of it all, however, is that not knowing those advanced use cases before creating a repository might jeopardise the ability of advanced users to take advantage of good commit etiquette.</p>
-<p>Some code bases have a "before good commits" and "after good commits". The "before" is usually a dark place we don't like to go.</p>
-<p>Make up your reasons wisely and trust the advice of people who have been there before and learned the hard lessons.</p>
-<h2>The Summary</h0>
-<p>Before going into the reasons why the advice from those posts is still sound, here is a very short summary of the two articles above:</p>
-<ul><li><b>Do not mix two unrelated functional changes in the same commit</b> : It's hard to catch flaws during review when changes are mixed together. If the commit needs to be reverted, the two changes need to be untangled first. Similarly, it is harder to bisect and find which change created a bug if multiple functional changes are included in a commit.</li><li><b>Do not assume the reviewer uses the same tools as you</b> .</li><li><b>Do not assume the reviewer has access to an external website</b> .</li></ul>
-<p>These provide justification for seemingly arbitrary content on the linked blog posts such as _"commit titles should be no longer than 50 characters and commit bodies no longer than 72 characters"._</p>
-<h2>Do not mix two unrelated functional changes in the same commit</h0>
-<blockquote>So commit messages to me are almost as important as the code change itself.</blockquote>
-<blockquote>Sometimes the code change is so obvious that no message is really required,</blockquote>
-<blockquote>but that is very very rare. And so one of the things I hope developers are</blockquote>
-<blockquote>thinking about, the people who are actually writing code, is not just the</blockquote>
-<blockquote>code itself, but explaining why the code does something, and why some change</blockquote>
-<blockquote>was needed. Because that then in turn helps the managerial side of the</blockquote>
-<blockquote>equation, where if you can explain your code to me, I will trust the code...</blockquote>
-<blockquote></blockquote>
-<blockquote>Linus Torvalds.</blockquote>
-<p>Let's start with a <b>bad</b> example:</p>
-<pre><code class="language-">
-commit e5b18b256c0f4f5d369c62785248632075790867 (HEAD -> master)
-Author: John Doe <john.doe@gmail.com>
+<ul>
+<li><a href="http://web.archive.org/web/20241003132241/https://wiki.openstack.org/wiki/GitCommitMessages">Git Commit Good Practice - OpenStack</a></li>
+<li><a href="http://web.archive.org/web/20240930112522/https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">Tim Pope's note about commit messages</a></li>
+</ul>
+<p>Those articles are &quot;old&quot;. One is from 2008 and the other is from 2014. This
+means that the following occasional comment pops up now and then:</p>
+<blockquote>
+<p><em>It's 2024, do we <strong>really</strong> have to restrict ourselves to 72-long commit
+titles? I think it's acceptable to simply:</em></p>
+</blockquote>
+<pre><code>git -m &quot;ISSUE:1234X Add date of birth, salary, ethnicity, pronouns, height (in centimetres), salary text fields, and more, to the request loan submit form for Chameleon MVP.&quot;
+</code></pre>
+<blockquote>
+<p><em>We also have so many good tools around git that make it easier to see the
+changes and the diffs. We can also link to rich context on JIRA and Asana,
+why are we focusing so much on terminal limitations?</em></p>
+<p><em>We are agile and always fix forward. We never have use for the old bits of
+git like git bisect, git revert, or even git log... What do these do
+again?!...</em></p>
+</blockquote>
+<p>Given that I have little to contribute to the excellent content in the
+articles above, I'll limit my contribution to talking about the reason these
+posts have aged so well.</p>
+<h2>A Disclaimer</h2>
+<p>Learning a tool like git takes time. To make the most of git, one needs to
+learn it well. The same way there are programmers who debug exclusively with
+<code>print()</code>, there are programmers who only use three git commands: <code>pull</code>,
+<code>commit</code>, and <code>push</code>.</p>
+<p>That is fine. You can go a long way without ever needing more advanced git
+commands (or debugging tools). That also means, however, that the
+justifications behind good-practice advice will be harder to understand. I will
+try to make those clearer in this post even if you don't go beyond these three
+git commands.</p>
+<p>The tragedy of it all, however, is that not knowing those advanced use cases
+before creating a repository might jeopardise the ability of advanced users to
+take advantage of good commit etiquette.</p>
+<p>Some code bases have a &quot;before good commits&quot; and &quot;after good commits&quot;. The
+&quot;before&quot; is usually a dark place we don't like to go.</p>
+<p>Make up your reasons wisely and trust the advice of people who have been there
+before and learned the hard lessons.</p>
+<h2>The Summary</h2>
+<p>Before going into the reasons why the advice from those posts is still sound,
+here is a very short summary of the two articles above:</p>
+<ul>
+<li><strong>Do not mix two unrelated functional changes in the same commit</strong>: It's hard
+to catch flaws during review when changes are mixed together. If the commit
+needs to be reverted, the two changes need to be untangled first. Similarly,
+it is harder to bisect and find which change created a bug if multiple
+functional changes are included in a commit.</li>
+<li><strong>Do not assume the reviewer uses the same tools as you</strong>.</li>
+<li><strong>Do not assume the reviewer has access to an external website</strong>.</li>
+</ul>
+<p>These provide justification for seemingly arbitrary content on the linked blog
+posts such as <em>&quot;commit titles should be no longer than 50 characters and commit
+bodies no longer than 72 characters&quot;.</em></p>
+<h2>Do not mix two unrelated functional changes in the same commit</h2>
+<blockquote>
+<p>So commit messages to me are almost as important as the code change itself.
+Sometimes the code change is so obvious that no message is really required,
+but that is very very rare. And so one of the things I hope developers are
+thinking about, the people who are actually writing code, is not just the
+code itself, but explaining why the code does something, and why some change
+was needed. Because that then in turn helps the managerial side of the
+equation, where if you can explain your code to me, I will trust the code...</p>
+<p>Linus Torvalds.</p>
+</blockquote>
+<p>Let's start with a <strong>bad</strong> example:</p>
+<pre><code>commit e5b18b256c0f4f5d369c62785248632075790867 (HEAD -&gt; master)
+Author: John Doe &lt;john.doe@gmail.com&gt;
 Date:   Sat Oct 5 18:33:21 2024 +1300
 
     Revamp customer profile page
@@ -109,105 +141,167 @@ Date:   Sat Oct 5 18:33:21 2024 +1300
     This commit:
 
       - Refactor ResetPassword form UI to reuse textbox component.
-      - Add an index to the "users" table to lookup emails faster.
+      - Add an index to the &quot;users&quot; table to lookup emails faster.
       - Apply compression to user's uploaded profile pictures.
       - Change hash algorithm for profile picture names.
       - Fix broken layout on mobile devices using landscape format.
-      - Add a new canary flag to control "Under Maintanence" banner.
-</code></pre><p>Although John Doe's commit title evokes the idea that there's only one thing happening, a closer look at the commit description reveals that there are many unrelated changes sneaking in at the same time.</p>
+      - Add a new canary flag to control &quot;Under Maintanence&quot; banner.
+</code></pre>
+<p>Although John Doe's commit title evokes the idea that there's only one thing
+happening, a closer look at the commit description reveals that there are
+many unrelated changes sneaking in at the same time.</p>
 <p>Why is this bad? Let's start with a simple example.</p>
 <p>Suppose the third change has a bug:</p>
-<ul><li>_"Apply compression to user's uploaded profile pictures"_.</li></ul>
-<p>The <code>profile_update.c</code> file where all the operations for updating a user's profile live has a code-path that crashes the server.</p>
-<p>Naturally you want to revert that commit. But in the meanwhile John's colleague Mary has changed one of the UI layout files that John's commit had also touched as part of an unrelated change:</p>
-<pre><code class="language-">
-commit 85cf1a1501a2062dbc9310d6b598dcf72e284cbc (HEAD -> master)
-Author: Mary Silva <mary.silva@gmail.com>
+<ul>
+<li><em>&quot;Apply compression to user's uploaded profile pictures&quot;</em>.</li>
+</ul>
+<p>The <code>profile_update.c</code> file where all the operations for updating a user's
+profile live has a code-path that crashes the server.</p>
+<p>Naturally you want to revert that commit. But in the meanwhile John's colleague
+Mary has changed one of the UI layout files that John's commit had also touched
+as part of an unrelated change:</p>
+<pre><code>commit 85cf1a1501a2062dbc9310d6b598dcf72e284cbc (HEAD -&gt; master)
+Author: Mary Silva &lt;mary.silva@gmail.com&gt;
 Date:   Sat Oct 6 20:45:40 2024 +1300
 
     Upgrade profile page UI layout
 
     This commit:
 
-      - Move css classes to the new file "user_layout.css".
+      - Move css classes to the new file &quot;user_layout.css&quot;.
       - Refactor text boxes to use the same css style.
       - Remove unreacheable (dead) JavaScript code.
-</code></pre><p>Now you can't revert John's commit because you got a conflict.</p>
-<pre><code class="language-">
-git revert e5b18b256c0f4f5d369c62785248632075790867
+</code></pre>
+<p>Now you can't revert John's commit because you got a conflict.</p>
+<pre><code>git revert e5b18b256c0f4f5d369c62785248632075790867
 
 CONFLICT (modify/delete): README.md deleted in (empty tree) and modified in
 HEAD.  Version HEAD of README.md left in tree.
 
 error: could not revert e5b18b2... Revamp customer profile page
-</code></pre><p>The bug in the <code>profile_update.c</code> file has nothing to do with the UI layout in the profile page.</p>
-<p>When John added all of those unrelated changes in a single commit, his commit became a <b>conflict magnet</b>. Conflict magnet commits are very hard to revert.</p>
-<h3>Bisecting</h0>
-<p>In this case we already knew that John's commit introduced a bug, but what if we didn't? <code>git bisect</code> is a git tool built for finding <b>where</b> a bug was introduced.</p>
-<p>To use <code>git bisect</code> you give it two arguments: A "bad" commit that is known to <b>contain</b> the bug (even if not introduced by that commit itself), and a "good" commit that is known to be before the bug was introduced.</p>
-<p>The short version of what bisect does is: Bisect will pick a commit between the "bad" and "good" one and ask you whether it's good or bad. It is up to you to decide.</p>
-<p>How you do that depends on the project, you might run the test suite with a test that reproduces the bug, or simply look at the diff changes. In each iteration, <code>git bisect</code> shrinks the search window until John's offending commit is found.</p>
-<p>Inevitably you find John's commit. However, the commit has two changes in the same <code>profile_update.c</code> file that causes the bug.</p>
-<pre><code class="language-">
-  - Apply compression to user's uploaded profile pictures.
+</code></pre>
+<p>The bug in the <code>profile_update.c</code> file has nothing to do with the UI layout in
+the profile page.</p>
+<p>When John added all of those unrelated changes in a single commit, his
+commit became a <strong>conflict magnet</strong>. Conflict magnet commits are very hard to
+revert.</p>
+<h3>Bisecting</h3>
+<p>In this case we already knew that John's commit introduced a bug, but what if
+we didn't? <code>git bisect</code> is a git tool built for finding <strong>where</strong> a bug was
+introduced.</p>
+<p>To use <code>git bisect</code> you give it two arguments: A &quot;bad&quot; commit that is known to
+<strong>contain</strong> the bug (even if not introduced by that commit itself), and a
+&quot;good&quot; commit that is known to be before the bug was introduced.</p>
+<p>The short version of what bisect does is: Bisect will pick a commit between
+the &quot;bad&quot; and &quot;good&quot; one and ask you whether it's good or bad. It is up to you
+to decide.</p>
+<p>How you do that depends on the project, you might run the test suite with a
+test that reproduces the bug, or simply look at the diff changes. In each
+iteration, <code>git bisect</code> shrinks the search window until John's offending commit
+is found.</p>
+<p>Inevitably you find John's commit. However, the commit has two changes in the
+same <code>profile_update.c</code> file that causes the bug.</p>
+<pre><code>  - Apply compression to user's uploaded profile pictures.
   - Change hash algorithm for profile picture names.
-</code></pre><p>So which of the changes is the bad one?</p>
-<p>That question might not be trivial to answer. It might be hard to untangle which change actually broke the code. Specially if the compression algorithm and the hash algorithm use the same underling routines.</p>
-<h3>Function evolutions</h0>
-<p>Another tool that can't be used as well if multiple changes are present in the same commit is <code>git log -L</code>.</p>
-<pre><code class="language-sh">
-git log -L :<funcname>:<file_name>
-</code></pre><p>By running the command above, git will display a diff with all the commits that touched that function in the past.</p>
-<p>This presents a way to see the "evolution" of a function over time.</p>
-<p>You want commits to be split so that you can see which individual patches changed that function.</p>
-<p>Having a single commit with too much noise makes that more difficult to understand <b>why</b> that function changed.</p>
-<p>If you are not convinced yet, there are many more git tools that are affected by non-atomic commits. Check the list below and see if may you use any of the following:</p>
-<ul><li><code>git blame</code>: Atomic commits give you the direct answer to: "Why was this change made?"</li><li><code>git rebase</code> : For rebasing, dropping changes, re</li><li>editing commit messages, or adding fix</li><li>ups.</li><li><code>git cherry-pick</code> : For applying a specific commit from one branch to another.</li><li><code>git diff</code> : For seeing one change at a time.</li></ul>
-<p>It's reasonable to conclude that one commit per functional change is still relevant today.</p>
-<h2>Do not assume the reviewer uses the same tools as you</h0>
-<blockquote>Word-wrapping is a property of the text. And the tool you use to</blockquote>
-<blockquote>visualize things cannot know. End result: you do word-wrapping at the</blockquote>
-<blockquote>only stage where you can do it, namely when writing it. Not when</blockquote>
-<blockquote>showing it.</blockquote>
-<blockquote></blockquote>
-<blockquote>Some things should not be word-wrapped. They may be some kind of</blockquote>
-<blockquote>quoted text - long compiler error messages, oops reports, whatever.</blockquote>
-<blockquote>Things that have a certain specific format.</blockquote>
-<blockquote></blockquote>
-<blockquote>The tool displaying the thing can't know. The person writing the</blockquote>
-<blockquote>commit message can. End result: you'd better do word-wrapping at</blockquote>
-<blockquote>commit time, because that's the only time you know the difference.</blockquote>
-<blockquote></blockquote>
-<blockquote>(And the rule is not 80 characters, because you do want to allow the</blockquote>
-<blockquote>standard indentation from git log, and you do want to leave some room</blockquote>
-<blockquote>for quoting).</blockquote>
-<blockquote></blockquote>
-<blockquote>Linus Torvalds</blockquote>
-<p>This is what a long commit looks like with the default pager (<code>less</code> on most Unix systems).</p>
-<p><img alt="long_commit.png" src="long_commit.png"></p>
+</code></pre>
+<p>So which of the changes is the bad one?</p>
+<p>That question might not be trivial to answer. It might be hard to untangle
+which change actually broke the code. Specially if the compression algorithm
+and the hash algorithm use the same underling routines.</p>
+<h3>Function evolutions</h3>
+<p>Another tool that can't be used as well if multiple changes are present in the
+same commit is <code>git log -L</code>.</p>
+<pre><code class="language-sh">git log -L :&lt;funcname&gt;:&lt;file_name&gt;
+</code></pre>
+<p>By running the command above, git will display a diff with all the commits
+that touched that function in the past.</p>
+<p>This presents a way to see the &quot;evolution&quot; of a function over time.</p>
+<p>You want commits to be split so that you can see which individual patches
+changed that function.</p>
+<p>Having a single commit with too much noise makes that more difficult to
+understand <strong>why</strong> that function changed.</p>
+<p>If you are not convinced yet, there are many more git tools that are affected
+by non-atomic commits. Check the list below and see if may you use any of the
+following:</p>
+<ul>
+<li><code>git blame</code>: Atomic commits give you the direct answer to: &quot;Why was this
+change made?&quot;</li>
+<li><code>git rebase</code>: For rebasing, dropping changes, re-editing commit messages, or
+adding fix-ups.</li>
+<li><code>git cherry-pick</code>: For applying a specific commit from one branch to another.</li>
+<li><code>git diff</code>: For seeing one change at a time.</li>
+</ul>
+<p>It's reasonable to conclude that one commit per functional change is still
+relevant today.</p>
+<h2>Do not assume the reviewer uses the same tools as you</h2>
+<blockquote>
+<p>Word-wrapping is a property of the text. And the tool you use to
+visualize things cannot know. End result: you do word-wrapping at the
+only stage where you can do it, namely when writing it. Not when
+showing it.</p>
+<p>Some things should not be word-wrapped. They may be some kind of
+quoted text - long compiler error messages, oops reports, whatever.
+Things that have a certain specific format.</p>
+<p>The tool displaying the thing can't know. The person writing the
+commit message can. End result: you'd better do word-wrapping at
+commit time, because that's the only time you know the difference.</p>
+<p>(And the rule is not 80 characters, because you do want to allow the
+standard indentation from git log, and you do want to leave some room
+for quoting).</p>
+<p>Linus Torvalds</p>
+</blockquote>
+<p>This is what a long commit looks like with the default pager (<code>less</code> on most
+Unix systems).</p>
+<p><img src="long_commit.png" alt="long_commit.png"></p>
 <p>Those white arrows at the right-hand side show where the text was truncated.</p>
-<p>Although <code>less</code> supports wrapping text, it may not be on by default depending on how your OS came configured.</p>
-<p>Every command that takes the commit summary (top line) truncate and become unreadable. More examples of such commands are found on Tim Pope's <a href="http://web.archive.org/web/20240930112522/https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">blog post</a>.</p>
-<p>There isn't much I can add here. I think that it is important to have good writing skills for both commit titles and commit messages with the goal of keeping them succinct and informative at the same time. You can see for yourself how nice <a href="https://github.com/torvalds/linux/commits/master/">Linux's kernel git log</a> reads for inspiration.</p>
+<p>Although <code>less</code> supports wrapping text, it may not be on by default depending
+on how your OS came configured.</p>
+<p>Every command that takes the commit summary (top line) truncate and become
+unreadable. More examples of such commands are found on Tim Pope's <a href="http://web.archive.org/web/20240930112522/https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">blog post</a>.</p>
+<p>There isn't much I can add here. I think that it is important to have good
+writing skills for both commit titles and commit messages with the goal of
+keeping them succinct and informative at the same time. You can see for
+yourself how nice <a href="https://github.com/torvalds/linux/commits/master/">Linux's kernel git log</a> reads for inspiration.</p>
 <p>The kernel has a <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=bc7938deaca7f474918c41a0372a410049bd4e13#n664">restrictive line-length limit</a>.</p>
-<blockquote>the ``summary`` must be no more than 70-75 characters.</blockquote>
-<p>No text gets wrapped or truncated, and everything is nice and in _good_ style.</p>
-<p>It is true that there is no strong evidence about what the "ideal" line-length <b>for coding</b> is. But we know that number for <b>human-readable text</b>:</p>
-<blockquote> Research has led to recommendations that line length should not exceed about</blockquote>
-<blockquote> 70 characters per line. The reason behind this finding is that both very</blockquote>
-<blockquote> short and very long lines slow down reading by interrupting the normal</blockquote>
-<blockquote> pattern of eye movements and movements throughout the text.</blockquote>
+<blockquote>
+<p>the <code>summary</code> must be no more than 70-75 characters.</p>
+</blockquote>
+<p>No text gets wrapped or truncated, and everything is nice and in <em>good</em> style.</p>
+<p>It is true that there is no strong evidence about what the &quot;ideal&quot; line-length
+<strong>for coding</strong> is. But we know that number for <strong>human-readable text</strong>:</p>
+<blockquote>
+<p>Research has led to recommendations that line length should not exceed about
+70 characters per line. The reason behind this finding is that both very
+short and very long lines slow down reading by interrupting the normal
+pattern of eye movements and movements throughout the text.</p>
+</blockquote>
 <p><a href="https://www.researchgate.net/publication/234578707_Optimal_Line_Length_in_Reading--A_Literature_Review">source</a></p>
-<p>Throw no stones! We are talking about <b>human-readable</b>, i.e., text like books, magazines, papers, <b>and git logs!!!</b>.</p>
-<p>As Linus has explained on the quote at the top of this section, the <b>writer</b> is responsible for wrapping the text because the _pager_ tool might not be able to do it for the <b>reader</b>.</p>
-<p>The default pager (<code>less</code>) is not the only tool that truncates instead of wrapping, even in 2024 we haven't found the magic solution for perfect text-wrapping yet.</p>
-<p>Even GitHub truncates long commit titles to 72 characters. Be mindful of that when committing long titles and messages.</p>
-<h2>Do not assume the reviewer has access to an external website</h0>
-<p>I worked for a company that used to use GitHub for issue tracking as well as repository hosting. Many of our commit messages merely pointed at GitHub links and had no description at all.</p>
-<p>It was sad to see the company getting acquired and the parent company moving to BitBucket while deleting the old GitHub account.</p>
-<p>It is OK to link to GitHub, Jira, Asana, etc., but the most important thing is to <b>make sure</b> the commit message has everything you need in it so that you don't depend on external services.</p>
-<h2>Outro</h0>
+<p>Throw no stones! We are talking about <strong>human-readable</strong>, i.e., text like
+books, magazines, papers, <strong>and git logs!!!</strong>.</p>
+<p>As Linus has explained on the quote at the top of this section, the <strong>writer</strong>
+is responsible for wrapping the text because the <em>pager</em> tool might not be able
+to do it for the <strong>reader</strong>.</p>
+<p>The default pager (<code>less</code>) is not the only tool that truncates instead of
+wrapping, even in 2024 we haven't found the magic solution for perfect
+text-wrapping yet.</p>
+<p>Even GitHub truncates long commit titles to 72 characters. Be mindful of that
+when committing long titles and messages.</p>
+<h2>Do not assume the reviewer has access to an external website</h2>
+<p>I worked for a company that used to use GitHub for issue tracking as well as
+repository hosting. Many of our commit messages merely pointed at GitHub links
+and had no description at all.</p>
+<p>It was sad to see the company getting acquired and the parent company moving to
+BitBucket while deleting the old GitHub account.</p>
+<p>It is OK to link to GitHub, Jira, Asana, etc., but the most important thing is
+to <strong>make sure</strong> the commit message has everything you need in it so that you
+don't depend on external services.</p>
+<h2>Outro</h2>
 <p>Linus on Tim Pope's post:</p>
-<p><img alt="linus_on_tpope.png" src="linus_on_tpope.png"></p>
-<h2>Further Reading</h0>
-<ul><li><a href="https://github.com/torvalds/linux/pull/17">https://github.com/torvalds/linux/pull/17</a></li></ul>
+<p><img src="linus_on_tpope.png" alt="linus_on_tpope.png"></p>
+<h2>Further Reading</h2>
+<ul>
+<li><a href="https://github.com/torvalds/linux/pull/17">https://github.com/torvalds/linux/pull/17</a></li>
+</ul>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

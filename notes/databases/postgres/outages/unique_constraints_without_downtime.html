@@ -59,19 +59,29 @@
   <![endif]-->
 </head>
 <body>
-<h1>UNIQUE Constraints Without Downtime</h0>
-<pre><code class="language-">
-Created at: 2025-01-13
-</code></pre><p>The following DDL is used to add a unique constraint on an existing table:</p>
-<pre><code class="language-sql">
-ALTER TABLE table ADD CONSTRAINT constraint UNIQUE (field);
-</code></pre><p>Which has the following problems:</p>
-<ul><li>It acquires an ACCESS EXCLUSIVE lock on the table that blocks reads and writes on the table. This can take a long time as the index that backs up the constraint is being built.</li><li>In turn, it can also be blocked by a existing query. For example, a long</li><li>running transaction could block this query, which in turn will block other queries, creating a potential outage.</li><li>It doesn't work with retries, as it doesn't check if the constraint already exists before attempting the ALTER TABLE.</li></ul>
-<p>Note: In Postgres, unique constraints are implemented as unique indexes. Unique indexes already give the same constrictions as unique constraints.</p>
-<h2>A safer approach</h0>
-<p>We use a UNIQUE index to build the constraint. This UNIQUE index can be created without taking AccessExclusive locks via CREATE UNIQUE INDEX CONCURRENTLY.</p>
-<pre><code class="language-sql">
--- Necessary to avoid lock timeouts. This is a safe operation as
+<h1>UNIQUE Constraints Without Downtime</h1>
+<pre><code>Created at: 2025-01-13
+</code></pre>
+<p>The following DDL is used to add a unique constraint on an existing table:</p>
+<pre><code class="language-sql">ALTER TABLE table ADD CONSTRAINT constraint UNIQUE (field);
+</code></pre>
+<p>Which has the following problems:</p>
+<ul>
+<li>It acquires an ACCESS EXCLUSIVE lock on the table that blocks reads and
+writes on the table. This can take a long time as the index that backs up
+the constraint is being built.</li>
+<li>In turn, it can also be blocked by a existing query. For example, a
+long-running transaction could block this query, which in turn will block
+other queries, creating a potential outage.</li>
+<li>It doesn't work with retries, as it doesn't check if the constraint already
+exists before attempting the ALTER TABLE.</li>
+</ul>
+<p>Note: In Postgres, unique constraints are implemented as unique indexes. Unique
+indexes already give the same constrictions as unique constraints.</p>
+<h2>A safer approach</h2>
+<p>We use a UNIQUE index to build the constraint. This UNIQUE index can be created
+without taking AccessExclusive locks via CREATE UNIQUE INDEX CONCURRENTLY.</p>
+<pre><code class="language-sql">-- Necessary to avoid lock timeouts. This is a safe operation as
 -- CREATE UNIQUE INDEX CONCURRENTLY takes a weaker SHARE UPDATE EXCLUSIVE
 -- lock.
 SET lock_timeout = 0;
@@ -91,18 +101,18 @@ DROP INDEX CONCURRENTLY IF EXISTS foo_unique_idx;
 -- Finally create the UNIQUE index
 CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS foo_unique_idx ON table;
 
--- Reset lock_timeout to its original value ("1s" as an example).
+-- Reset lock_timeout to its original value (&quot;1s&quot; as an example).
 SET lock_timeout = '1s';
 
 -- Perform the ALTER TABLE using the unique index just created.
 -- This will run very fast as the index is enough proof that there aren't
 -- violations in the table.
-ALTER TABLE "table"
-ADD CONSTRAINT "foo_unique"
-UNIQUE USING INDEX "foo_unique_idx";
-</code></pre><h2>USING syntax</h0>
-<pre><code class="language-">
-ALTER TABLE [ IF EXISTS ] [ ONLY ] name [ * ]
+ALTER TABLE &quot;table&quot;
+ADD CONSTRAINT &quot;foo_unique&quot;
+UNIQUE USING INDEX &quot;foo_unique_idx&quot;;
+</code></pre>
+<h2>USING syntax</h2>
+<pre><code>ALTER TABLE [ IF EXISTS ] [ ONLY ] name [ * ]
     action [, ... ]
 
 Where action is:
@@ -114,17 +124,31 @@ Where table_constraint_using_index is:
     [ CONSTRAINT constraint_name ]
     { UNIQUE | PRIMARY KEY } USING INDEX index_name
     [ DEFERRABLE | NOT DEFERRABLE ] [ INITIALLY DEFERRED | INITIALLY IMMEDIATE ]
-</code></pre><p>By default, constraints are set as DEFERRABLE INITIALLY IMMEDIATE unless specified.</p>
+</code></pre>
+<p>By default, constraints are set as DEFERRABLE INITIALLY IMMEDIATE unless
+specified.</p>
 <p>Deferrability cheat-sheet:</p>
-<ul><li><code>DEFERRABLE</code>: the default deferrability can be changed in a transaction.</li><li><code>NOT DEFERRABLE</code> : the default deferrability <b>cannot</b> be changed in a transaction. Plus, will always be IMMEDIATE. Trying to set it otherwise will result in error: ERROR:  constraint declared INITIALLY DEFERRED must be DEFERRABLE LINE 4: NOT DEFERRABLE INITIALLY DEFERRED;</li><li><code>INITIALLY DEFERRED</code> : by default, wait until the end of the transaction to check the constraint.</li><li><code>INITIALLY IMMEDIATE</code> : by default, check the constraint immediately, that is, without waiting until the end of the transaction.</li></ul>
-<blockquote>Upon creation, a constraint is given one of three characteristics: DEFERRABLE</blockquote>
-<blockquote>INITIALLY DEFERRED, DEFERRABLE INITIALLY IMMEDIATE, or NOT DEFERRABLE. The</blockquote>
-<blockquote>third class is always IMMEDIATE and is not affected by the SET CONSTRAINTS</blockquote>
-<blockquote>command. The first two classes start every transaction in the indicated mode,</blockquote>
-<blockquote>but their behavior can be changed within a transaction by SET CONSTRAINTS.</blockquote>
-<h2>Sandbox Example</h0>
-<pre><code class="language-sql">
-DROP TABLE IF EXISTS foo;
+<ul>
+<li><code>DEFERRABLE</code>: the default deferrability can be changed in a transaction.</li>
+<li><code>NOT DEFERRABLE</code>: the default deferrability <strong>cannot</strong> be changed in a
+transaction. Plus, will always be IMMEDIATE. Trying to set it otherwise will
+result in error:
+ERROR:  constraint declared INITIALLY DEFERRED must be DEFERRABLE
+LINE 4: NOT DEFERRABLE INITIALLY DEFERRED;</li>
+<li><code>INITIALLY DEFERRED</code>: by default, wait until the end of the transaction to
+check the constraint.</li>
+<li><code>INITIALLY IMMEDIATE</code>: by default, check the constraint immediately, that is,
+without waiting until the end of the transaction.</li>
+</ul>
+<blockquote>
+<p>Upon creation, a constraint is given one of three characteristics: DEFERRABLE
+INITIALLY DEFERRED, DEFERRABLE INITIALLY IMMEDIATE, or NOT DEFERRABLE. The
+third class is always IMMEDIATE and is not affected by the SET CONSTRAINTS
+command. The first two classes start every transaction in the indicated mode,
+but their behavior can be changed within a transaction by SET CONSTRAINTS.</p>
+</blockquote>
+<h2>Sandbox Example</h2>
+<pre><code class="language-sql">DROP TABLE IF EXISTS foo;
 CREATE TABLE foo (
   id SERIAL PRIMARY KEY,
   int_val INTEGER NOT NULL
@@ -141,13 +165,16 @@ CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS foo_unique_idx ON foo (int_val);
 ALTER TABLE foo
 ADD CONSTRAINT foo_unique
 UNIQUE USING INDEX foo_unique_idx;
-</code></pre><pre><code class="language-">
-                             Table "public.foo"
+</code></pre>
+<pre><code>                             Table &quot;public.foo&quot;
  Column  |  Type   | Collation | Nullable |             Default
 ---------+---------+-----------+----------+---------------------------------
  id      | integer |           | not null | nextval('foo_id_seq'::regclass)
  int_val | integer |           | not null |
 Indexes:
-    "foo_pkey" PRIMARY KEY, btree (id)
-    "foo_unique" UNIQUE CONSTRAINT, btree (int_val)
+    &quot;foo_pkey&quot; PRIMARY KEY, btree (id)
+    &quot;foo_unique&quot; UNIQUE CONSTRAINT, btree (int_val)
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

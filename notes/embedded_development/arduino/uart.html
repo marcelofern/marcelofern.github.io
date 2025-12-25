@@ -60,60 +60,109 @@
 </head>
 <body>
 <p><code>2024-04-13</code></p>
-<h1>Universal Asynchronous Receiver<ul><li>TTrraannssmmiitttteerr  ((UUAARRTT))</h0>
- This is the protocol that arduino boards use to communicate back with the computer via <code>Serial.print()</code>.</li></ul>
+<h1>Universal Asynchronous Receiver-Transmitter (UART)</h1>
+<p>This is the protocol that arduino boards use to communicate back with the
+computer via <code>Serial.print()</code>.</p>
 <p>The basic properties of this protocol are:</p>
-<ol><li>It's asynchronous (doesn't rely on a clock signal).</li><li>The speed is configurable.</li><li>The format is configurable.</li></ol>
-<p>In many cases UART has been replaced by either I2C or SPI, but it is nonetheless still used for low-speed low-throughput projects because it is very simple and low-cost to implement given that it requires less wires/ports. More on that later.</p>
-<h2>Serial</h0>
-<p>The serial class allows you to send or receive data from the computer to the arduino, or to another device connected to the arduino via TX and RX pins.</p>
+<ol>
+<li>It's asynchronous (doesn't rely on a clock signal).</li>
+<li>The speed is configurable.</li>
+<li>The format is configurable.</li>
+</ol>
+<p>In many cases UART has been replaced by either I2C or SPI, but it is
+nonetheless still used for low-speed low-throughput projects because it is very
+simple and low-cost to implement given that it requires less wires/ports. More
+on that later.</p>
+<h2>Serial</h2>
+<p>The serial class allows you to send or receive data from the computer to the
+arduino, or to another device connected to the arduino via TX and RX pins.</p>
 <p>The difference is that:</p>
-<ol><li>When sending data via USB, use the <code>Serial</code> class.</li><li>When sending data via TX/RX pins, use the <code>Serial1</code> class.</li><li>Some other boards also have <code>Serial2</code> and <code>Serial3</code>.</li></ol>
+<ol>
+<li>When sending data via USB, use the <code>Serial</code> class.</li>
+<li>When sending data via TX/RX pins, use the <code>Serial1</code> class.</li>
+<li>Some other boards also have <code>Serial2</code> and <code>Serial3</code>.</li>
+</ol>
 <p>The UART interface available via <code>Serial</code> has the following methods:</p>
-<ul><li><code>Serial.begin()</code> begins serial communication, with a specified baud rate. You can pick either 9600 or 115200. This function is usually called during the<code>setup()</code> function on arduino sketches.</li><li><code>Serial.print()</code> prints the UART data in the Serial Monitor.</li><li><code>Serial.printl()</code> is the same as .print() but adds a new line at the end.</li><li><code>Serial.available()</code> checks if serial data is available when sending commands from the Serial Monitor.</li><li><code>Serial.read()</code> reads data from the serial port.</li><li><code>Serial.write()</code> writes data to the serial port.</li></ul>
-<h2>UART basics</h0>
-<p>UART serially sends one bit at a time. The series of bits has a starting bit, followed by several data bits, an optional parity bit, and one or more stopping bits.</p>
-<p>Given that UART communication doesn't rely on a clock signal, it relies on a pre-determined baud rate to figure when to send/read a bit.</p>
-<p><img alt="parallel vs sync" src="serial_vs_parallel_comms.png"></p>
+<ul>
+<li><code>Serial.begin()</code> begins serial communication, with a specified baud rate. You
+can pick either 9600 or 115200. This function is usually called during the
+<code>setup()</code> function on arduino sketches.</li>
+<li><code>Serial.print()</code> prints the UART data in the Serial Monitor.</li>
+<li><code>Serial.printl()</code> is the same as .print() but adds a new line at the end.</li>
+<li><code>Serial.available()</code> checks if serial data is available when sending commands
+from the Serial Monitor.</li>
+<li><code>Serial.read()</code> reads data from the serial port.</li>
+<li><code>Serial.write()</code> writes data to the serial port.</li>
+</ul>
+<h2>UART basics</h2>
+<p>UART serially sends one bit at a time. The series of bits has a starting bit,
+followed by several data bits, an optional parity bit, and one or more stopping
+bits.</p>
+<p>Given that UART communication doesn't rely on a clock signal, it relies on a
+pre-determined baud rate to figure when to send/read a bit.</p>
+<p><img src="serial_vs_parallel_comms.png" alt="parallel vs sync"></p>
 <p><a href="http://web.archive.org/web/20231208204935/https://docs.arduino.cc/learn/communication/uart">source</a></p>
-<p>The advantage here is that synchronous communication only requires one wire, so this can make your circuit cheaper and easier to manufacture.</p>
-<p>Also consider that the transmitter and the receiver must have the same common ground to be able to interpret LOW/HIGH signals with the right reference.</p>
-<blockquote>The key components of UART include the transmitter, receiver, and baud rate.</blockquote>
-<blockquote>The transmitter collects data from a source, formats it into serial bits, and</blockquote>
-<blockquote>sends it via a TX (Transmit) pin. The receiver receives it via a RX (Receive)</blockquote>
-<blockquote>pin, processes incoming serial data and converts it into parallel data for</blockquote>
-<blockquote>the host system. The baud rate determines the speed of data transmission.</blockquote>
+<p>The advantage here is that synchronous communication only requires one wire, so
+this can make your circuit cheaper and easier to manufacture.</p>
+<p>Also consider that the transmitter and the receiver must have the same common
+ground to be able to interpret LOW/HIGH signals with the right reference.</p>
+<blockquote>
+<p>The key components of UART include the transmitter, receiver, and baud rate.
+The transmitter collects data from a source, formats it into serial bits, and
+sends it via a TX (Transmit) pin. The receiver receives it via a RX (Receive)
+pin, processes incoming serial data and converts it into parallel data for
+the host system. The baud rate determines the speed of data transmission.</p>
+</blockquote>
 <p><a href="http://web.archive.org/web/20231208204935/https://docs.arduino.cc/learn/communication/uart">source</a></p>
-<h2>Baud rates</h0>
+<h2>Baud rates</h2>
 <p>Important things to know about baud rates:</p>
-<ul><li>Measured in bits per second.</li><li>Both receivers and transmitters must agree on the value, otherwise communication is out of sync and won't make sense.</li><li>The higher the baud rate, more precision is required to synchronise receiver and transmitter. There are higher risks involved.</li></ul>
+<ul>
+<li>Measured in bits per second.</li>
+<li>Both receivers and transmitters must agree on the value, otherwise
+communication is out of sync and won't make sense.</li>
+<li>The higher the baud rate, more precision is required to synchronise receiver
+and transmitter. There are higher risks involved.</li>
+</ul>
 <p>A way to circumvent the problem from the last point is via UART Flow Control</p>
-<h2>UART Flow Control</h0>
-<blockquote>UART Flow Control is a method for slow and fast devices to communicate with</blockquote>
-<blockquote>each other over UART without the risk of losing data. Consider the case where</blockquote>
-<blockquote>two units are communicating over UART. A transmitter T is sending a long</blockquote>
-<blockquote>stream of bytes to a receiver R. R is a slower device than T, and R cannot</blockquote>
-<blockquote>keep up. It needs to either do some processing on the data or empty some</blockquote>
-<blockquote>buffers before it can keep receiving data.</blockquote>
-<blockquote>R needs to tell T to stop transmitting for a while. This is where flow</blockquote>
-<blockquote>control comes in. Flow control provides extra signaling to inform the</blockquote>
-<blockquote>transmitter that it should stop (pause) or start (resume) the transmission.</blockquote>
-<blockquote>Several forms of flow control exist. For example, hardware flow control uses</blockquote>
-<blockquote>extra wires, where the logic level on these wires define whether the</blockquote>
-<blockquote>transmitter should keep sending data or stop. With software flow control,</blockquote>
-<blockquote>special characters are sent over the normal data lines to start or stop the</blockquote>
-<blockquote>transmission.</blockquote>
+<h2>UART Flow Control</h2>
+<blockquote>
+<p>UART Flow Control is a method for slow and fast devices to communicate with
+each other over UART without the risk of losing data. Consider the case where
+two units are communicating over UART. A transmitter T is sending a long
+stream of bytes to a receiver R. R is a slower device than T, and R cannot
+keep up. It needs to either do some processing on the data or empty some
+buffers before it can keep receiving data.</p>
+</blockquote>
+<blockquote>
+<p>R needs to tell T to stop transmitting for a while. This is where flow
+control comes in. Flow control provides extra signaling to inform the
+transmitter that it should stop (pause) or start (resume) the transmission.</p>
+</blockquote>
+<blockquote>
+<p>Several forms of flow control exist. For example, hardware flow control uses
+extra wires, where the logic level on these wires define whether the
+transmitter should keep sending data or stop. With software flow control,
+special characters are sent over the normal data lines to start or stop the
+transmission.</p>
+</blockquote>
 <p><a href="http://web.archive.org/web/20231208204935/https://docs.arduino.cc/learn/communication/uart">source</a></p>
-<h2>Message format</h0>
-<p><img alt="uart_message_format" src="uart_message_format.png"></p>
-<p>The message starts with a <b>start bit</b>, which is always LOW. The receiver starts to prepare itself for receiving a message.</p>
-<p>Followed by that, the message includes the <b>data bits</b>. Those bits can vary in number, and this number needs to be agreed upon by both the receiver and the transmitter. A common length is 8 bits (1 byte), but this can vary based on the application. This length is also referred to as _character size_.</p>
-<p>The <b>parity</b> bit is an error-checking mechanism to detect transmission errors. A common use is to set the parity bit as 1 if the number of "1" bits in the data message is odd, and 0 if it is even.</p>
-<p>The <b>stop</b> bit marks the end of the message. The polarity may vary depending on the system, and some times two stop bits may be applied.</p>
-<h2>Sending a message to arduino from the monitor</h0>
-<p>You can pop a monitor open and write characters and press enter to send them to the arduino with the script below:</p>
-<pre><code class="language-c">
-#include <Arduino.h>
+<h2>Message format</h2>
+<p><img src="uart_message_format.png" alt="uart_message_format"></p>
+<p>The message starts with a <strong>start bit</strong>, which is always LOW. The receiver
+starts to prepare itself for receiving a message.</p>
+<p>Followed by that, the message includes the <strong>data bits</strong>. Those bits can vary
+in number, and this number needs to be agreed upon by both the receiver and the
+transmitter. A common length is 8 bits (1 byte), but this can vary based on the
+application. This length is also referred to as <em>character size</em>.</p>
+<p>The <strong>parity</strong> bit is an error-checking mechanism to detect transmission
+errors. A common use is to set the parity bit as 1 if the number of &quot;1&quot; bits in
+the data message is odd, and 0 if it is even.</p>
+<p>The <strong>stop</strong> bit marks the end of the message. The polarity may vary depending
+on the system, and some times two stop bits may be applied.</p>
+<h2>Sending a message to arduino from the monitor</h2>
+<p>You can pop a monitor open and write characters and press enter to send them
+to the arduino with the script below:</p>
+<pre><code class="language-c">#include &lt;Arduino.h&gt;
 
 char incomingByte = 0;
 
@@ -127,10 +176,10 @@ void loop() {
     digitalWrite(LED_BUILTIN, HIGH);
 
     incomingByte = Serial.read();
-    Serial.print("received: ");
+    Serial.print(&quot;received: &quot;);
     // Print byte in decimal.
     if (incomingByte == '\n') {
-      Serial.println("\\n");
+      Serial.println(&quot;\\n&quot;);
     } else {
       Serial.println(incomingByte);
     }
@@ -139,3 +188,6 @@ void loop() {
   }
 }
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

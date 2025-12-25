@@ -59,29 +59,61 @@
   <![endif]-->
 </head>
 <body>
-<h1>A Critique of SOLID</h0>
-<pre><code class="language-">
-Created: 2023-04-15
+<h1>A Critique of SOLID</h1>
+<pre><code>Created: 2023-04-15
 Updated: 2024-07-06
-</code></pre><h2>Introduction</h0>
-<p>SOLID is an acronym coined by Robert C. Martin (also known as uncle Bob), particularly focused at making Object Oriented Programming designs easier to understand, maintain, and adapt.</p>
-<p>The <a href="https://web.archive.org/web/20150906155800/http://www.objectmentor.com/resources/articles/Principles_and_Patterns.pdf">original paper (archived)</a> introducing the term in 2000 is a quick read worth checking, even if only for historical context.</p>
-<p>Before the paper starts to talk about SOLID, it mentions the 4 symptoms of "rotting software" (a very popular term between 1998-2006 according to google ngram). Those 4 symptoms are: <b>rigidity</b>, <b>fragility</b>, <b>immobility</b> and <b>viscosity</b>.</p>
-<p>It is important to know what those terms mean, because they are the reason that SOLID principles exist in the first place. Here is a brief summary:</p>
-<ul><li>Rigidity: How difficult it is to change the code.</li><li>Fragility: How easy it is to break the code.</li><li>Immobility: How hard it is to reuse existing code.</li><li>Viscosity: How hard it is to preserve the existing design of code when developing new changes.</li></ul>
-<p>The general expectation set by Robert C. Martin is that if you follow the SOLID principles your code will experience less software rot.</p>
-<h2>SOLID</h0>
-<p>The 5 principles of object oriented <b>class</b> design (as called by the paper), are:</p>
-<ul><li><b>S</b>ingle responsibility principle.</li><li><b>O</b> pen</li><li>closed principle.</li><li><b>L</b> iskov substitution principle.</li><li><b>I</b> nterface segregation principle.</li><li><b>D</b> ependency inversion principle.</li></ul>
-<p>My plan is to analyse each of them critically, understanding their weaknesses and providing evidence to counter their adoption.</p>
-<h3>The Open Closed Principle (OPC)</h0>
-<p>According to Martin this is the most important principle, and we will start with it. Here is its definition:</p>
-<blockquote>A module should be open for extension but closed for modification.</blockquote>
-<p>This sounds simple and reasonable. Perfect code that addresses a particular problem is only needed to be written once. To address further problems, this perfect code doesn't need to change, but only be <i>extended</i>.</p>
-<p>When developers keep this in mind, they try to produce perfect code that can be extended whilst keeping its original elegance and efficiency. If that's materialised, the developer can be said to be following the OPC principle.</p>
-<p>You probably can see where this is going by my wording ("perfect code", whatever that actually means). But let's not diverge from the theme just yet, we will go through an example of code provided by Martin that violates the OPC principle:</p>
-<pre><code class="language-cpp">
-struct Modem {
+</code></pre>
+<h2>Introduction</h2>
+<p>SOLID is an acronym coined by Robert C. Martin (also known as uncle Bob),
+particularly focused at making Object Oriented Programming designs easier to
+understand, maintain, and adapt.</p>
+<p>The <a href="https://web.archive.org/web/20150906155800/http://www.objectmentor.com/resources/articles/Principles_and_Patterns.pdf">original paper (archived)</a>
+introducing the term in 2000 is a quick read worth checking, even if only for
+historical context.</p>
+<p>Before the paper starts to talk about SOLID, it mentions the 4 symptoms of
+&quot;rotting software&quot; (a very popular term between 1998-2006 according to
+google ngram). Those 4 symptoms are: <strong>rigidity</strong>, <strong>fragility</strong>,
+<strong>immobility</strong> and <strong>viscosity</strong>.</p>
+<p>It is important to know what those terms mean, because they are the reason that
+SOLID principles exist in the first place. Here is a brief summary:</p>
+<ul>
+<li>Rigidity: How difficult it is to change the code.</li>
+<li>Fragility: How easy it is to break the code.</li>
+<li>Immobility: How hard it is to reuse existing code.</li>
+<li>Viscosity: How hard it is to preserve the existing design of code when
+developing new changes.</li>
+</ul>
+<p>The general expectation set by Robert C. Martin is that if you follow the SOLID
+principles your code will experience less software rot.</p>
+<h2>SOLID</h2>
+<p>The 5 principles of object oriented <strong>class</strong> design (as called by the paper),
+are:</p>
+<ul>
+<li><strong>S</strong>ingle responsibility principle.</li>
+<li><strong>O</strong>pen-closed principle.</li>
+<li><strong>L</strong>iskov substitution principle.</li>
+<li><strong>I</strong>nterface segregation principle.</li>
+<li><strong>D</strong>ependency inversion principle.</li>
+</ul>
+<p>My plan is to analyse each of them critically, understanding their weaknesses
+and providing evidence to counter their adoption.</p>
+<h3>The Open Closed Principle (OPC)</h3>
+<p>According to Martin this is the most important principle, and we will start
+with it. Here is its definition:</p>
+<blockquote>
+<p>A module should be open for extension but closed for modification.</p>
+</blockquote>
+<p>This sounds simple and reasonable. Perfect code that addresses a particular
+problem is only needed to be written once. To address further problems, this
+perfect code doesn't need to change, but only be <em>extended</em>.</p>
+<p>When developers keep this in mind, they try to produce perfect code that can be
+extended whilst keeping its original elegance and efficiency. If that's
+materialised, the developer can be said to be following the OPC principle.</p>
+<p>You probably can see where this is going by my wording (&quot;perfect code&quot;,
+whatever that actually means). But let's not diverge from the theme just yet,
+we will go through an example of code provided by Martin that violates the OPC
+principle:</p>
+<pre><code class="language-cpp">struct Modem {
     enum Type {hayes, courrier, ernie) type;
 };
 
@@ -101,38 +133,49 @@ struct Ernie
     // Ernie related stuff
 };
 
-void LogOn(Modem& m, string& pno, string& user, string& pw) {
+void LogOn(Modem&amp; m, string&amp; pno, string&amp; user, string&amp; pw) {
     if (m.type == Modem::hayes)
-        DialHayes((Hayes&)m, pno);
+        DialHayes((Hayes&amp;)m, pno);
     else if (m.type == Modem::courrier)
-        DialCourrier((Courrier&)m, pno);
+        DialCourrier((Courrier&amp;)m, pno);
     else if (m.type == Modem::ernie)
-        DialErnie((Ernie&)m, pno)
+        DialErnie((Ernie&amp;)m, pno)
     // ...you get the idea
 }
-</code></pre><p>The <code>LogOn</code> function violates Martin's OPC because its inner code needs to change every time a new modem is added. Moreover, every modem type depends on the <code>struct Modem</code>. Therefore if we need to add a new type of modem to that struct, all the existing modems need to be recompiled.</p>
+</code></pre>
+<p>The <code>LogOn</code> function violates Martin's OPC because its inner code needs to
+change every time a new modem is added. Moreover, every modem type depends on
+the <code>struct Modem</code>. Therefore if we need to add a new type of modem to that
+struct, all the existing modems need to be recompiled.</p>
 <p>So how do we make this code better? According to Martin:</p>
-<blockquote>Abstraction is the key to the OCP</blockquote>
-<p>There're a few possible abstraction techniques that conform to OPC. Let's follow the first one Martin provides, <b>Dynamic Polymorphism</b>.</p>
-<h4>Dynamic Polymorphism</h0>
-<p>In Object Oriented Programming this means we will have an abstract class with abstract methods (virtual functions), and concrete child classes implementing the actual code for each method.</p>
-<p>Here the word "Dynamic" means that the form (concrete class implementation) is found during run time. Putting it all together and rewriting the code above, we end up with something like the example provided in Martin's paper:</p>
-<pre><code class="language-cpp">
-class Modem {
+<blockquote>
+<p>Abstraction is the key to the OCP</p>
+</blockquote>
+<p>There're a few possible abstraction techniques that conform to OPC. Let's
+follow the first one Martin provides, <strong>Dynamic Polymorphism</strong>.</p>
+<h4>Dynamic Polymorphism</h4>
+<p>In Object Oriented Programming this means we will have an abstract class with
+abstract methods (virtual functions), and concrete child classes implementing
+the actual code for each method.</p>
+<p>Here the word &quot;Dynamic&quot; means that the form (concrete class implementation) is
+found during run time. Putting it all together and rewriting the code above, we
+end up with something like the example provided in Martin's paper:</p>
+<pre><code class="language-cpp">class Modem {
 public:
-    virtual void Dial(const string& pno) = 0;
+    virtual void Dial(const string&amp; pno) = 0;
     // other virtual methods here, you get the idea.
 };
 
-void LogOn(Modem& m, string& pno, string& user, string& pw) {
+void LogOn(Modem&amp; m, string&amp; pno, string&amp; user, string&amp; pw) {
     m.Dial(pno);
     // you get the idea.
 }
-</code></pre><p>Now the class <code>Modem</code> is closed for modification when we need to add new types of modems. To use the LogOn function, you need code like this:</p>
-<pre><code class="language-cpp">
-class Hayes : public Modem {
+</code></pre>
+<p>Now the class <code>Modem</code> is closed for modification when we need to add new types
+of modems. To use the LogOn function, you need code like this:</p>
+<pre><code class="language-cpp">class Hayes : public Modem {
 public:
-    virtual void Dial(const std::string& pno) {
+    virtual void Dial(const std::string&amp; pno) {
         // do something...
     }
 };
@@ -140,41 +183,72 @@ public:
 
 int main() {
     Hayes hayes = Hayes();
-    string pno = "1";
+    string pno = &quot;1&quot;;
     LogOn(hayes, pno);
 }
-</code></pre><p>Now that we see the whole picture we can tell that the function <code>LogOn</code> calls the method <code>Dial</code> on the child instance. This child instance is only available at runtime. Note that Martin omits this initialisation code in his original paper. He also does not discuss the downsides of this approach.</p>
+</code></pre>
+<p>Now that we see the whole picture we can tell that the function <code>LogOn</code> calls
+the method <code>Dial</code> on the child instance. This child instance is only
+available at runtime. Note that Martin omits this initialisation code in his
+original paper. He also does not discuss the downsides of this approach.</p>
 <p>However, I don't think we should toss this example away too quickly.</p>
-<p>We know for a fact that when types are only resolved at runtime our code becomes slower. But why? For each class that inherits virtual functions the compiler creates a <code>vtable</code>. A <code>vtable</code> is essentially a table of function pointers. When an object is created at runtime, a pointer to its vtable is added to its memory layout, and when a virtual function is called on this object, the code looks at the appropriate function pointer on the object vtable and then calls the function through that pointer.</p>
-<p>This all means that by using <b>Dynamic polymorphism</b> our code requires an additional level of indirection for <i>each</i> virtual function call, and the memory footprint of objects will increase program memory usage too.</p>
-<p>Furthermore, the given example is a simplistic one. In cases where dynamic polymorphism is overused, the code may have convoluted inheritance hierarchies. Such complexity impairs compiler optimization as virtual function calls aren't assignable until runtime.</p>
-<p>You might be thinking that the code above looks clean and that there's no reason to not do it. After all, reduced performance and more memory usage is a fair price to pay for cleaner code,  right? Well. What if we didn't have to pay this price and still have "clean code"?</p>
-<p>We will get there, but to keep things fair we need to go through another abstraction example given by Martin.</p>
-<h4>Static Polymorphism</h0>
-<p>What if there was a way to have something similar to Dynamic Polymorphism but without the runtime overhead, with more compiler optimisation, and more control over object types? Here is where static polymorphism comes handy.</p>
-<p><b>Static</b> here means that the child type will be defined at compile time. But how? The answer is by using generic programming templates.</p>
-<pre><code class="language-cpp">
-template <typename MODEM>
-void LogOn(MODEM& m, string& pno, string& user, string& pw) {
+<p>We know for a fact that when types are only resolved at runtime our code
+becomes slower. But why? For each class that inherits virtual functions the
+compiler creates a <code>vtable</code>. A <code>vtable</code> is essentially a table of function
+pointers. When an object is created at runtime, a pointer to its vtable is
+added to its memory layout, and when a virtual function is called on this
+object, the code looks at the appropriate function pointer on the object vtable
+and then calls the function through that pointer.</p>
+<p>This all means that by using <strong>Dynamic polymorphism</strong> our code requires
+an additional level of indirection for <em>each</em> virtual function call, and the
+memory footprint of objects will increase program memory usage too.</p>
+<p>Furthermore, the given example is a simplistic one. In cases where dynamic
+polymorphism is overused, the code may have convoluted inheritance
+hierarchies. Such complexity impairs compiler optimization as virtual function
+calls aren't assignable until runtime.</p>
+<p>You might be thinking that the code above looks clean and that there's no
+reason to not do it. After all, reduced performance and more memory usage is
+a fair price to pay for cleaner code,  right? Well. What if we didn't have
+to pay this price and still have &quot;clean code&quot;?</p>
+<p>We will get there, but to keep things fair we need to go through another
+abstraction example given by Martin.</p>
+<h4>Static Polymorphism</h4>
+<p>What if there was a way to have something similar to Dynamic Polymorphism but
+without the runtime overhead, with more compiler optimisation, and more
+control over object types? Here is where static polymorphism comes handy.</p>
+<p><strong>Static</strong> here means that the child type will be defined at compile time. But
+how? The answer is by using generic programming templates.</p>
+<pre><code class="language-cpp">template &lt;typename MODEM&gt;
+void LogOn(MODEM&amp; m, string&amp; pno, string&amp; user, string&amp; pw) {
     m.Dial(pno);
     // you get the idea.
 }
-</code></pre><p>This looks alright, but is this a real improvement? What is the trade off?</p>
-<p>Each time a template is instantiated a new copy of the code is created. This is how compilers make generic programming type-safe at compiling time. The more instantiations your code has, the larger your executable becomes, and the longer compilation takes.</p>
-<p>This all means that we are trading runtime performance for compile time performance. It might be OK to do so in certain applications, but what if we didn't have to?</p>
-<h4>Addressing the open<ul><li>cclloosseedd  pprriinncciippllee</h0>
- Martin's original argument stressed the following:</li></ul>
-<ol><li>The dependency between the Modem struct and its implementation structs is bad.</li></ol>
-<p>My problem with this assertion is that it sounds like a straw man fallacy. You absolutely don't need to create one struct for each type of modem. Let's fix the example:</p>
-<pre><code class="language-cpp">
-enum ModemType { HAYES, COURRIER, ERNIE };
+</code></pre>
+<p>This looks alright, but is this a real improvement? What is the trade off?</p>
+<p>Each time a template is instantiated a new copy of the code is created. This
+is how compilers make generic programming type-safe at compiling time. The more
+instantiations your code has, the larger your executable becomes, and the
+longer compilation takes.</p>
+<p>This all means that we are trading runtime performance for compile time
+performance. It might be OK to do so in certain applications, but what if we
+didn't have to?</p>
+<h4>Addressing the open-closed principle</h4>
+<p>Martin's original argument stressed the following:</p>
+<ol>
+<li>The dependency between the Modem struct and its implementation structs is
+bad.</li>
+</ol>
+<p>My problem with this assertion is that it sounds like a straw man fallacy. You
+absolutely don't need to create one struct for each type of modem. Let's fix
+the example:</p>
+<pre><code class="language-cpp">enum ModemType { HAYES, COURRIER, ERNIE };
 
 struct Modem {
     ModemType type;
     // other attributes, you get the idea.
 };
 
-void LogOn(Modem& m, string& pno) {
+void LogOn(Modem&amp; m, string&amp; pno) {
     switch (m.type) {
         case ModemType.HAYES:
             // do something with hayes
@@ -183,16 +257,44 @@ void LogOn(Modem& m, string& pno) {
         // ...you get the idea
     }
 }
-</code></pre><ol><li>Now the compiler knows all the code paths the code goes through at compiling time. Code can easily be optimised.</li><li>No layers of indirection and thus no performance costs at runtime.</li><li>No memory overhead.</li><li>No executable size overhead.</li><li>Less lines of code.</li></ol>
-<p>Is the code above objectively bad? Is it difficult to read? I could argue that any CS student could make sense of this code in a very short amount of time.</p>
-<p>The idea behind polymorphism is that it makes code flexible and easier to read. However, the flexibility of using virtual functions can be costly as we have seen. If you don't know whether you need that flexibility yet, you will be imagining future use cases that <i>may</i> use your code. If this flexibility ends up not being needed, the programmer has fundamentally over-scoped their own code and caused unnecessary memory and CPU degradation to their program with no added benefit.</p>
-<p>Here is where the trade-off lies. Imagine that you need to add a new type of modem. Using the <code>switch</code> above you'd have to change the LogOn function and recompile it. You will also need to recompile everything that depends on the LogOn function, and that can be a lot. If you were using polymorphism, you just needed to add a new type (potentially in a new file), and you would need to only compile one single file plus the place where it is instantiated (and everything that depends on that).</p>
-<p>But what if you need to add new functionality in the abstract class? In the polymorphism case you'd need to add a new function for every single type, and that would induce a lot of recompilation across the project for a fairly use piece of code.</p>
-<p>Differently, in the <code>switch</code> case, you could add a new function (potentially in a new file) and you only need to compile that one single file.</p>
-<p>Someone might argue that a potential downside from the <code>switch</code> approach is that when a new type of Modem is added, you need to track all the functions that have a <code>switch (m.type)</code> to change their code, and this can induce human error.</p>
-<p>I would tend to agree. However, compiler warnings will let you know of all these use cases that are missing a switch handle. For example:</p>
-<pre><code class="language-c">
-#include <stdio.h>
+</code></pre>
+<ol>
+<li>Now the compiler knows all the code paths the code goes through at compiling
+time. Code can easily be optimised.</li>
+<li>No layers of indirection and thus no performance costs at runtime.</li>
+<li>No memory overhead.</li>
+<li>No executable size overhead.</li>
+<li>Less lines of code.</li>
+</ol>
+<p>Is the code above objectively bad? Is it difficult to read? I could argue that
+any CS student could make sense of this code in a very short amount of time.</p>
+<p>The idea behind polymorphism is that it makes code flexible and easier to read.
+However, the flexibility of using virtual functions can be costly as we have
+seen. If you don't know whether you need that flexibility yet, you will be
+imagining future use cases that <em>may</em> use your code. If this flexibility ends
+up not being needed, the programmer has fundamentally over-scoped their own
+code and caused unnecessary memory and CPU degradation to their program with no
+added benefit.</p>
+<p>Here is where the trade-off lies. Imagine that you need to add a new type of
+modem. Using the <code>switch</code> above you'd have to change the LogOn function and
+recompile it. You will also need to recompile everything that depends on the
+LogOn function, and that can be a lot. If you were using polymorphism, you just
+needed to add a new type (potentially in a new file), and you would need to
+only compile one single file plus the place where it is instantiated (and
+everything that depends on that).</p>
+<p>But what if you need to add new functionality in the abstract class? In the
+polymorphism case you'd need to add a new function for every single type, and
+that would induce a lot of recompilation across the project for a fairly use
+piece of code.</p>
+<p>Differently, in the <code>switch</code> case, you could add a new function (potentially in
+a new file) and you only need to compile that one single file.</p>
+<p>Someone might argue that a potential downside from the <code>switch</code> approach is
+that when a new type of Modem is added, you need to track all the functions
+that have a <code>switch (m.type)</code> to change their code, and this can induce human
+error.</p>
+<p>I would tend to agree. However, compiler warnings will let you know of all
+these use cases that are missing a switch handle. For example:</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
 
 enum ModemType { HAYES, COURRIER, ERNIE };
 
@@ -201,40 +303,53 @@ struct Modem {
 };
 
 void LogOn(struct Modem* m) {
-  switch (m->type) {
+  switch (m-&gt;type) {
     // Note how we are only handling HAYES and
     // forgot to handle COURRIER and ERNIE.
     case HAYES:
-      printf("LogOn HAYES");
+      printf(&quot;LogOn HAYES&quot;);
       break;
   }
 }
 
 int main() {
   struct Modem m = {HAYES};
-  LogOn(&m);
+  LogOn(&amp;m);
   return 0;
 }
-</code></pre><p>If I try to run this code with:</p>
-<pre><code class="language-sh">
-gcc -Wall <file_name> -o /tmp/a.o
-</code></pre><p>I get the following error:</p>
-<pre><code class="language-c">
-/tmp/main.c: In function ‘LogOn’:
+</code></pre>
+<p>If I try to run this code with:</p>
+<pre><code class="language-sh">gcc -Wall &lt;file_name&gt; -o /tmp/a.o
+</code></pre>
+<p>I get the following error:</p>
+<pre><code class="language-c">/tmp/main.c: In function ‘LogOn’:
 /tmp/main.c:10:3: warning: enumeration value ‘COURRIER’ not handled in switch [-Wswitch]
-   10 |   switch (m->type) {
+   10 |   switch (m-&gt;type) {
       |   ^~~~~~
 /tmp/main.c:10:3: warning: enumeration value ‘ERNIE’ not handled in switch [-Wswitch]
-</code></pre><p>In other words, the compile catches this mistake for us.</p>
-<p>In conclusion, this design choice will determine what will be easier and what will be harder for your program. Ask yourself the question: "Do I want it to be easier to add more functionality to my program, or do I prioritise adding more types?". The answer will dictate what is best for your situation.</p>
-<p>Polymorphism isn't a silver bullet that will always make your code OPC compliant. In fact, the more functional your code looks like, the greater the penalty of using polymorphism.</p>
-<p>In my professional experience, I spend much more time adding new functionality to existing software than I spend adding new types. So for me, it would be inadequate to prefer an architecture that focuses on types.</p>
-<h3>The Liskov Substitution Principle (LSP)</h0>
-<p>This principle states that an object (such as an abstract class), may be replaced by a sub-object (such as a child class) without breaking the program.</p>
-<p>This means that if we have a function <code>foo(Parent bar)</code>, we should also be able to call foo as <code>foo(Child bar)</code> without altering the correctness of the program.</p>
-<p>Martin uses an example of a parent class called <code>Ellipse</code> and a child class called <code>Circle</code>. As every circle is an ellipse with a very particular configuration, this sounds about right. However, Martin only uses this example to stress that it is an inheritance <i>bad</i> practice.</p>
-<pre><code class="language-cpp">
-void f(Ellipse& e) {
+</code></pre>
+<p>In other words, the compile catches this mistake for us.</p>
+<p>In conclusion, this design choice will determine what will be easier and what
+will be harder for your program. Ask yourself the question: &quot;Do I want it to be
+easier to add more functionality to my program, or do I prioritise adding more
+types?&quot;. The answer will dictate what is best for your situation.</p>
+<p>Polymorphism isn't a silver bullet that will always make your code OPC
+compliant. In fact, the more functional your code looks like, the greater the
+penalty of using polymorphism.</p>
+<p>In my professional experience, I spend much more time adding new functionality
+to existing software than I spend adding new types. So for me, it would be
+inadequate to prefer an architecture that focuses on types.</p>
+<h3>The Liskov Substitution Principle (LSP)</h3>
+<p>This principle states that an object (such as an abstract class), may be
+replaced by a sub-object (such as a child class) without breaking the program.</p>
+<p>This means that if we have a function <code>foo(Parent bar)</code>, we should also be
+able to call foo as <code>foo(Child bar)</code> without altering the correctness of the
+program.</p>
+<p>Martin uses an example of a parent class called <code>Ellipse</code> and a child class
+called <code>Circle</code>. As every circle is an ellipse with a very particular
+configuration, this sounds about right. However, Martin only uses this example
+to stress that it is an inheritance <em>bad</em> practice.</p>
+<pre><code class="language-cpp">void f(Ellipse&amp; e) {
     Point a(-1,0);
     Point b(1,0);
     e.SetFoci(a,b);
@@ -243,64 +358,157 @@ void f(Ellipse& e) {
     assert(e.GetFocusB() == b);
     assert(e.GetMajorAxis() == 3);
 }
-</code></pre><p>The function <code>f</code> above, for example, can't receive a <code>Circle</code> instead of an <code>Ellipse</code>. Reason being that the method <code>setFoci</code> will alter the circle and turn it into an ellipse. This can become a subtle bug in the application code.</p>
-<p>A safe option is for the <code>Circle::SetFoci</code> method to add an extra validation, asserting that <code>a == b</code>. This violates LSP. The child object now has an extra restriction that the parent object doesn't. Martin concludes that:</p>
-<blockquote>derived methods should expect no more and provide no less.</blockquote>
-<p>I don't have much to critique about this principle itself. To be honest it sounds alright to me. However, this is only <b>one more thing</b> to remember when you're using polymorphism, which contributes as a <b>negative</b> to the OPC principle through abstraction that we discussed above.</p>
-<p>Apart from performance and memory degradation, the programmer also has to worry about loose/tight contracts between the parent and the child. This means that the functionality may not work that well if the type implementation is faulty.</p>
-<p>Martin himself comments that LSP violation can be costly. If the interface is being used in many different places, the cost of repairing this violation might be too much to take. A possible solution, as stated by Martin, is to provide an <code>if/else</code> statement to make sure the Ellipse is indeed an Ellipse.</p>
-<p>Another problem of this type of polymorphism is that the Circle object is way simpler than an Ellipse. This means that the Circle class will inherit many methods that it doesn't need to use, generating <b>method spam</b>. This violates another principle of SOLID, the Interface Segregation Principle that we will look into later on.</p>
-<h2>The Dependency Inversion Principle (DIP)</h0>
-<blockquote>Depend upon Abstractions. Do not depend upon concretions.</blockquote>
-<p>In essence, this principle means that code in high level modules should not depend on code in low level modules. High level modules are usually top abstractions that express the policies of the application, whereas low level modules contain the implementation details. In other words, the abstraction should not worry about the implementation.</p>
-<p>By inverting the dependency, i.e., making the low level modules depend on the high ones and not the opposite, a developer will be DIP complaint.</p>
-<p>You might be noticing a trend now. Most of these SOLID rules are greatly related to polymorphism. After all, they were created for OOP. As I feel like I have addressed the main trade-off in that approach, I could easily end up repeating myself here. Let's proceed nonetheless :')</p>
-<p>Inverting dependencies in a codebase must be seen as a trade-off. As now your abstraction can be changed without having to worry about the implementation details, you can't change the implementation details without having to worry about the abstraction. This means that if the interface changes often, it will be harder to manage the concrete implementations.</p>
-<p>More over, classes that could simply be a concrete implementation alone, with no dependency on a high-level interface, now may have an artificial interface so that this principle isn't violated. This usually happens because "you never know whether another concrete implementation that needs to use the interface might come about". One regular example is an interface <code>ShipmentPolicy</code> which has <b>only one</b> concrete implementation, often called <code>ShipmentPolicyImpl</code>. One could say that this is a code redundancy.</p>
-<h2>The Interface Segregation Principle (ISP)</h0>
-<p>ISP states that no code should depend on methods it does not use. This implies having smaller interfaces so that clients that depend on them only need to know a few relevant methods.</p>
-<p>This idea sounds reasonable, and it's a way of controlling inheritance method spam when inheriting from bloated interfaces. But I think this technique is more of a refactoring tool rather than a principle itself.</p>
-<p>Treating ISP as a principle can add unnecessary complexity. You should design your code to solve the problem at hand rather than worrying about whether your interface will become too bloated in future when more use cases are added. As you don't know how your codebase will progress in future, you shouldn't make compromises from early on. If an interface grew too much, and <b>now</b> you have legitimate reason to split it into smaller ones, then go and refactor it.</p>
-<p>As all the other principles we have discussed so far, take ISP as a trade-off instead of a principle.</p>
-<p>Here are a few quotes from the Code Complete book that are relevant for the matter:</p>
-<blockquote>If the derived class isn't going to adhere completely to the same interface</blockquote>
-<blockquote>contract defined by the base class, inheritance is not the right</blockquote>
-<blockquote>implementation.</blockquote>
-<blockquote>Be suspicious of base classes of which there is only one derived class.</blockquote>
-<h2>Single Responsibility Principle (SRP)</h0>
-<p>This principle wasn't included in the original publication I linked above, and more details can be found in this blog post from <a href="http://web.archive.org/web/20240328163818/https://blog.cleancoder.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html">clean coder</a>.</p>
-<p>This principle builds up on the "Separation of Concerns" term that was popularised in a famous article "On the role of scientific thought" by Dijkstra <a href="http://web.archive.org/web/20221104003446/https://www.cs.utexas.edu/~EWD/ewd04xx/EWD447.PDF">source</a></p>
+</code></pre>
+<p>The function <code>f</code> above, for example, can't receive a <code>Circle</code> instead of an
+<code>Ellipse</code>. Reason being that the method <code>setFoci</code> will alter the circle and
+turn it into an ellipse. This can become a subtle bug in the application code.</p>
+<p>A safe option is for the <code>Circle::SetFoci</code> method to add an extra validation,
+asserting that <code>a == b</code>. This violates LSP. The child object now has an extra
+restriction that the parent object doesn't. Martin concludes that:</p>
+<blockquote>
+<p>derived methods should expect no more and provide no less.</p>
+</blockquote>
+<p>I don't have much to critique about this principle itself. To be honest it
+sounds alright to me. However, this is only <strong>one more thing</strong> to remember when
+you're using polymorphism, which contributes as a <strong>negative</strong> to the OPC
+principle through abstraction that we discussed above.</p>
+<p>Apart from performance and memory degradation, the programmer also has to worry
+about loose/tight contracts between the parent and the child. This means that
+the functionality may not work that well if the type implementation is
+faulty.</p>
+<p>Martin himself comments that LSP violation can be costly. If the interface is
+being used in many different places, the cost of repairing this violation might
+be too much to take. A possible solution, as stated by Martin, is to provide an
+<code>if/else</code> statement to make sure the Ellipse is indeed an Ellipse.</p>
+<p>Another problem of this type of polymorphism is that the Circle object is way
+simpler than an Ellipse. This means that the Circle class will inherit many
+methods that it doesn't need to use, generating <strong>method spam</strong>. This violates
+another principle of SOLID, the Interface Segregation Principle that we will
+look into later on.</p>
+<h2>The Dependency Inversion Principle (DIP)</h2>
+<blockquote>
+<p>Depend upon Abstractions. Do not depend upon concretions.</p>
+</blockquote>
+<p>In essence, this principle means that code in high level modules should not
+depend on code in low level modules. High level modules are usually top
+abstractions that express the policies of the application, whereas low level
+modules contain the implementation details. In other words, the abstraction
+should not worry about the implementation.</p>
+<p>By inverting the dependency, i.e., making the low level modules depend on the
+high ones and not the opposite, a developer will be DIP complaint.</p>
+<p>You might be noticing a trend now. Most of these SOLID rules are greatly
+related to polymorphism. After all, they were created for OOP. As I feel like I
+have addressed the main trade-off in that approach, I could easily end up
+repeating myself here. Let's proceed nonetheless :')</p>
+<p>Inverting dependencies in a codebase must be seen as a trade-off. As now your
+abstraction can be changed without having to worry about the implementation
+details, you can't change the implementation details without having to worry
+about the abstraction. This means that if the interface changes often, it will
+be harder to manage the concrete implementations.</p>
+<p>More over, classes that could simply be a concrete implementation alone, with
+no dependency on a high-level interface, now may have an artificial interface
+so that this principle isn't violated. This usually happens because &quot;you never
+know whether another concrete implementation that needs to use the interface
+might come about&quot;. One regular example is an interface <code>ShipmentPolicy</code> which
+has <strong>only one</strong> concrete implementation, often called <code>ShipmentPolicyImpl</code>.
+One could say that this is a code redundancy.</p>
+<h2>The Interface Segregation Principle (ISP)</h2>
+<p>ISP states that no code should depend on methods it does not use. This implies
+having smaller interfaces so that clients that depend on them only need to know
+a few relevant methods.</p>
+<p>This idea sounds reasonable, and it's a way of controlling inheritance method
+spam when inheriting from bloated interfaces. But I think this technique is
+more of a refactoring tool rather than a principle itself.</p>
+<p>Treating ISP as a principle can add unnecessary complexity. You should design
+your code to solve the problem at hand rather than worrying about whether your
+interface will become too bloated in future when more use cases are added. As
+you don't know how your codebase will progress in future, you shouldn't make
+compromises from early on. If an interface grew too much, and <strong>now</strong> you have
+legitimate reason to split it into smaller ones, then go and refactor it.</p>
+<p>As all the other principles we have discussed so far, take ISP as a
+trade-off instead of a principle.</p>
+<p>Here are a few quotes from the Code Complete book that are relevant for the
+matter:</p>
+<blockquote>
+<p>If the derived class isn't going to adhere completely to the same interface
+contract defined by the base class, inheritance is not the right
+implementation.</p>
+</blockquote>
+<blockquote>
+<p>Be suspicious of base classes of which there is only one derived class.</p>
+</blockquote>
+<h2>Single Responsibility Principle (SRP)</h2>
+<p>This principle wasn't included in the original publication I linked above, and
+more details can be found in this blog post from <a href="http://web.archive.org/web/20240328163818/https://blog.cleancoder.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html">clean coder</a>.</p>
+<p>This principle builds up on the &quot;Separation of Concerns&quot; term that was
+popularised in a famous article &quot;On the role of scientific thought&quot; by Dijkstra
+<a href="http://web.archive.org/web/20221104003446/https://www.cs.utexas.edu/~EWD/ewd04xx/EWD447.PDF">source</a></p>
 <p>The principle can be summarised as:</p>
-<blockquote>The Single Responsibility Principle (SRP) states that each software module</blockquote>
-<blockquote>should have one and only one reason to change.</blockquote>
-<p>The definition lacks specification and my major criticism here is the specification itself. What is a reasonable "reason to change"?</p>
+<blockquote>
+<p>The Single Responsibility Principle (SRP) states that each software module
+should have one and only one reason to change.</p>
+</blockquote>
+<p>The definition lacks specification and my major criticism here is the
+specification itself. What is a reasonable &quot;reason to change&quot;?</p>
 <p>Martin gives more information on the blog post linked about, saying:</p>
-<blockquote>Imagine you took your car to a mechanic in order to fix a broken electric</blockquote>
-<blockquote>window. He calls you the next day saying it’s all fixed. When you pick up</blockquote>
-<blockquote>your car, you find the window works fine; but the car won’t start. It’s not</blockquote>
-<blockquote>likely you will return to that mechanic because he’s clearly an idiot.</blockquote>
-<blockquote>...</blockquote>
-<blockquote>That’s how customers and managers feel when we break things they care about</blockquote>
-<blockquote>that they did not ask us to change.</blockquote>
-<blockquote>...</blockquote>
-<blockquote>Another wording for the Single Responsibility Principle is:</blockquote>
-<blockquote>Gather together the things that change for the same reasons. Separate those</blockquote>
-<blockquote>things that change for different reasons.</blockquote>
-<blockquote>...</blockquote>
-<blockquote>However, as you think about this principle, remember that the reasons for</blockquote>
-<blockquote>change are people. It is people who request changes. And you don’t want to</blockquote>
-<blockquote>confuse those people, or yourself, by mixing together the code that many</blockquote>
-<blockquote>different people care about for different reasons.</blockquote>
-<p>I agree that mixing code from different teams with different responsibilities isn't ideal. I would call that unnecessary coupling.</p>
-<p>It is obviously bad, for example, for a change in a back-end billing engine of a bank to affect its front-end application and display data in a different format.</p>
-<p>Although I think that the definition isn't ideal, the principle here does sound like the most reasonable in the list.</p>
-<h2>Conclusions</h0>
-<p>In my opinion, those shouldn't be called "principles". The word _principle_ as it is defined below should be reserved for terms that are really hard to debunk:</p>
-<blockquote>Principle: a fundamental truth or proposition that serves as the foundation</blockquote>
-<blockquote>for a system of belief or behaviour or for a chain of reasoning. "the basic</blockquote>
-<blockquote>principles of justice"</blockquote>
-<p>Most of what we have seen here fit within the saying "different horses for different courses". I do appreciate that when those principles were written OOP was all the rage and many people were investing resources in it and many books were written. So I can accept that they were the single truth at the time.</p>
-<p>However, having many decades passed since the inception of those principles, many other things have improved in the industry. I feel like we have moved forward as a whole.</p>
-<p>OOP is not considered <b>the only way</b> of developing any more, though still very popular. Polymorphism, inheritance, and most importantly multi-level inheritance is seen with bad eyes. More and more people have come to appreciate composition over inheritance.</p>
-<p>The classic book example of inheritance Shape->Ellipsis->Circle is very hard to derive in the real world in a non-forceful way. Inheritance and thus polymorphism has become a way of getting generic functionality from parent classes <b>instead of sharing identities</b> between classes of the same base implementation, and thus much tangled code has been created so that unrelated classes could get the same shared behaviour. I feel like a lot of people nowadays have scars to prove that.</p>
-<p>Nonetheless, I feel positive that Martin has created these principles even though I don't agree with them fully. It is easy to look back on the past and point fingers about decisions that don't apply to the present. I think that overall the popularity of SOLID and the outcome of having more people thinking about designs and their own set of principles is a positive thing.</p>
+<blockquote>
+<p>Imagine you took your car to a mechanic in order to fix a broken electric
+window. He calls you the next day saying it’s all fixed. When you pick up
+your car, you find the window works fine; but the car won’t start. It’s not
+likely you will return to that mechanic because he’s clearly an idiot.
+...
+That’s how customers and managers feel when we break things they care about
+that they did not ask us to change.
+...
+Another wording for the Single Responsibility Principle is:
+Gather together the things that change for the same reasons. Separate those
+things that change for different reasons.
+...
+However, as you think about this principle, remember that the reasons for
+change are people. It is people who request changes. And you don’t want to
+confuse those people, or yourself, by mixing together the code that many
+different people care about for different reasons.</p>
+</blockquote>
+<p>I agree that mixing code from different teams with different responsibilities
+isn't ideal. I would call that unnecessary coupling.</p>
+<p>It is obviously bad, for example, for a change in a back-end billing engine of
+a bank to affect its front-end application and display data in a different
+format.</p>
+<p>Although I think that the definition isn't ideal, the principle here does sound
+like the most reasonable in the list.</p>
+<h2>Conclusions</h2>
+<p>In my opinion, those shouldn't be called &quot;principles&quot;. The word <em>principle</em> as
+it is defined below should be reserved for terms that are really hard to
+debunk:</p>
+<blockquote>
+<p>Principle: a fundamental truth or proposition that serves as the foundation
+for a system of belief or behaviour or for a chain of reasoning. &quot;the basic
+principles of justice&quot;</p>
+</blockquote>
+<p>Most of what we have seen here fit within the saying &quot;different horses for
+different courses&quot;. I do appreciate that when those principles were written
+OOP was all the rage and many people were investing resources in it and many
+books were written. So I can accept that they were the single truth at the
+time.</p>
+<p>However, having many decades passed since the inception of those principles,
+many other things have improved in the industry. I feel like we have moved
+forward as a whole.</p>
+<p>OOP is not considered <strong>the only way</strong> of developing any more, though still
+very popular. Polymorphism, inheritance, and most importantly multi-level
+inheritance is seen with bad eyes. More and more people have come to appreciate
+composition over inheritance.</p>
+<p>The classic book example of inheritance Shape-&gt;Ellipsis-&gt;Circle is very hard to
+derive in the real world in a non-forceful way. Inheritance and thus
+polymorphism has become a way of getting generic functionality from parent
+classes <strong>instead of sharing identities</strong> between classes of the same base
+implementation, and thus much tangled code has been created so that unrelated
+classes could get the same shared behaviour. I feel like a lot of people
+nowadays have scars to prove that.</p>
+<p>Nonetheless, I feel positive that Martin has created these principles even
+though I don't agree with them fully. It is easy to look back on the past and
+point fingers about decisions that don't apply to the present. I think that
+overall the popularity of SOLID and the outcome of having more people thinking
+about designs and their own set of principles is a positive thing.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -59,96 +59,132 @@
   <![endif]-->
 </head>
 <body>
-<h1>Building From Source</h0>
-<pre><code class="language-">
-Created at: 2024-10-11
-</code></pre><p>I prefer to build from source whenever possible. This practice allows me to better control compilation flags that are useful for profiling.</p>
-<p>Besides that, if I am running multiple different versions of Postgres locally, I don't have to mingle with my OS package manager or resort to using Docker or some other containerised environment.</p>
-<p>The authoritative guide to installing Postgres from source can be found in the official <a href="https://www.postgresql.org/docs/current/installation.html">documentation</a>.</p>
-<p>What comes below is _my own way of installing Postgres_, which is done in a particular way so that I can profile and trace underlying functionality in a practical way.</p>
-<h2>Getting The Source Code</h0>
-<p>Go to Postgres' <a href="https://www.postgresql.org/ftp/source/">ftp server in this link </a> and grab the version of Postgres you are interested in.</p>
+<h1>Building From Source</h1>
+<pre><code>Created at: 2024-10-11
+</code></pre>
+<p>I prefer to build from source whenever possible. This practice allows me to
+better control compilation flags that are useful for profiling.</p>
+<p>Besides that, if I am running multiple different versions of Postgres locally,
+I don't have to mingle with my OS package manager or resort to using Docker or
+some other containerised environment.</p>
+<p>The authoritative guide to installing Postgres from source can be found in
+the official <a href="https://www.postgresql.org/docs/current/installation.html">documentation</a>.</p>
+<p>What comes below is <em>my own way of installing Postgres</em>, which is done in a
+particular way so that I can profile and trace underlying functionality in a
+practical way.</p>
+<h2>Getting The Source Code</h2>
+<p>Go to Postgres' <a href="https://www.postgresql.org/ftp/source/">ftp server in this link </a>
+and grab the version of Postgres you are interested in.</p>
 <p>Aim for the file with the <code>.bz2</code> extension, and decompress it like this:</p>
-<pre><code class="language-sh">
-tar xf postgresql-version.tar.bz2
-</code></pre><p>This will create a new folder <code>postgresql-version</code> in your current directory with the source code.</p>
-<h2>Step 0 (for macOs users only <ul><li>sskkiipp  iiff  oonn  LLiinnuuxx))</h0>
- Run these commands first, so that your homebrew libraries can be found.</li></ul>
-<pre><code class="language-sh">
-export CPPFLAGS="-I/opt/homebrew/include"
-export LDFLAGS="-L/opt/homebrew/lib"
-</code></pre><h2>Configure</h0>
+<pre><code class="language-sh">tar xf postgresql-version.tar.bz2
+</code></pre>
+<p>This will create a new folder <code>postgresql-version</code> in your current directory
+with the source code.</p>
+<h2>Step 0 (for macOs users only - skip if on Linux)</h2>
+<p>Run these commands first, so that your homebrew libraries can be found.</p>
+<pre><code class="language-sh">export CPPFLAGS=&quot;-I/opt/homebrew/include&quot;
+export LDFLAGS=&quot;-L/opt/homebrew/lib&quot;
+</code></pre>
+<h2>Configure</h2>
 <p>First, move the folder to the final directory you want it in.</p>
 <p>In the root directory, there is a bash script called <code>./configure</code>.</p>
-<pre><code class="language-sh">
-VERSION=15
-PREFIX="$(pwd)/build"
+<pre><code class="language-sh">VERSION=15
+PREFIX=&quot;$(pwd)/build&quot;
 
 ./configure \
     CC='gcc' \
-    CFLAGS="-fno-omit-frame-pointer -ggdb" \
+    CFLAGS=&quot;-fno-omit-frame-pointer -ggdb&quot; \
     --prefix=${PREFIX} \
     --with-pgport=54${VERSION} \
     --enable-debug \
     --without-icu
-</code></pre><p>Flags:</p>
-<ul><li><code>--prefix</code>: The default configuration installs Postgres on<b>/usr/local/pgsql</b> . I plan to have multiple versions of Postgres running, so I want to change the folder where I'll install each of them. I prefer to use a "build" folder so that both source and build live in the same directory.</li><li><code>--with-pgport</code> : The default port is 5432, but again, since I am running multiple Postgres versions, I usually use 54${version_number} in this case my version is 12, so 5412. This makes it easier for me to know which version a service runs just by looking at the port number. It also makes it easier to run multiple versions at the same time.</li><li><code>--enable-debug</code> : I want debug symbols. When using GCC as a compiler this doesn't affect performance too badly.</li><li><code>--enable-profiling</code> : This is for use with GNU gprof. Upon exit, a subfolder will be created with a <code>gmon.out</code> file containing the results of the profiler. I am not using this at the moment as I haven't been lucky to get gprof to work yet </li><li> In either case, <code>perf</code> is better.</li><li><code>CFLAGS</code> : These options allow support for capturing the whole user</li><li>space call stack.</li></ul>
-<p>The option <code>-fno-omit-frame-pointer</code> is necessary because the profiler may be using a frame pointer-based approach for reading the stack. This may come with an ~1% performance cost. From the Systems Performance book (Gregg):</p>
-<blockquote>Incomplete stack traces are unfortunately common, and are usually caused by a</blockquote>
-<blockquote>confluence of two factors: 1) the observability tool using a frame</blockquote>
-<blockquote>pointer-based approach for reading the stack trace, and 2) the target binary</blockquote>
-<blockquote>not reserving a register (RBP on x86) for the frame pointer, instead reusing</blockquote>
-<blockquote>it as a general-purpose register as a compiler performance optimisation. The</blockquote>
-<blockquote>observability tool reads this register expecting it to be a frame pointer,</blockquote>
-<blockquote>but in fact it could now contain anything: numbers, object address, pointers</blockquote>
-<blockquote>to strings, etc. The observability tool tries to resolve this number in the</blockquote>
-<blockquote>symbol table and, if it is lucky, it doesn't find it and can print</blockquote>
-<blockquote>"[unknown]". If it is unlucky, that random number resolves to an unrelated</blockquote>
-<blockquote>symbol, and now the printed stack trace has a function name that is wrong,</blockquote>
-<blockquote>confusing you, the end user.</blockquote>
-<p>Note that the tool I am going to use (<code>perf(1)</code>) supports DWARF-based stack walking, which is not stack-based. So we could skip this flag. But for the sake of being able to use other tools later if needed, we'll compile with frame pointers optimisation disabled anyway.</p>
-<h2>Make</h0>
-<p>I use <code>bear</code> here so that I can get a <code>compile_commands.json</code> file after running <code>make</code>. This is for my clangd LSP. It allows me to have jump to definitions and the likes when I need to look at source code.</p>
-<pre><code class="language-sh">
-# Remove existing file if it exists.
+</code></pre>
+<p>Flags:</p>
+<ul>
+<li><code>--prefix</code>: The default configuration installs Postgres on
+<strong>/usr/local/pgsql</strong>. I plan to have multiple versions of Postgres running,
+so I want to change the folder where I'll install each of them. I prefer
+to use a &quot;build&quot; folder so that both source and build live in the same
+directory.</li>
+<li><code>--with-pgport</code>: The default port is 5432, but again, since I am running
+multiple Postgres versions, I usually use 54${version_number} in this case my
+version is 12, so 5412. This makes it easier for me to know which version a
+service runs just by looking at the port number. It also makes it easier to
+run multiple versions at the same time.</li>
+<li><code>--enable-debug</code>: I want debug symbols. When using GCC as a compiler this
+doesn't affect performance too badly.</li>
+<li><code>--enable-profiling</code>: This is for use with GNU gprof. Upon exit, a subfolder
+will be created with a <code>gmon.out</code> file containing the results of the
+profiler. I am not using this at the moment as I haven't been lucky to get
+gprof to work yet - In either case, <code>perf</code> is better.</li>
+<li><code>CFLAGS</code>: These options allow support for capturing the whole user-space call
+stack.</li>
+</ul>
+<p>The option <code>-fno-omit-frame-pointer</code> is necessary because the profiler may be
+using a frame pointer-based approach for reading the stack. This may come with
+an ~1% performance cost. From the Systems Performance book (Gregg):</p>
+<blockquote>
+<p>Incomplete stack traces are unfortunately common, and are usually caused by a
+confluence of two factors: 1) the observability tool using a frame
+pointer-based approach for reading the stack trace, and 2) the target binary
+not reserving a register (RBP on x86) for the frame pointer, instead reusing
+it as a general-purpose register as a compiler performance optimisation. The
+observability tool reads this register expecting it to be a frame pointer,
+but in fact it could now contain anything: numbers, object address, pointers
+to strings, etc. The observability tool tries to resolve this number in the
+symbol table and, if it is lucky, it doesn't find it and can print
+&quot;[unknown]&quot;. If it is unlucky, that random number resolves to an unrelated
+symbol, and now the printed stack trace has a function name that is wrong,
+confusing you, the end user.</p>
+</blockquote>
+<p>Note that the tool I am going to use (<code>perf(1)</code>) supports DWARF-based stack
+walking, which is not stack-based. So we could skip this flag. But for the sake
+of being able to use other tools later if needed, we'll compile with frame
+pointers optimisation disabled anyway.</p>
+<h2>Make</h2>
+<p>I use <code>bear</code> here so that I can get a <code>compile_commands.json</code> file after
+running <code>make</code>. This is for my clangd LSP. It allows me to have jump to
+definitions and the likes when I need to look at source code.</p>
+<pre><code class="language-sh"># Remove existing file if it exists.
 rm -f src/compile_commands.json build
 
 # `make` will take a bit of time to finish.
 bear --output src/compile_commands.json -- make
 make install
-</code></pre><p>TODO: It might be useful to compile with <code>LOCK_DEBUG</code> activated to get logs about locks in the logfile (find how).</p>
-<h2>Optional (extensions)</h0>
+</code></pre>
+<p>TODO: It might be useful to compile with <code>LOCK_DEBUG</code> activated to get logs
+about locks in the logfile (find how).</p>
+<h2>Optional (extensions)</h2>
 <p>If you need to install extensions, like <code>btree_gist</code>:</p>
-<pre><code class="language-sh">
-# Extensions are added under `contrib`.
+<pre><code class="language-sh"># Extensions are added under `contrib`.
 cd contrib/btree_gist
-make && make install
+make &amp;&amp; make install
 cd ../..
-</code></pre><p>If you want to install all extensions just:</p>
-<pre><code class="language-sh">
-cd contrib
+</code></pre>
+<p>If you want to install all extensions just:</p>
+<pre><code class="language-sh">cd contrib
 
 # Loop through each folder in the current directory and run
-# make && make install
+# make &amp;&amp; make install
 for dir in */; do
-    echo "Entering directory: $dir"
-    cd "$dir"
-    echo "Running make in $dir..."
-    make > /dev/null 2>&1
+    echo &quot;Entering directory: $dir&quot;
+    cd &quot;$dir&quot;
+    echo &quot;Running make in $dir...&quot;
+    make &gt; /dev/null 2&gt;&amp;1
     if [ $? -eq 0 ]; then  # Check if make was successful
-        echo "Running make install in $dir..."
-        make install > /dev/null 2>&1
+        echo &quot;Running make install in $dir...&quot;
+        make install &gt; /dev/null 2&gt;&amp;1
     else
-        echo -e "\033[31m--> \033[0m Make failed in $dir. Skipping make install."
+        echo -e &quot;\033[31m--&gt; \033[0m Make failed in $dir. Skipping make install.&quot;
     fi
     cd ..
 done
 
 cd ..
-</code></pre><h2>Initialising and starting the server</h0>
-<pre><code class="language-sh">
-VERSION=15
-PORT="54${VERSION}"
+</code></pre>
+<h2>Initialising and starting the server</h2>
+<pre><code class="language-sh">VERSION=15
+PORT=&quot;54${VERSION}&quot;
 DBNAME=postgres${VERSION}
 
 # This will initialise configuration for the database.
@@ -156,29 +192,29 @@ build/bin/initdb -D build/data
 
 # Add our specific port to the configuration file.
 # The step above doesn't do that.
-echo "port = 54${VERSION}" >> build/data/postgresql.conf
-echo "max_locks_per_transaction=1000" >> build/data/postgresql.conf
-echo "log_statement = 'all'" >> build/data/postgresql.conf
-echo "log_duration = on" >> build/data/postgresql.conf
-echo "log_line_prefix = '%t [%p]: [%l-1] %q%u@%d '" >> build/data/postgresql.conf
-echo "session_preload_libraries = 'auto_explain'" >> build/data/postgresql.conf
-echo "auto_explain.log_nested_statements = true" >> build/data/postgresql.conf
-echo "auto_explain.log_min_duration = 200" >> build/data/postgresql.conf
+echo &quot;port = 54${VERSION}&quot; &gt;&gt; build/data/postgresql.conf
+echo &quot;max_locks_per_transaction=1000&quot; &gt;&gt; build/data/postgresql.conf
+echo &quot;log_statement = 'all'&quot; &gt;&gt; build/data/postgresql.conf
+echo &quot;log_duration = on&quot; &gt;&gt; build/data/postgresql.conf
+echo &quot;log_line_prefix = '%t [%p]: [%l-1] %q%u@%d '&quot; &gt;&gt; build/data/postgresql.conf
+echo &quot;session_preload_libraries = 'auto_explain'&quot; &gt;&gt; build/data/postgresql.conf
+echo &quot;auto_explain.log_nested_statements = true&quot; &gt;&gt; build/data/postgresql.conf
+echo &quot;auto_explain.log_min_duration = 200&quot; &gt;&gt; build/data/postgresql.conf
 
 
 # This initialises the database server. All the queries will be stored in the
 # file named `logfile` at the base directory.
 build/bin/pg_ctl -D build/data -l logfile start
 
-# Create the default db "postgres${VERSION}".
+# Create the default db &quot;postgres${VERSION}&quot;.
 build/bin/createdb --port=${PORT} ${DBNAME}
 
 # Add handy scripts so that I don't have to rememeber these
 # commands from the top of my head.
-echo "rm -f logfile && build/bin/pg_ctl -D build/data -l logfile start" > server_start.sh
-echo "build/bin/pg_ctl -D build/data stop" > server_stop.sh
-echo "build/bin/psql -e --port=${PORT} --dbname=${DBNAME} \"\$@\"" > psql.sh
-echo "./server_stop.sh && ./server_start.sh" > server_restart.sh
+echo &quot;rm -f logfile &amp;&amp; build/bin/pg_ctl -D build/data -l logfile start&quot; &gt; server_start.sh
+echo &quot;build/bin/pg_ctl -D build/data stop&quot; &gt; server_stop.sh
+echo &quot;build/bin/psql -e --port=${PORT} --dbname=${DBNAME} \&quot;\$@\&quot;&quot; &gt; psql.sh
+echo &quot;./server_stop.sh &amp;&amp; ./server_start.sh&quot; &gt; server_restart.sh
 
 chmod +x server_start.sh
 chmod +x server_stop.sh
@@ -189,7 +225,7 @@ chmod +x psql.sh
 # alter the code, I can track my changes if I need to revert or submit a patch.
 git init
 
-cat <<EOF > .gitignore
+cat &lt;&lt;EOF &gt; .gitignore
 build/
 src/.cache/
 logfile
@@ -198,5 +234,8 @@ perf.data.old
 EOF
 
 git add .
-git commit -m "Initial Commit"
+git commit -m &quot;Initial Commit&quot;
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

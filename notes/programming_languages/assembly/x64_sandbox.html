@@ -60,16 +60,16 @@
 </head>
 <body>
 <p>February 18th, 2024</p>
-<h1>Introduction</h0>
-<p>Save these code sandboxes in a file, and run the commands at the top from neovim.</p>
-<h2>Using <code>ggcccc`</code></h0>
-<pre><code class="language-asm">
-; Build using:
-; !nasm -f elf64 -g -F dwarf -o /tmp/a.o % && gcc /tmp/a.o -o /tmp/a.out -no-pie
+<h1>Introduction</h1>
+<p>Save these code sandboxes in a file, and run the commands at the top from
+neovim.</p>
+<h2>Using <code>gcc</code></h2>
+<pre><code class="language-asm">; Build using:
+; !nasm -f elf64 -g -F dwarf -o /tmp/a.o % &amp;&amp; gcc /tmp/a.o -o /tmp/a.out -no-pie
 
 
 section .data
-  Snippet db "KANGAROO"
+  Snippet db &quot;KANGAROO&quot;
   QuadArray dq 1,2,4,5,76,8,8,88888
 
 section .bss
@@ -92,14 +92,14 @@ main:
   ; epilog
   pop rbp
   ret
-</code></pre><h2>Using <code>lldd`</code></h0>
-<pre><code class="language-asm">
-; Build using:
-; !nasm -f elf64 -g -F stabs -o /tmp/a.o % && ld -o /tmp/a.out /tmp/a.o
+</code></pre>
+<h2>Using <code>ld</code></h2>
+<pre><code class="language-asm">; Build using:
+; !nasm -f elf64 -g -F stabs -o /tmp/a.o % &amp;&amp; ld -o /tmp/a.out /tmp/a.o
 
 
 section .data
-  Snippet db "KANGAROO"
+  Snippet db &quot;KANGAROO&quot;
   QuadArray dq 1,2,4,5,76,8,8,88888
 
 section .text
@@ -125,3 +125,6 @@ _exit:
 
 section .bss
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

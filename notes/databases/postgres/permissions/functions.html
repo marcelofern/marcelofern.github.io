@@ -59,14 +59,17 @@
   <![endif]-->
 </head>
 <body>
-<h1>Function Permissions</h0>
-<blockquote>EXECUTE</blockquote>
-<blockquote>Allows calling a function or procedure, including use of any operators that</blockquote>
-<blockquote>are implemented on top of the function. This is the only type of privilege</blockquote>
-<blockquote>that is applicable to functions and procedures.</blockquote>
+<h1>Function Permissions</h1>
+<blockquote>
+<p>EXECUTE</p>
+</blockquote>
+<blockquote>
+<p>Allows calling a function or procedure, including use of any operators that
+are implemented on top of the function. This is the only type of privilege
+that is applicable to functions and procedures.</p>
+</blockquote>
 <p>Example:</p>
-<pre><code class="language-sql">
-CREATE USER sweet_user;
+<pre><code class="language-sql">CREATE USER sweet_user;
 
 CREATE OR REPLACE FUNCTION public.add_numbers(a integer, b integer)
 RETURNS integer
@@ -99,7 +102,7 @@ WHERE
 SET ROLE sweet_user;
 SELECT public.add_numbers(2, 3);
 -- ERROR:  permission denied for function add_numbers
-SET ROLE "marcelo.fernandes";
+SET ROLE &quot;marcelo.fernandes&quot;;
 
 GRANT EXECUTE ON FUNCTION public.add_numbers(integer, integer) TO sweet_user;
 --       grantee      |    specific_name    | routine_schema | routine_name | privilege_type
@@ -109,13 +112,13 @@ GRANT EXECUTE ON FUNCTION public.add_numbers(integer, integer) TO sweet_user;
 
 SET ROLE sweet_user;
 SELECT public.add_numbers(2, 3);
-SET ROLE "marcelo.fernandes";
-</code></pre><h2>What if sweet_user wants to create their own functions?</h0>
-<p>They will need to have "CREATE" privilege in the schema.</p>
-<pre><code class="language-sql">
-SET ROLE "marcelo.fernandes";
+SET ROLE &quot;marcelo.fernandes&quot;;
+</code></pre>
+<h2>What if sweet_user wants to create their own functions?</h2>
+<p>They will need to have &quot;CREATE&quot; privilege in the schema.</p>
+<pre><code class="language-sql">SET ROLE &quot;marcelo.fernandes&quot;;
 
-GRANT CREATE ON SCHEMA "public" TO sweet_user;
+GRANT CREATE ON SCHEMA &quot;public&quot; TO sweet_user;
 
 SET ROLE sweet_user;
 
@@ -127,11 +130,14 @@ AS $$
 $$;
 
 SELECT public.add_numbers(2, 3);
-SET ROLE "marcelo.fernandes";
-</code></pre><h2>Tips</h0>
-<p>For testing permissions, you can always:</p>
-<pre><code class="language-sql">
-SET ROLE sweet_user;
--- test stuff here
-SET ROLE "marcelo.fernandes";
+SET ROLE &quot;marcelo.fernandes&quot;;
 </code></pre>
+<h2>Tips</h2>
+<p>For testing permissions, you can always:</p>
+<pre><code class="language-sql">SET ROLE sweet_user;
+-- test stuff here
+SET ROLE &quot;marcelo.fernandes&quot;;
+</code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

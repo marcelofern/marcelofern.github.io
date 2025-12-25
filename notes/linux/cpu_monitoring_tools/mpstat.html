@@ -59,12 +59,13 @@
   <![endif]-->
 </head>
 <body>
-<h1>mpstat</h0>
-<pre><code class="language-">
-Created at: 2024-11-12
-</code></pre><p>mpstat(8): The mpstat command writes to standard output activities for each available processor, processor 0 being the first one.  Global average activities among all processors are also reported.</p>
-<pre><code class="language-">
-mpstat -P ALL 1
+<h1>mpstat</h1>
+<pre><code>Created at: 2024-11-12
+</code></pre>
+<p>mpstat(8): The mpstat command writes to standard output activities for each
+available processor, processor 0 being the first one.  Global average
+activities among all processors are also reported.</p>
+<pre><code>mpstat -P ALL 1
 
 04:01:38 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
 04:01:39 PM  all    0.51    0.00    0.25    0.00    0.00    0.00    0.00    0.00    0.00   99.24
@@ -88,6 +89,22 @@ mpstat -P ALL 1
 04:01:40 PM    6    0.00    0.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00   99.00
 04:01:40 PM    7    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
 [...]
-</code></pre><p>The <code>-P</code> flag is used to print the per-CPU report.</p>
-<p>The most important coluns are usr, sys, and idle. If usr+sys are 100% on just one CPU, it can due to a single-threaded intense process running.</p>
-<ul><li><code>%usr</code>: User</li><li>time, excluding %nice.</li><li><code>%nice</code> : User</li><li>time for processes with nice'd priority.</li><li><code>%sys</code> : System</li><li>time (kernel).</li><li><code>%iowait</code> : I/O wait.</li><li><code>%irq</code> : Hardware interrupt CPU usage.</li><li><code>%soft</code> : Software interrupt CPU usage.</li><li><code>%steal</code> : Time spent servicing other tenants.</li><li><code>%guest</code> : CPU Time spent in guest virtual machines.</li><li><code>%gnice</code> : Same as nice but for guest machines.</li><li><code>%idle</code> : Idle</li></ul>
+</code></pre>
+<p>The <code>-P</code> flag is used to print the per-CPU report.</p>
+<p>The most important coluns are usr, sys, and idle. If usr+sys are 100% on just
+one CPU, it can due to a single-threaded intense process running.</p>
+<ul>
+<li><code>%usr</code>: User-time, excluding %nice.</li>
+<li><code>%nice</code>: User-time for processes with nice'd priority.</li>
+<li><code>%sys</code>: System-time (kernel).</li>
+<li><code>%iowait</code>: I/O wait.</li>
+<li><code>%irq</code>: Hardware interrupt CPU usage.</li>
+<li><code>%soft</code>: Software interrupt CPU usage.</li>
+<li><code>%steal</code>: Time spent servicing other tenants.</li>
+<li><code>%guest</code>: CPU Time spent in guest virtual machines.</li>
+<li><code>%gnice</code>: Same as nice but for guest machines.</li>
+<li><code>%idle</code>: Idle</li>
+</ul>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

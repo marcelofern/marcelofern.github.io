@@ -61,40 +61,62 @@
 <body>
 <p>2024-04-21</p>
 <p>Install the following packages:</p>
-<ol><li><code>avr-gcc</code></li><li><code>avr-binutils</code> (should already come with avr<ul><li>gcc)</li><li><code>avr-libc</code></li><li><code>libserialport</code></li><li><code>avrdude</code></li></ol>
-<b>Assumptions</b> :</li></ul>
-<ul><li>The file you want to compile is called <code>main.S</code>.</li><li>You have an assembly file. If you don't, use the one I provide at the end of this note.</li></ul>
-<h2>Compiling to elf:</h0>
-<pre><code class="language-sh">
-avr-gcc -DF_CPU=16000000UL -mmcu=atmega328p main.S -o main
-</code></pre><ul><li><code>DF_CPU</code> adds the macro F_CPU which evaluates to 16MHz (the CPU freq).</li><li><code>-mmcu</code> specifies the architecture pre</li><li>processed source code.</li><li><code>-o</code> output</li></ul>
-<h2>(Optional) compiling without stdlib</h0>
-<p>For small scripts you may not need the stdlib, so you can pass the argument <code>nostdlib</code> to the compiler. The default is to include the stdlib.</p>
-<pre><code class="language-sh">
-avr-gcc -DF_CPU=16000000UL -nostdlib -mmcu=atmega328p main.S -o main
-</code></pre><p>If you check the size of the compiled file, it should have less bytes now.</p>
-<pre><code class="language-sh">
-avr-size --format=avr --mcu=atmega328p main
-</code></pre><p>In my current version of avr-gcc, this has saved me 132 bytes.</p>
-<h2>Transform the file into a hex file</h0>
-<p>When avrdude pushes the compiled code to the arduino, it requires a hex file that can be produced by running the following command:</p>
-<pre><code class="language-sh">
-avr-objcopy -O ihex main main.hex
-</code></pre><ul><li><code>-O</code> write the output file using the object format bfdname (ihex for intel hex)</li></ul>
-<h2>Find the usb the arduino is connected to</h0>
+<ol>
+<li><code>avr-gcc</code></li>
+<li><code>avr-binutils</code> (should already come with avr-gcc)</li>
+<li><code>avr-libc</code></li>
+<li><code>libserialport</code></li>
+<li><code>avrdude</code></li>
+</ol>
+<p><strong>Assumptions</strong>:</p>
+<ul>
+<li>The file you want to compile is called <code>main.S</code>.</li>
+<li>You have an assembly file. If you don't, use the one I provide at the end of
+this note.</li>
+</ul>
+<h2>Compiling to elf:</h2>
+<pre><code class="language-sh">avr-gcc -DF_CPU=16000000UL -mmcu=atmega328p main.S -o main
+</code></pre>
+<ul>
+<li><code>DF_CPU</code> adds the macro F_CPU which evaluates to 16MHz (the CPU freq).</li>
+<li><code>-mmcu</code> specifies the architecture
+pre-processed source code.</li>
+<li><code>-o</code> output</li>
+</ul>
+<h2>(Optional) compiling without stdlib</h2>
+<p>For small scripts you may not need the stdlib, so you can pass the argument
+<code>nostdlib</code> to the compiler. The default is to include the stdlib.</p>
+<pre><code class="language-sh">avr-gcc -DF_CPU=16000000UL -nostdlib -mmcu=atmega328p main.S -o main
+</code></pre>
+<p>If you check the size of the compiled file, it should have less bytes now.</p>
+<pre><code class="language-sh">avr-size --format=avr --mcu=atmega328p main
+</code></pre>
+<p>In my current version of avr-gcc, this has saved me 132 bytes.</p>
+<h2>Transform the file into a hex file</h2>
+<p>When avrdude pushes the compiled code to the arduino, it requires a hex file
+that can be produced by running the following command:</p>
+<pre><code class="language-sh">avr-objcopy -O ihex main main.hex
+</code></pre>
+<ul>
+<li><code>-O</code> write the output file using the object format bfdname (ihex for intel
+hex)</li>
+</ul>
+<h2>Find the usb the arduino is connected to</h2>
 <p>Connect your arduino and run</p>
-<pre><code class="language-sh">
-ls /dev/tty*
-</code></pre><p>If it's not obvious to you which port it is using, disconnect the arduino and run the command again. Check which port disappeared, that is your port!</p>
-<h2>Run avrdude</h0>
-<p>This is the one that will differ depending on what programmer you are using. I'm just using the Arduino bootloader, so I can run avrdude like this:</p>
-<pre><code class="language-sh">
-avrdude -v -p atmega328p -c arduino -P /dev/ttyUSB0 -b 115200 -U flash:w:main.hex:i
-</code></pre><p><b>NOTE</b>: Sometimes you have to play with the bound rate to get it to push properly. I have had success with higher bound rates.</p>
-<h2>My script</h0>
+<pre><code class="language-sh">ls /dev/tty*
+</code></pre>
+<p>If it's not obvious to you which port it is using, disconnect the arduino and
+run the command again. Check which port disappeared, that is your port!</p>
+<h2>Run avrdude</h2>
+<p>This is the one that will differ depending on what programmer you are using.
+I'm just using the Arduino bootloader, so I can run avrdude like this:</p>
+<pre><code class="language-sh">avrdude -v -p atmega328p -c arduino -P /dev/ttyUSB0 -b 115200 -U flash:w:main.hex:i
+</code></pre>
+<p><strong>NOTE</strong>: Sometimes you have to play with the bound rate to get it to push
+properly. I have had success with higher bound rates.</p>
+<h2>My script</h2>
 <p>This script turns a LED on/off every 3 seconds.</p>
-<pre><code class="language-asm">
-#include <avr/io.h>
+<pre><code class="language-asm">#include &lt;avr/io.h&gt;
 .section .data
 
 .section .bss
@@ -105,8 +127,8 @@ avrdude -v -p atmega328p -c arduino -P /dev/ttyUSB0 -b 115200 -U flash:w:main.he
 
 main:
   .org 0x00
-  ldi r16, (1<<PB5)
-  ldi r17, (1<<PB5)
+  ldi r16, (1&lt;&lt;PB5)
+  ldi r17, (1&lt;&lt;PB5)
   out _SFR_IO_ADDR (DDRB), r16
 loop:
   out _SFR_IO_ADDR (PORTB), r16
@@ -131,3 +153,6 @@ delay3:
   brne delay1
   ret
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

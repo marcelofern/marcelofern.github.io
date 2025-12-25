@@ -59,13 +59,14 @@
   <![endif]-->
 </head>
 <body>
-<h1>Roles</h0>
-<pre><code class="language-">
-Created at: 2025-07-01
-</code></pre><p>CREATE USER and CREATE GROUP which are both aliases for CREATE ROLE. In postgres, roles, groups, and users have all been merged to the same concept.</p>
-<p>In practice nothing changes. Roles can inherit from other roles, be used to create tables, to login, etc.</p>
-<pre><code class="language-sql">
--- Roles and users are effectively the same thing in modern Postgres versions.
+<h1>Roles</h1>
+<pre><code>Created at: 2025-07-01
+</code></pre>
+<p>CREATE USER and CREATE GROUP which are both aliases for CREATE ROLE.
+In postgres, roles, groups, and users have all been merged to the same concept.</p>
+<p>In practice nothing changes. Roles can inherit from other roles, be used to
+create tables, to login, etc.</p>
+<pre><code class="language-sql">-- Roles and users are effectively the same thing in modern Postgres versions.
 -- Roles can log in, inherit other roles, access db objects, etc.
 CREATE ROLE sweet_role;
 CREATE USER sweet_user;
@@ -99,7 +100,7 @@ WHERE
 -- Create a table and grant ownership to sweet_role.
 DROP TABLE IF EXISTS public.foo;
 CREATE TABLE public.foo (id SERIAL PRIMARY KEY);
-ALTER TABLE public.foo OWNER TO "sweet_role";
+ALTER TABLE public.foo OWNER TO &quot;sweet_role&quot;;
 
 -- The inherited role does not show up on this query.
 SELECT
@@ -148,3 +149,6 @@ SET ROLE TO role_without_ownership;
 SELECT * FROM public.foo;
 -- ERROR:  permission denied for table foo
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

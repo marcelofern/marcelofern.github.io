@@ -59,23 +59,27 @@
   <![endif]-->
 </head>
 <body>
-<h1>Day 2</h0>
-<pre><code class="language-">
-Created at: 2025-01-13
-</code></pre><h2>Definition: Functions</h0>
+<h1>Day 2</h1>
+<pre><code>Created at: 2025-01-13
+</code></pre>
+<h2>Definition: Functions</h2>
 <p>A function is a formula that gives a value:</p>
-<pre><code class="language-">
-y = f(x); ∀ x (for each x)
-</code></pre><p>The function should be single valued. Meaning it gives a single value of y for each x.</p>
-<h2>Definition: Derivative</h0>
+<pre><code>y = f(x); ∀ x (for each x)
+</code></pre>
+<p>The function should be single valued. Meaning it gives a single value of y for
+each x.</p>
+<h2>Definition: Derivative</h2>
 <p>The derivative of y with respect to x is written as:</p>
-<pre><code class="language-">
-δy/δx ("dee y, dee x")
-</code></pre><p>It represents the slope of the graph of y versus x. The derivative is itself a function, given that it has a value for each point, representing the tangent to the curve on the graph at that point.</p>
-<h2>Deriviative of common functions</h0>
-<ul><li><code>a</code> is a constant</li></ul>
-<pre><code class="language-">
-(δ/δx)a = 0
+<pre><code>δy/δx (&quot;dee y, dee x&quot;)
+</code></pre>
+<p>It represents the slope of the graph of y versus x. The derivative is itself a
+function, given that it has a value for each point, representing the tangent
+to the curve on the graph at that point.</p>
+<h2>Deriviative of common functions</h2>
+<ul>
+<li><code>a</code> is a constant</li>
+</ul>
+<pre><code>(δ/δx)a = 0
 
 (δ/δx)ax = a
 
@@ -90,23 +94,25 @@ y = f(x); ∀ x (for each x)
 (δ/δx)e^(ax) = ae^(ax)
 
 (δ/δx)log(x) = 1/x
-</code></pre><h2>Rules for combining derivatives</h0>
-<ul><li><code>u</code> and <code>v</code> are arbitrary functions of x</li></ul>
-<pre><code class="language-">
-(δ/δx)a*u(x) = a(δ/δx)u(x) -> pull out the constant
+</code></pre>
+<h2>Rules for combining derivatives</h2>
+<ul>
+<li><code>u</code> and <code>v</code> are arbitrary functions of x</li>
+</ul>
+<pre><code>(δ/δx)a*u(x) = a(δ/δx)u(x) -&gt; pull out the constant
 
 (δ/δx)(u + v) = (δ/δx)u + (δ/δx)v
 
-(δ/δx)u*v = u(δ/δx)v + v(δ/δx)u -> product rule
+(δ/δx)u*v = u(δ/δx)v + v(δ/δx)u -&gt; product rule
 
 (δ/δx)(u/v) = [v(δ/δx)u - u(δ/δx)v] / v²
 
 (δ/δx)log(u) = [(δ/δx)u] / u
 
-(δ/δx){u[v(x)]} = (δu/δv) * (δv/δx) -> chain rule
-</code></pre><h2>Chain rule example</h0>
-<pre><code class="language-">
-(δ/δx)e^(-x²)
+(δ/δx){u[v(x)]} = (δu/δv) * (δv/δx) -&gt; chain rule
+</code></pre>
+<h2>Chain rule example</h2>
+<pre><code>(δ/δx)e^(-x²)
 
 Function = e^(-x²)
 I.e      = e^(v(x))
@@ -124,9 +130,9 @@ We have that:
 (δv/δx) = -2x
 
 Result: -2x*e^(-x²)
-</code></pre><h2>Product rule example</h0>
-<pre><code class="language-">
-(δ/δx)xe^(x)
+</code></pre>
+<h2>Product rule example</h2>
+<pre><code>(δ/δx)xe^(x)
 
 Function = xe^(x)
 I.e      = v(x) = x
@@ -141,3 +147,6 @@ We have that:
 
 Result: e^(x) + xe^(x)
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

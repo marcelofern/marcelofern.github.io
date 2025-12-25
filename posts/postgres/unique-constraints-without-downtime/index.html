@@ -59,79 +59,123 @@
   <![endif]-->
 </head>
 <body>
-<h1>Postgres Unique Constraints Without Downtime</h0>
-<pre><code class="language-">
-Created at: 2024-10-01
+<h1>Postgres Unique Constraints Without Downtime</h1>
+<pre><code>Created at: 2024-10-01
 Updated at: 2024-10-08
-</code></pre><p>The syntax for adding a unique constraint in Postgres is as follow:</p>
-<pre><code class="language-sql">
-ALTER TABLE "table_name"
-ADD CONSTRAINT "unique_constraint_on_foo"
-UNIQUE ("foo");
-</code></pre><p>This constraint will prevent multiple rows having the same value stored in the <code>foo</code> column.</p>
-<p>However, this operation acquires an <code>ACCESS EXCLUSIVE</code> lock, blocking all reads and writes to the table until it's finished.</p>
-<p>If you are adding a unique constraint to a large table, the amount of time spent to create the constraint might be prohibitive.</p>
-<h2>How To Safely Add a Unique Constraint Without Downtime</h0>
+</code></pre>
+<p>The syntax for adding a unique constraint in Postgres is as follow:</p>
+<pre><code class="language-sql">ALTER TABLE &quot;table_name&quot;
+ADD CONSTRAINT &quot;unique_constraint_on_foo&quot;
+UNIQUE (&quot;foo&quot;);
+</code></pre>
+<p>This constraint will prevent multiple rows having the same value stored in
+the <code>foo</code> column.</p>
+<p>However, this operation acquires an <code>ACCESS EXCLUSIVE</code> lock, blocking all reads
+and writes to the table until it's finished.</p>
+<p>If you are adding a unique constraint to a large table, the amount of time
+spent to create the constraint might be prohibitive.</p>
+<h2>How To Safely Add a Unique Constraint Without Downtime</h2>
 <p>From the Postgres documentation:</p>
-<blockquote>PostgreSQL automatically creates a unique index when a unique constraint or</blockquote>
-<blockquote>primary key is defined for a table.</blockquote>
-<p>Creating this index on the background while holding an <code>ACCESS EXCLUSIVE</code> is the problem we are trying to avoid.</p>
-<p>What we want to do is <b>create the index first</b>, and <b>CONCURRENTLY</b>, so that when we add the constraint to the table, the table can use the already existing index. This will make the subsequent <code>ALTER TABLE</code> much faster to run.</p>
+<blockquote>
+<p>PostgreSQL automatically creates a unique index when a unique constraint or
+primary key is defined for a table.</p>
+</blockquote>
+<p>Creating this index on the background while holding an <code>ACCESS EXCLUSIVE</code> is
+the problem we are trying to avoid.</p>
+<p>What we want to do is <strong>create the index first</strong>, and <strong>CONCURRENTLY</strong>, so that
+when we add the constraint to the table, the table can use the already existing
+index. This will make the subsequent <code>ALTER TABLE</code> much faster to run.</p>
 <p>If you have the following table:</p>
-<pre><code class="language-sql">
-CREATE TABLE example_table (
+<pre><code class="language-sql">CREATE TABLE example_table (
     id SERIAL PRIMARY KEY,
     int_field INT
 );
-</code></pre><p>You can create a unique index concurrently (this won't block any reads or writes on this table), with the following command:</p>
-<pre><code class="language-sql">
-SET lock_timeout '0';
+</code></pre>
+<p>You can create a unique index concurrently (this won't block any reads or
+writes on this table), with the following command:</p>
+<pre><code class="language-sql">SET lock_timeout '0';
 
 CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS unique_int_field_idx
 ON example_table (int_field);
-</code></pre><p>Side Note 1: If you are using any value of <code>lock_timeout</code> that is not zero, you have to set it to zero before you create the index. This will prevent leaving an invalid index behind if the operation fails due to a time out.</p>
-<p>Side Note 2: You cannot use a partial index here. Postgres allows the creation of partial unique indexes, but it does not allow the creation of partial unique constraint. The documentation states <a href="https://web.archive.org/web/20240928225017/https://www.postgresql.org/docs/current/ddl-constraints.html">source</a>:</p>
-<blockquote> A uniqueness restriction covering only some rows cannot be written as a</blockquote>
-<blockquote> unique constraint, but it is possible to enforce such a restriction by</blockquote>
-<blockquote> creating a unique partial index.</blockquote>
-<p>If you try to use a partial index to create a unique constraint, Postgres will raise the following error: <pre><code class="language-">
-ERROR:  "unique_int_field_idx" is a partial index
-</code></pre></p>
-<p>Therefore, if you need a partial unique restriction, just keep your index. It will be enough.</p>
-<p>Once this command finished, you can add the new constraint USING the index above:</p>
-<pre><code class="language-sql">
-SET lock_timeout '10s'
+</code></pre>
+<p>Side Note 1: If you are using any value of <code>lock_timeout</code> that is not zero, you
+have to set it to zero before you create the index. This will prevent leaving
+an invalid index behind if the operation fails due to a time out.</p>
+<p>Side Note 2: You cannot use a partial index here. Postgres allows the creation
+of partial unique indexes, but it does not allow the creation of partial unique
+constraint. The documentation states
+<a href="https://web.archive.org/web/20240928225017/https://www.postgresql.org/docs/current/ddl-constraints.html">source</a>:</p>
+<blockquote>
+<p>A uniqueness restriction covering only some rows cannot be written as a
+unique constraint, but it is possible to enforce such a restriction by
+creating a unique partial index.</p>
+</blockquote>
+<p>If you try to use a partial index to create a unique constraint, Postgres will
+raise the following error:</p>
+<pre><code>ERROR:  &quot;unique_int_field_idx&quot; is a partial index
+</code></pre>
+<p>Therefore, if you need a partial unique restriction, just keep your index. It
+will be enough.</p>
+<p>Once this command finished, you can add the new constraint USING the index
+above:</p>
+<pre><code class="language-sql">SET lock_timeout '10s'
 
 ALTER TABLE example_table
 ADD CONSTRAINT unique_int_field UNIQUE USING INDEX unique_int_field_idx;
-</code></pre><p>The operation above takes virtually no time.</p>
-<p>Note: I have reset lock_timeouts to a reasonable value (10s). This is a safeguard. If there is a long-running transaction that would block the ALTER TABLE statement, which in turn would block all reads and writes, the statement will time out instead of causing a potential outage.</p>
-<h2>Why not just use the index for constraint validation?</h0>
-<p>Both the unique index and constraint raise the same error when an insert attempt fails: "duplicate key value violates unique constraint."</p>
+</code></pre>
+<p>The operation above takes virtually no time.</p>
+<p>Note: I have reset lock_timeouts to a reasonable value (10s). This is a
+safeguard. If there is a long-running transaction that would block the ALTER
+TABLE statement, which in turn would block all reads and writes, the statement
+will time out instead of causing a potential outage.</p>
+<h2>Why not just use the index for constraint validation?</h2>
+<p>Both the unique index and constraint raise the same error when an insert
+attempt fails: &quot;duplicate key value violates unique constraint.&quot;</p>
 <p>So why would one bother even creating the constraint if the index suffice?</p>
-<p>From an old (v9.4) Postgres documentation:  <blockquote>NNoottee::  TThhee  pprreeffeerrrreedd  wwaayy  ttoo  aadddd  aa  uunniiqquuee  ccoonnssttrraaiinntt  ttoo  aa  ttaabbllee  iiss  AALLTTEERR  TTAABBLLEE</blockquote>
-<blockquote>......  AADDDD  CCOONNSSTTRRAAIINNTT..  TThhee  uussee  ooff  iinnddeexxeess  ttoo  eennffoorrccee  uunniiqquuee  ccoonnssttrraaiinnttss  ccoouulldd  bbee</blockquote>
-<blockquote>ccoonnssiiddeerreedd  aann  iimmpplleemmeennttaattiioonn  ddeettaaiill  tthhaatt  sshhoouulldd  nnoott  bbee  aacccceesssseedd  ddiirreeccttllyy..  OOnnee</blockquote>
-<blockquote>sshhoouulldd,,  hhoowweevveerr,,  bbee  aawwaarree  tthhaatt  tthheerree''ss  nnoo  nneeeedd  ttoo  mmaannuuaallllyy  ccrreeaattee  iinnddeexxeess  oonn</blockquote>
-<blockquote>uunniiqquuee  ccoolluummnnss;;  ddooiinngg  ssoo  wwoouulldd  jjuusstt  dduupplliiccaattee  tthhee  aauuttoommaattiiccaallllyy--ccrreeaatteedd</blockquote>
-<blockquote>iinnddeexx..</p>
+<p>From an old (v9.4) Postgres documentation:</p>
+<blockquote>
+<p>Note: The preferred way to add a unique constraint to a table is ALTER TABLE
+... ADD CONSTRAINT. The use of indexes to enforce unique constraints could be
+considered an implementation detail that should not be accessed directly. One
+should, however, be aware that there's no need to manually create indexes on
+unique columns; doing so would just duplicate the automatically-created
+index.</p>
 </blockquote>
 <p><a href="https://www.postgresql.org/docs/9.4/indexes-unique.html">source</a></p>
-<p>This note has since been removed from Postgres since version 9.5. The commit that removed the note (<a href="https://github.com/postgres/postgres/commit/049a7799dfc">049a7799dfc</a>) says:</p>
-<blockquote>docs: remove outdated note about unique indexes</blockquote>
-<p>There is no guidance on why that was outdated and how unique indexes should be interpreted.</p>
+<p>This note has since been removed from Postgres since version 9.5.
+The commit that removed the note (<a href="https://github.com/postgres/postgres/commit/049a7799dfc">049a7799dfc</a>) says:</p>
+<blockquote>
+<p>docs: remove outdated note about unique indexes</p>
+</blockquote>
+<p>There is no guidance on why that was outdated and how unique indexes should be
+interpreted.</p>
 <p>The differences remaining are:</p>
-<ul><li>Constraints can be deferred.</li><li>Indexes can be partial, which is useful if uniqueness is restricted to a subset of data. You <b>cannot</b> add a table constraint from a partial index. Make sure your index wasn't created with "WHERE ...".</li><li>If you care about the SQL standard, constraints are part of it, whereas indexes aren't (they're an implementation detail).</li><li>External tools that care about uniqueness being defined through constraints might care about it and not work properly if the constraint isn't defined on the schema.</li></ul>
-<h2>Timing Different Approaches</h0>
-<p>The Python script below times how long it takes to add a constraint using two approaches:</p>
-<ul><li>ALTER TABLE <b>without</b> a pre</li><li>existing index.</li><li>ALTER TABLE <b>with</b> a pre</li><li>existing index.</li></ul>
-<p>Note: These results were taken from a <b>local</b> database without any concurrency.</p>
-<p>TLDR: Creating an index concurrently first, and then using it to create the constraint takes a little longer in total, but is a much safer approach.</p>
+<ul>
+<li>Constraints can be deferred.</li>
+<li>Indexes can be partial, which is useful if uniqueness is restricted to a
+subset of data. You <strong>cannot</strong> add a table constraint from a partial index.
+Make sure your index wasn't created with &quot;WHERE ...&quot;.</li>
+<li>If you care about the SQL standard, constraints are part of it, whereas
+indexes aren't (they're an implementation detail).</li>
+<li>External tools that care about uniqueness being defined through constraints
+might care about it and not work properly if the constraint isn't defined on
+the schema.</li>
+</ul>
+<h2>Timing Different Approaches</h2>
+<p>The Python script below times how long it takes to add a constraint using two
+approaches:</p>
+<ul>
+<li>ALTER TABLE <strong>without</strong> a pre-existing index.</li>
+<li>ALTER TABLE <strong>with</strong> a pre-existing index.</li>
+</ul>
+<p>Note: These results were taken from a <strong>local</strong> database without any
+concurrency.</p>
+<p>TLDR: Creating an index concurrently first, and then using it to create the
+constraint takes a little longer in total, but is a much safer approach.</p>
 <p>First, the results in, and then the script:</p>
-<p><img alt="results" src="results.png"></p>
+<p><img src="results.png" alt="results"></p>
 <p>CSV:</p>
-<pre><code class="language-">
-rows,unique constraint without index,unique index,unique constraint using index
+<pre><code>rows,unique constraint without index,unique index,unique constraint using index
 1000000, 0.18, 0.23, 0.0
 2000000, 0.38, 0.51, 0.0
 3000000, 0.57, 0.8, 0.0
@@ -160,9 +204,9 @@ rows,unique constraint without index,unique index,unique constraint using index
 800000000, 589.03, 782.12, 0.0
 900000000, 635.95, 909.58, 0.0
 1000000000, 734.21, 1059.35, 0.01
-</code></pre><h2>The script</h0>
-<pre><code class="language-python">
-import psycopg2
+</code></pre>
+<h2>The script</h2>
+<pre><code class="language-python">import psycopg2
 import time
 import os
 
@@ -170,18 +214,18 @@ import os
 def get_cursor_and_connection():
     # Update connection details as per your PostgreSQL setup
     conn = psycopg2.connect(
-        dbname="test_db",
-        user="postgres",
-        password="postgres",
-        host="localhost",
-        port="5441",
+        dbname=&quot;test_db&quot;,
+        user=&quot;postgres&quot;,
+        password=&quot;postgres&quot;,
+        host=&quot;localhost&quot;,
+        port=&quot;5441&quot;,
     )
     conn.autocommit = True
     return conn.cursor(), conn
 
 
 def vacuum_table(cursor):
-    """
+    &quot;&quot;&quot;
     Vacuum is necessary to optimise the table
     structure before we perform the benchmark.
 
@@ -196,75 +240,75 @@ def vacuum_table(cursor):
     The ANALYZE part is there to better inform
     Postgres on how to find the best planner
     for the ALTER TABLE / index
-    """
-    print("Vacuuming example_table...")
-    cursor.execute("VACUUM ANALYZE example_table;")
+    &quot;&quot;&quot;
+    print(&quot;Vacuuming example_table...&quot;)
+    cursor.execute(&quot;VACUUM ANALYZE example_table;&quot;)
 
 
 def create_table(cursor):
-    print("Creating table...")
-    cursor.execute("""
+    print(&quot;Creating table...&quot;)
+    cursor.execute(&quot;&quot;&quot;
         DROP TABLE IF EXISTS example_table;
         CREATE TABLE example_table (
             id SERIAL PRIMARY KEY,
             int_field INT
         );
-    """)
+    &quot;&quot;&quot;)
 
 
 def insert_data(cursor, num_rows):
-    print(f"Inserting {num_rows} unique rows...")
-    cursor.execute(f"""
+    print(f&quot;Inserting {num_rows} unique rows...&quot;)
+    cursor.execute(f&quot;&quot;&quot;
         INSERT INTO example_table (int_field)
         SELECT s
         FROM (
             SELECT generate_series(1, {num_rows}) AS s
             ORDER BY RANDOM()
         ) AS shuffled;
-    """)
+    &quot;&quot;&quot;)
 
 
 def clear_cache():
-    print("Clearing cache by restarting docker container...")
-    os.system("docker restart postgres15")
-    print("sleeping for 10s")
+    print(&quot;Clearing cache by restarting docker container...&quot;)
+    os.system(&quot;docker restart postgres15&quot;)
+    print(&quot;sleeping for 10s&quot;)
     time.sleep(10)
 
 
 def add_unique_constraint(cursor, conn):
-    print("Adding unique constraint directly...")
+    print(&quot;Adding unique constraint directly...&quot;)
     start_time = time.time()
-    cursor.execute("""
+    cursor.execute(&quot;&quot;&quot;
         ALTER TABLE example_table
         ADD CONSTRAINT unique_int_field UNIQUE (int_field);
-    """)
+    &quot;&quot;&quot;)
     conn.commit()
     duration = time.time() - start_time
-    print(f"Time taken to add unique constraint: {duration:.2f} seconds")
+    print(f&quot;Time taken to add unique constraint: {duration:.2f} seconds&quot;)
     return duration
 
 
 def add_unique_constraint_with_index_first(cursor, conn):
-    print("Creating unique index...")
+    print(&quot;Creating unique index...&quot;)
     idx_start_time = time.time()
-    cursor.execute("""
+    cursor.execute(&quot;&quot;&quot;
         CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS unique_int_field_idx
         ON example_table (int_field);
-    """)
+    &quot;&quot;&quot;)
     conn.commit()
     idx_duration = time.time() - idx_start_time
-    print(f"Time taken to add index: {idx_duration:.2f} seconds")
+    print(f&quot;Time taken to add index: {idx_duration:.2f} seconds&quot;)
 
-    print("Adding unique constraint using index...")
+    print(&quot;Adding unique constraint using index...&quot;)
     start_time = time.time()
-    cursor.execute("""
+    cursor.execute(&quot;&quot;&quot;
         ALTER TABLE example_table
         ADD CONSTRAINT unique_int_field UNIQUE USING INDEX unique_int_field_idx;
-    """)
+    &quot;&quot;&quot;)
     conn.commit()
     constraint_duration = time.time() - start_time
     print(
-        f"Time taken to add unique constraint with index first: {constraint_duration:.2f} seconds"
+        f&quot;Time taken to add unique constraint with index first: {constraint_duration:.2f} seconds&quot;
     )
     return idx_duration, constraint_duration
 
@@ -273,7 +317,7 @@ def run_tests(table_sizes):
     results = {}
 
     for num_rows in table_sizes:
-        print(f"\nRunning tests with {num_rows} rows...")
+        print(f&quot;\nRunning tests with {num_rows} rows...&quot;)
 
         # Get a cursor to run queries.
         cursor, conn = get_cursor_and_connection()
@@ -312,10 +356,10 @@ def run_tests(table_sizes):
         )
 
         results[num_rows] = {
-            "direct_constraint": time_direct,
-            "index_then_constraint": {
-                "idx_duration": idx_duration,
-                "constraint_duration": constraint_duration,
+            &quot;direct_constraint&quot;: time_direct,
+            &quot;index_then_constraint&quot;: {
+                &quot;idx_duration&quot;: idx_duration,
+                &quot;constraint_duration&quot;: constraint_duration,
             },
         }
 
@@ -323,14 +367,14 @@ def run_tests(table_sizes):
     conn.close()
 
     # Print final results
-    print("\nTest Results:")
+    print(&quot;\nTest Results:&quot;)
     for num_rows, times in results.items():
-        print(f"Rows: {num_rows}")
-        print(f" - Direct constraint: {times['direct_constraint']:.2f} seconds")
+        print(f&quot;Rows: {num_rows}&quot;)
+        print(f&quot; - Direct constraint: {times['direct_constraint']:.2f} seconds&quot;)
         print(
-            f" - Index then constraint: \n"
-            f"   - {times['index_then_constraint']['idx_duration']:.2f} seconds (idx)\n"
-            f"   - {times['index_then_constraint']['constraint_duration']:.2f} seconds (constraint)"
+            f&quot; - Index then constraint: \n&quot;
+            f&quot;   - {times['index_then_constraint']['idx_duration']:.2f} seconds (idx)\n&quot;
+            f&quot;   - {times['index_then_constraint']['constraint_duration']:.2f} seconds (constraint)&quot;
         )
 
 
@@ -366,3 +410,6 @@ table_sizes = [
 ]
 run_tests(table_sizes)
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

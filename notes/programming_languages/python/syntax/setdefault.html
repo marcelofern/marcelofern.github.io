@@ -62,18 +62,20 @@
 <p>March, 19th 2024</p>
 <p>The <code>setdefault</code> feature is available for Python dictionaries.</p>
 <p>Consider you have a dictionary typed as such:</p>
-<pre><code class="language-python">
-mydict: dict[str, list[int]] = {}
+<pre><code class="language-python">mydict: dict[str, list[int]] = {}
 
 # mydict can look like this:
-# >>> {"A": [1,2,3], "B": [4,5,6]}
-</code></pre><p>And you have a routine that will populate this dictionary as such:</p>
-<pre><code class="language-python">
-if my_dict.get(key) is None:
+# &gt;&gt;&gt; {&quot;A&quot;: [1,2,3], &quot;B&quot;: [4,5,6]}
+</code></pre>
+<p>And you have a routine that will populate this dictionary as such:</p>
+<pre><code class="language-python">if my_dict.get(key) is None:
     my_dict[key] = [value]
 else:
     my_dict[key].append(value)
-</code></pre><p>One way to make it all in the same line of code is by using <code>setdefault</code>:</p>
-<pre><code class="language-python">
-my_dict.setdefault(key, []).append(value)
 </code></pre>
+<p>One way to make it all in the same line of code is by using <code>setdefault</code>:</p>
+<pre><code class="language-python">my_dict.setdefault(key, []).append(value)
+</code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

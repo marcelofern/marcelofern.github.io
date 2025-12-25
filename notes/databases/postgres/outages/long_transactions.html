@@ -59,41 +59,75 @@
   <![endif]-->
 </head>
 <body>
-<h1>Long Transactions</h0>
-<h2>Definition</h0>
-<blockquote>"Long-running" is a relative term, and, of course, its meaning depends on</blockquote>
-<blockquote>particular situation. Usually, in heavily-loaded systems – say ~10^5 TPS</blockquote>
-<blockquote>including RO queries and ~10^3 of XID-consuming TPS (writes) – we consider</blockquote>
-<blockquote>transactions running longer than 30-60 seconds to be long. This can be</blockquote>
-<blockquote>translated to 30-60k dead tuples accumulated in a table in the worst case –</blockquote>
-<blockquote>in the case when all transactions during that time frame produced 1 dead</blockquote>
-<blockquote>tuple. Of course, this is a very, very rough assumption, but this can give an</blockquote>
-<blockquote>idea about the scale and helps define "threshold" to support the meaning of</blockquote>
-<blockquote>the "long-running transaction" term. [source](https://github.com/postgres-ai/postgres-howtos/blob/main/0030_how_to_deal_with_long-running_transactions_oltp.md)</blockquote>
-<h2>Why are they bad</h0>
-<p>In the context of a web application, long-running transactions can be dangerous for two reasons:</p>
-<ul><li>Blocking: A lock acquired during a transaction will only be released when the transaction finishes. This can be dangerous even in cases where the lock acquired is the weakest one possible: AccessShareLock. This is the case when a DDL is blocked by this lock, and in turn blocks other queries that need to run.</li><li>Autovacuum: Dead tuples that have been created after the long</li><li>running transaction started cannot be reclaimed by autovacuum. A high number of dead tuples in a table can seriously affect the performance of queries against that table.</li></ul>
-<h2>How to prevent them</h0>
+<h1>Long Transactions</h1>
+<h2>Definition</h2>
+<blockquote>
+<p>&quot;Long-running&quot; is a relative term, and, of course, its meaning depends on
+particular situation. Usually, in heavily-loaded systems – say ~10^5 TPS
+including RO queries and ~10^3 of XID-consuming TPS (writes) – we consider
+transactions running longer than 30-60 seconds to be long. This can be
+translated to 30-60k dead tuples accumulated in a table in the worst case –
+in the case when all transactions during that time frame produced 1 dead
+tuple. Of course, this is a very, very rough assumption, but this can give an
+idea about the scale and helps define &quot;threshold&quot; to support the meaning of
+the &quot;long-running transaction&quot; term. <a href="notes/https://github.com/postgres-ai/postgres-howtos/blob/main/0030_how_to_deal_with_long-running_transactions_oltp.html">source</a></p>
+</blockquote>
+<h2>Why are they bad</h2>
+<p>In the context of a web application, long-running transactions can be dangerous
+for two reasons:</p>
+<ul>
+<li>Blocking: A lock acquired during a transaction will only be released when
+the transaction finishes. This can be dangerous even in cases where the lock
+acquired is the weakest one possible: AccessShareLock. This is the case when
+a DDL is blocked by this lock, and in turn blocks other queries that need to
+run.</li>
+<li>Autovacuum: Dead tuples that have been created after the long-running
+transaction started cannot be reclaimed by autovacuum. A high number of
+dead tuples in a table can seriously affect the performance of queries
+against that table.</li>
+</ul>
+<h2>How to prevent them</h2>
 <p>When using Postgres 17 or higher, you can se the transaction_timeout value:</p>
-<pre><code class="language-sql">
-SET transaction_timeout TO '30s';
-</code></pre><p>Otherwise, you can achieve something close to that with two parameters:</p>
-<ol><li><code>statement_timeout</code>: If you have a web application and pages that take more than 30s to load time out, 30s might be a good value for this parameter. You might need to have a higher value for batch tasks, which can be controlled via user roles.</li><li><code>idle_in_transaction_session_timeout</code>: Terminate any session that has been idle (that is, waiting for a client query) within an open transaction for longer than the specified amount of time. This should also be set to a low value like 15<ul><li>30 seconds for a web application.</li></ol>
- Note that even with these two parameters, it's not a guarantee that no long</li><li>running queries will show up. The following could happen:</li></ul>
-<ul><li>The value of <code>statement_timeou</code> is set to 30s, and<code>idle_in_transaction_session_timeout</code> is set to 15s.</li><li>A transaction is opened.</li><li>A query runs and takes 29 seconds.</li><li>It is idle for 14s.</li><li>Another query runs and takes 29 seconds.</li><li>It is idle for 14s.</li><li>... so on so forth.</li></ul>
+<pre><code class="language-sql">SET transaction_timeout TO '30s';
+</code></pre>
+<p>Otherwise, you can achieve something close to that with two parameters:</p>
+<ol>
+<li><code>statement_timeout</code>: If you have a web application and pages that take more
+than 30s to load time out, 30s might be a good value for this parameter. You
+might need to have a higher value for batch tasks, which can be controlled
+via user roles.</li>
+<li><code>idle_in_transaction_session_timeout</code>: Terminate any session that has been
+idle (that is, waiting for a client query) within an open transaction for
+longer than the specified amount of time. This should also be set to a low
+value like 15-30 seconds for a web application.</li>
+</ol>
+<p>Note that even with these two parameters, it's not a guarantee that no
+long-running queries will show up. The following could happen:</p>
+<ul>
+<li>The value of <code>statement_timeou</code> is set to 30s, and
+<code>idle_in_transaction_session_timeout</code> is set to 15s.</li>
+<li>A transaction is opened.</li>
+<li>A query runs and takes 29 seconds.</li>
+<li>It is idle for 14s.</li>
+<li>Another query runs and takes 29 seconds.</li>
+<li>It is idle for 14s.</li>
+<li>... so on so forth.</li>
+</ul>
 <p>Other alternatives include:</p>
-<ul><li>A cronjob that runs a long</li><li>running transaction "killer".</li><li>Add the limit in the application side if you can.</li></ul>
-<h2>Showing low<ul><li>rruunnnniinngg  ttrraannssaaccttiioonnss::</h0>
-<pre><code class="language-sql">
-select clock_timestamp() - xact_start, *
+<ul>
+<li>A cronjob that runs a long-running transaction &quot;killer&quot;.</li>
+<li>Add the limit in the application side if you can.</li>
+</ul>
+<h2>Showing low-running transactions:</h2>
+<pre><code class="language-sql">select clock_timestamp() - xact_start, *
 from pg_stat_activity
-where clock_timestamp() - xact_start > interval '1 minute'
+where clock_timestamp() - xact_start &gt; interval '1 minute'
 order by clock_timestamp() - xact_start desc;
-</code></pre></li></ul>
-<p>You can also sample the queries for this long-running transaction to show what they were doing:</p>
-<pre><code class="language-sh">
-while sleep 1; do
-  psql -XAtc "
+</code></pre>
+<p>You can also sample the queries for this long-running transaction to show what
+they were doing:</p>
+<pre><code class="language-sh">while sleep 1; do
+  psql -XAtc &quot;
       copy (
         with samples as (
           select
@@ -104,10 +138,13 @@ while sleep 1; do
         )
         select *
         from samples
-        where xact_duration > interval '1 minute'
+        where xact_duration &gt; interval '1 minute'
         order by xact_duration desc
       ) to stdout delimiter ',' csv
-    " 2>&1 \
+    &quot; 2&gt;&amp;1 \
   | tee -a long_tx_$(date +%Y%m%d).log.csv
 done
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

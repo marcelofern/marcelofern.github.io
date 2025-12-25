@@ -60,19 +60,24 @@
 </head>
 <body>
 <p>March 1st, 2024</p>
-<blockquote>Austin is a Python frame stack sampler for CPython written in pure C. Samples</blockquote>
-<blockquote>are collected by reading the CPython interpreter virtual memory space to</blockquote>
-<blockquote>retrieve information about the currently running threads along with the stack</blockquote>
-<blockquote>of the frames that are being executed. Hence, one can use Austin to easily</blockquote>
-<blockquote>make powerful statistical profilers that have minimal impact on the target</blockquote>
-<blockquote>application and that don't require any instrumentation.</blockquote>
+<blockquote>
+<p>Austin is a Python frame stack sampler for CPython written in pure C. Samples
+are collected by reading the CPython interpreter virtual memory space to
+retrieve information about the currently running threads along with the stack
+of the frames that are being executed. Hence, one can use Austin to easily
+make powerful statistical profilers that have minimal impact on the target
+application and that don't require any instrumentation.</p>
+</blockquote>
 <p><a href="https://web.archive.org/web/20240221112118/https://github.com/P403n1x87/austin">Source</a></p>
-<p>Note: Austin will generate extremely huge output files if you are running it against a 5 million LOC Django codebase like I am.</p>
-<h2>With Django Runserver</h0>
-<pre><code class="language-sh">
-austin ./manage.py runserver > /tmp/austin
-</code></pre><p>Throw the <code>/tmp/austin</code> file in: https://www.speedscope.app/</p>
-<h2>Attaching to a running process</h0>
-<pre><code class="language-sh">
-austin -p $PROCESS_NUMBER > /tmp/austin
+<p>Note: Austin will generate extremely huge output files if you are running it
+against a 5 million LOC Django codebase like I am.</p>
+<h2>With Django Runserver</h2>
+<pre><code class="language-sh">austin ./manage.py runserver &gt; /tmp/austin
 </code></pre>
+<p>Throw the <code>/tmp/austin</code> file in: https://www.speedscope.app/</p>
+<h2>Attaching to a running process</h2>
+<pre><code class="language-sh">austin -p $PROCESS_NUMBER &gt; /tmp/austin
+</code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

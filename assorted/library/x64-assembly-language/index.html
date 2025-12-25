@@ -60,12 +60,20 @@
 </head>
 <body>
 <p>January 13, 2024</p>
-<h2>Notes about GDB</h0>
-<ol><li>Set the layout <code>layout asm</code>.</li><li>Use <code>ni</code> and <code>si</code> (next instruction / step instruction).</li><li>use <code>i r rax</code> (info register rax) to inspect a register.</li><li>run <code>set disassembly-flavor intel</code> so MOV instructions aren't in reverse.</li><li>use <code>x 0x402000</code> to print value starting in memory block 0x402000</li><li>use <code>x/xg 0x402000</code> to do the same but print 64bit in hex decimal.</li><li>flag register is available as <code>i r eflags</code></li><li>You can normally use <code>p</code> for printing .data (casting them in C!)</li></ol>
-<h2>Registers</h0>
-<h3>Cheatsheet</h0>
-<pre><code class="language-">
-| 64 bits | 32 bits | 16 bits | 8 bits |
+<h2>Notes about GDB</h2>
+<ol>
+<li>Set the layout <code>layout asm</code>.</li>
+<li>Use <code>ni</code> and <code>si</code> (next instruction / step instruction).</li>
+<li>use <code>i r rax</code> (info register rax) to inspect a register.</li>
+<li>run <code>set disassembly-flavor intel</code> so MOV instructions aren't in reverse.</li>
+<li>use <code>x 0x402000</code> to print value starting in memory block 0x402000</li>
+<li>use <code>x/xg 0x402000</code> to do the same but print 64bit in hex decimal.</li>
+<li>flag register is available as <code>i r eflags</code></li>
+<li>You can normally use <code>p</code> for printing .data (casting them in C!)</li>
+</ol>
+<h2>Registers</h2>
+<h3>Cheatsheet</h3>
+<pre><code>| 64 bits | 32 bits | 16 bits | 8 bits |
 | rax     |  eax    | ax      | al     |
 | rbx     |  ebx    | bx      | bl     |
 | rcx     |  ecx    | cx      | cl     |
@@ -82,23 +90,93 @@
 | r13     |  r13d   | r13w    | r13b   |
 | r14     |  r14d   | r14w    | r14b   |
 | r15     |  r15d   | r15w    | r15b   |
-</code></pre><h3>FLAGS register (eflags)</h0>
-<ul><li><code>Bit: 0, Label: CF, Description</code>: Carry Flag: Set by arithmetic instructions which generate either a carry or borrow. Set when an operation generates a carry to or a borrow from a destination operand.</li></ul>
-<ul><li><code>Bit: 2, Label: PF, Description</code>: Parity flag: Set by most CPU instructions if the least significant (aka the low</li><li>order bits) of the destination operand contain an even number of 1's.</li></ul>
-<ul><li><code>Bit: 4, Label: AF, Description</code>: Auxiliary Carry Flag: Set if there is a carry or borrow involving bit 4 of EAX. Set when a CPU instruction generates a carry to or a borrow from the low</li><li>order 4 bits of an operand. This flag is used for binary coded decimal (BCD) arithmetic.</li><li><code>Bit: 6, Label: ZF, Description</code> : Zero Flag: Set by most instructions if the result an operation is binary zero.</li><li><code>Bit: 7, Label: SF, Description</code> : Sign Flag: Most operations set this bit the same as the most significant bit (aka high</li><li>order bit) of the result. 0 is positive, 1 is negative.</li><li><code>Bit: 8, Label: TF, Description</code> : Trap Flag: (sometimes named a Trace Flag.) Permits single stepping of programs. After executing a single instruction, the processor generates an internal exception <ol><li>When Trap Flag is set by a program, the processor generates a single-step interrupt after each instruction. A debugging program can use this feature to execute a program one instruction at a time. - <code>Bit: 9, Label: IF, Description</code>: Interrupt Enable Flag: when set, the processor recognizes external interrupts on the INTR pin. When set, interrupts are recognized and acted on as they are received. The bit can be cleared to turn off interrupt processing temporarily. - <code>Bit:10, Label: DF, Description</code>: Direction Flag: Set and cleared using the STD and CLD instructions. It is used in string processing. When set to 1, string operations process down from high addresses to low addresses. If cleared, string operations process up from low addresses to high addresses. - <code>Bit:11, Label: OF, Description</code>: Overflow Flag: Most arithmetic instructions set this bit, indicating that the result was too large to fit in the destination. When set, it indicates that the result of an operation is too large or too small to fit in the destination operand. - <code>Bit:12-13, Label: IOPL , Description</code>: Input/Output privilege level flags: Used in protected mode to generate four levels of security. - <code>Bit:14, Label: NT, Description</code>: Nested Task Flag: Used in protected mode. When set, it indicates that one system task has invoked another via a CALL Instruction, rather than a JMP. - <code>Bit:16, Label: RF, Description</code>: Resume Flag: Used by the debug registers DR6 and DR7. It enables you to turn off certain exceptions while debugging code. - <code>Bit:17, Label: VM, Description</code>: Virtual 8086 Mode flag: Permits 80386 to behave like a high speed 8086. </li></ol>
-<h4>R Reelleevvaanntt  ffllaaggss</h0>
-</li><li><code>SF</code> : Sign Flag. Set when the result of an operation forces the operand to become negative.</li><li><code>ZF</code> : Zero Flag. Set when the result of an operation become zero (conditional jumps).</li><li><code>OF</code> : Overflow Flag. Set when the result of an arithmetic operation on a signed integer is too large to fit.</li><li><code>CF</code> : Carry Flag. Used in unsigned arithmetic expressions.</li><li><code>IF</code> : Interrupt flag: Usually active when debugging (step through code).</li></ul>
-<h2>Instructions</h0>
-<h3>ADD</h0>
-<p>ADD adds the source operand to the destination operand, and after the operation, the result replaces the destination operand. The add operation is an arithmetic add and does not take the Carry flag into account. (To add using the Carry flag, use the ADC Add with Carry instruction.) All affected flags are set according to the operation. Most importantly, if the result does not fit into the destination operand, the Carry flag is set to 1.</p>
-<pre><code class="language-asm">
-  mov rax, 0x23456
+</code></pre>
+<h3>FLAGS register (eflags)</h3>
+<ul>
+<li><p><code>Bit: 0, Label: CF, Description</code>: Carry Flag: Set by arithmetic instructions
+which generate either a carry or borrow. Set when an operation generates a
+carry to or a borrow from a destination operand.</p>
+</li>
+<li><p><code>Bit: 2, Label: PF, Description</code>: Parity flag: Set by most CPU instructions
+if the least significant (aka the low-order bits) of the destination operand
+contain an even number of 1's.</p>
+</li>
+<li><p><code>Bit: 4, Label: AF, Description</code>: Auxiliary Carry Flag: Set if there is a
+carry or borrow involving bit 4 of EAX. Set when a CPU instruction generates
+a carry to or a borrow from the low-order 4 bits of an operand. This flag is
+used for binary coded decimal (BCD) arithmetic.</p>
+</li>
+<li><p><code>Bit: 6, Label: ZF, Description</code>: Zero Flag: Set by most instructions if the
+result an operation is binary zero.</p>
+</li>
+<li><p><code>Bit: 7, Label: SF, Description</code>: Sign Flag: Most operations set this bit the
+same as the most significant bit (aka high-order bit) of the result. 0 is
+positive, 1 is negative.</p>
+</li>
+<li><p><code>Bit: 8, Label: TF, Description</code>: Trap Flag: (sometimes named a Trace Flag.)
+Permits single stepping of programs. After executing a single instruction,
+the processor generates an internal exception 1. When Trap Flag is set by a
+program, the processor generates a single-step interrupt after each
+instruction. A debugging program can use this feature to execute a program
+one instruction at a time.</p>
+</li>
+<li><p><code>Bit: 9, Label: IF, Description</code>: Interrupt Enable Flag: when set, the
+processor recognizes external interrupts on the INTR pin. When set,
+interrupts are recognized and acted on as they are received. The bit can be
+cleared to turn off interrupt processing temporarily.</p>
+</li>
+<li><p><code>Bit:10, Label: DF, Description</code>: Direction Flag: Set and cleared using the
+STD and CLD instructions. It is used in string processing. When set to 1,
+string operations process down from high addresses to low addresses. If
+cleared, string operations process up from low addresses to high addresses.</p>
+</li>
+<li><p><code>Bit:11, Label: OF, Description</code>: Overflow Flag: Most arithmetic instructions
+set this bit, indicating that the result was too large to fit in the
+destination. When set, it indicates that the result of an operation is too
+large or too small to fit in the destination operand.</p>
+</li>
+<li><p><code>Bit:12-13, Label: IOPL , Description</code>: Input/Output privilege level flags:
+Used in protected mode to generate four levels of security.</p>
+</li>
+<li><p><code>Bit:14, Label: NT, Description</code>: Nested Task Flag: Used in protected mode.
+When set, it indicates that one system task has invoked another via a CALL
+Instruction, rather than a JMP.</p>
+</li>
+<li><p><code>Bit:16, Label: RF, Description</code>: Resume Flag: Used by the debug registers
+DR6 and DR7. It enables you to turn off certain exceptions while debugging
+code.</p>
+</li>
+<li><p><code>Bit:17, Label: VM, Description</code>: Virtual 8086 Mode flag: Permits 80386 to
+behave like a high speed 8086.</p>
+</li>
+</ul>
+<h4>Relevant flags</h4>
+<ul>
+<li><code>SF</code>: Sign Flag. Set when the result of an operation forces the operand to
+become negative.</li>
+<li><code>ZF</code>: Zero Flag. Set when the result of an operation become zero (conditional
+jumps).</li>
+<li><code>OF</code>: Overflow Flag. Set when the result of an arithmetic operation on a
+signed integer is too large to fit.</li>
+<li><code>CF</code>: Carry Flag. Used in unsigned arithmetic expressions.</li>
+<li><code>IF</code>: Interrupt flag: Usually active when debugging (step through code).</li>
+</ul>
+<h2>Instructions</h2>
+<h3>ADD</h3>
+<p>ADD adds the source operand to the destination operand, and after the
+operation, the result replaces the destination operand. The add operation is an
+arithmetic add and does not take the Carry flag into account. (To add using the
+Carry flag, use the ADC Add with Carry instruction.) All affected flags are set
+according to the operation. Most importantly, if the result does not fit into
+the destination operand, the Carry flag is set to 1.</p>
+<pre><code class="language-asm">  mov rax, 0x23456
   mov rbx, 0x54321
   add rax, rbx
-</code></pre><p>Flags affected: <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|  *  |  *  |     |     |  *  |  *  |  *  |     |  *  |</p>
+|  *  |  *  |     |     |  *  |  *  |  *  |     |  *  |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -109,14 +187,15 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>AND</h0>
+</code></pre>
+<h3>AND</h3>
 <p>Bit-by-bit binary operation. Useful for masking.</p>
-<pre><code class="language-asm">
-  and rax, rbx
-</code></pre><p>Flags affected: <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+<pre><code class="language-asm">  and rax, rbx
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|  ?  |  *  |     |     |  *  |  *  |  *  |     |  *  |</p>
+|  ?  |  *  |     |     |  *  |  *  |  *  |     |  *  |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -127,19 +206,30 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><p>AND performs the AND logical operation on its two operands. Once the opera- tion is complete, the result replaces the destination operand. AND is performed on a bit-by-bit basis</p>
-<p>Note that the operation makes the Auxiliary carry flag unde- fined. CF and OF are cleared to 0, and the other affected flags are set according to the operation’s results.</p>
-<h3>BT</h0>
+</code></pre>
+<p>AND performs the AND logical operation on its two operands. Once the opera-
+tion is complete, the result replaces the destination operand. AND is performed
+on a bit-by-bit basis</p>
+<p>Note that the operation makes the Auxiliary carry flag unde- fined. CF and OF
+are cleared to 0, and the other affected flags are set according to the
+operation’s results.</p>
+<h3>BT</h3>
 <p>Bit test.</p>
-<p>It takes two operands, the destination that needs to be tested, and the source operand, which is the ordinal number bit that you want to test <b>starting from 0</b> (if you want to test the fourth bit from the right, the source = 3).</p>
-<p>BT copies a single specified bit from the left operand to the Carry flag, where it can be tested or fed back into a quantity using one of the shift/rotate instruc- tions. Which bit is copied is specified by the right operand. Neither operand is altered by BT</p>
-<pre><code class="language-asm">
-bt rax, 4 ; test bit 4 of rax -> 10000b
+<p>It takes two operands, the destination that needs to be tested, and the
+source operand, which is the ordinal number bit that you want to test
+<strong>starting from 0</strong> (if you want to test the fourth bit from the right, the
+source = 3).</p>
+<p>BT copies a single specified bit from the left operand to the Carry flag, where
+it can be tested or fed back into a quantity using one of the shift/rotate
+instruc- tions. Which bit is copied is specified by the right operand. Neither
+operand is altered by BT</p>
+<pre><code class="language-asm">bt rax, 4 ; test bit 4 of rax -&gt; 10000b
 jnc quit  ; we're done if bit 4 = 0 (not carry).
-</code></pre><p>Flags affected: <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|     |  *  |     |     |     |     |     |     |     |</p>
+|     |  *  |     |     |     |     |     |     |     |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -150,18 +240,23 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>CALL</h0>
-<p>Calls a routine. Before transferring control, CALL pushes the address of the instruction immediately after itself onto the stack. This allows a RET instruction (see also) to pop the return address into RIP and thus return control to the instruction immediately after the CALL instruction</p>
-<pre><code class="language-asm">
-call MyOtherRoutine
-</code></pre><p>Note: The procedure <code>MyOtherRoutine</code> must have at least one RET instruction. Note: Can also be called with a register address</p>
-<pre><code class="language-asm">
-mov r13, myLabel
+</code></pre>
+<h3>CALL</h3>
+<p>Calls a routine. Before transferring control, CALL pushes the address of the
+instruction immediately after itself onto the stack. This allows a RET
+instruction (see also) to pop the return address into RIP and thus return
+control to the instruction immediately after the CALL instruction</p>
+<pre><code class="language-asm">call MyOtherRoutine
+</code></pre>
+<p>Note: The procedure <code>MyOtherRoutine</code> must have at least one RET instruction.
+Note: Can also be called with a register address</p>
+<pre><code class="language-asm">mov r13, myLabel
 call r13
-</code></pre><p>Flags affected (none in this case): <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+</code></pre>
+<p>Flags affected (none in this case):</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|     |     |     |     |     |     |     |     |     |</p>
+|     |     |     |     |     |     |     |     |     |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -172,21 +267,27 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>CLD</h0>
-<p>Clear Direction Flag. This is relevant for string instruction work. It defines what direction in memory that a string operation takes.</p>
-<p>A clear flag usually means you want to go up-hill on memory. I.e., from the lowest address to the highest. If you want the opposite, use the STD instruction instead.</p>
-<h3>CMP</h0>
+</code></pre>
+<h3>CLD</h3>
+<p>Clear Direction Flag. This is relevant for string instruction work. It defines
+what direction in memory that a string operation takes.</p>
+<p>A clear flag usually means you want to go up-hill on memory. I.e., from the
+lowest address to the highest. If you want the opposite, use the STD
+instruction instead.</p>
+<h3>CMP</h3>
 <p>Compares two values. The destination operand is not affected.</p>
-<p>The operation itself is identical to arithmetic subtraction of the source from the destination without borrow (SUB), save that the result does not replace the destination.</p>
-<pre><code class="language-asm">
-cmp rax, rbx ; sets OF, SF, ZF, AF, PF, and CF
+<p>The operation itself is identical to arithmetic subtraction of the source from
+the destination without borrow (SUB), save that the result does not replace the
+destination.</p>
+<pre><code class="language-asm">cmp rax, rbx ; sets OF, SF, ZF, AF, PF, and CF
 jne SomeWhere
 cmp byte [Buffer], 0xFF
 jng SomeWhereElse
-</code></pre><p>Flags affected: <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|  *  |  *  |     |     |  *  |  *  |  *  |     |  *  |</p>
+|  *  |  *  |     |     |  *  |  *  |  *  |     |  *  |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -197,17 +298,28 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>DIV</h0>
+</code></pre>
+<h3>DIV</h3>
 <p>Warning: contains implicit operand.</p>
-<pre><code class="language-asm">
-div rbx
-</code></pre><p>Divides <code>edx:eax</code> by <code>rbx</code>. The result (quotient) is in EAX and the remainder in EDX. Works similarly for AX, EAX, RAX.</p>
-<p>DIV divides the implicit dividend by the explicit divisor specified as DIV’s single operand. For dividing by 8-bit quantities, the dividend is assumed to be in AX. For dividing by 16-bit, 32-bit, and 64-bit quantities, the dividend is assumed to be in two registers, allowing a much greater range of calculation. The least significant portion of the dividend is placed in the “A” register (AX / EAX / RAX), and the most significant portion of the dividend is placed in the “D” register (DX / EDX / RDX). Note that even when there is no “high” portion of the dividend, the “D” register is cleared to 0 by DIV and cannot be used to hold independent values while a DIV instruction is executed. </p>
-<p>DIV leaves no information in the flags. Note, however, that OF, SF, ZF, AF, PF, and CF become undefined after a DIV instruction.</p>
-<p>Flags affected: <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+<pre><code class="language-asm">div rbx
+</code></pre>
+<p>Divides <code>edx:eax</code> by <code>rbx</code>. The result (quotient) is in EAX and the remainder
+in EDX. Works similarly for AX, EAX, RAX.</p>
+<p>DIV divides the implicit dividend by the explicit divisor specified as DIV’s
+single operand. For dividing by 8-bit quantities, the dividend is assumed to be
+in AX. For dividing by 16-bit, 32-bit, and 64-bit quantities, the dividend is
+assumed to be in two registers, allowing a much greater range of calculation.
+The least significant portion of the dividend is placed in the “A” register (AX
+/ EAX / RAX), and the most significant portion of the dividend is placed in the
+“D” register (DX / EDX / RDX). Note that even when there is no “high” portion
+of the dividend, the “D” register is cleared to 0 by DIV and cannot be used to
+hold independent values while a DIV instruction is executed.</p>
+<p>DIV leaves no information in the flags. Note, however, that OF, SF, ZF, AF, PF,
+and CF become undefined after a DIV instruction.</p>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|  ?  |  ?  |     |     |  ?  |  ?  |  ?  |     |  ?  |</p>
+|  ?  |  ?  |     |     |  ?  |  ?  |  ?  |     |  ?  |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -218,14 +330,21 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>INC and DEC</h0>
+</code></pre>
+<h3>INC and DEC</h3>
 <p>Increment or decrement the value by one.</p>
-<p>INC adds 1 to its single operand and does not affect the Carry flag CF. Be care- ful about that; it’s a common error to try to use CF after an INC instruction as though it were ADD instead. INC acting on memory data forms must be used with a data size specifier such as BYTE, WORD, DWORD, and QWORD.</p>
-<p>DEC subtracts 1 from its single operand and does not affect the Carry flag CF. Be careful about that; it’s a common error to try to use CF after a DEC instruction as though it were SUB instead. DEC acting on memory data forms must be used with a data size specifier such as BYTE, WORD, DWORD, and QWORD.</p>
-<p>Flags affected: <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+<p>INC adds 1 to its single operand and does not affect the Carry flag CF. Be
+care- ful about that; it’s a common error to try to use CF after an INC
+instruction as though it were ADD instead. INC acting on memory data forms must
+be used with a data size specifier such as BYTE, WORD, DWORD, and QWORD.</p>
+<p>DEC subtracts 1 from its single operand and does not affect the Carry flag CF.
+Be careful about that; it’s a common error to try to use CF after a DEC
+instruction as though it were SUB instead. DEC acting on memory data forms must
+be used with a data size specifier such as BYTE, WORD, DWORD, and QWORD.</p>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|  *  |     |     |     |  *  |  *  |  *  |     |  *  |</p>
+|  *  |     |     |     |  *  |  *  |  *  |     |  *  |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -236,67 +355,97 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>JA, JAE, JNA, JNAE</h0>
-<p>Note: unsigned comparison. Jump if above (equal/not equal). In this case, if the value in rax was higher than rbx.</p>
-<pre><code class="language-asm">
-cmp rax, rbx
+</code></pre>
+<h3>JA, JAE, JNA, JNAE</h3>
+<p>Note: unsigned comparison.
+Jump if above (equal/not equal). In this case, if the value in rax was higher
+than rbx.</p>
+<pre><code class="language-asm">cmp rax, rbx
 ja Somewhere
-</code></pre><h3>JB, JBE, JNB, JNBE</h0>
-<p>Note: unsigned comparison. Jump if below (equal/not equal). In this case, if the value in rax was lower than rbx.</p>
-<pre><code class="language-asm">
-cmp rax, rbx
+</code></pre>
+<h3>JB, JBE, JNB, JNBE</h3>
+<p>Note: unsigned comparison.
+Jump if below (equal/not equal). In this case, if the value in rax was lower
+than rbx.</p>
+<pre><code class="language-asm">cmp rax, rbx
 jb Somewhere
-</code></pre><h3>JC, JNC</h0>
+</code></pre>
+<h3>JC, JNC</h3>
 <p>Jump if the carry flag is set/not set.</p>
-<h3>JE, JNE</h0>
+<h3>JE, JNE</h3>
 <p>Jump if equal/not equal.</p>
-<pre><code class="language-asm">
-cmp rax, rbx
+<pre><code class="language-asm">cmp rax, rbx
 je Somewhere
-</code></pre><h3>JG, JGE, JNG, JNGE</h0>
-<p>Note: signed comparison. Jump if greater (equal/not equal).</p>
-<h3>JL, JLE, JNL, JNLE</h0>
-<p>Note: signed comparison. Jump if less (equal/not equal).</p>
-<h3>JZ, JNZ</h0>
+</code></pre>
+<h3>JG, JGE, JNG, JNGE</h3>
+<p>Note: signed comparison.
+Jump if greater (equal/not equal).</p>
+<h3>JL, JLE, JNL, JNLE</h3>
+<p>Note: signed comparison.
+Jump if less (equal/not equal).</p>
+<h3>JZ, JNZ</h3>
 <p>Jump if zero (if ZF flag == 0) or not zero.</p>
-<pre><code class="language-">
-  mov rax, 2
+<pre><code>  mov rax, 2
 DoMore:
   dec rax
   jz SomewhereElse
   jmp DoMore
-</code></pre><h3>LEA</h0>
+</code></pre>
+<h3>LEA</h3>
 <p>Load effective address.</p>
-<p>Allows you to calculate the effective address of any element in a table and drop that address in a register.</p>
-<p>LEA derives the address of the source operand and loads that offset into the destination operand. The destination operand must be a register and cannot be memory. The source operand must be a memory operand, but it can be any size.</p>
-<p>The address stored in the destination operand is the address of the first byte of the source in memory, and the size of the source in memory is unimportant. This is a good, clean way to place the address of a variable into a register prior to a procedure call or a system call. See SYSCALL.</p>
-<p>LEA can also be used to perform register math, since the address specified in the second operand is calculated but not accessed. The address can thus be an address for which your program does not have permission to access. Any math that can be expressed as a valid address calculation may be done with LEA.</p>
-<p>This is one of the few places where NASM does not require a size specifier before an operand providing a memory address, again because LEA calculates the address but moves no data to or from that address.</p>
-<pre><code class="language-asm">
-SomeVariable: dd 0, 25, 50, 75, 100
+<p>Allows you to calculate the effective address of any element in a table and
+drop that address in a register.</p>
+<p>LEA derives the address of the source operand and loads that offset into the
+destination operand. The destination operand must be a register and cannot be
+memory. The source operand must be a memory operand, but it can be any size.</p>
+<p>The address stored in the destination operand is the address of the first byte
+of the source in memory, and the size of the source in memory is unimportant.
+This is a good, clean way to place the address of a variable into a register
+prior to a procedure call or a system call. See SYSCALL.</p>
+<p>LEA can also be used to perform register math, since the address specified in
+the second operand is calculated but not accessed. The address can thus be an
+address for which your program does not have permission to access. Any math
+that can be expressed as a valid address calculation may be done with LEA.</p>
+<p>This is one of the few places where NASM does not require a size specifier
+before an operand providing a memory address, again because LEA calculates the
+address but moves no data to or from that address.</p>
+<pre><code class="language-asm">SomeVariable: dd 0, 25, 50, 75, 100
 
 lea rbx, [SomeVariable+rcx*4]
 
 lea rdx, [rdx*2+rdx] ; multiplies rdx by 3
-</code></pre><p>This is often faster than using shifts + adds to multiply a value.</p>
-<h3>LOOP</h0>
-<p>The LOOP instruction assumes that the RCX register contains the loop count. When the loop instruction is executed, the RCX register is decremented and the control jumps to the target label, until the RCX register value, i.e., the counter reaches the value zero.</p>
-<p>LOOP is a combination decrement counter, test, and jump instruction. It uses CX as the counter in 16-bit modes, ECX in 32-bit modes, or RCX in 64-bit modes. The operation of LOOP is logistically identical in all three modes, and I use 64-bit coding as an example here.</p>
-<p>LOOP simplifies code by acting as a DEC RCX instruction, a CMP RCX,0 instruction, and JZ instruction in one, executed in that order. A loop repeat count must be initially loaded into RCX. When the LOOP instruction is executed, it first decre- ments RCX. Then it tests to see if RCX = 0. If RCX is not 0, LOOP transfers control to the 8- bit displacement specified as its operand:</p>
-<pre><code class="language-asm">
-mov ECX,10
+</code></pre>
+<p>This is often faster than using shifts + adds to multiply a value.</p>
+<h3>LOOP</h3>
+<p>The LOOP instruction assumes that the RCX register contains the loop count.
+When the loop instruction is executed, the RCX register is decremented and the
+control jumps to the target label, until the RCX register value, i.e., the
+counter reaches the value zero.</p>
+<p>LOOP is a combination decrement counter, test, and jump instruction. It uses CX
+as the counter in 16-bit modes, ECX in 32-bit modes, or RCX in 64-bit modes.
+The operation of LOOP is logistically identical in all three modes, and I use
+64-bit coding as an example here.</p>
+<p>LOOP simplifies code by acting as a DEC RCX instruction, a CMP RCX,0
+instruction, and JZ instruction in one, executed in that order. A loop repeat
+count must be initially loaded into RCX. When the LOOP instruction is executed,
+it first decre- ments RCX. Then it tests to see if RCX = 0. If RCX is not 0,
+LOOP transfers control to the 8- bit displacement specified as its operand:</p>
+<pre><code class="language-asm">mov ECX,10
 l1:
-<loop body>
+&lt;loop body&gt;
 loop l1
-</code></pre><blockquote>Looking at the "8086/8088 User's Manual: Programmer's and Hardware Reference"</blockquote>
-<blockquote>(Intel 1989) confirms that LOOP is marginally faster than the combination DEC</blockquote>
-<blockquote>CX; JNZ. DEC takes 3 clock cycles, JNZ takes 4 (not taken) or 16 (taken)</blockquote>
-<blockquote>cycles. So the combination requires 7 or 19 cycles. LOOP on the other hand</blockquote>
-<blockquote>requires 5 cycles (not taken) or 17 cycles (taken), for a saving of 2 cycles.</blockquote>
-<p>Flags affected (none): <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+</code></pre>
+<blockquote>
+<p>Looking at the &quot;8086/8088 User's Manual: Programmer's and Hardware Reference&quot;
+(Intel 1989) confirms that LOOP is marginally faster than the combination DEC
+CX; JNZ. DEC takes 3 clock cycles, JNZ takes 4 (not taken) or 16 (taken)
+cycles. So the combination requires 7 or 19 cycles. LOOP on the other hand
+requires 5 cycles (not taken) or 17 cycles (taken), for a saving of 2 cycles.</p>
+</blockquote>
+<p>Flags affected (none):</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|     |     |     |     |     |     |     |     |     |</p>
+|     |     |     |     |     |     |     |     |     |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -307,13 +456,19 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>MOV</h0>
-<ul><li><code>mov rax, 0x42</code>: rax now stores the value 42h directly.</li><li><code>mov rbx, rax</code> : rbx and rax now both store 42h directly.</li><li><code>mov [rcx], rbx</code> : address stored in rcx now holds 42h.</li><li><code>mov rdx, [rbx]</code> : rdx now holds value of address stored in rbx.</li></ul>
+</code></pre>
+<h3>MOV</h3>
+<ul>
+<li><code>mov rax, 0x42</code>: rax now stores the value 42h directly.</li>
+<li><code>mov rbx, rax</code>: rbx and rax now both store 42h directly.</li>
+<li><code>mov [rcx], rbx</code>: address stored in rcx now holds 42h.</li>
+<li><code>mov rdx, [rbx]</code>: rdx now holds value of address stored in rbx.</li>
+</ul>
 <p>Note: If you need to move a signed value use <code>MOVSX</code> instead.</p>
-<p>Flags affected (none): <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+<p>Flags affected (none):</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|     |     |     |     |     |     |     |     |     |</p>
+|     |     |     |     |     |     |     |     |     |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -324,16 +479,28 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>MOVSB, MOVSW, MOVSD, MOVSQ</h0>
+</code></pre>
+<h3>MOVSB, MOVSW, MOVSD, MOVSQ</h3>
 <p>The gist of this instruction is this:</p>
-<ol><li>RSI stores the source of the address in memory.</li><li>RDI stores the destination address.</li><li>The number of bytes to be moved is placed in the RCX register.</li><li>RCX decrements by one after each byte is copied.</li></ol>
-<p>Don’t forget that RCX counts operations (the number of times a data item is copied from source to destination) and not bytes!</p>
-<p>The DF (direction flag) affects this instruction. It is only important to set or not set the flag when the memory in RSI and RDI overlap, otherwise it shouldn't matter. The Direction flag DF thus determines whether your copy operation moves up-memory if DF is cleared (0) and down-memory if DF is set (1).</p>
-<p>The MOVSB can operate automatically (via <code>REP</code>) or semi-automatically, by manually decrementing RCX.</p>
-<p>Flags affected (none): <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+<ol>
+<li>RSI stores the source of the address in memory.</li>
+<li>RDI stores the destination address.</li>
+<li>The number of bytes to be moved is placed in the RCX register.</li>
+<li>RCX decrements by one after each byte is copied.</li>
+</ol>
+<p>Don’t forget that RCX counts operations (the number of times a data item is
+copied from source to destination) and not bytes!</p>
+<p>The DF (direction flag) affects this instruction. It is only important to
+set or not set the flag when the memory in RSI and RDI overlap, otherwise it
+shouldn't matter. The Direction flag DF thus determines whether your copy
+operation moves up-memory if DF is cleared (0) and down-memory if DF is set
+(1).</p>
+<p>The MOVSB can operate automatically (via <code>REP</code>) or semi-automatically, by
+manually decrementing RCX.</p>
+<p>Flags affected (none):</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|     |     |     |     |     |     |     |     |     |</p>
+|     |     |     |     |     |     |     |     |     |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -344,17 +511,26 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>MOVSX</h0>
-<p>"Move with signed extension" used when moving values that are negative. Note that this instruction allows operands of different sizes!</p>
-<p>MOVSX operates like MOV but copies values from source operand to the destina- tion operand with sign extension. That is, it carries the sign bit of the smaller source operand to the sign bit of the larger destination operand. This way, for example, a 16-bit signed value in AX will still be a signed value when copied into 32-bit register EDX or 64-bit register RDX. Without sign extension, the sign bit of AX would simply become another bit in the binary value copied into RDX, and the value in RDX would bear no resemblance to the supposedly identical value in AX.</p>
-<pre><code class="language-">
-xor rax, rax
+</code></pre>
+<h3>MOVSX</h3>
+<p>&quot;Move with signed extension&quot; used when moving values that are negative. Note
+that this instruction allows operands of different sizes!</p>
+<p>MOVSX operates like MOV but copies values from source operand to the destina-
+tion operand with sign extension. That is, it carries the sign bit of the
+smaller source operand to the sign bit of the larger destination operand. This
+way, for example, a 16-bit signed value in AX will still be a signed value when
+copied into 32-bit register EDX or 64-bit register RDX. Without sign extension,
+the sign bit of AX would simply become another bit in the binary value copied
+into RDX, and the value in RDX would bear no resemblance to the supposedly
+identical value in AX.</p>
+<pre><code>xor rax, rax
 mov ax, -42
 movsx rbx,ax
-</code></pre><p>Flags affected (none): <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+</code></pre>
+<p>Flags affected (none):</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|     |     |     |     |     |     |     |     |     |</p>
+|     |     |     |     |     |     |     |     |     |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -365,20 +541,33 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>MUL</h0>
+</code></pre>
+<h3>MUL</h3>
 <p>Warning: contains implicit operand.</p>
-<pre><code class="language-asm">
-mul rbx
-</code></pre><p>MUL multiplies its single operand by AL, AX, EAX, or RAX, and the result is placed in AX, in DX:AX, in EDX:EAX, or in RDX:RAX. If MUL is given an 8-bit operand (either an 8- bit register or an 8-bit memory operand), the results will be placed in AX. This means that AH will be affected, even if the results will fit entirely in AL</p>
-<p>The above multiplies the value of RBX x RAX. The result would be stored in two registers, <code>RDX:RAX</code>.</p>
-<p>It always multiplies the explicit operand by one of <code>AX,EAX,RAX</code>. And if it needs to store more than the size of the register, it uses <code>DX,EDX,RDX</code> to store the high-order portion.</p>
-<p>Not every multiplication will need the high-order register. If not, the carry flag CF will be set to 0.</p>
-<p>Note: It’s easy to assume that IMUL is identical to MUL save for IMUL’s ability to operate on signed values. Not so: IMUL has more legal instruction forms and is considerably more complex than MU</p>
-<p>The Carry and Overflow flags are cleared to 0 if the result value is 0; other- wise, both are set to 1. Remember that SF, ZF, AF, and PF become undefined after MUL.</p>
-<p>Flags affected: <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+<pre><code class="language-asm">mul rbx
+</code></pre>
+<p>MUL multiplies its single operand by AL, AX, EAX, or RAX, and the result is
+placed in AX, in DX:AX, in EDX:EAX, or in RDX:RAX. If MUL is given an 8-bit
+operand (either an 8- bit register or an 8-bit memory operand), the results
+will be placed in AX. This means that AH will be affected, even if the results
+will fit entirely in AL</p>
+<p>The above multiplies the value of RBX x RAX. The result would be stored in
+two registers, <code>RDX:RAX</code>.</p>
+<p>It always multiplies the explicit operand by one of <code>AX,EAX,RAX</code>. And if it
+needs to store more than the size of the register, it uses <code>DX,EDX,RDX</code> to
+store the high-order portion.</p>
+<p>Not every multiplication will need the high-order register. If not, the
+carry flag CF will be set to 0.</p>
+<p>Note: It’s easy to assume that IMUL is identical to MUL save for IMUL’s ability
+to operate on signed values. Not so: IMUL has more legal instruction forms and
+is considerably more complex than MU</p>
+<p>The Carry and Overflow flags are cleared to 0 if the result value is 0; other-
+wise, both are set to 1. Remember that SF, ZF, AF, and PF become undefined
+after MUL.</p>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|  ?  |  *  |     |     |  *  |  ?  |  ?  |     |  ?  |</p>
+|  ?  |  *  |     |     |  *  |  ?  |  ?  |     |  ?  |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -389,16 +578,18 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>NEG</h0>
-<p>Turns the value to its equivalent two's complement negative. Use this instead of trying to manually set the negative bit on.</p>
-<pre><code class="language-asm">
-  mov rax, 0x42
+</code></pre>
+<h3>NEG</h3>
+<p>Turns the value to its equivalent two's complement negative. Use this instead
+of trying to manually set the negative bit on.</p>
+<pre><code class="language-asm">  mov rax, 0x42
   neg rax
   add rax, 0x42
-</code></pre><p>Flags affected: <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|  *  |  *  |     |     |  *  |  *  |  *  |     |  *  |</p>
+|  *  |  *  |     |     |  *  |  *  |  *  |     |  *  |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -409,15 +600,18 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>OR</h0>
+</code></pre>
+<h3>OR</h3>
 <p>Bit-by-bit OR binary operation</p>
-<pre><code class="language-asm">
-  or rax, rbx
-</code></pre><p>Note that the OR instruction makes the Auxiliary Carry flag undefined. CF and OF are cleared to 0, and the other affected flags are set according to the operation’s result.</p>
-<p>Flags affected: <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+<pre><code class="language-asm">  or rax, rbx
+</code></pre>
+<p>Note that the OR instruction makes the Auxiliary Carry flag undefined. CF and
+OF are cleared to 0, and the other affected flags are set according to the
+operation’s result.</p>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|  ?  |  *  |     |     |  *  |  *  |  *  |     |  *  |</p>
+|  ?  |  *  |     |     |  *  |  *  |  *  |     |  *  |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -428,36 +622,46 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>POP</h0>
+</code></pre>
+<h3>POP</h3>
 <p>Pops an item of data off the stack.</p>
-<pre><code class="language-asm">
-pop rax ; pops 64bits from the stack
+<pre><code class="language-asm">pop rax ; pops 64bits from the stack
 pop [ebx]; pops 32bits from the stack onto the memory pointed by ebx
-</code></pre><p>As with <code>PUSH</code>, it only works with 16bits or 64bits at the time.</p>
+</code></pre>
+<p>As with <code>PUSH</code>, it only works with 16bits or 64bits at the time.</p>
 <p>No flags are affected.</p>
-<h3>POPFQ</h0>
+<h3>POPFQ</h3>
 <p>Pops 64 bits off the stack onto rflags</p>
-<h3>PUSH</h0>
-<p>Pushes a 16bit or 64bit register or memory value onto the stack. It doesn't work for 8bit or 32bit registers.</p>
-<pre><code class="language-asm">
-push rax
+<h3>PUSH</h3>
+<p>Pushes a 16bit or 64bit register or memory value onto the stack. It doesn't
+work for 8bit or 32bit registers.</p>
+<pre><code class="language-asm">push rax
 push [rbx]
-</code></pre><p>In Intel x64, where the stack grows downwards, if we push a 64bit register to the stack, the RSP (register stack pointer) will be decremented by 64bits and whatever that needs to be stored is saved at that memory address pointed by RSP. The "empty" 64bits space is now filled with the value that was pushed.</p>
+</code></pre>
+<p>In Intel x64, where the stack grows downwards, if we push a 64bit register to
+the stack, the RSP (register stack pointer) will be decremented by 64bits and
+whatever that needs to be stored is saved at that memory address pointed by
+RSP. The &quot;empty&quot; 64bits space is now filled with the value that was pushed.</p>
 <p>No flags are affected.</p>
-<h3>PUSHFQ</h0>
+<h3>PUSHFQ</h3>
 <p>Similar to <code>PUSH</code>, but pushes the rflags register. It takes no operands.</p>
-<h3>REP</h0>
-<p>Repeat string-operation until tested-condition </p>
-<p>Use the rep (repeat while equal), repnz (repeat while nonzero) or repz (repeat while zero) prefixes in conjunction with string operations. Each prefix causes the associated string instruction to repeat until the count register (CX) or the zero flag (ZF) matches a tested condition. </p>
-<h3>ROL / ROR</h0>
-<p>ROL: Similar to a shift left instruction, but the left-most bit is moved down to the right-most bit instead of going to the carry flag.</p>
-<p>ROR: Similar to a shift right instruction, but the right-most bit is moved down to the left-most bit instead of going to the carry flag.</p>
-<pre><code class="language-asm">
-  rol <register/memory>, <count>
-</code></pre><p>Flags affected: <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+<h3>REP</h3>
+<p>Repeat string-operation until tested-condition</p>
+<p>Use the rep (repeat while equal), repnz (repeat while nonzero) or repz (repeat
+while zero) prefixes in conjunction with string operations. Each prefix causes
+the associated string instruction to repeat until the count register (CX) or
+the zero flag (ZF) matches a tested condition.</p>
+<h3>ROL / ROR</h3>
+<p>ROL: Similar to a shift left instruction, but the left-most bit is moved down
+to the right-most bit instead of going to the carry flag.</p>
+<p>ROR: Similar to a shift right instruction, but the right-most bit is moved down
+to the left-most bit instead of going to the carry flag.</p>
+<pre><code class="language-asm">  rol &lt;register/memory&gt;, &lt;count&gt;
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|     |  *  |     |     |  *  |     |     |     |     |</p>
+|     |  *  |     |     |  *  |     |     |     |     |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -468,17 +672,24 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>SHL / SHR</h0>
-<p>"Shift left" and "shift right"</p>
-<pre><code class="language-asm">
-  shl <register/memory>, <count>
-  shr <register/memory>, <count>
-</code></pre><p>The number of bit positions shifted may be specified either as an 8-bit immediate value or by the value in CL—not CX/ECX/RCX. (The 8086 and 8088 are limited to the immediate value 1.) </p>
-<p>With SHL, the leftmost bit of the operand is shifted into CF; the rightmost bit is cleared to 0. With SHR, the rightmost bit is shifted into CF; the leftmost bit is cleared to 0. The Auxiliary Carry flag AF becomes undefined after both SHL and SHR. OF is modified only by the shift-by-one forms. After any of the shift-by-CL forms, OF becomes undefined.</p>
-<p>Flags affected: <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+</code></pre>
+<h3>SHL / SHR</h3>
+<p>&quot;Shift left&quot; and &quot;shift right&quot;</p>
+<pre><code class="language-asm">  shl &lt;register/memory&gt;, &lt;count&gt;
+  shr &lt;register/memory&gt;, &lt;count&gt;
+</code></pre>
+<p>The number of bit positions shifted may be specified either as an 8-bit
+immediate value or by the value in CL—not CX/ECX/RCX. (The 8086 and 8088 are
+limited to the immediate value 1.)</p>
+<p>With SHL, the leftmost bit of the operand is shifted into CF; the rightmost bit
+is cleared to 0. With SHR, the rightmost bit is shifted into CF; the leftmost
+bit is cleared to 0. The Auxiliary Carry flag AF becomes undefined after both
+SHL and SHR. OF is modified only by the shift-by-one forms. After any of the
+shift-by-CL forms, OF becomes undefined.</p>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|  ?  |  *  |     |     |  *  |  *  |  *  |     |  *  |</p>
+|  ?  |  *  |     |     |  *  |  *  |  *  |     |  *  |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -489,28 +700,39 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>STOSB, STOSW, STOSD, STOSQ</h0>
+</code></pre>
+<h3>STOSB, STOSW, STOSD, STOSQ</h3>
 <p>STOre String by Byte.</p>
-<ul><li>RDI must be loaded with the address of the destination string. Think R<code>DI</code> for destination index.</li><li>AL must be loaded with the 8</li><li>bit value to be stored in the string.</li><li>RCX must be loaded with the number of times the value in AL is to be stored in the string. No matter if you CLD or STD beforehand RCX will <i>decrement</i>.</li><li>The Direction flag (DF) must be set or cleared, depending on whether you want the search to be up</li><li>memory (cleared; use CLD) or down memory (set; use STD).</li></ul>
+<ul>
+<li>RDI must be loaded with the address of the destination string. Think R<code>DI</code>
+for destination index.</li>
+<li>AL must be loaded with the 8-bit value to be stored in the string.</li>
+<li>RCX must be loaded with the number of times the value in AL is to be stored
+in the string. No matter if you CLD or STD beforehand RCX will <em>decrement</em>.</li>
+<li>The Direction flag (DF) must be set or cleared, depending on whether you want
+the search to be up-memory (cleared; use CLD) or down memory (set; use STD).</li>
+</ul>
 <p>You must decrement RCX unless you use <code>rep stosb</code> instead.</p>
-<pre><code class="language-asm">
-cld ; clear DF so we're counting up-memory.
+<pre><code class="language-asm">cld ; clear DF so we're counting up-memory.
 mov al, FILLCHR ; put the buffer filler char in AL.
 mov rdi,VidBuff ; point the destination index at buffer.
 mov rcx, COLS*ROWS ; put the count of chars stored into RCX.
 rep stosb ; blast chars at the buffer.
-</code></pre><p>Does not affect flags.</p>
-<h3>SUB</h0>
-<p>SUB performs a subtraction without borrow, where the source operand is subtracted from the destination operand, and the result replaces the destination operand. If the result is negative, the Carry flag CF is set.</p>
-<pre><code class="language-asm">
-SUB AX,DX
+</code></pre>
+<p>Does not affect flags.</p>
+<h3>SUB</h3>
+<p>SUB performs a subtraction without borrow, where the source operand is
+subtracted from the destination operand, and the result replaces the
+destination operand. If the result is negative, the Carry flag CF is set.</p>
+<pre><code class="language-asm">SUB AX,DX
 SUB AL,DL
 SUB EBP,17
 SUB RAX,0FFFBH
-</code></pre><p>Flags affected: <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+</code></pre>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|  *  |  *  |     |     |  *  |  *  |  *  |     |  *  |</p>
+|  *  |  *  |     |     |  *  |  *  |  *  |     |  *  |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -521,42 +743,62 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h3>SYSCALL</h0>
+</code></pre>
+<h3>SYSCALL</h3>
 <p>A way to call Linux syscalls from assembly.</p>
-<p>The available syscalls can be found here: <code>/usr/include/asm/unistd_64.h</code>. To see the register order for the architecture (e.g x86-64) visit the man page at <code>man syscall</code></p>
-<pre><code class="language-">
-The second table shows the registers used to pass the system call arguments.
+<p>The available syscalls can be found here: <code>/usr/include/asm/unistd_64.h</code>.
+To see the register order for the architecture (e.g x86-64) visit the man
+page at <code>man syscall</code></p>
+<pre><code>The second table shows the registers used to pass the system call arguments.
 Arch/ABI      arg1  arg2  arg3  arg4  arg5  arg6  arg7  Notes
 ──────────────────────────────────────────────────────────────
 i386          ebx   ecx   edx   esi   edi   ebp   -
 x86-64        rdi   rsi   rdx   r10   r8    r9    -
 x32           rdi   rsi   rdx   r10   r8    r9    -
-</code></pre><p>Arguments for each POSIX syscall can be found by typing <code>man 2 exit</code> note the "2" argument to man which will link you to the system calls documentation.</p>
-<p>Note: syscall uses RAX, RCX, and R11 internally, so you can't assume that their values will remain the same after the call do <code>syscall</code></p>
-<p>Note 2: whether or not a register (like R9, say) is used to pass a parameter to a system call, that register i not preserved. Only seven registers are preserved by Linux across a system call: r12, r13, r14, r15, rbx, rsp, and rbp.</p>
-<p>Useful reference: https://hackeradam.com/x86-64-linux-syscalls/ Useful google term: "system call table x64"</p>
+</code></pre>
+<p>Arguments for each POSIX syscall can be found by typing <code>man 2 exit</code> note the
+&quot;2&quot; argument to man which will link you to the system calls documentation.</p>
+<p>Note: syscall uses RAX, RCX, and R11 internally, so you can't assume that their
+values will remain the same after the call do <code>syscall</code></p>
+<p>Note 2: whether or not a register (like R9, say) is used to pass a parameter to
+a system call, that register i not preserved. Only seven registers are
+preserved by Linux across a system call: r12, r13, r14, r15, rbx, rsp, and rbp.</p>
+<p>Useful reference: https://hackeradam.com/x86-64-linux-syscalls/
+Useful google term: &quot;system call table x64&quot;</p>
 <p>No flags are affected.</p>
-<h3>TEST</h0>
+<h3>TEST</h3>
 <p>Note: Prefer <code>BT</code> instead!</p>
-<p>Useful for mask testing. It does the same job as <code>AND</code>, but without changing the value of the destination.</p>
-<p>If the ZF (zero flag) is set to 0, it means that the mask worked. If it's set to 1, the mask didn't work. It sounds a bit counter-intuitive.</p>
-<p>Caveat: TEST is only useful for finding 1 bit. If you need to find 0 bits, you need to flip each bit with the NOT instruction first.</p>
-<p>Caveat 2: TEST only works with a single bit. If you need to check if more than one bit is set to 1, it won't work.</p>
-<pre><code class="language-asm">
-test <operand>, <bit mask>
+<p>Useful for mask testing. It does the same job as <code>AND</code>, but without changing
+the value of the destination.</p>
+<p>If the ZF (zero flag) is set to 0, it means that the mask worked. If it's
+set to 1, the mask didn't work. It sounds a bit counter-intuitive.</p>
+<p>Caveat: TEST is only useful for finding 1 bit. If you need to find 0 bits,
+you need to flip each bit with the NOT instruction first.</p>
+<p>Caveat 2: TEST only works with a single bit. If you need to check if more than
+one bit is set to 1, it won't work.</p>
+<pre><code class="language-asm">test &lt;operand&gt;, &lt;bit mask&gt;
 
 test rax,0x8 ; checks if bit 3 is up.
-</code></pre><h3>XCHG</h0>
+</code></pre>
+<h3>XCHG</h3>
 <p>Exchange the value of two variables (swap them)</p>
-<pre><code class="language-asm">
-xchg cl,ch
-</code></pre><p>No flags are affected.</p>
-<h3>XLAT</h0>
-<p>The xlat instruction in x86 assembly language stands for "translate byte at <code>DS:[(E)BX]</code> and store result in AL." It is used to perform a simple byte lookup and load the result into the AL register.</p>
-<ul><li>The contents of the EBX register (or BX if in 16</li><li>bit mode) are treated as an offset address in the DS (Data Segment) segment.</li><li>The byte at the calculated memory address (DS:">(E)BX</a> is fetched.</li><li>The fetched byte is then moved into the AL register.</li></ul>
-<p>This instruction is often used in conjunction with string operations or table lookups, where EBX holds an offset or index into a data table, and xlat is used to retrieve a byte from that table.</p>
-<pre><code class="language-asm">
-section .data
+<pre><code class="language-asm">xchg cl,ch
+</code></pre>
+<p>No flags are affected.</p>
+<h3>XLAT</h3>
+<p>The xlat instruction in x86 assembly language stands for &quot;translate byte at
+<code>DS:[(E)BX]</code> and store result in AL.&quot; It is used to perform a simple byte lookup
+and load the result into the AL register.</p>
+<ul>
+<li>The contents of the EBX register (or BX if in 16-bit mode) are treated as an
+offset address in the DS (Data Segment) segment.</li>
+<li>The byte at the calculated memory address (DS:[(E)BX]) is fetched.</li>
+<li>The fetched byte is then moved into the AL register.</li>
+</ul>
+<p>This instruction is often used in conjunction with string operations or table
+lookups, where EBX holds an offset or index into a data table, and xlat is used
+to retrieve a byte from that table.</p>
+<pre><code class="language-asm">section .data
     str_table db '0123456789ABCDEF'  ; Hexadecimal digits lookup table
 
 section .text
@@ -567,19 +809,24 @@ _start:
     xlat       ; AL now contains 'A'
 
     ; Continue with further instructions...
-</code></pre><p>No flags are affected.</p>
-<h3>XOR</h0>
-<p>This is a nice trick, xor'ing something against itself yields zero. So if you want to zero a register, it's faster to do:</p>
-<pre><code class="language-asm">
-xor rax, rax
+</code></pre>
+<p>No flags are affected.</p>
+<h3>XOR</h3>
+<p>This is a nice trick, xor'ing something against itself yields zero. So if you
+want to zero a register, it's faster to do:</p>
+<pre><code class="language-asm">xor rax, rax
 ; instead of
 mov rax, 0
-</code></pre><p>Because we don't have to go out to memory to load the immediate value 0.</p>
-<p>The XOR operation yields a 1 if the operands are different and a 0 if the operands are the same. Note that the XOR instruction makes the Auxiliary Carry flag AF undefined. CF and OF are cleared to 0, and the other affected flags are set according to the operation’s results.</p>
-<p>Flags affected: <pre><code class="language-">
-| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
+</code></pre>
+<p>Because we don't have to go out to memory to load the immediate value 0.</p>
+<p>The XOR operation yields a 1 if the operands are different and a 0 if the
+operands are the same. Note that the XOR instruction makes the Auxiliary Carry
+flag AF undefined. CF and OF are cleared to 0, and the other affected flags
+are set according to the operation’s results.</p>
+<p>Flags affected:</p>
+<pre><code>| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|  ?  |  *  |     |     |  *  |  *  |  *  |     |  *  |</p>
+|  ?  |  *  |     |     |  *  |  *  |  *  |     |  *  |
 
 AF: Aux carry flag
 CF: Carry flag
@@ -590,58 +837,65 @@ PF: Parity flag
 SF: Sign flag
 TF: Trap flag
 ZF: Zero flag
-</code></pre><h2>Sections</h0>
-<h3>.data</h0>
-<p>Contains data definitions of initialised data items. Those have a value before the program begins:</p>
-<pre><code class="language-asm">
-SECTION .data
+</code></pre>
+<h2>Sections</h2>
+<h3>.data</h3>
+<p>Contains data definitions of initialised data items. Those have a value before
+the program begins:</p>
+<pre><code class="language-asm">SECTION .data
     MyByte db 0x7
     MyWord dw 0xFFFF
     MyDoubleWord dd 0x12345678
     MyQuadWord dq 0xFFFFFFFFFFFFFFFF
-    QuadWordArray dq "21,15,16,7,888,851"
+    QuadWordArray dq &quot;21,15,16,7,888,851&quot;
 
     ; Strings are interesting as their value points to the first byte
     ; in memory where the string lives. Also, strings can be concatenated by
-    ; using a comma ",". Thus, the number 10 is being concatenated to the
+    ; using a comma &quot;,&quot;. Thus, the number 10 is being concatenated to the
     ; string below. 10 == EOL (or new line) in Linux (a.k.a 0xA).
-    EatMsg: db "Eat at Joe's!", 10
+    EatMsg: db &quot;Eat at Joe's!&quot;, 10
     ; equ = equate. Use to associate a value with a label. Every time the
     ; assembler finds this label, it swaps by the result of the equation.
     ; Similar to C's macros. When NASM reaches the label EatLen, the value of
     ; $ is the location immediately after the last character of EatMsg. We
-    ; take this value and "-" subtract it from the location at the beginning of
+    ; take this value and &quot;-&quot; subtract it from the location at the beginning of
     ; the EatMsg string. End - Beginning = Length
     EatLen: equ $-EatMsg
-</code></pre><p>Data items defined in this section increase the size of the executable file.</p>
-<h3>.bss (Block Start Symbol)</h0>
-<p>In this section you allocate blocks of memory to be used later during execution.</p>
-<p>Data items defined in this section <b>do not</b> increase the size of the executable file. This is because of the way Linux brings the program into memory, by allocating space in memory for data items in the <code>.bss</code> section when fetching the executable from disk.</p>
-<pre><code class="language-asm">
-; somewhere in the code
+</code></pre>
+<p>Data items defined in this section increase the size of the executable file.</p>
+<h3>.bss (Block Start Symbol)</h3>
+<p>In this section you allocate blocks of memory to be used later during
+execution.</p>
+<p>Data items defined in this section <strong>do not</strong> increase the size of the
+executable file. This is because of the way Linux brings the program into
+memory, by allocating space in memory for data items in the <code>.bss</code> section when
+fetching the executable from disk.</p>
+<pre><code class="language-asm">; somewhere in the code
 lea rcx, [some_memory] ; Load effective address of memory location
 
 ; then
 section .bss
     some_memory resq 1 ; Reserve 1 quadword (64 bits)
-</code></pre><h4>resb / restw / restd/ resq</h0>
+</code></pre>
+<h4>resb / restw / restd/ resq</h4>
 <p>Reserve bytes instruction, where N is the number of bytes to reserve:</p>
-<pre><code class="language-asm">
-section .bss
+<pre><code class="language-asm">section .bss
     Buff resb 42 ; reserves 42 bytes for Buff
-</code></pre><h4>equ</h0>
+</code></pre>
+<h4>equ</h4>
 <p>Stands for equate.</p>
-<p>Use to associate a value with a label. Every time the assembler finds this label, it swaps by the result of the equation. Similar to C's macros.</p>
-<pre><code class="language-asm">
-sections .bss
+<p>Use to associate a value with a label. Every time the assembler finds this
+label, it swaps by the result of the equation. Similar to C's macros.</p>
+<pre><code class="language-asm">sections .bss
     BUFFLEN equ 128
-</code></pre><h3>.text</h0>
+</code></pre>
+<h3>.text</h3>
 <p>This section stores the machine instructions that make up the program.</p>
-<p>All global labels need to be declared in this section, otherwise they cannot be seen outside of the program.</p>
-<h2>Labels</h0>
+<p>All global labels need to be declared in this section, otherwise they cannot be
+seen outside of the program.</p>
+<h2>Labels</h2>
 <p>Labels can be global or local:</p>
-<pre><code class="language-asm">
-; global label
+<pre><code class="language-asm">; global label
 MyLabel:
 
 ; local label
@@ -649,14 +903,30 @@ MyLabel:
 
 ; You can globally jump to a local variable like this (not often needed)
 jmp MyLabel.MyLocalLabel
-</code></pre><p>Notes: - The local label will be local to the global label that precedes it. - A local label cannot be "seen" by any other global label except the preceding one. This is relevant when a global procedure has another global procedure inside of it. A local label declared after those procedures can only be seen by the latest global procedure. - It can be useful to define global labels that are never referenced, simply to provide ownership of local labels.</p>
-<h2>x64 Memory Addressing</h0>
-<pre><code class="language-">
-[ BASE + (INDEX x SCALE) + DISP ]
-</code></pre><ul><li>BASE: any general purpose register. Only 32</li><li>bit or 64</li><li>bit.</li><li>INDEX: any general purpose register. Only 32</li><li>bit or 64</li><li>bit.</li><li>SCALE: must be one of the values: 1, 2, 4, or 8.</li><li>DISP: displacement may be any 32</li><li>bit constant (legacy reasons).</li></ul>
-<p>Note 1: 32bit and 64bit register can't be mingled together. Note 2: All of the elements are optional. Almost any permutation works. Note 3: The DISP value is usually some variable defined in <code>.data</code> or <code>.bss</code>.</p>
-<pre><code class="language-">
-| Scheme                        | Example             | Description                      |
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The local label will be local to the global label that precedes it.</li>
+<li>A local label cannot be &quot;seen&quot; by any other global label except the preceding
+one. This is relevant when a global procedure has another global procedure
+inside of it. A local label declared after those procedures can only be seen
+by the latest global procedure.</li>
+<li>It can be useful to define global labels that are never referenced, simply to
+provide ownership of local labels.</li>
+</ul>
+<h2>x64 Memory Addressing</h2>
+<pre><code>[ BASE + (INDEX x SCALE) + DISP ]
+</code></pre>
+<ul>
+<li>BASE: any general purpose register. Only 32-bit or 64-bit.</li>
+<li>INDEX: any general purpose register. Only 32-bit or 64-bit.</li>
+<li>SCALE: must be one of the values: 1, 2, 4, or 8.</li>
+<li>DISP: displacement may be any 32-bit constant (legacy reasons).</li>
+</ul>
+<p>Note 1: 32bit and 64bit register can't be mingled together.
+Note 2: All of the elements are optional. Almost any permutation works.
+Note 3: The DISP value is usually some variable defined in <code>.data</code> or <code>.bss</code>.</p>
+<pre><code>| Scheme                        | Example             | Description                      |
 |-------------------------------|---------------------|----------------------------------|
 | [BASE]                        | [rdx]               | Base only                        |
 | [DISP]                        | [0F3h]              | Either literal or named constant |
@@ -665,35 +935,43 @@ jmp MyLabel.MyLocalLabel
 | [BASE + INDEX]                | [rax + rbx]         | Base plus index                  |
 | [BASE + INDEX x SCALE]        | [rsp + rdi * 2]     | Base plus index times scale      |
 | [BASE + INDEX x SCALE + DISP] | [rdx + rax*2 + 20]  | ...                              |
-</code></pre><h2>Directives</h0>
-<h3>EXTERN</h0>
-<p>Used to inform that a particular procedure has been declared outside of the module. Potentially, by another module.</p>
-<p>Useful at the top of their section, given that any external procedures must be declared with <code>EXTERN</code> before being used.</p>
-<pre><code class="language-asm">
-SECTION .text
+</code></pre>
+<h2>Directives</h2>
+<h3>EXTERN</h3>
+<p>Used to inform that a particular procedure has been declared outside of the
+module. Potentially, by another module.</p>
+<p>Useful at the top of their section, given that any external procedures must
+be declared with <code>EXTERN</code> before being used.</p>
+<pre><code class="language-asm">SECTION .text
 EXTERN MyProc, AnotherProc
 ; ...
 
 SECTION .data
 EXTERN DotDataVar, anotherDotDataVar
 ; ...
-</code></pre><h3>GLOBAL</h0>
-<p>Used to inform that a particular procedure can be used by other modules. Items declared with GLOBAL <b>must</b> be declared before they are defined.</p>
-<p>Practically, this means declaring them at the top of the <code>.text</code> section or the <code>.data</code> section, whichever the item belongs to.</p>
-<pre><code class="language-asm">
-GLOBAL MyProc
+</code></pre>
+<h3>GLOBAL</h3>
+<p>Used to inform that a particular procedure can be used by other modules.
+Items declared with GLOBAL <strong>must</strong> be declared before they are defined.</p>
+<p>Practically, this means declaring them at the top of the <code>.text</code> section or the
+<code>.data</code> section, whichever the item belongs to.</p>
+<pre><code class="language-asm">GLOBAL MyProc
 GLOBAL MyDotDataVar
-</code></pre><h3>%INCLUDE</h0>
-<p>Allows you to include a file into another file during assembly operations. Only source code text files can be used. No binaries of any kind are accepted.</p>
-<pre><code class="language-asm">
-%INCLUDE "textlibgcc.asm
-</code></pre><p>Differently than C, the included file is not inserted into the main file.</p>
-<p>When NASM encouters an <code>%INCLUDE</code>, it stops assembling the main file and begins assembling the included file.</p>
+</code></pre>
+<h3>%INCLUDE</h3>
+<p>Allows you to include a file into another file during assembly operations.
+Only source code text files can be used. No binaries of any kind are accepted.</p>
+<pre><code class="language-asm">%INCLUDE &quot;textlibgcc.asm
+</code></pre>
+<p>Differently than C, the included file is not inserted into the main file.</p>
+<p>When NASM encouters an <code>%INCLUDE</code>, it stops assembling the main file and begins
+assembling the included file.</p>
 <p>Once this is done, NASM picks up right where it left in the main file.</p>
-<h3>%MACRO and %ENDMACRO</h0>
-<p>Similar to how C macros work. During assembler, they are "copy-pasted" onto the code before it is compiled. Every macro must have a parameter count, even if it is 0 like below.</p>
-<pre><code class="language-asm">
-%macro MyMacro 0
+<h3>%MACRO and %ENDMACRO</h3>
+<p>Similar to how C macros work. During assembler, they are &quot;copy-pasted&quot; onto the
+code before it is compiled. Every macro must have a parameter count, even if
+it is 0 like below.</p>
+<pre><code class="language-asm">%macro MyMacro 0
     mov rax, rbx
     syscall
 %endmacro
@@ -702,34 +980,48 @@ GLOBAL MyDotDataVar
 MyMacro
 
 ; this macro can be in another file:
-%include "mymacro.mac"
+%include &quot;mymacro.mac&quot;
 
 MyMacro
-</code></pre><p>Macros can also have parameters (like in C). In this case, you need to note on the macro definition, how many parameters it takes.</p>
-<pre><code class="language-asm">
-%macro WriteCtr 3 ; %1 = row; %2 = string address; %3 = string length.
+</code></pre>
+<p>Macros can also have parameters (like in C). In this case, you need to note on
+the macro definition, how many parameters it takes.</p>
+<pre><code class="language-asm">%macro WriteCtr 3 ; %1 = row; %2 = string address; %3 = string length.
     push rbx
     push rdx
-    mov rdx, %3 ; <--- that's how you use the input.
+    mov rdx, %3 ; &lt;--- that's how you use the input.
     xor rbx,rbx
     ; etc...
-</code></pre><p>Macro arguments can be literal constants, registers, .text and .bss variables, etc. They can also have local lables, though they are defined differently:</p>
-<pre><code class="language-asm">
-%macro MacroWithInternalLabel 0
+</code></pre>
+<p>Macro arguments can be literal constants, registers, .text and .bss variables,
+etc. They can also have local lables, though they are defined differently:</p>
+<pre><code class="language-asm">%macro MacroWithInternalLabel 0
     ; do stuff
 %%MyInternalLabel:
     ; do stuff
     jb %%MyInternalLabel
 %endmacro
-</code></pre><p>NASM will give a unique name for each time the macro is expanded into the soruce code. It prefixes the macro label with <code>..@</code> plus 4 digits, like: <code>..@0001.MyInternallabel</code></p>
-<h2>Linux Specifics</h0>
-<h3>Command line arguments</h0>
-<h4>Stack (generic Linux<ul><li>wwaayy))</h0>
- At start</li><li>up:</li></ul>
-<ul><li>RSP (top of the stack) has a 64</li><li>bit number, giving the count of command</li><li>line arguments present on the stack. This value is always greater or equal to one.</li><li>The next 64</li><li>bit item up</li><li>memory from RSP is the address of the invocation text that runs the executable. (./my</li><li>program)</li><li>Remaining command</li><li>line arguments, if provided, have their 64</li><li>bit addresses stored up</li><li>memory from RSP, with the address of the first (leftmost) argument followed by the second, and so on.</li><li>The list of command</li><li>line addresses is terminated by a null pointer, which is jargon for 64 bits of binary 0.</li></ul>
+</code></pre>
+<p>NASM will give a unique name for each time the macro is expanded into the
+soruce code. It prefixes the macro label with <code>..@</code> plus 4 digits, like:
+<code>..@0001.MyInternallabel</code></p>
+<h2>Linux Specifics</h2>
+<h3>Command line arguments</h3>
+<h4>Stack (generic Linux-way)</h4>
+<p>At start-up:</p>
+<ul>
+<li>RSP (top of the stack) has a 64-bit number, giving the count of command-line
+arguments present on the stack. This value is always greater or equal to one.</li>
+<li>The next 64-bit item up-memory from RSP is the address of the invocation text
+that runs the executable. (./my-program)</li>
+<li>Remaining command-line arguments, if provided, have their 64-bit addresses
+stored up-memory from RSP, with the address of the first (leftmost) argument
+followed by the second, and so on.</li>
+<li>The list of command-line addresses is terminated by a null pointer, which is
+jargon for 64 bits of binary 0.</li>
+</ul>
 <p>The stack at start time looks like this:</p>
-<pre><code class="language-">
-|                     THE STACK                      |
+<pre><code>|                     THE STACK                      |
 |----------------------------------------------------|
 | **64-bit null point (8 bytes of binary 0)**        |
 |----------------------------------------------------|
@@ -765,51 +1057,89 @@ MyMacro
 |----------------------------------------------------|
 | Address of executable invocation text              |
 |----------------------------------------------------|
-| Count of arguments (always at least 1)             | <---- RSP: Top of stack
+| Count of arguments (always at least 1)             | &lt;---- RSP: Top of stack
 |----------------------------------------------------|
-</code></pre><h4>GCC<ul><li>ssppeecciiffiicc</h0>
- Upon program initiation, the register <code>RDI</code> contains a value greater or equal to one.</li></ul>
-<p>The value indicates how many command-line arguments have been passed to the executable command.</p>
-<p>The register <code>RSI</code> contains the address of a table of addresses, starting at the first item in the list of command-line arguments. In Linux, it will always be the name of the program itself.</p>
-<p>Each element in the table of addresses, points to another address. This address needs to be read, and the string inside of it will be terminated by a binary 0.</p>
-<p>The value of this string can be obtained via the instructions <code>SCASB</code> (Scan String by Byte).</p>
-<pre><code class="language-asm">
-mov rcx, 0000FFFFh ; Limit search to 65535 bytes max.
+</code></pre>
+<h4>GCC-specific</h4>
+<p>Upon program initiation, the register <code>RDI</code> contains a value greater or equal
+to one.</p>
+<p>The value indicates how many command-line arguments have been passed to the
+executable command.</p>
+<p>The register <code>RSI</code> contains the address of a table of addresses, starting at
+the first item in the list of command-line arguments. In Linux, it will always
+be the name of the program itself.</p>
+<p>Each element in the table of addresses, points to another address. This address
+needs to be read, and the string inside of it will be terminated by a binary 0.</p>
+<p>The value of this string can be obtained via the instructions <code>SCASB</code> (Scan
+String by Byte).</p>
+<pre><code class="language-asm">mov rcx, 0000FFFFh ; Limit search to 65535 bytes max.
 cld ; search direction is set to up-memory.
 repne scasb ; search ofr null (0) in string at RDI.
 jnz Error ; Jump to error if null not found.
 
 ; later
 mov byte [rdi-1], 10 ; Store an EOL where the 0 used to be.
-</code></pre><h2>C calling convention (64bit)</h0>
-<h3>Entrypoint</h0>
+</code></pre>
+<h2>C calling convention (64bit)</h2>
+<h3>Entrypoint</h3>
 <p>Instead of <code>_start</code>, glibc will require the entrypoint to be called <code>main</code>.</p>
-<h3>Function Arguments</h0>
-<p>Passing the first six parameters is done via registers. Any remaining parameters must be passed on the stack.</p>
+<h3>Function Arguments</h3>
+<p>Passing the first six parameters is done via registers. Any remaining
+parameters must be passed on the stack.</p>
 <p>The order of arguments is as follows, it differs from the <code>syscall</code> convention.</p>
-<ol><li>RDI</li><li>RSI</li><li>RDX</li><li>RCX</li><li>R8</li><li>R9</li></ol>
-<h3>Register Clobber</h0>
-<p>Which registers can a function use internally and thus change? The following registers <b>cannot be clobbered</b>. They are also called <b>nonvolatile</b>:</p>
-<h4>Non<ul><li>vvoollaattiillee  rreeggiisstteerrss</h0>
-<ol><li>RSP</li><li>RBP</li><li>RBX</li><li>R12</li><li>R13</li><li>R14</li><li>R15</li></ol>
-<h4>V Voollaattiillee  rreeggiisstteerrss</h0>
-<ol><li>RAX</li><li>RCX</li><li>RDX</li><li>RSI</li><li>RDI</li><li>R8</li><li>R9</li><li>R10</li><li>R11</li></ol>
-<h3>S Sttaacckk  FFrraammee</h0>
- A stack frame is a location on the stack marked as belonging to a particular function.</li></ul>
+<ol>
+<li>RDI</li>
+<li>RSI</li>
+<li>RDX</li>
+<li>RCX</li>
+<li>R8</li>
+<li>R9</li>
+</ol>
+<h3>Register Clobber</h3>
+<p>Which registers can a function use internally and thus change?
+The following registers <strong>cannot be clobbered</strong>. They are also called
+<strong>nonvolatile</strong>:</p>
+<h4>Non-volatile registers</h4>
+<ol>
+<li>RSP</li>
+<li>RBP</li>
+<li>RBX</li>
+<li>R12</li>
+<li>R13</li>
+<li>R14</li>
+<li>R15</li>
+</ol>
+<h4>Volatile registers</h4>
+<ol>
+<li>RAX</li>
+<li>RCX</li>
+<li>RDX</li>
+<li>RSI</li>
+<li>RDI</li>
+<li>R8</li>
+<li>R9</li>
+<li>R10</li>
+<li>R11</li>
+</ol>
+<h3>Stack Frame</h3>
+<p>A stack frame is a location on the stack marked as belonging to a particular
+function.</p>
 <p>Compilers depend on stack frames to create local variables in functions.</p>
-<p>It can be thought as the region between the addresses contained in two registers: The base pointer RBP and stack pointer RSP.</p>
-<p>A stack frame is created by pushing a copy of RBP on the stack, and then coping the stack pointer RSP into register RBP.</p>
-<p>This is why the two first instructions in an assembly program that honours the C calling convention must be:</p>
-<h4>Prolog</h0>
-<pre><code class="language-asm">
-; usually called the program's prolog. Unless it's present,
+<p>It can be thought as the region between the addresses contained in two
+registers: The base pointer RBP and stack pointer RSP.</p>
+<p>A stack frame is created by pushing a copy of RBP on the stack, and then coping
+the stack pointer RSP into register RBP.</p>
+<p>This is why the two first instructions in an assembly program that honours the
+C calling convention must be:</p>
+<h4>Prolog</h4>
+<pre><code class="language-asm">; usually called the program's prolog. Unless it's present,
 ; gdb will not operate correctly.
 
 push rbp
 mov rbp, rsp
-</code></pre><h4>A view of the stack</h0>
-<pre><code class="language-">
-| The Stack | content                                  |
+</code></pre>
+<h4>A view of the stack</h4>
+<pre><code>| The Stack | content                                  |
 |-----------|------------------------------------------|
 | RBP+32    | up-memory                                |
 | RBP+24    | up-memory                                |
@@ -825,33 +1155,53 @@ mov rbp, rsp
 | RBP-40    | temporary storage for function           |
 |  ...      |  ...                                     |
 | RBP-72    | temporary storage RSP points here        |
-</code></pre><h4>Epilog</h0>
+</code></pre>
+<h4>Epilog</h4>
 <p>Used to undo the logic for creating the stack frame.</p>
-<pre><code class="language-asm">
-pop rbp
+<pre><code class="language-asm">pop rbp
 ret
-</code></pre><h4>Stack Alignment</h0>
+</code></pre>
+<h4>Stack Alignment</h4>
 <p>Why are prologs and epilogs important?</p>
-<p>A new requirement in x64 is that the stack must be aligned on a 16 byte boundary.</p>
-<p>What this means is that when you return from a function (like <code>main:</code>), the stack pointer must be pointing at an address evenly divisible by 16.</p>
-<blockquote>*TIP*: Aligned to 16 bytes means that the stack pointer is dividable by 16.</blockquote>
-<blockquote>If you read it in hexadecimal, it means that the last digit is a zero.</blockquote>
+<p>A new requirement in x64 is that the stack must be aligned on a 16 byte
+boundary.</p>
+<p>What this means is that when you return from a function (like <code>main:</code>), the
+stack pointer must be pointing at an address evenly divisible by 16.</p>
+<blockquote>
+<p><em>TIP</em>: Aligned to 16 bytes means that the stack pointer is dividable by 16.
+If you read it in hexadecimal, it means that the last digit is a zero.</p>
+</blockquote>
 <p>Why is this an issue?</p>
-<p>When a procedure is called, the caller pushes the return address onto the stack. A return address is 8 bytes in size (64 bits). But if you access the stack after adding 8 bytes to it (rather than 16 bytes), bad things may happen. Keeping the stack aligned on 16-byte boundaries at all times makes code simpler for a number of things, including the use of SSE vectors when they are stored on the stack.</p>
-<p>When the prolog pushes RBP onto the stack, we now have the return address with 8 bytes, and the content of RBP, 8 bytes totalling 16 bytes.</p>
-<p>The symmetry is repeated when returning from the function, as RBP is popped (8 bytes), and the return instruction also pops the return address back to the stack pointer (8 bytes).</p>
+<p>When a procedure is called, the caller pushes the return address onto the
+stack. A return address is 8 bytes in size (64 bits). But if you access the
+stack after adding 8 bytes to it (rather than 16 bytes), bad things may happen.
+Keeping the stack aligned on 16-byte boundaries at all times makes code simpler
+for a number of things, including the use of SSE vectors when they are stored
+on the stack.</p>
+<p>When the prolog pushes RBP onto the stack, we now have the return address with
+8 bytes, and the content of RBP, 8 bytes totalling 16 bytes.</p>
+<p>The symmetry is repeated when returning from the function, as RBP is popped
+(8 bytes), and the return instruction also pops the return address back to the
+stack pointer (8 bytes).</p>
 <p><code>glibc</code> would have already aligned the stack for you when <code>main</code> took control.</p>
-<p>Ideally, your own procedures should start with the prolog and end with the epilog. If your procedures are simple and don't do much to the stack, you can get away with not using pro/epilog.</p>
-<h5>Addendum to not<ul><li>gglliibbcc  pprrooggrraammss</h0>
- If you are not using <code>glibc</code>, you still have to align the stack:</li></ul>
-<pre><code class="language-asm">
-push rbp
+<p>Ideally, your own procedures should start with the prolog and end with the
+epilog. If your procedures are simple and don't do much to the stack, you can
+get away with not using pro/epilog.</p>
+<h5>Addendum to not-glibc programs</h5>
+<p>If you are not using <code>glibc</code>, you still have to align the stack:</p>
+<pre><code class="language-asm">push rbp
 mov rbp, rsp
 
 ; and the last 4 bits (zeroes)
 and rsp, -16
-</code></pre><p>The epilog becomes then:</p>
-<pre><code class="language-asm">
-mov rsp, rbp
+</code></pre>
+<p>The epilog becomes then:</p>
+<pre><code class="language-asm">mov rsp, rbp
 pop rbp
-</code></pre><p>Another difference when not using <code>glibc</code> is that when returning to Linux, you can't use the <code>ret</code> instruction. You must use the Exit service (60) via SYSCALL.</p>
+</code></pre>
+<p>Another difference when not using <code>glibc</code> is that when returning to Linux, you
+can't use the <code>ret</code> instruction. You must use the Exit service (60) via
+SYSCALL.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

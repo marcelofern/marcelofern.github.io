@@ -60,20 +60,19 @@
 </head>
 <body>
 <p>February 2, 2024</p>
-<h1>Introduction</h0>
+<h1>Introduction</h1>
 <p>Suppose you have the following code:</p>
-<pre><code class="language-python">
-def foo():
-    print("writing data to a temp file")
+<pre><code class="language-python">def foo():
+    print(&quot;writing data to a temp file&quot;)
     # write data here
     # ...
 
-    print("doing some other stuff that raises an exception")
+    print(&quot;doing some other stuff that raises an exception&quot;)
     # ...
     raise ValueError
 
 def remove_temp_file():
-    print("removing temp file")
+    print(&quot;removing temp file&quot;)
     # do removal here
     # ...
 
@@ -81,76 +80,86 @@ try:
     foo()
     remove_temp_file()
 except ValueError:
-    print("doing some logging")
+    print(&quot;doing some logging&quot;)
     # do some logging here
     # ...
     remove_temp_file()
     raise
-</code></pre><p>Note that regardless of succeeding or not, you want the temp file to be cleaned up (removed).</p>
-<h2><code>ffiinnaallllyy`</code></h0>
+</code></pre>
+<p>Note that regardless of succeeding or not, you want the temp file to be
+cleaned up (removed).</p>
+<h2><code>finally</code></h2>
 <p>We can remove some of this duplication by using <code>finally</code></p>
-<pre><code class="language-python">
-def foo():
-    print("writing data to a temp file")
+<pre><code class="language-python">def foo():
+    print(&quot;writing data to a temp file&quot;)
     # write data here
     # ...
 
-    print("doing some other stuff that raises an exception")
+    print(&quot;doing some other stuff that raises an exception&quot;)
     # ...
     raise ValueError
 
 def remove_temp_file():
-    print("removing temp file")
+    print(&quot;removing temp file&quot;)
     # do removal here
     # ...
 
 try:
     foo()
 except ValueError:
-    print("doing some logging")
+    print(&quot;doing some logging&quot;)
     # do some logging here
     # ...
     raise
 finally:
     remove_temp_file()
-</code></pre><p>The <code>finally</code> block will run no matter what. However, it has some special properties. According to the documentation:</p>
-<blockquote>If finally is present, it specifies a ‘cleanup’ handler. The try clause is</blockquote>
-<blockquote>executed, including any except and else clauses. If an exception occurs in</blockquote>
-<blockquote>any of the clauses and is not handled, the exception is temporarily saved.</blockquote>
-<blockquote>The finally clause is executed. If there is a saved exception it is re-raised</blockquote>
-<blockquote>at the end of the finally clause. If the finally clause raises another</blockquote>
-<blockquote>exception, the saved exception is set as the context of the new exception. If</blockquote>
-<blockquote>the finally clause executes a return, break or continue statement, the saved</blockquote>
-<blockquote>exception is discarded.</blockquote>
+</code></pre>
+<p>The <code>finally</code> block will run no matter what. However, it has some special
+properties. According to the documentation:</p>
+<blockquote>
+<p>If finally is present, it specifies a ‘cleanup’ handler. The try clause is
+executed, including any except and else clauses. If an exception occurs in
+any of the clauses and is not handled, the exception is temporarily saved.
+The finally clause is executed. If there is a saved exception it is re-raised
+at the end of the finally clause. If the finally clause raises another
+exception, the saved exception is set as the context of the new exception. If
+the finally clause executes a return, break or continue statement, the saved
+exception is discarded.</p>
+</blockquote>
 <p><a href="https://web.archive.org/web/20240216014110/https://docs.python.org/3/reference/compound_stmts.html">Docs</a></p>
-<p>The catch here is that the code block under <code>finally</code>, will run before the <code>raise</code> exception in the <code>except</code> block runs, but after the code inside the <code>except</code> block.</p>
+<p>The catch here is that the code block under <code>finally</code>, will run before the
+<code>raise</code> exception in the <code>except</code> block runs, but after the code inside the
+<code>except</code> block.</p>
 <p>If we run the code above, we have the following print output:</p>
-<pre><code class="language-">
-writing data to a temp file
+<pre><code>writing data to a temp file
 doing some other stuff that raises an exception
 doing some logging
 removing temp file
-</code></pre><p>Note that if the <code>finally</code> block raised an exception, that exception would take precedence over <code>ValueError</code> being re-raised:</p>
-<pre><code class="language-python">
-try:
+</code></pre>
+<p>Note that if the <code>finally</code> block raised an exception, that exception would
+take precedence over <code>ValueError</code> being re-raised:</p>
+<pre><code class="language-python">try:
     foo()
 except ValueError:
-    print("doing some logging")
+    print(&quot;doing some logging&quot;)
     # do some logging here
     # ...
     raise
 finally:
     remove_temp_file()
-    raise TypeError("error in finally block")
-</code></pre><pre><code class="language-">
-> TypeError: error in finally block
-</code></pre><p>Also note that using <code>break</code> or <code>return</code> will cause the <code>ValueError</code> exception to <b>not be re-raised</b>. This can come as a shock, but it is helpful if you are looping through a lot of try/catch/finally and you don't want any exception to affect your loop.</p>
-<pre><code class="language-">
-def bar():
+    raise TypeError(&quot;error in finally block&quot;)
+</code></pre>
+<pre><code>&gt; TypeError: error in finally block
+</code></pre>
+<p>Also note that using <code>break</code> or <code>return</code> will cause the <code>ValueError</code> exception
+to <strong>not be re-raised</strong>. This can come as a shock, but it is helpful if you
+are looping through a lot of try/catch/finally and you don't want any
+exception to affect your loop.</p>
+<pre><code>def bar():
     try:
         foo()
     except ValueError:
-        print("doing some logging")
+        print(&quot;doing some logging&quot;)
         # do some logging here
         # ...
         raise
@@ -161,3 +170,6 @@ def bar():
 # No exceptions raised
 bar()
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

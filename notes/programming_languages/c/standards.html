@@ -60,23 +60,34 @@
 </head>
 <body>
 <p><code>2024-03-29</code>.</p>
-<p>A brief reference for the differences between C standards. <a href="https://web.archive.org/web/20240327221533/https://en.wikipedia.org/wiki/C_<a href="programming_language">Source</a>#K&R_C)</p>
-<h2>K&R C (1972<ul><li>11998899))</h0>
- Anything before standardisation was called K&R C as per the first edition of the book that was the de facto implementation at the time. The book came out at 1978, so sometimes this implementation is also referred to as C78.</li></ul>
+<p>A brief reference for the differences between C standards.
+<a href="https://web.archive.org/web/20240327221533/https://en.wikipedia.org/wiki/C_(programming_language)#K&amp;R_C">Source</a></p>
+<h2>K&amp;R C (1972-1989)</h2>
+<p>Anything before standardisation was called K&amp;R C as per the first edition of the
+book that was the de facto implementation at the time. The book came out at
+1978, so sometimes this implementation is also referred to as C78.</p>
 <p>The following language features were introduced by the book:</p>
-<ul><li><code>long int</code> data type.</li><li><code>unsigned int</code> data type.</li><li>Compound operators that allow to combine arithmetic operation with assignment were changed from <b>=op</b> to <b>op=</b>. For example, <code>a =+ 1;</code> has become <code>a += 1;</code>. This happened to remove ambiguity. Before, <code>a=-10;</code> meant <code>a =- 10;</code> instead of <code>a = -10;</code></li></ul>
-<p>C functions that returned an <code>int</code> could be declared without the <code>int</code> keyword upfront as it was implicit that they returned int.</p>
-<pre><code class="language-c">
-/* K&R */
+<ul>
+<li><code>long int</code> data type.</li>
+<li><code>unsigned int</code> data type.</li>
+<li>Compound operators that allow to combine arithmetic operation with assignment
+were changed from <strong>=op</strong> to <strong>op=</strong>. For example, <code>a =+ 1;</code> has become <code>a += 1;</code>.
+This happened to remove ambiguity. Before, <code>a=-10;</code> meant <code>a =- 10;</code>
+instead of <code>a = -10;</code></li>
+</ul>
+<p>C functions that returned an <code>int</code> could be declared without the <code>int</code> keyword
+upfront as it was implicit that they returned int.</p>
+<pre><code class="language-c">/* K&amp;R */
 long function_that_returns_long();
 function_that_returns_int();
 
 /* newer standards */
 long function_that_returns_long();
 int function_that_returns_int();
-</code></pre><p>Function declarations also had an implicit <code>int</code> return when the return type was not specified:</p>
-<pre><code class="language-c">
-/* K&R */
+</code></pre>
+<p>Function declarations also had an implicit <code>int</code> return when the return type
+was not specified:</p>
+<pre><code class="language-c">/* K&amp;R */
 function_that_returns_int() {
   return 10;
 }
@@ -85,90 +96,209 @@ function_that_returns_int() {
 int function_that_returns_int() {
   return 10;
 }
-</code></pre><p>Function declarations also didn't include information about function arguments. This means that function parameter type checks were not performed. Some compilers would still raise a warning if the function was called with the wrong number of arguments or if different calls to the same function had different numbers of arguments.</p>
-<p>After the book publication and before C89, several compilers added other features to the language:</p>
-<ul><li><code>void</code> functions.</li><li>Functions returning <code>struct</code> and <code>union</code> types. Prior to that only a pointer (int or float) could be returned.</li><li>Assignment for <code>struct</code> data types.</li><li><code>enum</code> types. Before that, preprocessors were used like <code>#define BLUE 0</code>.</li></ul>
-<h2>C89 (ANSI / ISO C)</h0>
-<p>The goal of this standards was to create a superset of K&R out of the many unofficial features, such as:</p>
-<ul><li>The standard library.</li><li>Function prototypes, including the name and type signature:<pre><code class="language-c">
-/* before (no argument info in declarations) */
+</code></pre>
+<p>Function declarations also didn't include information about function arguments.
+This means that function parameter type checks were not performed. Some
+compilers would still raise a warning if the function was called with the wrong
+number of arguments or if different calls to the same function had different
+numbers of arguments.</p>
+<p>After the book publication and before C89, several compilers added other
+features to the language:</p>
+<ul>
+<li><code>void</code> functions.</li>
+<li>Functions returning <code>struct</code> and <code>union</code> types. Prior to that only a pointer
+(int or float) could be returned.</li>
+<li>Assignment for <code>struct</code> data types.</li>
+<li><code>enum</code> types. Before that, preprocessors were used like <code>#define BLUE 0</code>.</li>
+</ul>
+<h2>C89 (ANSI / ISO C)</h2>
+<p>The goal of this standards was to create a superset of K&amp;R out of the many
+unofficial features, such as:</p>
+<ul>
+<li>The standard library.</li>
+<li>Function prototypes, including the name and type signature:</li>
+</ul>
+<pre><code class="language-c">/* before (no argument info in declarations) */
 long function_that_returns_long();
 
 /* C89 */
 long function_that_returns_long(int a, int b);
-</code></pre></li><li><code>void</code> pointers.</li><li>International character sets and locales.</li><li><code>const</code> qualifier.</li><li>Function prototyping checking, i.e., functions to be declared before they are called.</li><li><code>#error</code> and <code>#pragma</code> directives.</li></ul>
-<h2>C99</h0>
-<p>The following functionalities were introduced in this new version of the standard:</p>
-<ul><li>Intermingled declarations and code. Declaring a variable does not need to be at the top of the function anymore.</li><li>Booleans via <stdbool.h></li><li><code>inline</code> functions. Those are used to suggest (but not mandate) the compiler to inline the body of the function where it is called by performing inline expansion.<pre><code class="language-c">
-inline void swap(int *m, int* n) {
+</code></pre>
+<ul>
+<li><code>void</code> pointers.</li>
+<li>International character sets and locales.</li>
+<li><code>const</code> qualifier.</li>
+<li>Function prototyping checking, i.e., functions to be declared before they are
+called.</li>
+<li><code>#error</code> and <code>#pragma</code> directives.</li>
+</ul>
+<h2>C99</h2>
+<p>The following functionalities were introduced in this new version of the
+standard:</p>
+<ul>
+<li>Intermingled declarations and code. Declaring a variable does not need to be
+at the top of the function anymore.</li>
+<li>Booleans via &lt;stdbool.h&gt;</li>
+<li><code>inline</code> functions. Those are used to suggest (but not mandate) the compiler
+to inline the body of the function where it is called by performing inline
+expansion.</li>
+</ul>
+<pre><code class="language-c">inline void swap(int *m, int* n) {
   int tmp = *m;
   *m = *n;
   *n = tmp;
 }
-</code></pre></li><li>Struct initialisation by field names:<pre><code class="language-c">
-struct point p = { .x = 1, .y = 2 };
-</code></pre></li><li>Compound literals. Like initialising a struct inside a function call:<pre><code class="language-c">
-my_sweet_function_call((struct x) {1, 2});
-</code></pre></li><li>New headers such as <stdbool.h>, <complex.h>, <tgmath.h>, and <inttypes.h>.</li><li>Many data types including: <code>long long int</code> and <code>complex</code>.</li><li>Variable</li><li>length array VLA </li><li> (size defined at runtime). Note that C11 made this an optional feature that may not be supported by certain compilers. However, C23 made it mandatory again! Linus Torvalds made Linux VLA</li><li>free as he reckons the the generated assembly is of lower quality. He prefers to use arrays with pre</li><li>determined sizes instead.<pre><code class="language-c">
-float read_and_process(int n)
+</code></pre>
+<ul>
+<li>Struct initialisation by field names:</li>
+</ul>
+<pre><code class="language-c">struct point p = { .x = 1, .y = 2 };
+</code></pre>
+<ul>
+<li>Compound literals. Like initialising a struct inside a function call:</li>
+</ul>
+<pre><code class="language-c">my_sweet_function_call((struct x) {1, 2});
+</code></pre>
+<ul>
+<li>New headers such as &lt;stdbool.h&gt;, &lt;complex.h&gt;, &lt;tgmath.h&gt;, and &lt;inttypes.h&gt;.</li>
+<li>Many data types including: <code>long long int</code> and <code>complex</code>.</li>
+<li>Variable-length array VLA - (size defined at runtime). Note that C11 made
+this an optional feature that may not be supported by certain compilers.
+However, C23 made it mandatory again! Linus Torvalds made Linux VLA-free as
+he reckons the the generated assembly is of lower quality. He prefers to use
+arrays with pre-determined sizes instead.</li>
+</ul>
+<pre><code class="language-c">float read_and_process(int n)
 {
     float vals[n];
 
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i &lt; n; ++i)
         vals[i] = read_val();
 
     return process(n, vals);
 }
-</code></pre></li><li>Along with the above the keyword <code>static</code> in array indices in parameter declarations was added. The below indicates that the array size is determined by the params <code>rows</code> and <code>cols</code>:<pre><code class="language-c">
-void function(int rows, int cols, int array[static rows][cols]) {
+</code></pre>
+<ul>
+<li>Along with the above the keyword <code>static</code> in array indices in parameter
+declarations was added. The below indicates that the array size is determined
+by the params <code>rows</code> and <code>cols</code>:</li>
+</ul>
+<pre><code class="language-c">void function(int rows, int cols, int array[static rows][cols]) {
     // Function implementation
 }
-</code></pre></li><li>Flexible array members:<pre><code class="language-c">
-struct vectord {
+</code></pre>
+<ul>
+<li>Flexible array members:</li>
+</ul>
+<pre><code class="language-c">struct vectord {
     short len;    // there must be at least one other data member
     double arr[]; // the flexible array member must be last.
     // The compiler may reserve extra padding space here, like it can between struct members
 };
-</code></pre></li><li>Variadic macros</li><li>Support for one</li><li>line comments starting with <code>//</code>.</li><li>Support for identifiers using unicode in the form of escaped characters like<code>\u0040</code> .</li><li><code>restrict</code> qualification allows more aggressive code optimization, removing compile</li><li>time array access advantages previously held by FORTRAN over ANSI C. This is used to tell the compiler two pointers don't point to the same address in memory. With that, the compiler can aggressively optimise the code as it knows pointers won't be aliased (overlapped in memory).<pre><code class="language-c">
-void update(int *restrict a, int *restrict b, int n) {
+</code></pre>
+<ul>
+<li>Variadic macros</li>
+<li>Support for one-line comments starting with <code>//</code>.</li>
+<li>Support for identifiers using unicode in the form of escaped characters like
+<code>\u0040</code>.</li>
+<li><code>restrict</code> qualification allows more aggressive code optimization, removing
+compile-time array access advantages previously held by FORTRAN over ANSI C.
+This is used to tell the compiler two pointers don't point to the same
+address in memory. With that, the compiler can aggressively optimise the code
+as it knows pointers won't be aliased (overlapped in memory).</li>
+</ul>
+<pre><code class="language-c">void update(int *restrict a, int *restrict b, int n) {
     // Using 'restrict' keyword to indicate no aliasing
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i &lt; n; i++) {
         a[i] += b[i];
     }
 }
-</code></pre></li></ul>
-<h2>C11</h0>
-<ul><li><code>_Noreturn</code> this specifier informs the compiler that once the function is called, it will never return control to the calling function. The <stdnoreturn.h> header provides the <code>_Noreturn</code> keyword for compilers that don't support the C11 standard but still want to use this feature.</li><li>Alignment (<code>_Alignas</code> specifier, <code>_Alignof</code> operator, <code>aligned_alloc</code> function, <stdalign.h>). These can be helpful when optimising performance in SIMD (Single Instruction, Multiple Data) programming or dealing with hardware</li><li>specific requirements.<pre><code class="language-c">
-// Align the array to a 16-byte boundary.
+</code></pre>
+<h2>C11</h2>
+<ul>
+<li><code>_Noreturn</code> this specifier informs the compiler that once the function is
+called, it will never return control to the calling function. The
+&lt;stdnoreturn.h&gt; header provides the <code>_Noreturn</code> keyword for compilers that
+don't support the C11 standard but still want to use this feature.</li>
+<li>Alignment (<code>_Alignas</code> specifier, <code>_Alignof</code> operator, <code>aligned_alloc</code>
+function, &lt;stdalign.h&gt;). These can be helpful when optimising performance in
+SIMD (Single Instruction, Multiple Data) programming or dealing with
+hardware-specific requirements.</li>
+</ul>
+<pre><code class="language-c">// Align the array to a 16-byte boundary.
 _Alignas(16) char aligned_array[32];
 
 // Get the alignment requirement of a data type.
-printf("Alignment of int: %zu\n", _Alignof(int));
+printf(&quot;Alignment of int: %zu\n&quot;, _Alignof(int));
 
 // Allocate 32 bytes of memory aligned to a 16-byte boundary
 void *ptr = aligned_alloc(16, 32);
 
-// <stdalign.h> header provides similar functionality:
+// &lt;stdalign.h&gt; header provides similar functionality:
 alignas(16) char aligned_array[32];
-printf("Alignment of aligned_array: %zu\n", alignof(aligned_array));
-</code></pre></li><li>Type</li><li>generic expressions using the <code>_Generic</code> keyword.<pre><code class="language-c">
-#define print_value(x) _Generic((x), \
-    int:    printf("%d\n", x), \
-    float:  printf("%f\n", x), \
-    double: printf("%lf\n", x), \
-    default: printf("Unsupported type\n") \
+printf(&quot;Alignment of aligned_array: %zu\n&quot;, alignof(aligned_array));
+</code></pre>
+<ul>
+<li>Type-generic expressions using the <code>_Generic</code> keyword.</li>
+</ul>
+<pre><code class="language-c">#define print_value(x) _Generic((x), \
+    int:    printf(&quot;%d\n&quot;, x), \
+    float:  printf(&quot;%f\n&quot;, x), \
+    double: printf(&quot;%lf\n&quot;, x), \
+    default: printf(&quot;Unsupported type\n&quot;) \
 )
-</code></pre></li><li>Multi</li><li>threading support via <code>_Thread_local</code> storage</li><li>class specifier and <threads.h> header.</li><li>Atomic operations to avoid race conditions from threads via <stdatomic.h></li><li>Removal of the gets function (in favour of safer fgets), which was deprecated in the previous C language standard revision</li><li>Bounds</li><li>checking interfaces (Annex K). Annex K introduces functions like<code>memcpy_s</code> , <code>memmove_s</code>, <code>strcpy_s</code>, <code>strncpy_s</code>, and others with the <code>_s</code> suffix, which perform bounds</li><li>checking for array accesses. These functions typically take additional parameters specifying the size of the destination buffer to ensure that the copy operation does not exceed the buffer size. These changes remain controversial and they haven't been widely implemented.</li><li>Analysability features (Annex L). Annex L adds the <code>_Static_assert</code> keyword, allowing programmers to embed compile</li><li>time assertions directly into their code. There is also the library <assert.h> to that end, with the function<code>static_assert</code> .</li><li>Anonymous structures and unions, useful when unions and structures are nested, e.g.<pre><code class="language-c">
-struct T { int tag; union { float x; int n; }; };
-</code></pre></li><li>The <code>quick_exit</code> function as a third way to terminate a program, intended to do at least minimal deinitialisation.</li><li>Macros for the construction of complex values (partly because <code>real + imaginary*I</code> might not yield the expected value if imaginary is infinite or NaN).</li></ul>
-<h2>C17</h0>
-<p>C17 fixes numerous minor defects in C11 without introducing new language features.</p>
-<h2>(Extra) Embedded C</h0>
-<blockquote>Embedded C is a set of language extensions for the C programming language by</blockquote>
-<blockquote>the C Standards Committee to address commonality issues that exist between C</blockquote>
-<blockquote>extensions for different embedded systems.</blockquote>
+</code></pre>
+<ul>
+<li>Multi-threading support via <code>_Thread_local</code> storage-class specifier and
+&lt;threads.h&gt; header.</li>
+<li>Atomic operations to avoid race conditions from threads via &lt;stdatomic.h&gt;</li>
+<li>Removal of the gets function (in favour of safer fgets), which was deprecated
+in the previous C language standard revision</li>
+<li>Bounds-checking interfaces (Annex K). Annex K introduces functions like
+<code>memcpy_s</code>, <code>memmove_s</code>, <code>strcpy_s</code>, <code>strncpy_s</code>, and others with the <code>_s</code>
+suffix, which perform bounds-checking for array accesses. These functions
+typically take additional parameters specifying the size of the destination
+buffer to ensure that the copy operation does not exceed the buffer size.
+These changes remain controversial and they haven't been widely implemented.</li>
+<li>Analysability features (Annex L). Annex L adds the <code>_Static_assert</code> keyword,
+allowing programmers to embed compile-time assertions directly into their
+code. There is also the library &lt;assert.h&gt; to that end, with the function
+<code>static_assert</code>.</li>
+<li>Anonymous structures and unions, useful when unions and structures are
+nested, e.g.</li>
+</ul>
+<pre><code class="language-c">struct T { int tag; union { float x; int n; }; };
+</code></pre>
+<ul>
+<li>The <code>quick_exit</code> function as a third way to terminate a program, intended to
+do at least minimal deinitialisation.</li>
+<li>Macros for the construction of complex values (partly because <code>real + imaginary*I</code>
+might not yield the expected value if imaginary is infinite or NaN).</li>
+</ul>
+<h2>C17</h2>
+<p>C17 fixes numerous minor defects in C11 without introducing new language
+features.</p>
+<h2>(Extra) Embedded C</h2>
+<blockquote>
+<p>Embedded C is a set of language extensions for the C programming language by
+the C Standards Committee to address commonality issues that exist between C
+extensions for different embedded systems.</p>
+</blockquote>
 <p>These include:</p>
-<ul><li>Fixed</li><li>point arithmetic.This is a method of representing fractional (non</li><li>integer) numbers by storing a fixed number of digits of their fractional part. This is less demanding computationally than using float numbers.<blockquote>M Maannyy  eemmbbeeddddeedd  pprroocceessssoorrss  llaacckk  aann  FFPPUU,,  bbeeccaauussee  iinntteeggeerr  aarriitthhmmeettiicc  uunniittss</blockquote>
-<blockquote>rreeqquuiirree  ssuubbssttaannttiiaallllyy  ffeewweerr  llooggiicc  ggaatteess  aanndd  ccoonnssuummee  mmuucchh  ssmmaalllleerr  cchhiipp  aarreeaa</blockquote>
-<blockquote>tthhaann  aann  FFPPUU</blockquote>
-</li><li> Memory banks (hardware dependent unit of storage).</li><li>Basic I/O operations.</li></ul>
+<ul>
+<li>Fixed-point arithmetic.This is a method of representing fractional
+(non-integer) numbers by storing a fixed number of digits of their fractional
+part. This is less demanding computationally than using float numbers.</li>
+</ul>
+<blockquote>
+<p>Many embedded processors lack an FPU, because integer arithmetic units
+require substantially fewer logic gates and consume much smaller chip area
+than an FPU</p>
+</blockquote>
+<ul>
+<li>Memory banks (hardware dependent unit of storage).</li>
+<li>Basic I/O operations.</li>
+</ul>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

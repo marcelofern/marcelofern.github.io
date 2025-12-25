@@ -59,11 +59,14 @@
   <![endif]-->
 </head>
 <body>
-<h1>Changing the precision of a field without downtime</h0>
+<h1>Changing the precision of a field without downtime</h1>
 <p>The numeric type is defined as <code>NUMERIC(precision, scale)</code></p>
-<ul><li>The <b>precision</b> is how many significant digits there are in the number, before or after the comma.</li><li>The <b>scale</b> is the count of decimal digits in the fractional part.</li></ul>
-<pre><code class="language-sql">
-CREATE DATABASE test_precision_field;
+<ul>
+<li>The <strong>precision</strong> is how many significant digits there are in the number,
+before or after the comma.</li>
+<li>The <strong>scale</strong> is the count of decimal digits in the fractional part.</li>
+</ul>
+<pre><code class="language-sql">CREATE DATABASE test_precision_field;
 -- \c test_precision_field
 
 SET client_min_messages=debug1;
@@ -81,24 +84,35 @@ ALTER TABLE foo ALTER COLUMN bar TYPE numeric(20, 2);
 -- Only decrease the precision but keep the scale:
 -- This is not safe and it rewrites the table.
 ALTER TABLE foo ALTER COLUMN bar TYPE numeric(10, 2);
--- DEBUG:  rewriting table "foo"
--- DEBUG:  building index "foo_pkey" on table "foo" serially
--- DEBUG:  index "foo_pkey" can safely use deduplication
+-- DEBUG:  rewriting table &quot;foo&quot;
+-- DEBUG:  building index &quot;foo_pkey&quot; on table &quot;foo&quot; serially
+-- DEBUG:  index &quot;foo_pkey&quot; can safely use deduplication
 
 -- Only increase the scale, but keep the precision:
 -- This is not safe and it rewrites the table.
 ALTER TABLE foo ALTER COLUMN bar TYPE numeric(10, 4);
--- DEBUG:  rewriting table "foo"
--- DEBUG:  building index "foo_pkey" on table "foo" serially
--- DEBUG:  index "foo_pkey" can safely use deduplication
+-- DEBUG:  rewriting table &quot;foo&quot;
+-- DEBUG:  building index &quot;foo_pkey&quot; on table &quot;foo&quot; serially
+-- DEBUG:  index &quot;foo_pkey&quot; can safely use deduplication
 
 -- Only decrease the scale, but keep the precision:
 -- This is not safe and it rewrites the table.
 ALTER TABLE foo ALTER COLUMN bar TYPE numeric(10, 2);
--- DEBUG:  rewriting table "foo"
--- DEBUG:  building index "foo_pkey" on table "foo" serially
--- DEBUG:  index "foo_pkey" can safely use deduplication
-</code></pre><h2>Details</h0>
-<p>The first few hundred lines of comments in the following source file provide a lot of important information:</p>
-<ul><li>https://github.com/postgres/postgres/blob/c4067383cb2c155c4cfea2351036709e2ebb3535/src/backend/utils/adt/numeric.c</li></ul>
-<p>More precisely: - https://github.com/postgres/postgres/blob/c4067383cb2c155c4cfea2351036709e2ebb3535/src/backend/utils/adt/numeric.c#L1213 <code>numeric_support</code> is used to defined whether the ALTER TABLE needs to rewrite the table or not.</p>
+-- DEBUG:  rewriting table &quot;foo&quot;
+-- DEBUG:  building index &quot;foo_pkey&quot; on table &quot;foo&quot; serially
+-- DEBUG:  index &quot;foo_pkey&quot; can safely use deduplication
+</code></pre>
+<h2>Details</h2>
+<p>The first few hundred lines of comments in the following source file provide a
+lot of important information:</p>
+<ul>
+<li>https://github.com/postgres/postgres/blob/c4067383cb2c155c4cfea2351036709e2ebb3535/src/backend/utils/adt/numeric.c</li>
+</ul>
+<p>More precisely:</p>
+<ul>
+<li>https://github.com/postgres/postgres/blob/c4067383cb2c155c4cfea2351036709e2ebb3535/src/backend/utils/adt/numeric.c#L1213
+<code>numeric_support</code> is used to defined whether the ALTER TABLE needs to rewrite the table or not.</li>
+</ul>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

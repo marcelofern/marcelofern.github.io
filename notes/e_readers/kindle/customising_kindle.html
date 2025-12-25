@@ -59,84 +59,165 @@
   <![endif]-->
 </head>
 <body>
-<h1>Customising Kindle</h0>
-<pre><code class="language-">
-Created at: 2025-04-10
-</code></pre><h2>Kindle paperwhite 11th generation</h0>
+<h1>Customising Kindle</h1>
+<pre><code>Created at: 2025-04-10
+</code></pre>
+<h2>Kindle paperwhite 11th generation</h2>
 <p>Note: Most of this information is available in <code>https://kindlemodding.org/</code>.</p>
-<ol><li>The nickname for the kindle is <code>PW5</code>.</li><li>The recommended jailbreak is <code>WinterBreak < 5.18.1</code>.</li><li>The Kindle must have been connected to wifi and have a saved wifi.</li><li>Download the WinterBreak patch.</li><li>Extract it: <code>tar xf WinterBreak.tar.gz</code>.</li><li>Note that there are hidden files (.github).</li><li>Turn airplane mode on.</li><li>Reboot the Kindle (hold the power button for a while and choose Restart).</li><li>Connect the Kindle to your PC.</li><li>Run the following script to mount the Kindle and copy the relevant files.<pre><code class="language-sh">
-   WINTER_BREAK_FOLDER=~/Downloads
-   DEVICE=/dev/sda
-   sudo mkdir /mnt/kindle
-   sudo mount $DEVICE /mnt/kindle
+<ol>
+<li>The nickname for the kindle is <code>PW5</code>.</li>
+<li>The recommended jailbreak is <code>WinterBreak &lt; 5.18.1</code>.</li>
+<li>The Kindle must have been connected to wifi and have a saved wifi.</li>
+<li>Download the WinterBreak patch.</li>
+<li>Extract it: <code>tar xf WinterBreak.tar.gz</code>.</li>
+<li>Note that there are hidden files (.github).</li>
+<li>Turn airplane mode on.</li>
+<li>Reboot the Kindle (hold the power button for a while and choose Restart).</li>
+<li>Connect the Kindle to your PC.</li>
+<li>Run the following script to mount the Kindle and copy the relevant files.</li>
+</ol>
+<pre><code class="language-sh">WINTER_BREAK_FOLDER=~/Downloads
+DEVICE=/dev/sda
+sudo mkdir /mnt/kindle
+sudo mount $DEVICE /mnt/kindle
 
-   cd $WINTER_BREAK_FOLDER
-   sudo cp -r .active_content_sandbox /mnt/kindle
-   sudo cp -r apps /mnt/kindle
-   sudo cp jb.sh /mnt/kindle
-   sudo cp -r mesquito /mnt/kindle
-   sudo cp patchedUks.sqsh /mnt/kindle
-   </code></pre></li><li>Eject the kindle from the PC, and then umount it:<pre><code class="language-sh">
-   sudo umount /mnt/kindle
-   sudo rm -rf /mnt/kindle
-   </code></pre></li><li>Open the Kindle Store (cart icon in the home screen).</li><li>When prompted to turn off airplane mode, tap yes.</li><li>Click on the WinterBreak icon when it loads.</li><li>Wait for the jailbreak to finish (it is very fast).</li><li>Turn airplane mode on again.</li><li>Download the hotfix <code>.bin</code> in the website.</li><li>Plug the kindle onto the PC.</li><li>Move the hotfix to the Kindle root directory.<pre><code class="language-sh">
-    HOTFIX_FOLDER=~/Downloads
-    DEVICE=/dev/sda
-    sudo mkdir /mnt/kindle
-    sudo mount $DEVICE /mnt/kindle
+cd $WINTER_BREAK_FOLDER
+sudo cp -r .active_content_sandbox /mnt/kindle
+sudo cp -r apps /mnt/kindle
+sudo cp jb.sh /mnt/kindle
+sudo cp -r mesquito /mnt/kindle
+sudo cp patchedUks.sqsh /mnt/kindle
+</code></pre>
+<ol start="11">
+<li>Eject the kindle from the PC, and then umount it:</li>
+</ol>
+<pre><code class="language-sh">sudo umount /mnt/kindle
+sudo rm -rf /mnt/kindle
+</code></pre>
+<ol start="12">
+<li>Open the Kindle Store (cart icon in the home screen).</li>
+<li>When prompted to turn off airplane mode, tap yes.</li>
+<li>Click on the WinterBreak icon when it loads.</li>
+<li>Wait for the jailbreak to finish (it is very fast).</li>
+<li>Turn airplane mode on again.</li>
+<li>Download the hotfix <code>.bin</code> in the website.</li>
+<li>Plug the kindle onto the PC.</li>
+<li>Move the hotfix to the Kindle root directory.<pre><code class="language-sh">HOTFIX_FOLDER=~/Downloads
+DEVICE=/dev/sda
+sudo mkdir /mnt/kindle
+sudo mount $DEVICE /mnt/kindle
 
-    cd $HOTFIX_FOLDER
-    sudo cp Update_hotfix_universal.bin /mnt/kindle
-    </code></pre></li><li>Eject the kindle from the PC, and then umount it:<pre><code class="language-sh">
-   sudo umount /mnt/kindle
-   sudo rm -rf /mnt/kindle
-   </code></pre></li><li>Tap the three dots, and go to settings.</li><li>Tap the three dots again and select "Update Your Kindle".</li><li>Tap "Update".</li><li>Once the hotfix is installed, you have to run it.</li><li>Select the hotfix from the home library (Run Hotfix or Run Bridge). NOTE: You will need to run the hotfix booklet after every OTA update.</li><li>You will need to install KUAL (Kindle Unified Application Launcher) and MRPI (MobileRead Package Installer) to run homebrew on your Kindle.</li><li>Download MRPI from the website.</li><li><code>tar xf kual-mrinstaller-khf.tar.xz</code></li><li>Download Kual (Coplate)</li><li>Connect your kindle to your pc and copy the relevant files to your kindle<pre><code class="language-sh">
-    FILES_FOLDER=~/Downloads
-    DEVICE=/dev/sda
-    sudo mkdir /mnt/kindle
-    sudo mount $DEVICE /mnt/kindle
+cd $HOTFIX_FOLDER
+sudo cp Update_hotfix_universal.bin /mnt/kindle
+</code></pre>
+</li>
+<li>Eject the kindle from the PC, and then umount it:</li>
+</ol>
+<pre><code class="language-sh">sudo umount /mnt/kindle
+sudo rm -rf /mnt/kindle
+</code></pre>
+<ol start="21">
+<li>Tap the three dots, and go to settings.</li>
+<li>Tap the three dots again and select &quot;Update Your Kindle&quot;.</li>
+<li>Tap &quot;Update&quot;.</li>
+<li>Once the hotfix is installed, you have to run it.</li>
+<li>Select the hotfix from the home library (Run Hotfix or Run Bridge). NOTE:
+You will need to run the hotfix booklet after every OTA update.</li>
+<li>You will need to install KUAL (Kindle Unified Application Launcher) and
+MRPI (MobileRead Package Installer) to run homebrew on your Kindle.</li>
+<li>Download MRPI from the website.</li>
+<li><code>tar xf kual-mrinstaller-khf.tar.xz</code></li>
+<li>Download Kual (Coplate)</li>
+<li>Connect your kindle to your pc and copy the relevant files to your kindle<pre><code class="language-sh">FILES_FOLDER=~/Downloads
+DEVICE=/dev/sda
+sudo mkdir /mnt/kindle
+sudo mount $DEVICE /mnt/kindle
 
-    cd $FILES_FOLDER
-    sudo cp -r extensions /mnt/kindle
-    sudo cp -r mrpackages /mnt/kindle
-    sudo cp -r Update_KUALBooklet_ALLDEVICES_KS2_install.bin /mnt/kindle/mrpackages
-    </code></pre></li><li>Eject the kindle from the PC, and then umount it:<pre><code class="language-sh">
-   sudo umount /mnt/kindle
-   sudo rm -rf /mnt/kindle
-   </code></pre></li><li>On the Kindle search bar, type: <code>;log mrpi</code> and hit enter.</li><li>It didn't work, so download KUAL again, but put it in the root directory<pre><code class="language-sh">
-    FILES_FOLDER=~/Downloads
-    DEVICE=/dev/sda
-    sudo mkdir /mnt/kindle
-    sudo mount $DEVICE /mnt/kindle
+cd $FILES_FOLDER
+sudo cp -r extensions /mnt/kindle
+sudo cp -r mrpackages /mnt/kindle
+sudo cp -r Update_KUALBooklet_ALLDEVICES_KS2_install.bin /mnt/kindle/mrpackages
+</code></pre>
+</li>
+<li>Eject the kindle from the PC, and then umount it:</li>
+</ol>
+<pre><code class="language-sh">sudo umount /mnt/kindle
+sudo rm -rf /mnt/kindle
+</code></pre>
+<ol start="32">
+<li>On the Kindle search bar, type: <code>;log mrpi</code> and hit enter.</li>
+<li>It didn't work, so download KUAL again, but put it in the root directory<pre><code class="language-sh">FILES_FOLDER=~/Downloads
+DEVICE=/dev/sda
+sudo mkdir /mnt/kindle
+sudo mount $DEVICE /mnt/kindle
 
-    cd $FILES_FOLDER
-    sudo cp -r Update_KUALBooklet_ALLDEVICES_KS2_install.bin /mnt/kindle/
-    </code></pre></li><li>Eject the kindle from the PC, and then umount it:<pre><code class="language-sh">
-   sudo umount /mnt/kindle
-   sudo rm -rf /mnt/kindle
-   </code></pre></li><li>Go to settings <ul><li>> update kindle. Wait a bit</li><li>Now tap the KUAL file, you can see your extensions there.</li><li>Disable OTA updates so that once you enable wifi amazon doesn't try to remove the jailbreak. Follow on next steps.</li><li>Find the firmware version: Home → Menu → Settings → Menu → Device Info</li><li>In my case: Kindle 5.17.1.0.3 (4351900007) - 70971</li><li>Download the <code>renameotabin</code> extension.</li><li>Plug kindle to the PC and Copy the renameotabin folder from the zip to the<code>extensions/</code> folder on your Kindle.<pre><code class="language-sh">
-    FILES_FOLDER=~/Downloads
-    DEVICE=/dev/sda
-    sudo mkdir /mnt/kindle
-    sudo mount $DEVICE /mnt/kindle
+cd $FILES_FOLDER
+sudo cp -r Update_KUALBooklet_ALLDEVICES_KS2_install.bin /mnt/kindle/
+</code></pre>
+</li>
+<li>Eject the kindle from the PC, and then umount it:</li>
+</ol>
+<pre><code class="language-sh">sudo umount /mnt/kindle
+sudo rm -rf /mnt/kindle
+</code></pre>
+<ol start="35">
+<li>Go to settings -&gt; update kindle. Wait a bit</li>
+<li>Now tap the KUAL file, you can see your extensions there.</li>
+<li>Disable OTA updates so that once you enable wifi amazon doesn't try to
+remove the jailbreak. Follow on next steps.</li>
+<li>Find the firmware version: Home → Menu → Settings → Menu → Device Info</li>
+<li>In my case: Kindle 5.17.1.0.3 (4351900007) - 70971</li>
+<li>Download the <code>renameotabin</code> extension.</li>
+<li>Plug kindle to the PC and Copy the renameotabin folder from the zip to the
+<code>extensions/</code> folder on your Kindle.<pre><code class="language-sh">FILES_FOLDER=~/Downloads
+DEVICE=/dev/sda
+sudo mkdir /mnt/kindle
+sudo mount $DEVICE /mnt/kindle
 
-    cd $FILES_FOLDER
-    sudo cp -r renameotabin /mnt/kindle/extensions
-    </code></pre></li><li>Eject the kindle from the PC, and then umount it:<pre><code class="language-sh">
-   sudo umount /mnt/kindle
-   sudo rm -rf /mnt/kindle
-   </code></pre></li><li>Open the KUAL application launcher</li><li>Tap "Rename OTA binaries"</li><li>Select "Rename" and wait for the Kindle to reboot.</li><li>You can now safely turn off Airplane Mode and re-enable WiFi. Your Kindle will connect to the internet but will not download or install OTA updates.</li><li>Download KOReader (https://github.com/koreader/koreader/releases) for my firmware that meant the <code>kindlehf</code> version.</li><li>Plug kindle to the PC and Copy the <code>extensions</code> and <code>koreader</code> to the root<pre><code class="language-sh">
-    FILES_FOLDER=~/Downloads
-    DEVICE=/dev/sda
-    sudo mkdir /mnt/kindle
-    sudo mount $DEVICE /mnt/kindle
+cd $FILES_FOLDER
+sudo cp -r renameotabin /mnt/kindle/extensions
+</code></pre>
+</li>
+<li>Eject the kindle from the PC, and then umount it:</li>
+</ol>
+<pre><code class="language-sh">sudo umount /mnt/kindle
+sudo rm -rf /mnt/kindle
+</code></pre>
+<ol start="43">
+<li>Open the KUAL application launcher</li>
+<li>Tap &quot;Rename OTA binaries&quot;</li>
+<li>Select &quot;Rename&quot; and wait for the Kindle to reboot.</li>
+<li>You can now safely turn off Airplane Mode and re-enable WiFi. Your Kindle
+will connect to the internet but will not download or install OTA updates.</li>
+<li>Download KOReader (https://github.com/koreader/koreader/releases) for my
+firmware that meant the <code>kindlehf</code> version.</li>
+<li>Plug kindle to the PC and Copy the <code>extensions</code> and <code>koreader</code> to the root<pre><code class="language-sh">FILES_FOLDER=~/Downloads
+DEVICE=/dev/sda
+sudo mkdir /mnt/kindle
+sudo mount $DEVICE /mnt/kindle
 
-    cd $FILES_FOLDER
-    sudo cp -r extensions/koreader /mnt/kindle/extensions
-    sudo cp -r koreader /mnt/kindle/
-    </code></pre></li><li>Eject the kindle from the PC, and then umount it:<pre><code class="language-sh">
-   sudo umount /mnt/kindle
-   sudo rm -rf /mnt/kindle
-   </code></pre> Notes: - Start KOReader: The designed way to start KOReader - Start KOReader (no framework): Temporarily "kills" the Kindle UI to allocate more resources to KOReader. - Start KOReader (ASAP): Skips a couple of checks and starts KOReader as soon as possible </li></ol>
-<h2>R Reesseettttiinngg</h0>
- If you want to factory reset, downgrade or update your Kindle, you will need to restore the binary by opening KUAL, selecting Rename OTA Binaries and then selecting Restore instead of rename.</li></ul>
+cd $FILES_FOLDER
+sudo cp -r extensions/koreader /mnt/kindle/extensions
+sudo cp -r koreader /mnt/kindle/
+</code></pre>
+</li>
+<li>Eject the kindle from the PC, and then umount it:</li>
+</ol>
+<pre><code class="language-sh">sudo umount /mnt/kindle
+sudo rm -rf /mnt/kindle
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Start KOReader: The designed way to start KOReader</li>
+<li>Start KOReader (no framework): Temporarily &quot;kills&quot; the Kindle UI to
+allocate more resources to KOReader.</li>
+<li>Start KOReader (ASAP): Skips a couple of checks and starts KOReader as
+soon as possible</li>
+</ul>
+<h2>Resetting</h2>
+<p>If you want to factory reset, downgrade or update your Kindle, you will need to
+restore the binary by opening KUAL, selecting Rename OTA Binaries and then
+selecting Restore instead of rename.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

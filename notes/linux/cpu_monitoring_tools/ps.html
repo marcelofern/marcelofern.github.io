@@ -59,26 +59,32 @@
   <![endif]-->
 </head>
 <body>
-<h1>ps</h0>
-<pre><code class="language-">
-Created at: 2024-11-12
-</code></pre><p>ps(1): displays information about a selection of the active processes.  If you want a repetitive update of the selection and the displayed information, use top instead.</p>
-<p>This command is often used with "aux" which shows every process in the system using the BSD syntax</p>
-<pre><code class="language-sh">
-$ ps aux
+<h1>ps</h1>
+<pre><code>Created at: 2024-11-12
+</code></pre>
+<p>ps(1): displays information about a selection of the active processes.  If you
+want a repetitive update of the selection and the displayed information, use
+top instead.</p>
+<p>This command is often used with &quot;aux&quot; which shows every process in the system
+using the BSD syntax</p>
+<pre><code class="language-sh">$ ps aux
 USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 root           1  0.1  0.1  20912 12332 ?        Ss   18:32   0:00 /sbin/init
 root           2  0.0  0.0      0     0 ?        S    18:32   0:00 [kthreadd]
 root           3  0.0  0.0      0     0 ?        S    18:32   0:00 [pool_workqueue_release]
-root           4  0.0  0.0      0     0 ?        I<   18:32   0:00 [kworker/R-rcu_g]
-root           5  0.0  0.0      0     0 ?        I<   18:32   0:00 [kworker/R-rcu_p]
-root           6  0.0  0.0      0     0 ?        I<   18:32   0:00 [kworker/R-slub_]
-root           7  0.0  0.0      0     0 ?        I<   18:32   0:00 [kworker/R-netns]
-</code></pre><p>Keep an eye on TIME and CPU. The TIME column shows the total time the process has taken (usr + sys) since it started (hours:minutes:seconds)</p>
-<p>On Linux, the %CPU column shows the average CPU utilization over the lifetime of the process, summed across all CPUs. A single-threaded process that has always been CPU-bound will report 100%. A two-thread CPU-bound process will report 200%.</p>
-<p>I also like to see the process tree, with the "axjf" flags</p>
-<pre><code class="language-sh">
-$ ps axjf
+root           4  0.0  0.0      0     0 ?        I&lt;   18:32   0:00 [kworker/R-rcu_g]
+root           5  0.0  0.0      0     0 ?        I&lt;   18:32   0:00 [kworker/R-rcu_p]
+root           6  0.0  0.0      0     0 ?        I&lt;   18:32   0:00 [kworker/R-slub_]
+root           7  0.0  0.0      0     0 ?        I&lt;   18:32   0:00 [kworker/R-netns]
+</code></pre>
+<p>Keep an eye on TIME and CPU. The TIME column shows the total time the process
+has taken (usr + sys) since it started (hours:minutes:seconds)</p>
+<p>On Linux, the %CPU column shows the average CPU utilization over the lifetime
+of the process, summed across all CPUs. A single-threaded process that has
+always been CPU-bound will report 100%. A two-thread CPU-bound process will
+report 200%.</p>
+<p>I also like to see the process tree, with the &quot;axjf&quot; flags</p>
+<pre><code class="language-sh">$ ps axjf
 [...]
    1234    1249    1234    1188 tty1        1234 S+    1000   0:00          \_ xinit /home/x/.xinitrc -- /etc/X11/xinit/xserverrc :0 vt1 -keeptty -auth /tmp/serverauth.EsSj52Gm3D
    1249    1250    1250    1188 tty1        1234 Sl    1000   1:00              \_ /usr/lib/Xorg -nolisten tcp :0 vt1 -keeptty -auth /tmp/serverauth.EsSj52Gm3D
@@ -90,3 +96,6 @@ $ ps axjf
    1359    1395    1395    1395 pts/1       1395 Ss+   1000   0:00                  |   \_ /usr/bin/bash
 [...]
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

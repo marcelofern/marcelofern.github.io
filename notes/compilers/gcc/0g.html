@@ -59,88 +59,109 @@
   <![endif]-->
 </head>
 <body>
-<h1><ul><li>00gg</h0>
- The first time I've heard of this flag was while reading "Computer Systems, a Programmer's Approach". Before that, I've always just used plain <code>-g</code>.</li></ul>
+<h1>-0g</h1>
+<p>The first time I've heard of this flag was while reading &quot;Computer Systems, a
+Programmer's Approach&quot;. Before that, I've always just used plain <code>-g</code>.</p>
 <p>According to the man pages:</p>
-<blockquote>If you are not using some other optimization option, consider using -Og with</blockquote>
-<blockquote>-g.  With no -O option at all, some compiler passes that collect information</blockquote>
-<blockquote>useful for debugging do not run at all, so that -Og may result in a better</blockquote>
-<blockquote>debugging experience.</blockquote>
-<blockquote>Most optimizations are completely disabled at -O0 or if an -O level is not</blockquote>
-<blockquote>set on the command line, even if individual optimization flags are specified.</blockquote>
-<blockquote>Similarly, -Og suppresses many optimization passes.</blockquote>
-<blockquote>-Og should be the optimization level of choice for the standard</blockquote>
-<blockquote>edit-compile-debug cycle, offering a reasonable level of optimization while</blockquote>
-<blockquote>maintaining fast compilation and a good debugging experience.  It is a better</blockquote>
-<blockquote>choice than -O0 for producing debuggable code because some compiler passes</blockquote>
-<blockquote>that collect debug information are disabled at -O0.</blockquote>
-<blockquote>Like -O0, -Og completely disables a number of optimization passes so that</blockquote>
-<blockquote>individual options controlling them have no effect.  Otherwise -Og enables</blockquote>
-<blockquote>all -O1 optimization flags except for those that may interfere with</blockquote>
-<blockquote>debugging:</blockquote>
-<blockquote>-fbranch-count-reg</blockquote>
-<blockquote>-fdelayed-branch</blockquote>
-<blockquote>-fdse</blockquote>
-<blockquote>-fif-conversion</blockquote>
-<blockquote>-fif-conversion2</blockquote>
-<blockquote>-finline-functions-called-once</blockquote>
-<blockquote>-fmove-loop-invariants</blockquote>
-<blockquote>-fmove-loop-stores</blockquote>
-<blockquote>-fssa-phiopt</blockquote>
-<blockquote>-ftree-bit-ccp</blockquote>
-<blockquote>-ftree-dse</blockquote>
-<blockquote>-ftree-pta</blockquote>
-<blockquote>-ftree-sra</blockquote>
-<p>Note that the flag <code>-0</code> referred by the documentation is an alias for <code>-01</code>, which is defined by:</p>
-<blockquote>-O1 Optimize.  Optimizing compilation takes somewhat more time, and a lot</blockquote>
-<blockquote>more memory for a large function.</blockquote>
-<blockquote>With -O, the compiler tries to reduce code size and execution time, without</blockquote>
-<blockquote>performing any optimizations that take a great deal of compilation time.</blockquote>
-<blockquote>-O turns on the following optimization flags:</blockquote>
-<blockquote>-fauto-inc-dec</blockquote>
-<blockquote>-fbranch-count-reg</blockquote>
-<blockquote>-fcombine-stack-adjustments</blockquote>
-<blockquote>-fcompare-elim</blockquote>
-<blockquote>-fcprop-registers</blockquote>
-<blockquote>-fdce</blockquote>
-<blockquote>-fdefer-pop</blockquote>
-<blockquote>-fdelayed-branch</blockquote>
-<blockquote>-fdse</blockquote>
-<blockquote>-fforward-propagate</blockquote>
-<blockquote>-fguess-branch-probability</blockquote>
-<blockquote>-fif-conversion</blockquote>
-<blockquote>-fif-conversion2</blockquote>
-<blockquote>-finline-functions-called-once</blockquote>
-<blockquote>-fipa-modref</blockquote>
-<blockquote>-fipa-profile</blockquote>
-<blockquote>-fipa-pure-const</blockquote>
-<blockquote>-fipa-reference</blockquote>
-<blockquote>-fipa-reference-addressable</blockquote>
-<blockquote>-fmerge-constants</blockquote>
-<blockquote>-fmove-loop-invariants</blockquote>
-<blockquote>-fmove-loop-stores</blockquote>
-<blockquote>-fomit-frame-pointer</blockquote>
-<blockquote>-freorder-blocks</blockquote>
-<blockquote>-fshrink-wrap</blockquote>
-<blockquote>-fshrink-wrap-separate</blockquote>
-<blockquote>-fsplit-wide-types</blockquote>
-<blockquote>-fssa-backprop</blockquote>
-<blockquote>-fssa-phiopt</blockquote>
-<blockquote>-ftree-bit-ccp</blockquote>
-<blockquote>-ftree-ccp</blockquote>
-<blockquote>-ftree-ch</blockquote>
-<blockquote>-ftree-coalesce-vars</blockquote>
-<blockquote>-ftree-copy-prop</blockquote>
-<blockquote>-ftree-dce</blockquote>
-<blockquote>-ftree-dominator-opts</blockquote>
-<blockquote>-ftree-dse</blockquote>
-<blockquote>-ftree-forwprop</blockquote>
-<blockquote>-ftree-fre</blockquote>
-<blockquote>-ftree-phiprop</blockquote>
-<blockquote>-ftree-pta</blockquote>
-<blockquote>-ftree-scev-cprop</blockquote>
-<blockquote>-ftree-sink</blockquote>
-<blockquote>-ftree-slsr</blockquote>
-<blockquote>-ftree-sra</blockquote>
-<blockquote>-ftree-ter</blockquote>
-<blockquote>-funit-at-a-time</blockquote>
+<blockquote>
+<p>If you are not using some other optimization option, consider using -Og with
+-g.  With no -O option at all, some compiler passes that collect information
+useful for debugging do not run at all, so that -Og may result in a better
+debugging experience.</p>
+</blockquote>
+<blockquote>
+<p>Most optimizations are completely disabled at -O0 or if an -O level is not
+set on the command line, even if individual optimization flags are specified.
+Similarly, -Og suppresses many optimization passes.</p>
+</blockquote>
+<blockquote>
+<p>-Og should be the optimization level of choice for the standard
+edit-compile-debug cycle, offering a reasonable level of optimization while
+maintaining fast compilation and a good debugging experience.  It is a better
+choice than -O0 for producing debuggable code because some compiler passes
+that collect debug information are disabled at -O0.</p>
+</blockquote>
+<blockquote>
+<p>Like -O0, -Og completely disables a number of optimization passes so that
+individual options controlling them have no effect.  Otherwise -Og enables
+all -O1 optimization flags except for those that may interfere with
+debugging:</p>
+</blockquote>
+<blockquote>
+<p>-fbranch-count-reg
+-fdelayed-branch
+-fdse
+-fif-conversion
+-fif-conversion2
+-finline-functions-called-once
+-fmove-loop-invariants
+-fmove-loop-stores
+-fssa-phiopt
+-ftree-bit-ccp
+-ftree-dse
+-ftree-pta
+-ftree-sra</p>
+</blockquote>
+<p>Note that the flag <code>-0</code> referred by the documentation is an alias for <code>-01</code>,
+which is defined by:</p>
+<blockquote>
+<p>-O1 Optimize.  Optimizing compilation takes somewhat more time, and a lot
+more memory for a large function.</p>
+</blockquote>
+<blockquote>
+<p>With -O, the compiler tries to reduce code size and execution time, without
+performing any optimizations that take a great deal of compilation time.</p>
+</blockquote>
+<blockquote>
+<p>-O turns on the following optimization flags:
+-fauto-inc-dec
+-fbranch-count-reg
+-fcombine-stack-adjustments
+-fcompare-elim
+-fcprop-registers
+-fdce
+-fdefer-pop
+-fdelayed-branch
+-fdse
+-fforward-propagate
+-fguess-branch-probability
+-fif-conversion
+-fif-conversion2
+-finline-functions-called-once
+-fipa-modref
+-fipa-profile
+-fipa-pure-const
+-fipa-reference
+-fipa-reference-addressable
+-fmerge-constants
+-fmove-loop-invariants
+-fmove-loop-stores
+-fomit-frame-pointer
+-freorder-blocks
+-fshrink-wrap
+-fshrink-wrap-separate
+-fsplit-wide-types
+-fssa-backprop
+-fssa-phiopt
+-ftree-bit-ccp
+-ftree-ccp
+-ftree-ch
+-ftree-coalesce-vars
+-ftree-copy-prop
+-ftree-dce
+-ftree-dominator-opts
+-ftree-dse
+-ftree-forwprop
+-ftree-fre
+-ftree-phiprop
+-ftree-pta
+-ftree-scev-cprop
+-ftree-sink
+-ftree-slsr
+-ftree-sra
+-ftree-ter
+-funit-at-a-time</p>
+</blockquote>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -60,63 +60,79 @@
 </head>
 <body>
 <p>2024-07-08</p>
-<h1>BRIN Index (Block Range Index)</h0>
-<blockquote>BRIN is designed for handling very large tables in which certain columns have</blockquote>
-<blockquote>some natural correlation with their physical location within the table.</blockquote>
-<blockquote></blockquote>
-<blockquote>BRIN works in terms of block ranges (or “page ranges”). A block range is a</blockquote>
-<blockquote>group of pages that are physically adjacent in the table; for each block</blockquote>
-<blockquote>range, some summary info is stored by the index. For example, a table storing</blockquote>
-<blockquote>a store's sale orders might have a date column on which each order was</blockquote>
-<blockquote>placed, and most of the time the entries for earlier orders will appear</blockquote>
-<blockquote>earlier in the table as well; a table storing a ZIP code column might have</blockquote>
-<blockquote>all codes for a city grouped together naturally.</blockquote>
+<h1>BRIN Index (Block Range Index)</h1>
+<blockquote>
+<p>BRIN is designed for handling very large tables in which certain columns have
+some natural correlation with their physical location within the table.</p>
+<p>BRIN works in terms of block ranges (or “page ranges”). A block range is a
+group of pages that are physically adjacent in the table; for each block
+range, some summary info is stored by the index. For example, a table storing
+a store's sale orders might have a date column on which each order was
+placed, and most of the time the entries for earlier orders will appear
+earlier in the table as well; a table storing a ZIP code column might have
+all codes for a city grouped together naturally.</p>
+</blockquote>
 <p><a href="https://www.postgresql.org/docs/current/brin-intro.html">source</a></p>
-<p>In general, BRIN requires very low INSERT-time overhead, and very small index size.</p>
-<h2>When to use</h0>
-<p>The <a href="https://www.postgresql.org/docs/current/brin-intro.html">documentation</a> provides a few examples already. I found it very useful when data has a timestamp that is always going up.</p>
-<h2>How does it work</h0>
-<p>Data stored in tables are arranged in units called "pages" that store 8kb of data (default). A table can thus be described in physical disk as a collection of pages.</p>
-<p>In each page, rows are stored at the front of the page and there might be empty blocks as data gets removed or updated.</p>
+<p>In general, BRIN requires very low INSERT-time overhead, and very small index
+size.</p>
+<h2>When to use</h2>
+<p>The <a href="https://www.postgresql.org/docs/current/brin-intro.html">documentation</a>
+provides a few examples already. I found it very useful when data has a
+timestamp that is always going up.</p>
+<h2>How does it work</h2>
+<p>Data stored in tables are arranged in units called &quot;pages&quot; that store 8kb of
+data (default). A table can thus be described in physical disk as a collection
+of pages.</p>
+<p>In each page, rows are stored at the front of the page and there might be
+empty blocks as data gets removed or updated.</p>
 <p>Some spare space at the end of the page might also be present for future data.</p>
-<pre><code class="language-">
-PAGE representation:
+<pre><code>PAGE representation:
 
 | row_1 | row_2 | row_3 |       | row_4 | spare |
 |-------|-------|-------|-------|-------|-------|
 | data  | data  | data  | empty | data  | empty |
-</code></pre><p>If a table is narrow, that is, it doesn't have many rows and these rows store values of small size on disk, a page might hold many rows worth of data.</p>
-<p>Therefore, for each page, we can determine the max and the min values of a particular column inside that page. When Postgres searches for a value, it can go straight to a page and decide whether to ignore or include rows from that page in the result if the max-min range is within the range specified in the search.</p>
-<h2>When is BRIN effective?</h0>
-<p>When the layout of the table on disk and the ordering of the column to be filtered for are strongly correlated.</p>
-<pre><code class="language-">
-TABLE representation on disk
+</code></pre>
+<p>If a table is narrow, that is, it doesn't have many rows and these rows store
+values of small size on disk, a page might hold many rows worth of data.</p>
+<p>Therefore, for each page, we can determine the max and the min values of a
+particular column inside that page. When Postgres searches for a value, it can
+go straight to a page and decide whether to ignore or include rows from that
+page in the result if the max-min range is within the range specified in the
+search.</p>
+<h2>When is BRIN effective?</h2>
+<p>When the layout of the table on disk and the ordering of the column to be
+filtered for are strongly correlated.</p>
+<pre><code>TABLE representation on disk
 with strong datestamp correlation
 (min-max ranges)
 
 | page_1    | page_2    | page_3    | page_4    | page_n...       |
 |-----------|-----------|-----------|-----------|-----------------|
 | 2010-2011 | 2011-2012 | 2012-2013 | 2013-2014 | 2014-newest...  |
-</code></pre><p>This information can be found by the following query:</p>
-<pre><code class="language-sql">
-/* Check correlation between the disk layout ordering
+</code></pre>
+<p>This information can be found by the following query:</p>
+<pre><code class="language-sql">/* Check correlation between the disk layout ordering
  * and the ordering of the column to filter for:
  */
 
 SELECT correlation
 FROM pg_stats
 WHERE tablename = 'table_name' AND attname = 'column_name'
-</code></pre><h2>What is the BRIN index structure like</h0>
-<p>The BRIN index is just a simple structure mapping ranges of values to ranges of pages:</p>
-<pre><code class="language-">
-| page_range  | 1-2       | 2-4       | ...  |
+</code></pre>
+<h2>What is the BRIN index structure like</h2>
+<p>The BRIN index is just a simple structure mapping ranges of values to ranges
+of pages:</p>
+<pre><code>| page_range  | 1-2       | 2-4       | ...  |
 |-------------|-----------|-----------|------|
 | value_range | 2010-2012 | 2012-2014 | ...  |
-</code></pre><p>The user has the option to select a range of page values that the index should host - the default being 128 pages per range unit. Tuning this number can make a considerable difference in query performance.</p>
-<h2>Tuning <code>ppaaggeess__ppeerr__rraannggee`</code></h0>
-<p>First you need to know how many rows "fit" within a page of your table. To get a rough estimation you can perform these queries:</p>
-<pre><code class="language-sql">
--- Get the number of pages/blocks for the table
+</code></pre>
+<p>The user has the option to select a range of page values that the index should
+host - the default being 128 pages per range unit. Tuning this number can make
+a considerable difference in query performance.</p>
+<h2>Tuning <code>pages_per_range</code></h2>
+<p>First you need to know how many rows &quot;fit&quot; within a page of your table.
+To get a rough estimation you can perform these queries:</p>
+<pre><code class="language-sql">-- Get the number of pages/blocks for the table
 select relpages from pg_class where relname = 'my_table';
 -- Get the table count
 select count(*) from my_table;
@@ -124,29 +140,54 @@ select count(*) from my_table;
 -- the number of pages/blocks to get an
 -- estimated rough number of how many
 -- rows fit in a single page/block.
-</code></pre><p>The value is not perfect, but it is accurate enough to get an estimation.</p>
+</code></pre>
+<p>The value is not perfect, but it is accurate enough to get an estimation.</p>
 <p>The next step is to understand the use of your table.</p>
-<p>In my case, I had a table that I wanted to query within a range from 1h to about 24h.</p>
-<pre><code class="language-sql">
-SELECT *
+<p>In my case, I had a table that I wanted to query within a range from 1h to
+about 24h.</p>
+<pre><code class="language-sql">SELECT *
 FROM my_table
 WHERE date_time BETWEEN (
     '2000-01-01 00:00:00+00'
     AND
     '2000-01-01 23:59:59+00'
 )
-</code></pre><p>So assuming that my table has: - 1,000,000 new rows written each day (~41,000/h) - 14,000,000 pages in total. - 270,000,000 rows in total.</p>
-<p>That means that we have: - (270,000,000 / 14,000,000) ~19 rows per page. - (41,000 / 19) ~2,150 new pages per hour.</p>
-<p>I want to have enough pages in the index map so that my number of pages per range is not too high so that Postgres have to skip too many rows to compute the correct result. That means mapping less than 2,150 pages per index entry. In fact much less than that.</p>
-<p>I would reduce that number by an order of magnitude and pick <code>215</code> as my value of <code>pages_per_range</code>. I could potentially go further than that and reduce the number by another order of magnitude (21).</p>
-<p><b>TIP</b>: If the index performance isn't good enough, I would reduce the value of <code>pages_per_range</code> to half and try again. This would make the index twice as fast, but twice as big. This process can be repeated until the proper final value is found.</p>
-<p>Similarly, if performance is sufficient but the index size is too big, the value of <code>pages_per_range</code> can be increased.</p>
-<h2>autosummarize = 1</h0>
-<p>You want to turn autosummarize on with your index in most cases. This means that one a range becomes full, it is summarised.</p>
-<p>If this value is false, summarisation will only occur via vacuum or autovacuum. Depending on your infrastructure, these operations might not happen frequently, and thus many unsummarised index entries would be hanging around.</p>
-<h2>Final SQL</h0>
-<p>For our test scenario above, our SQL would be:</p>
-<pre><code class="language-sql">
-CREATE INDEX CONCURRENTLY "mytable_column_brin_idx" ON "my_table"
-USING brin ("column_name") WITH (autosummarize = on, pages_per_range = 215);
 </code></pre>
+<p>So assuming that my table has:</p>
+<ul>
+<li>1,000,000 new rows written each day (~41,000/h)</li>
+<li>14,000,000 pages in total.</li>
+<li>270,000,000 rows in total.</li>
+</ul>
+<p>That means that we have:</p>
+<ul>
+<li>(270,000,000 / 14,000,000) ~19 rows per page.</li>
+<li>(41,000 / 19) ~2,150 new pages per hour.</li>
+</ul>
+<p>I want to have enough pages in the index map so that my number of pages per
+range is not too high so that Postgres have to skip too many rows to compute
+the correct result. That means mapping less than 2,150 pages per index entry.
+In fact much less than that.</p>
+<p>I would reduce that number by an order of magnitude and pick <code>215</code> as my value
+of <code>pages_per_range</code>. I could potentially go further than that and reduce the
+number by another order of magnitude (21).</p>
+<p><strong>TIP</strong>: If the index performance isn't good enough, I would reduce the value
+of <code>pages_per_range</code> to half and try again. This would make the index twice as
+fast, but twice as big. This process can be repeated until the proper final
+value is found.</p>
+<p>Similarly, if performance is sufficient but the index size is too big, the
+value of <code>pages_per_range</code> can be increased.</p>
+<h2>autosummarize = 1</h2>
+<p>You want to turn autosummarize on with your index in most cases.
+This means that one a range becomes full, it is summarised.</p>
+<p>If this value is false, summarisation will only occur via vacuum or autovacuum.
+Depending on your infrastructure, these operations might not happen frequently,
+and thus many unsummarised index entries would be hanging around.</p>
+<h2>Final SQL</h2>
+<p>For our test scenario above, our SQL would be:</p>
+<pre><code class="language-sql">CREATE INDEX CONCURRENTLY &quot;mytable_column_brin_idx&quot; ON &quot;my_table&quot;
+USING brin (&quot;column_name&quot;) WITH (autosummarize = on, pages_per_range = 215);
+</code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

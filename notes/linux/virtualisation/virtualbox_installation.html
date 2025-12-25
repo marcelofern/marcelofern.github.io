@@ -59,37 +59,59 @@
   <![endif]-->
 </head>
 <body>
-<h1>Virtualbox Installation</h0>
-<pre><code class="language-">
-Created at: 2025-05-18
-</code></pre><p>Before starting the installation, make sure that your BIOS is set up to allow for virtualisation.</p>
-<p>You just have to go to the BIOS panel, security, and tick all the virtualisation features.</p>
-<h2>Download the host package</h0>
-<p>Find wheter you are using the LTS linux kernel or not: <pre><code class="language-sh">
-uname -r
+<h1>Virtualbox Installation</h1>
+<pre><code>Created at: 2025-05-18
+</code></pre>
+<p>Before starting the installation, make sure that your BIOS is set up to allow
+for virtualisation.</p>
+<p>You just have to go to the BIOS panel, security, and tick all the
+virtualisation features.</p>
+<h2>Download the host package</h2>
+<p>Find wheter you are using the LTS linux kernel or not:</p>
+<pre><code class="language-sh">uname -r
 # 6.12.27-1-lts
-</code></pre></p>
+</code></pre>
 <p>Install the first package above if you are using <code>lts</code>, else the second one.</p>
-<ul><li>virtualbox</li><li>host</li><li>modules</li><li>lts</li><li>virtualbox</li><li>host</li><li>modules</li><li>arch</li></ul>
-<h2>Check if CONFIG_MODULE_SIG_FORCE is set</h0>
-<pre><code class="language-sh">
-zgrep CONFIG_MODULE_SIG_FORCE /proc/config.gz
-</code></pre><p>If it is, follow the instructions in: <a href="https://wiki.archlinux.org/title/VirtualBox">here</a>.</p>
+<ul>
+<li>virtualbox-host-modules-lts</li>
+<li>virtualbox-host-modules-arch</li>
+</ul>
+<h2>Check if CONFIG_MODULE_SIG_FORCE is set</h2>
+<pre><code class="language-sh">zgrep CONFIG_MODULE_SIG_FORCE /proc/config.gz
+</code></pre>
+<p>If it is, follow the instructions in:
+<a href="https://wiki.archlinux.org/title/VirtualBox">here</a>.</p>
 <p>Else, skip it (I have skipped in my installation as I don't set that variable).</p>
-<h2>Guest Additions</h0>
-<blockquote>It is also recommended to install the virtualbox-guest-iso package on the</blockquote>
-<blockquote>host running VirtualBox. This package will act as a disc image that can be</blockquote>
-<blockquote>used to install the guest additions onto guest systems other than Arch Linux.</blockquote>
-<blockquote>The .iso file will be located at</blockquote>
-<blockquote>/usr/lib/virtualbox/additions/VBoxGuestAdditions.iso, and may have to be</blockquote>
-<blockquote>mounted manually inside the virtual machine. Once mounted, you can run the</blockquote>
-<blockquote>guest additions installer inside the guest.</blockquote>
-<pre><code class="language-sh">
-yay virtualbox-guest-iso
-</code></pre><h2>Get the extension pack</h0>
-<p>(only free for personal use) <pre><code class="language-sh">
-yay virtualbox-ext-oracle
-</code></pre></p>
-<h2>Front ends</h0>
+<h2>Guest Additions</h2>
+<blockquote>
+<p>It is also recommended to install the virtualbox-guest-iso package on the
+host running VirtualBox. This package will act as a disc image that can be
+used to install the guest additions onto guest systems other than Arch Linux.
+The .iso file will be located at
+/usr/lib/virtualbox/additions/VBoxGuestAdditions.iso, and may have to be
+mounted manually inside the virtual machine. Once mounted, you can run the
+guest additions installer inside the guest.</p>
+</blockquote>
+<pre><code class="language-sh">yay virtualbox-guest-iso
+</code></pre>
+<h2>Get the extension pack</h2>
+<p>(only free for personal use)</p>
+<pre><code class="language-sh">yay virtualbox-ext-oracle
+</code></pre>
+<h2>Front ends</h2>
 <p>VirtualBox comes with four front-ends:</p>
-<ul><li>If you want to use VirtualBox with the regular GUI, use <code>VirtualBox</code>.</li><li>If you want to launch and manage your virtual machines from the command</li><li>line, use the <code>VBoxSDL</code> command, which only provides a plain window for the virtual machine without any overlays.</li><li>If you want to use VirtualBox without running any GUI (e.g. on a server), use the <code>VBoxHeadless</code> command. With the VRDP extension you can still remotely access the displays of your virtual machines.</li><li>If you want to remotely manage virtual machines, the VirtualBox web service (vboxwebsrv) provides the server side backend. It can be used with RemoteBox (GUI) or phpVirtualBox (WebUI).</li></ul>
+<ul>
+<li>If you want to use VirtualBox with the regular GUI, use <code>VirtualBox</code>.</li>
+<li>If you want to launch and manage your virtual machines from the command-line,
+use the <code>VBoxSDL</code> command, which only provides a plain window for the virtual
+machine without any overlays.</li>
+<li>If you want to use VirtualBox without running any GUI (e.g. on a server), use
+the <code>VBoxHeadless</code> command. With the VRDP extension you can still remotely
+access the displays of your virtual machines.</li>
+<li>If you want to remotely manage virtual machines, the VirtualBox web service
+(vboxwebsrv) provides the server side backend. It can be used with RemoteBox
+(GUI) or phpVirtualBox (WebUI).</li>
+</ul>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

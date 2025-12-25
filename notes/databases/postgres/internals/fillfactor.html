@@ -59,12 +59,13 @@
   <![endif]-->
 </head>
 <body>
-<h1>Fillfactor</h0>
-<pre><code class="language-">
-Created at: 2025-04-27
-</code></pre><p>The fill factor of a table indicates the % of the table space that will be filled with data. By default this value is 100%. The value can be altered on a table basis, but it cannot be lower than 10%.</p>
-<pre><code class="language-sql">
-DROP TABLE IF EXISTS foo CASCADE;
+<h1>Fillfactor</h1>
+<pre><code>Created at: 2025-04-27
+</code></pre>
+<p>The fill factor of a table indicates the % of the table space that will be
+filled with data. By default this value is 100%. The value can be altered on
+a table basis, but it cannot be lower than 10%.</p>
+<pre><code class="language-sql">DROP TABLE IF EXISTS foo CASCADE;
 CREATE TABLE foo (id SERIAL PRIMARY KEY);
 INSERT INTO foo SELECT generate_series(1, 10000);
 
@@ -85,17 +86,27 @@ WHERE relname = 'foo';
 --   reloptions
 -------------------
 -- {fillfactor=30}
-</code></pre><h2>Limits</h0>
+</code></pre>
+<h2>Limits</h2>
 <p>The fillfactor value cannot be under 10%:</p>
-<pre><code class="language-sql">
-ALTER TABLE foo SET (fillfactor = 5);
+<pre><code class="language-sql">ALTER TABLE foo SET (fillfactor = 5);
 
--- ERROR:  value 5 out of bounds for option "fillfactor"
--- DETAIL:  Valid values are between "10" and "100".
-</code></pre><h2>Using lower values</h0>
-<p>When an INSERT operation tries to add a new row, it will only add it to a page that is filled less than the fillfactor %. The rest of the space is kept for UPDATE operations (no such space is reserved by default, when fillfactor is 100%).</p>
-<p>This means that an update row is more likely to be inserted into the same page as the old one - which is more efficient.</p>
-<h2>Changing The Default For the Whole DB</h0>
+-- ERROR:  value 5 out of bounds for option &quot;fillfactor&quot;
+-- DETAIL:  Valid values are between &quot;10&quot; and &quot;100&quot;.
+</code></pre>
+<h2>Using lower values</h2>
+<p>When an INSERT operation tries to add a new row, it will only add it to a page
+that is filled less than the fillfactor %. The rest of the space is kept for
+UPDATE operations (no such space is reserved by default, when fillfactor is
+100%).</p>
+<p>This means that an update row is more likely to be inserted into the same page
+as the old one - which is more efficient.</p>
+<h2>Changing The Default For the Whole DB</h2>
 <p>As of now, I don't think the default can be changed.</p>
-<p>I have looked at the <code>data/postgresql.conf</code> file - and also the <code>share/postgresql.conf.sample</code> file, and couldn't see anything.</p>
-<p>I've asked in the mailing list <a href="https://www.postgresql.org/message-id/flat/CAM2F1VMu747bv5X3wTvhzLQUWRaJzREdaS%3DcoVz%2BWjxkBjzvng%40mail.gmail.com">here</a></p>
+<p>I have looked at the <code>data/postgresql.conf</code> file - and also the
+<code>share/postgresql.conf.sample</code> file, and couldn't see anything.</p>
+<p>I've asked in the mailing list
+<a href="https://www.postgresql.org/message-id/flat/CAM2F1VMu747bv5X3wTvhzLQUWRaJzREdaS%3DcoVz%2BWjxkBjzvng%40mail.gmail.com">here</a></p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

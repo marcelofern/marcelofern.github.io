@@ -59,27 +59,31 @@
   <![endif]-->
 </head>
 <body>
-<h1>Evolution of a Function</h0>
-<p>You can print the diff that shows changes to a function across multiple commits.</p>
+<h1>Evolution of a Function</h1>
+<p>You can print the diff that shows changes to a function across multiple
+commits.</p>
 <p>For that, you can use <code>git log -L</code>:</p>
-<blockquote>-L<start>,<end>:<file>, -L:<funcname>:<file> Trace the evolution of the line</blockquote>
-<blockquote>range given by <start>,<end>, or by the function name regex <funcname>,</blockquote>
-<blockquote>within the <file>. You may not give any pathspec limiters. This is currently</blockquote>
-<blockquote>limited to a walk starting from a single revision, i.e., you may only give</blockquote>
-<blockquote>zero or one positive revision arguments, and <start> and <end> (or</blockquote>
-<blockquote><funcname>) must exist in the starting revision. You can specify this option</blockquote>
-<blockquote>more than once. Implies --patch. Patch output can be suppressed using</blockquote>
-<blockquote>--no-patch, but other diff formats (namely --raw, --numstat, --shortstat,</blockquote>
-<blockquote>--dirstat, --summary, --name-only, --name-status, --check) are not currently</blockquote>
-<blockquote>implemented.</blockquote>
-<h2>Set up</h0>
-<p>Before using the feature, you'll have to tell git to use built-in Python regex (or whatever language you use) for diff hunk headers, otherwise the above won't work properly.</p>
-<pre><code class="language-">
-# at the root of the repo, in .gitattributes
+<blockquote>
+<p>-L<start>,<end>:<file>, -L:<funcname>:<file> Trace the evolution of the line
+range given by <start>,<end>, or by the function name regex <funcname>,
+within the <file>. You may not give any pathspec limiters. This is currently
+limited to a walk starting from a single revision, i.e., you may only give
+zero or one positive revision arguments, and <start> and <end> (or
+<funcname>) must exist in the starting revision. You can specify this option
+more than once. Implies --patch. Patch output can be suppressed using
+--no-patch, but other diff formats (namely --raw, --numstat, --shortstat,
+--dirstat, --summary, --name-only, --name-status, --check) are not currently
+implemented.</p>
+</blockquote>
+<h2>Set up</h2>
+<p>Before using the feature, you'll have to tell git to use built-in Python regex
+(or whatever language you use) for diff hunk headers, otherwise the above won't
+work properly.</p>
+<pre><code># at the root of the repo, in .gitattributes
 *.py diff=python eol=lf
-</code></pre><p>A more complete <code>.gitattributes</code> file may look like this:</p>
-<pre><code class="language-">
-*.py diff=python eol=lf
+</code></pre>
+<p>A more complete <code>.gitattributes</code> file may look like this:</p>
+<pre><code>*.py diff=python eol=lf
 *.sh whitespace=indent,trail,space eol=lf
 *.md diff=markdown
 *.html diff=html
@@ -88,7 +92,11 @@ Dockerfile.* linguist-language=Dockerfile
 *.pdf binary
 requirements/*.in linguist-language=Pip-Requirements
 requirements/*.txt linguist-language=Pip-Requirements
-</code></pre><p>In vim, it's useful to do something like:</p>
-<pre><code class="language-">
-!git log -L :<funcname>:%
-</code></pre><p>Using "%" to avoid having to type in the current file name.</p>
+</code></pre>
+<p>In vim, it's useful to do something like:</p>
+<pre><code>!git log -L :&lt;funcname&gt;:%
+</code></pre>
+<p>Using &quot;%&quot; to avoid having to type in the current file name.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

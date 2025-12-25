@@ -60,13 +60,16 @@
 </head>
 <body>
 <p>March 21, 2021</p>
-<h2>Definition</h0>
-<p>Isolines are lines on a map (or graph) connecting datapoints of the same value. Isolines are often used in Geography for studying patterns of temperature, height, rain, etc.</p>
-<h2>Example</h0>
-<p>Suppose that a client's marketing department wants you to plot an isoline graph in order to identify customers with the same budget capabilities. The dataset is normalized to 200 and is shown below:</p>
+<h2>Definition</h2>
+<p>Isolines are lines on a map (or graph) connecting datapoints of the same value.
+Isolines are often used in Geography for studying patterns of temperature,
+height, rain, etc.</p>
+<h2>Example</h2>
+<p>Suppose that a client's marketing department wants you to plot an isoline graph
+in order to identify customers with the same budget capabilities. The dataset
+is normalized to 200 and is shown below:</p>
 <p>19x21 matrix:</p>
-<pre><code class="language-python">
-[[162,145,130,117,106,97,90,85,82,81,82,85,90,97,106,117,130,145,162,181,200],
+<pre><code class="language-python">[[162,145,130,117,106,97,90,85,82,81,82,85,90,97,106,117,130,145,162,181,200],
 [145,128,113,100,89,80,73,68,65,64,65,68,73,80,89,100,113,128,145,164,185],
 [130,113,98,85,74,65,58,53,50,49,50,53,58,65,74,85,98,113,130,149,170],
 [117,100,85,72,61,52,45,40,37,36,37,40,45,52,61,72,85,100,117,136,157],
@@ -85,11 +88,12 @@
 [130,113,98,85,74,65,58,53,50,49,50,53,58,65,74,85,98,113,130,149,170],
 [145,128,113,100,89,80,73,68,65,64,65,68,73,80,89,100,113,128,145,164,185],
 [162,145,130,117,106,97,90,85,82,81,82,85,90,97,106,117,130,145,162,181,200]]
-</code></pre><p>We want to plot the isoline for the isovalue of 11.</p>
-<p>Before building the algorithm from scratch, let's use matplotlib's countour function to see what we are looking at:</p>
-<p><img alt="isolines_matplot_contour.png" src="isolines_matplot_contour.png"></p>
-<pre><code class="language-python">
-import matplotlib
+</code></pre>
+<p>We want to plot the isoline for the isovalue of 11.</p>
+<p>Before building the algorithm from scratch, let's use matplotlib's countour
+function to see what we are looking at:</p>
+<p><img src="isolines_matplot_contour.png" alt="isolines_matplot_contour.png"></p>
+<pre><code class="language-python">import matplotlib
 import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
@@ -122,15 +126,24 @@ fig, ax = plt.subplots()
 CS = ax.contour(X, Y, Z, levels=[10, 20, 30, 50, 80, 130, 180])
 ax.clabel(CS, inline=True, fontsize=10)
 ax.set_title('Isolines graph')
-</code></pre><h2>Marching Squares</h0>
-<p>"Marching squares" is an algorithm that efficiently helps us to build isolines. The algorithm is better explained via the image below (courtesy of wikipedia):</p>
-<p><img alt="marching_squares.png" src="marching_squares.png"></p>
-<h2>Step <ol><li>CCrreeaattee  tthhee  tthhrreesshhoolldd  mmaattrriixx</h0>
- The threshold matrix is created by going over the original matrix and substituting the original values by:</li></ol>
-<ul><li>1 when when the original value is above the isovalue.</li><li>0 when the original value is below the isovalue.</li></ul>
+</code></pre>
+<h2>Marching Squares</h2>
+<p>&quot;Marching squares&quot; is an algorithm that
+efficiently helps us to build isolines. The
+algorithm is better explained via the image
+below (courtesy of wikipedia):</p>
+<p><img src="marching_squares.png" alt="marching_squares.png"></p>
+<h2>Step 1. Create the threshold matrix</h2>
+<p>The threshold matrix is created by going over the original matrix and
+substituting the original values by:</p>
+<ul>
+<li>1 when when the original value is above the
+isovalue.</li>
+<li>0 when the original value is below the
+isovalue.</li>
+</ul>
 <p>For the isovalue of 11, we then have the following threshold matrix:</p>
-<pre><code class="language-python">
-[[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+<pre><code class="language-python">[[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -149,15 +162,36 @@ ax.set_title('Isolines graph')
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-</code></pre><p>The above already give us a clue about where the isolines will be drawn. Check the location where we have groups of zeros.</p>
-<h2>Step 2. Map each cell to a number that corresponds to which corners are true/false</h0>
-<p>The threshold matrix can be mapped into squares, where each data value is the vertex of a square. These corners can either be true or false. This gives us the following amount of combinations:</p>
-<p>(true or false) <i> (true or false) </i> (true or false) <i> (true or false) = 2 </i> 2 <i> 2 </i> 2 = 16</p>
+</code></pre>
+<p>The above already give us a clue about where the isolines will be drawn. Check
+the location where we have groups of zeros.</p>
+<h2>Step 2. Map each cell to a number that corresponds to which corners are true/false</h2>
+<p>The threshold matrix can be mapped into squares, where each data value is the
+vertex of a square. These corners can either be true or false. This gives us
+the following amount of combinations:</p>
+<p>(true or false) * (true or false) * (true or false) * (true or false) = 2 * 2 * 2 * 2 = 16</p>
 <p>We can then proceed with the following mapping of cases:</p>
-<ul><li>Case 0 </li><li> All corners are True</li><li>Case 1 </li><li> All corners except the bottom left are True</li><li>Case 2 </li><li> All corners except the bottom right are True</li><li>Case 3 </li><li> Only the top corners are True</li><li>Case 4 </li><li> All corners except the top right are True</li><li>Case 5 </li><li> Left upper corner and low right corner are True</li><li>Case 6 </li><li> Left top/bottom corners are True</li><li>Case 7 </li><li> Only the top left corner is True</li><li>Case 8 </li><li> All corners except the top left are True</li><li>Case 9 </li><li> Right top/bottom corners are True</li><li>Case 10 </li><li> Top right corner and bottom left corner are True</li><li>Case 11 </li><li> Only the top right corner is True</li><li>Case 12 </li><li> Only the bottom corners are True</li><li>Case 13 </li><li> Only the bottom right corner is True</li><li>Case 14 </li><li> Only the bottom left corner is True</li><li>Case 15 </li><li> No corners are True</li></ul>
-<p>An example of Python algorithm to rewrite the threshold matrix into the cases matrix:</p>
-<pre><code class="language-python">
-case_0 = [[1,1],[1,1]]
+<ul>
+<li>Case 0 - All corners are True</li>
+<li>Case 1 - All corners except the bottom left are True</li>
+<li>Case 2 - All corners except the bottom right are True</li>
+<li>Case 3 - Only the top corners are True</li>
+<li>Case 4 - All corners except the top right are True</li>
+<li>Case 5 - Left upper corner and low right corner are True</li>
+<li>Case 6 - Left top/bottom corners are True</li>
+<li>Case 7 - Only the top left corner is True</li>
+<li>Case 8 - All corners except the top left are True</li>
+<li>Case 9 - Right top/bottom corners are True</li>
+<li>Case 10 - Top right corner and bottom left corner are True</li>
+<li>Case 11 - Only the top right corner is True</li>
+<li>Case 12 - Only the bottom corners are True</li>
+<li>Case 13 - Only the bottom right corner is True</li>
+<li>Case 14 - Only the bottom left corner is True</li>
+<li>Case 15 - No corners are True</li>
+</ul>
+<p>An example of Python algorithm to rewrite the threshold matrix into the cases
+matrix:</p>
+<pre><code class="language-python">case_0 = [[1,1],[1,1]]
 case_1 = [[1,1],[0,1]]
 case_2 = [[1,1],[1,0]]
 case_3 = [[1,1],[0,0]]
@@ -184,12 +218,12 @@ cases = [
 cases_mapper = {str(case): i for i, case in enumerate(cases)}
 
 def get_corners_matrix(row, column):
-    """
+    &quot;&quot;&quot;
     Get the corners matrix:
       [[top_left, top_right], [bottom_left, bottom_right]]
 
     where top_left is the position of the entry itself.
-    """
+    &quot;&quot;&quot;
     return [
         [
             threshold_matrix[row][column],
@@ -209,11 +243,12 @@ for row in range(len(threshold_matrix) - 1):
         corners_matrix = get_corners_matrix(row, column)
         mapped_row.append(cases_mapper[str(corners_matrix)])
     mapped_matrix.append(mapped_row)
-</code></pre><p>Note: The mapped matrix has the dimension M-1,N-1 since the last row and the last column aren't mapped.</p>
-<h2>Step 3. Draw the patterns</h0>
-<p><img alt="isoline_drawn.png" src="isoline_drawn.png"></p>
-<pre><code class="language-python">
-x_threshold = 21
+</code></pre>
+<p>Note: The mapped matrix has the dimension M-1,N-1 since the last row and the
+last column aren't mapped.</p>
+<h2>Step 3. Draw the patterns</h2>
+<p><img src="isoline_drawn.png" alt="isoline_drawn.png"></p>
+<pre><code class="language-python">x_threshold = 21
 y_threshold = 19
 
 # graph configuration
@@ -273,5 +308,12 @@ for r_index, row in enumerate(Z):
             ha='center',
             va='center',
         )
-</code></pre><h2>Step 4. Linear interpolation</h0>
-<p>This is the last step to get our final isoline. It is also the most complex one to code. I'll update this in the future if I ever get the patience! (sorry, but let me know if you want this to happen by flicking me an email). Step 3 should give you a good approximation nonetheless.</p>
+</code></pre>
+<h2>Step 4. Linear interpolation</h2>
+<p>This is the last step to get our final isoline. It is also the most complex one
+to code. I'll update this in the future if I ever get the patience! (sorry, but
+let me know if you want this to happen by flicking me an email). Step 3 should
+give you a good approximation nonetheless.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

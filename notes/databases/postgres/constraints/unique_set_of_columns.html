@@ -59,11 +59,11 @@
   <![endif]-->
 </head>
 <body>
-<h1>Unique set of columns</h0>
-<p>A composite unique index doesn't quite cut when you want the set of two columns to be unique, irrespective of "column ordering".</p>
+<h1>Unique set of columns</h1>
+<p>A composite unique index doesn't quite cut when you want the set of two columns
+to be unique, irrespective of &quot;column ordering&quot;.</p>
 <p>Use a unique index with an expression instead:</p>
-<pre><code class="language-sql">
-DROP TABLE IF EXISTS message CASCADE;
+<pre><code class="language-sql">DROP TABLE IF EXISTS message CASCADE;
 CREATE TABLE message (
   id SERIAL PRIMARY KEY
 );
@@ -76,10 +76,10 @@ CREATE TABLE message_comparison (
   FOREIGN KEY (message_b) REFERENCES message(id)
 );
 
-CREATE UNIQUE INDEX "comparison_a_b_must_be_uniq"
+CREATE UNIQUE INDEX &quot;comparison_a_b_must_be_uniq&quot;
 ON message_comparison (
-  (LEAST("message_a", "message_b")),
-  (GREATEST("message_a", "message_b"))
+  (LEAST(&quot;message_a&quot;, &quot;message_b&quot;)),
+  (GREATEST(&quot;message_a&quot;, &quot;message_b&quot;))
 );
 
 -- Add 10 rows to the message table to use by the comparison table.
@@ -97,6 +97,9 @@ INSERT INTO message_comparison (message_a, message_b) VALUES
 INSERT INTO message_comparison (message_a, message_b) VALUES
   (2, 1);
 
--- ERROR:  duplicate key value violates unique constraint "comparison_a_b_must_be_uniq"
+-- ERROR:  duplicate key value violates unique constraint &quot;comparison_a_b_must_be_uniq&quot;
 -- DETAIL:  Key (LEAST(message_a, message_b), GREATEST(message_a, message_b))=(1, 2) already exists.
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

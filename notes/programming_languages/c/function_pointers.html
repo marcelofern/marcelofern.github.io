@@ -59,30 +59,33 @@
   <![endif]-->
 </head>
 <body>
-<h1>2024<ul><li>0066-</li><li>1122</h0>
-<h2>D Deeccllaarraattiioonn</h0>
- One of the most confusing aspects of a function pointer is its declaration.</li></ul>
+<h1>2024-06-12</h1>
+<h2>Declaration</h2>
+<p>One of the most confusing aspects of a function pointer is its declaration.</p>
 <p>Take for example this silly function:</p>
-<pre><code class="language-c">
-long foo(int a, short b, float c) {
+<pre><code class="language-c">long foo(int a, short b, float c) {
     return a + b + c;
 }
-</code></pre><p>The simplest way of declaring a function pointer to this function is by taking its signature:</p>
-<pre><code class="language-c">
-long foo(int, short, float);
-</code></pre><p>And swapping the function name by <code>(*)</code></p>
-<pre><code class="language-c">
-long (*)(int, short, float);
-</code></pre><p>Now after the <code>*</code> you pick the variable name that will hold that pointer:</p>
-<pre><code class="language-c">
-int main() {
+</code></pre>
+<p>The simplest way of declaring a function pointer to this function is by taking
+its signature:</p>
+<pre><code class="language-c">long foo(int, short, float);
+</code></pre>
+<p>And swapping the function name by <code>(*)</code></p>
+<pre><code class="language-c">long (*)(int, short, float);
+</code></pre>
+<p>Now after the <code>*</code> you pick the variable name that will hold that pointer:</p>
+<pre><code class="language-c">int main() {
     long (*my_pointer)(int, short, float) = foo;
     // This also works, the assembly is the same.
-    // long (*my_pointer)(int, short, float) = &foo;
+    // long (*my_pointer)(int, short, float) = &amp;foo;
 }
-</code></pre><p>And you can do the same when declarying a type for this function:</p>
-<pre><code class="language-c">
-typedef long (*my_type)(int, short, float);
+</code></pre>
+<p>And you can do the same when declarying a type for this function:</p>
+<pre><code class="language-c">typedef long (*my_type)(int, short, float);
 
 my_type f = foo;
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -59,12 +59,11 @@
   <![endif]-->
 </head>
 <body>
-<h1>Downloading Kindle Highlights In Linux</h0>
-<pre><code class="language-">
-Created at: 2024-09-04
-</code></pre><h2>Summary</h0>
-<pre><code class="language-sh">
-DEVICE=/dev/sda
+<h1>Downloading Kindle Highlights In Linux</h1>
+<pre><code>Created at: 2024-09-04
+</code></pre>
+<h2>Summary</h2>
+<pre><code class="language-sh">DEVICE=/dev/sda
 sudo rm -rf /mnt/kindle
 sudo mkdir /mnt/kindle
 sudo mount $DEVICE /mnt/kindle
@@ -73,18 +72,30 @@ cp 'My Clippings.txt' ~/Downloads/my_clippings.txt
 cd ~
 sudo umount /mnt/kindle
 sudo rm -rf /mnt/kindle
-</code></pre><h2>Step by step</h0>
-<ol><li>After pluging Kindle via USB, verify the name of the disk partition:<pre><code class="language-sh">
-   sudo fdisk -l
-   </code></pre></li><li>Hold onto that name. It should be something like /dev/sda. Use the name to mount it as a regular usb driver.<pre><code class="language-sh">
-   sudo mkdir /mnt/kindle
-   sudo mount /dev/sda /mnt/kindle
-   </code></pre></li><li>Your highlights should be in the documents folder. The name of the file that contains your highlights is called "My Clippings.txt". Copy it to your Downloads folder.<pre><code class="language-sh">
-   cd /mnt/kindle/documents
-   cp 'My Clippings.txt' ~/Downloads/my_clippings.txt
-   </code></pre></li><li>Unmount the disk and remove the mounted folder.<pre><code class="language-sh">
-   # Make sure you aren't in the mounted folder first.
-   cd ~
-   sudo umount /mnt/kindle
-   sudo rm -rf /mnt/kindle
-   </code></pre></li></ol>
+</code></pre>
+<h2>Step by step</h2>
+<ol>
+<li>After pluging Kindle via USB, verify the name of the disk partition:<pre><code class="language-sh">sudo fdisk -l
+</code></pre>
+</li>
+<li>Hold onto that name. It should be something like /dev/sda. Use the name to
+mount it as a regular usb driver.<pre><code class="language-sh">sudo mkdir /mnt/kindle
+sudo mount /dev/sda /mnt/kindle
+</code></pre>
+</li>
+<li>Your highlights should be in the documents folder. The name of the file that
+contains your highlights is called &quot;My Clippings.txt&quot;. Copy it to your
+Downloads folder.<pre><code class="language-sh">cd /mnt/kindle/documents
+cp 'My Clippings.txt' ~/Downloads/my_clippings.txt
+</code></pre>
+</li>
+<li>Unmount the disk and remove the mounted folder.<pre><code class="language-sh"># Make sure you aren't in the mounted folder first.
+cd ~
+sudo umount /mnt/kindle
+sudo rm -rf /mnt/kindle
+</code></pre>
+</li>
+</ol>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

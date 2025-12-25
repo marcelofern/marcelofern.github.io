@@ -59,48 +59,51 @@
   <![endif]-->
 </head>
 <body>
-<h1>Composed Index vs Denormalised Column Index</h0>
-<pre><code class="language-">
-Created at: 2024-12-02
-</code></pre><p>Sometimes it may sound like a good idea to denormalise a couple of columns so that an index lookup can be performed faster.</p>
+<h1>Composed Index vs Denormalised Column Index</h1>
+<pre><code>Created at: 2024-12-02
+</code></pre>
+<p>Sometimes it may sound like a good idea to denormalise a couple of columns so
+that an index lookup can be performed faster.</p>
 <p>But does it actually?</p>
-<h2>Tables</h0>
+<h2>Tables</h2>
 <p>Imagine the following table:</p>
-<pre><code class="language-sql">
-CREATE TABLE normalised (
+<pre><code class="language-sql">CREATE TABLE normalised (
     id SERIAL PRIMARY KEY,
     foo varchar,
     bar varchar
 );
 CREATE INDEX idx_foo_bar ON normalised (foo, bar);
-</code></pre><p>And its denormalised version, where <code>foo</code> and <code>bar</code> are stored in foobar as <code>foo:bar</code>.</p>
-<pre><code class="language-sql">
-CREATE TABLE denormalised (
+</code></pre>
+<p>And its denormalised version, where <code>foo</code> and <code>bar</code> are stored in foobar as
+<code>foo:bar</code>.</p>
+<pre><code class="language-sql">CREATE TABLE denormalised (
     id SERIAL PRIMARY KEY,
     foo varchar,
     bar varchar,
     foobar varchar
 );
 CREATE INDEX idx_foobar ON denormalised (foobar);
-</code></pre><p>The normalised version is actually faster for queries like:</p>
-<pre><code class="language-sql">
-SELECT foo, bar FROM normalised where foo='{foo}' and bar ='{bar}';
-</code></pre><p>Instead of the denormalised version</p>
-<pre><code class="language-sql">
-SELECT foobar FROM denormalised where foobar='{foo}:{bar}';
-</code></pre><p>The normalised version has to read less buffers for performing the lookups and is a tidy bit faster.</p>
-<p>I built a benchmark script for testing this scenario against a table with 10 million rows:</p>
-<pre><code class="language-py">
-import time
+</code></pre>
+<p>The normalised version is actually faster for queries like:</p>
+<pre><code class="language-sql">SELECT foo, bar FROM normalised where foo='{foo}' and bar ='{bar}';
+</code></pre>
+<p>Instead of the denormalised version</p>
+<pre><code class="language-sql">SELECT foobar FROM denormalised where foobar='{foo}:{bar}';
+</code></pre>
+<p>The normalised version has to read less buffers for performing the lookups and
+is a tidy bit faster.</p>
+<p>I built a benchmark script for testing this scenario against a table with 10
+million rows:</p>
+<pre><code class="language-py">import time
 import re
 import random
 import psycopg2
 
 # Change these before running locally.
-DB_NAME = "composed_idx"
-USER = "marcelo.fernandes"
-PASSWORD = ""
-HOST = "localhost"
+DB_NAME = &quot;composed_idx&quot;
+USER = &quot;marcelo.fernandes&quot;
+PASSWORD = &quot;&quot;
+HOST = &quot;localhost&quot;
 PORT = 5415
 NUM_OF_ROWS = 10_000_000
 INSERT_ROWS_PER_BATCH = 1000_000
@@ -125,8 +128,8 @@ def get_cursor_and_connection():
 
 
 def create_normalised_table(cursor):
-    print("- Creating normalised table...")
-    cursor.execute("""
+    print(&quot;- Creating normalised table...&quot;)
+    cursor.execute(&quot;&quot;&quot;
         -- Idempotency for convenience.
         DROP TABLE IF EXISTS normalised;
         CREATE TABLE normalised (
@@ -138,12 +141,12 @@ def create_normalised_table(cursor):
         ALTER TABLE normalised SET (autovacuum_enabled = false);
 
         CREATE INDEX idx_foo_bar ON normalised (foo, bar);
-    """)
+    &quot;&quot;&quot;)
 
 
 def create_denormalised_table(cursor):
-    print("- Creating denormalised table...")
-    cursor.execute("""
+    print(&quot;- Creating denormalised table...&quot;)
+    cursor.execute(&quot;&quot;&quot;
         -- Idempotency for convenience.
         DROP TABLE IF EXISTS denormalised;
         CREATE TABLE denormalised (
@@ -156,94 +159,94 @@ def create_denormalised_table(cursor):
         ALTER TABLE denormalised SET (autovacuum_enabled = false);
 
         CREATE INDEX idx_foobar ON denormalised (foobar);
-    """)
+    &quot;&quot;&quot;)
 
 
 def vacuum_tables(cursor):
-    print("- Vacuuming normalised table...")
+    print(&quot;- Vacuuming normalised table...&quot;)
     start_time = time.time()
-    cursor.execute("VACUUM ANALYZE normalised;")
+    cursor.execute(&quot;VACUUM ANALYZE normalised;&quot;)
     duration = time.time() - start_time
-    print(f"- Vacuum (normalised) took: {duration:.2f} seconds.")
+    print(f&quot;- Vacuum (normalised) took: {duration:.2f} seconds.&quot;)
 
-    print("- Vacuuming denormalised table...")
+    print(&quot;- Vacuuming denormalised table...&quot;)
     start_time = time.time()
-    cursor.execute("VACUUM ANALYZE denormalised;")
+    cursor.execute(&quot;VACUUM ANALYZE denormalised;&quot;)
     duration = time.time() - start_time
-    print(f"- Vacuum (denormalised) took: {duration:.2f} seconds.")
+    print(f&quot;- Vacuum (denormalised) took: {duration:.2f} seconds.&quot;)
 
 
 def populate_normalised_table(cursor):
-    print("- Populating (normalised) table...")
+    print(&quot;- Populating (normalised) table...&quot;)
     start_time = time.time()
     for batch in range(int(NUM_OF_ROWS / INSERT_ROWS_PER_BATCH)):
         rows = []
         for i in range(INSERT_ROWS_PER_BATCH):
             val = i + (batch*INSERT_ROWS_PER_BATCH)
-            rows.append(f"('{val}', '{val}')")
+            rows.append(f&quot;('{val}', '{val}')&quot;)
 
-        values = ", ".join(rows)
-        cursor.execute(f"INSERT INTO normalised (foo, bar) VALUES {values};")
+        values = &quot;, &quot;.join(rows)
+        cursor.execute(f&quot;INSERT INTO normalised (foo, bar) VALUES {values};&quot;)
     duration = time.time() - start_time
-    print(f"- Populating (normalised) took: {duration:.2f} seconds.")
+    print(f&quot;- Populating (normalised) took: {duration:.2f} seconds.&quot;)
 
 
 def populate_denormalised_table(cursor):
-    print("- Populating (denormalised) table...")
+    print(&quot;- Populating (denormalised) table...&quot;)
     start_time = time.time()
     for batch in range(int(NUM_OF_ROWS / INSERT_ROWS_PER_BATCH)):
         rows = []
         for i in range(INSERT_ROWS_PER_BATCH):
             val = i + (batch*INSERT_ROWS_PER_BATCH)
-            rows.append(f"('{val}', '{val}', '{val}:{val}')")
+            rows.append(f&quot;('{val}', '{val}', '{val}:{val}')&quot;)
 
-        values = ", ".join(rows)
-        cursor.execute(f"INSERT INTO denormalised (foo, bar, foobar) VALUES {values};")
+        values = &quot;, &quot;.join(rows)
+        cursor.execute(f&quot;INSERT INTO denormalised (foo, bar, foobar) VALUES {values};&quot;)
     duration = time.time() - start_time
-    print(f"- Populating (denormalised) took: {duration:.2f} seconds.")
+    print(f&quot;- Populating (denormalised) took: {duration:.2f} seconds.&quot;)
 
 
 def benchmark_normalised_queries(cursor, values):
-    print(f"- Benchmarking {NUM_OF_QUERIES:,} queries against normalised table...")
+    print(f&quot;- Benchmarking {NUM_OF_QUERIES:,} queries against normalised table...&quot;)
     explain_outputs = []
 
     for i in range(NUM_OF_QUERIES):
         foo = bar = values[i]
-        query = f"SELECT foo, bar FROM normalised where foo='{foo}' and bar ='{bar}';"
-        cursor.execute(f"EXPLAIN (ANALYSE, BUFFERS, costs off, summary off) {query}")
+        query = f&quot;SELECT foo, bar FROM normalised where foo='{foo}' and bar ='{bar}';&quot;
+        cursor.execute(f&quot;EXPLAIN (ANALYSE, BUFFERS, costs off, summary off) {query}&quot;)
         explain_outputs.append(cursor.fetchall())
     print_explain_info(explain_outputs)
 
 def benchmark_denormalised_queries(cursor, values):
-    print(f"- Benchmarking {NUM_OF_QUERIES:,} queries against denormalised table...")
+    print(f&quot;- Benchmarking {NUM_OF_QUERIES:,} queries against denormalised table...&quot;)
     explain_outputs = []
 
     for i in range(NUM_OF_QUERIES):
         foo = bar = values[i]
-        query = f"SELECT foobar FROM denormalised where foobar='{foo}:{bar}';"
-        cursor.execute(f"EXPLAIN (ANALYSE, BUFFERS, costs off, summary) {query}")
+        query = f&quot;SELECT foobar FROM denormalised where foobar='{foo}:{bar}';&quot;
+        cursor.execute(f&quot;EXPLAIN (ANALYSE, BUFFERS, costs off, summary) {query}&quot;)
         explain_outputs.append(cursor.fetchall())
     print_explain_info(explain_outputs)
 
 def benchmark_normalised_queries_foo_only(cursor, values):
-    print(f"- Benchmarking {NUM_OF_QUERIES:,} foo-only queries against normalised table...")
+    print(f&quot;- Benchmarking {NUM_OF_QUERIES:,} foo-only queries against normalised table...&quot;)
     explain_outputs = []
 
     for i in range(NUM_OF_QUERIES):
         foo = bar = values[i]
-        query = f"SELECT foo, bar FROM normalised where foo='{foo}';"
-        cursor.execute(f"EXPLAIN (ANALYSE, BUFFERS, costs off, summary off) {query}")
+        query = f&quot;SELECT foo, bar FROM normalised where foo='{foo}';&quot;
+        cursor.execute(f&quot;EXPLAIN (ANALYSE, BUFFERS, costs off, summary off) {query}&quot;)
         explain_outputs.append(cursor.fetchall())
     print_explain_info(explain_outputs)
 
 def benchmark_denormalised_queries_foo_only(cursor, values):
-    print(f"- Benchmarking {NUM_OF_QUERIES:,} foo-only queries against denormalised table...")
+    print(f&quot;- Benchmarking {NUM_OF_QUERIES:,} foo-only queries against denormalised table...&quot;)
     explain_outputs = []
 
     for i in range(NUM_OF_QUERIES):
         foo = bar = values[i]
-        query = f"SELECT foobar FROM denormalised where foobar LIKE '{foo}:%';"
-        cursor.execute(f"EXPLAIN (ANALYSE, BUFFERS, costs off, summary) {query}")
+        query = f&quot;SELECT foobar FROM denormalised where foobar LIKE '{foo}:%';&quot;
+        cursor.execute(f&quot;EXPLAIN (ANALYSE, BUFFERS, costs off, summary) {query}&quot;)
         explain_outputs.append(cursor.fetchall())
     print_explain_info(explain_outputs)
 
@@ -258,34 +261,34 @@ def print_explain_info(explain_outputs):
         found_buffers = False
         for line in explain_output:
             line = line[0]
-            if line.startswith("  Buffers:") and found_buffers is False:
+            if line.startswith(&quot;  Buffers:&quot;) and found_buffers is False:
                 found_buffers = True
                 # Look for buffer stats in the output using regular expressions
-                match = re.search(r"shared hit=(\d+)", line)
+                match = re.search(r&quot;shared hit=(\d+)&quot;, line)
                 if match:
                     shared_hit += int(match.group(1))
-                match = re.search(r"read=(\d+)", line)
+                match = re.search(r&quot;read=(\d+)&quot;, line)
                 if match:
                     shared_read += int(match.group(1))
-                match = re.search(r"written=(\d+)", line)
+                match = re.search(r&quot;written=(\d+)&quot;, line)
                 if match:
                     shared_written += int(match.group(1))
 
-        timing = explain_output[0][0].split("actual time=")[1].split(" ")[0].split("..")
+        timing = explain_output[0][0].split(&quot;actual time=&quot;)[1].split(&quot; &quot;)[0].split(&quot;..&quot;)
         total_timing = (total_timing[0] + float(timing[0]), total_timing[1] + float(timing[1]))
 
     size = len(explain_outputs)
-    print(f"  - average timing = {total_timing[0]/size}..{total_timing[1]/size}")
-    print(f"  - average buffers hit {shared_hit/size}")
-    print(f"  - average buffers read {shared_read/size}")
-    print(f"  - average buffers written {shared_written/size}")
+    print(f&quot;  - average timing = {total_timing[0]/size}..{total_timing[1]/size}&quot;)
+    print(f&quot;  - average buffers hit {shared_hit/size}&quot;)
+    print(f&quot;  - average buffers read {shared_read/size}&quot;)
+    print(f&quot;  - average buffers written {shared_written/size}&quot;)
 
 def run_tests():
     results = {}
     print(
-        f"\nReport details:\n"
-        f"  - rows in each table: {NUM_OF_ROWS:,}\n"
-        f"  - number of queries to benchmark: {NUM_OF_QUERIES:,}\n"
+        f&quot;\nReport details:\n&quot;
+        f&quot;  - rows in each table: {NUM_OF_ROWS:,}\n&quot;
+        f&quot;  - number of queries to benchmark: {NUM_OF_QUERIES:,}\n&quot;
     )
     cursor, conn = get_cursor_and_connection()
 
@@ -310,11 +313,11 @@ def run_tests():
     conn.close()
 
 
-if __name__ == "__main__":
+if __name__ == &quot;__main__&quot;:
     run_tests()
-</code></pre><p>Here is the result for the report:</p>
-<pre><code class="language-">
-Report details:
+</code></pre>
+<p>Here is the result for the report:</p>
+<pre><code>Report details:
   - rows in each table: 10,000,000
   - number of queries to benchmark: 30,000
 
@@ -368,4 +371,8 @@ Report details:
   - average buffers hit 16121.111933333334
   - average buffers read 66222.88806666667
   - average buffers written 0.0
-</code></pre><p>As you can see, the denormalised version performs better in every case.</p>
+</code></pre>
+<p>As you can see, the denormalised version performs better in every case.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

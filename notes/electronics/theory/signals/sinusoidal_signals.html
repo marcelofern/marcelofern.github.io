@@ -59,12 +59,11 @@
   <![endif]-->
 </head>
 <body>
-<h1>Sinusoidal Signals</h0>
-<pre><code class="language-">
-Created at: 2025-02-04
-</code></pre><p>Wave function:</p>
-<pre><code class="language-">
-V = A sin(2π f t + φ )
+<h1>Sinusoidal Signals</h1>
+<pre><code>Created at: 2025-02-04
+</code></pre>
+<p>Wave function:</p>
+<pre><code>V = A sin(2π f t + φ )
 
 # OR
 
@@ -73,40 +72,60 @@ V = A sin ω t.
 # Note that
 
 2π f t ↔ ω
-</code></pre><p>Common nomenclature:</p>
-<ul><li><b>peak-to-peak amplitude</b> (pp amplitude) ↔ twice the amplitude.</li><li><b>root-mean-square amplitude</b> (rms amplitude), which is Vrms = √(1/2)A = 0.707A (this is for sinewaves only; the ratio of pp to rms will be different for other waveforms).Odd as it may seem, this is the usual method, because rms voltage is what’s used to compute power. The nominal voltage across the terminals of a wall socket (in the United States) is 120 volts rms, 60 Hz. The amplitude is 170 volts (339 volts pp).</li></ul>
-<h2>Quotes from the art of electronics</h0>
-<blockquote>If someone says something like “take a 10 μ V signal at 1 MHz,” they mean a</blockquote>
-<blockquote>sinewave. Mathematically, what you have is a voltage described by</blockquote>
-<pre><code class="language-">
-V = A sin(2π f t + φ )
-</code></pre><blockquote>where A is called the amplitude and f is the frequency in hertz (cycles per</blockquote>
-<blockquote>second).</blockquote>
-<blockquote>The other variation on this simple theme is the use of angular frequency,</blockquote>
-<blockquote>which looks like this:</blockquote>
-<pre><code class="language-">
-V = A sin ω t.
-</code></pre><blockquote>Just remember the important relation ω = 2π f and you won’t go wrong.</blockquote>
-<blockquote>The great merit of sinewaves (and the cause of their perennial popularity) is</blockquote>
-<blockquote>the fact that they are the solutions to certain linear differential equations</blockquote>
-<blockquote>that happen to describe many phenomena in nature as well as the properties of</blockquote>
-<blockquote>linear circuits. A linear circuit has the property that its output, when</blockquote>
-<blockquote>driven by the sum of two input signals, equals the sum of its individual</blockquote>
-<blockquote>outputs when driven by each input signal in turn; i.e., if O(A) represents</blockquote>
-<blockquote>the output when driven by signal A, then a circuit is linear if O(A + B) =</blockquote>
-<blockquote>O(A) + O(B). A linear circuit driven by a sinewave always responds with a</blockquote>
-<blockquote>sinewave, although in general the phase and amplitude are changed. No other</blockquote>
-<blockquote>periodic signal can make this statement. It is standard practice, in fact, to</blockquote>
-<blockquote>describe the behavior of a circuit by its frequency response, by which we</blockquote>
-<blockquote>mean the way the circuit alters the amplitude of an applied sinewave as a</blockquote>
-<blockquote>function of frequency. A stereo ampliﬁer, for instance, should be</blockquote>
-<blockquote>characterized by a “ﬂat” frequency response over the range 20 Hz to 20 kHz,</blockquote>
-<blockquote>at least. The sinewave frequencies we usually deal with range from a few</blockquote>
-<blockquote>hertz to a few tens of megahertz. Lower frequencies, down to 0.0001 Hz or</blockquote>
-<blockquote>lower, can be generated with carefully built circuits, if needed. Higher</blockquote>
-<blockquote>frequencies, up to say 2000 MHz (2 GHz) and above, can be generated, but they</blockquote>
-<blockquote>require special transmission-line techniques. Above that, you’re dealing with</blockquote>
-<blockquote>microwaves, for which conventional wired circuits with lumped-circuit</blockquote>
-<blockquote>elements become impractical, and exotic waveguides or “striplines” are used</blockquote>
-<blockquote>instead.</blockquote>
+</code></pre>
+<p>Common nomenclature:</p>
+<ul>
+<li><strong>peak-to-peak amplitude</strong> (pp amplitude) ↔ twice the amplitude.</li>
+<li><strong>root-mean-square amplitude</strong> (rms amplitude), which is Vrms = √(1/2)A =
+0.707A (this is for sinewaves only; the ratio of pp to rms will be different
+for other waveforms).Odd as it may seem, this is the usual method, because
+rms voltage is what’s used to compute power. The nominal voltage across the
+terminals of a wall socket (in the United States) is 120 volts rms, 60 Hz.
+The amplitude is 170 volts (339 volts pp).</li>
+</ul>
+<h2>Quotes from the art of electronics</h2>
+<blockquote>
+<p>If someone says something like “take a 10 μ V signal at 1 MHz,” they mean a
+sinewave. Mathematically, what you have is a voltage described by</p>
+</blockquote>
+<pre><code>V = A sin(2π f t + φ )
+</code></pre>
+<blockquote>
+<p>where A is called the amplitude and f is the frequency in hertz (cycles per
+second).
+The other variation on this simple theme is the use of angular frequency,
+which looks like this:</p>
+</blockquote>
+<pre><code>V = A sin ω t.
+</code></pre>
+<blockquote>
+<p>Just remember the important relation ω = 2π f and you won’t go wrong.</p>
+</blockquote>
+<blockquote>
+<p>The great merit of sinewaves (and the cause of their perennial popularity) is
+the fact that they are the solutions to certain linear differential equations
+that happen to describe many phenomena in nature as well as the properties of
+linear circuits. A linear circuit has the property that its output, when
+driven by the sum of two input signals, equals the sum of its individual
+outputs when driven by each input signal in turn; i.e., if O(A) represents
+the output when driven by signal A, then a circuit is linear if O(A + B) =
+O(A) + O(B). A linear circuit driven by a sinewave always responds with a
+sinewave, although in general the phase and amplitude are changed. No other
+periodic signal can make this statement. It is standard practice, in fact, to
+describe the behavior of a circuit by its frequency response, by which we
+mean the way the circuit alters the amplitude of an applied sinewave as a
+function of frequency. A stereo ampliﬁer, for instance, should be
+characterized by a “ﬂat” frequency response over the range 20 Hz to 20 kHz,
+at least. The sinewave frequencies we usually deal with range from a few
+hertz to a few tens of megahertz. Lower frequencies, down to 0.0001 Hz or
+lower, can be generated with carefully built circuits, if needed. Higher
+frequencies, up to say 2000 MHz (2 GHz) and above, can be generated, but they
+require special transmission-line techniques. Above that, you’re dealing with
+microwaves, for which conventional wired circuits with lumped-circuit
+elements become impractical, and exotic waveguides or “striplines” are used
+instead.</p>
+</blockquote>
 <p>From: The Art Of Electronics.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -60,16 +60,23 @@
 </head>
 <body>
 <p>April 20, 2021</p>
-<h1>Exploratory Data Analysis</h0>
-<p>The iris flower dataset, also referred as Fisher's Iris dataset (after Ronald Fisher), was firstly introduced in 1936 and has since been incredibly popular due to its simple domain and its somehow magical ability to produce good statistical results.</p>
-<p>The dataset consists of 150 samples from 3 species of Iris flower, namely Iris versicolor, Iris virginica, and Iris setosa. The classes are evenly distributed in the dataset, meaning that the 3 classes have 50 samples each. Each sample contains the width and length of both sepals and petals.</p>
-<p><img alt="sepal_vs_petal" src="sepal_vs_petal.png"></p>
-<h2>Loading the dataset</h0>
-<p>The dataset is provided by the University of California Irvine Machine Learning Repository. The url for downloading the file is:</p>
+<h1>Exploratory Data Analysis</h1>
+<p>The iris flower dataset, also referred as Fisher's Iris dataset (after Ronald
+Fisher), was firstly introduced in 1936 and has since been incredibly popular
+due to its simple domain and its somehow magical ability to produce good
+statistical results.</p>
+<p>The dataset consists of 150 samples from 3 species of Iris flower, namely Iris
+versicolor, Iris virginica, and Iris setosa. The classes are evenly distributed
+in the dataset, meaning that the 3 classes have 50 samples each. Each sample
+contains the width and length of both sepals and petals.</p>
+<p><img src="sepal_vs_petal.png" alt="sepal_vs_petal"></p>
+<h2>Loading the dataset</h2>
+<p>The dataset is provided by the University of California Irvine Machine Learning
+Repository. The url for downloading the file is:</p>
 <p>https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data</p>
-<p>The data file is formatted as a csv file. To load this file into the memory you can use the code below:</p>
-<pre><code class="language-python">
-import requests
+<p>The data file is formatted as a csv file. To load this file into the memory you
+can use the code below:</p>
+<pre><code class="language-python">import requests
 
 url = (
     'https://archive.ics.uci.edu/'
@@ -94,9 +101,9 @@ dataset = [{
     'petal_width': float(row[3]),
     'iris_class': row[4],
 } for row in raw_dataset]
-</code></pre><p>The loaded and parsed dataset looks like this:</p>
-<pre><code class="language-python">
-[{'sepal_length': 5.1,
+</code></pre>
+<p>The loaded and parsed dataset looks like this:</p>
+<pre><code class="language-python">[{'sepal_length': 5.1,
   'sepal_width': 3.5,
   'petal_length': 1.4,
   'petal_width': 0.2,
@@ -112,35 +119,68 @@ dataset = [{
   'petal_width': 0.2,
   'iris_class': 'Iris-setosa'},
   ...],
-</code></pre><h2>Using pandas DataFrame class</h0>
-<p>In order to facilitate the extraction of some basic statistics, we will instantiate a DataFrame object using the dataset we parsed in the previous step:</p>
-<pre><code class="language-python">
-import pandas as pd
+</code></pre>
+<h2>Using pandas DataFrame class</h2>
+<p>In order to facilitate the extraction of some basic statistics, we will
+instantiate a DataFrame object using the dataset we parsed in the previous
+step:</p>
+<pre><code class="language-python">import pandas as pd
 
 df = pd.DataFrame(data=dataset)
-</code></pre><h2>Pair plot view</h0>
-<p>A pair plot allows us to display the relationships between variables in a dataset in a pairwise view. It is particularly useful for quickly understanding relevant variables and for determining types of regression analysis to use.</p>
-<pre><code class="language-python">
-import seaborn as sns
+</code></pre>
+<h2>Pair plot view</h2>
+<p>A pair plot allows us to display the relationships between variables in a
+dataset in a pairwise view. It is particularly useful for quickly understanding
+relevant variables and for determining types of regression analysis to use.</p>
+<pre><code class="language-python">import seaborn as sns
 
 sns.pairplot(df, hue='iris_class')
-</code></pre><p><img alt="pair_plot" src="pair_plot.png"></p>
-<p>Note that the main diagonal plots an univariate distribution that shows the marginal distribution of the data in each column. E.g., take the graph from the first element in the main diagonal. This graph is the univariate distribution of sepal length. From this, we can estimate that if an iris species has a sepal length of 5cm, it is way more likely to be a Setosa rather than a Veriscolor or Virginica.</p>
+</code></pre>
+<p><img src="pair_plot.png" alt="pair_plot"></p>
+<p>Note that the main diagonal plots an univariate distribution that shows the
+marginal distribution of the data in each column. E.g., take the graph from the
+first element in the main diagonal. This graph is the univariate distribution
+of sepal length. From this, we can estimate that if an iris species has a sepal
+length of 5cm, it is way more likely to be a Setosa rather than a Veriscolor or
+Virginica.</p>
 <p>There are a few things to notice from the pair plot view above:</p>
-<ol><li>In all the scatter plots, the Iris Setosa species belongs to a cluster of its own. In other words, we don't see entries from Versicolor and Virginica (green and orange) overlapping with Setosa entries (blue) in any of the scatter plots above.</li><li>Although the Veriscolor and Virginica entries usually overlap, this overlapping is due to a few outliers, therefore finding the proper clusters that minimise prediction errors won't be an impossible task.</li><li>Either petal_width or petal_length can be used to completely identify Iris Setosa entries from this database. Although this generalisation may not hold for a larger dataset, it is good to keep in mind that Setosas have the smallest petals in both length and width.</li><li>Virginica is the only class to present petals with widths of more than 2 centimetres. It is also the one to present petals with length of more than</li><li>cm.</li><li>The combination of the variables sepal_length and sepal_width does not seem to be a good choice for distinguishing Virginicas from Versicolors.</li></ol>
-<p>One interesting scatter plot that would show us relatively clean clusters is the petal_width vs petal_length one:</p>
-<pre><code class="language-python">
-sns.scatterplot(
+<ol>
+<li>In all the scatter plots, the Iris Setosa species belongs to a cluster of
+its own. In other words, we don't see entries from Versicolor and Virginica
+(green and orange) overlapping with Setosa entries (blue) in any of the
+scatter plots above.</li>
+<li>Although the Veriscolor and Virginica entries usually overlap, this
+overlapping is due to a few outliers, therefore finding the proper clusters
+that minimise prediction errors won't be an impossible task.</li>
+<li>Either petal_width or petal_length can be used to completely identify Iris
+Setosa entries from this database. Although this generalisation may not hold
+for a larger dataset, it is good to keep in mind that Setosas have the
+smallest petals in both length and width.</li>
+<li>Virginica is the only class to present petals with widths of more than 2
+centimetres. It is also the one to present petals with length of more than
+6cm.</li>
+<li>The combination of the variables sepal_length and sepal_width does not seem
+to be a good choice for distinguishing Virginicas from Versicolors.</li>
+</ol>
+<p>One interesting scatter plot that would show us relatively clean clusters is
+the petal_width vs petal_length one:</p>
+<pre><code class="language-python">sns.scatterplot(
     data=df,
     x='petal_width', y='petal_length',
     hue='iris_class'
 )
-</code></pre><p><img alt="petal_len_vs_width" src="petal_len_vs_width.png"></p>
-<p>We can see how the three clusters in the sketch above are relatively apart from each other (even though there is some small error between Versicolor and Virginica). Other scatter plots that also indicate good separation of classes are: sepal_width vs petal_width and sepal_width vs petal_length.</p>
-<p>For a quick analysis the sketch above would be sufficient as the result of a clustering algorithm would be pretty obvious, but in order to confirm the sketch above is valid let's plot the result of the K-means algorithm applied to the same data.</p>
-<p><img alt="petal_len_vs_width_kmeans" src="petal_len_vs_width_kmeans.png"></p>
-<pre><code class="language-python">
-from sklearn.cluster import KMeans
+</code></pre>
+<p><img src="petal_len_vs_width.png" alt="petal_len_vs_width"></p>
+<p>We can see how the three clusters in the sketch above are relatively apart
+from each other (even though there is some small error between Versicolor and
+Virginica). Other scatter plots that also indicate good separation of classes
+are: sepal_width vs petal_width and sepal_width vs petal_length.</p>
+<p>For a quick analysis the sketch above would be sufficient as the result of a
+clustering algorithm would be pretty obvious, but in order to confirm the
+sketch above is valid let's plot the result of the K-means algorithm applied to
+the same data.</p>
+<p><img src="petal_len_vs_width_kmeans.png" alt="petal_len_vs_width_kmeans"></p>
+<pre><code class="language-python">from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 
 X = df[['petal_width', 'petal_length']]
@@ -150,7 +190,7 @@ y_kmeans = km.predict(X)
 
 sns.scatterplot(
     data=df,
-    x="petal_width", y="petal_length",
+    x=&quot;petal_width&quot;, y=&quot;petal_length&quot;,
     hue=y_kmeans
 )
 centers = km.cluster_centers_
@@ -160,18 +200,37 @@ plt.scatter(
     c='black',
     s=200, alpha=0.4
 )
-plt.xlabel("petal_width")
-plt.ylabel("petal_length")
-</code></pre><p>We can infer that 0=Virginica, 1=Setosa, 2=Versicolor. As expected, we can see that there are prediction errors between Versicolor and Virginica when comparing with the previous plot, but in general the clusters have a satisfiable accuracy considering we are only taking into account two dimensions of the data.</p>
-<h2>Can we find new taxonomies?</h0>
-<p>Some views from the pair plot above suggest that there is a small amount of differences between the Versicolor and the Virginica species. Besides that, when analysing the sepal width against the sepal length, there seems to be no clear distinction between both species. This might mean that there is the opportunity to analyse whether a missing taxonomy could be included to better split the differences between those two species, or if they both species should just be merged together into one.</p>
-<p>Even if the analysis proves untrue for both hypothesis, the exercise itself is still a valid effort.</p>
-<p>The algorithm that will be used to help us with this task is called Agglomerative Hierarchical Clustering. This type of clustering technique does not involve assuming the number of clusters a priori, which gives us the flexibility of finding new taxonomies without having to assume or infer opinions about the dataset.</p>
-<p>It is important to point out a few limitations of this clustering technique: A) highly sensitive to noise and outliers. B) Difficulty handling non-globular shapes. C) Difficulty handling clusters of different sizes.</p>
-<p>To highlight the fragility pointed out by A) let's run the algorithm for the sepal width and length dimensions using the Euclidean affinity along with the Single linkage:</p>
-<p><img alt="sepal_len_vs_width_agg" src="sepal_len_vs_width_agg.png"></p>
-<pre><code class="language-python">
-from sklearn.cluster import AgglomerativeClustering
+plt.xlabel(&quot;petal_width&quot;)
+plt.ylabel(&quot;petal_length&quot;)
+</code></pre>
+<p>We can infer that 0=Virginica, 1=Setosa, 2=Versicolor. As expected, we can see
+that there are prediction errors between Versicolor and Virginica when
+comparing with the previous plot, but in general the clusters have a
+satisfiable accuracy considering we are only taking into account two dimensions
+of the data.</p>
+<h2>Can we find new taxonomies?</h2>
+<p>Some views from the pair plot above suggest that there is a small amount of
+differences between the Versicolor and the Virginica species. Besides that,
+when analysing the sepal width against the sepal length, there seems to be no
+clear distinction between both species. This might mean that there is the
+opportunity to analyse whether a missing taxonomy could be included to better
+split the differences between those two species, or if they both species
+should just be merged together into one.</p>
+<p>Even if the analysis proves untrue for both hypothesis, the exercise itself is
+still a valid effort.</p>
+<p>The algorithm that will be used to help us with this task is called
+Agglomerative Hierarchical Clustering. This type of clustering technique does
+not involve assuming the number of clusters a priori, which gives us the
+flexibility of finding new taxonomies without having to assume or infer
+opinions about the dataset.</p>
+<p>It is important to point out a few limitations of this clustering technique: A)
+highly sensitive to noise and outliers. B) Difficulty handling non-globular
+shapes. C) Difficulty handling clusters of different sizes.</p>
+<p>To highlight the fragility pointed out by A) let's run the algorithm for the
+sepal width and length dimensions using the Euclidean affinity along with the
+Single linkage:</p>
+<p><img src="sepal_len_vs_width_agg.png" alt="sepal_len_vs_width_agg"></p>
+<pre><code class="language-python">from sklearn.cluster import AgglomerativeClustering
 
 X = df[['sepal_width', 'sepal_length']]
 
@@ -184,13 +243,17 @@ y_ac = ac.fit_predict(X)
 
 sns.scatterplot(
     data=df,
-    x="sepal_width", y="sepal_length",
+    x=&quot;sepal_width&quot;, y=&quot;sepal_length&quot;,
     hue=y_ac
 )
-</code></pre><p>The result is not nearly satisfactory. 147 samples were put into the same class, which is obviously untrue. The combination of dimensions chosen along with using the Single linkage criterion for calculating distances is not the appropriate configuration to solve this clustering problem. A better linkage criterion to use for this problem would be the ward criterion:</p>
-<p><img alt="sepal_len_vs_width_ward" src="sepal_len_vs_width_ward.png"></p>
-<pre><code class="language-python">
-from sklearn.cluster import AgglomerativeClustering
+</code></pre>
+<p>The result is not nearly satisfactory. 147 samples were put into the same
+class, which is obviously untrue. The combination of dimensions chosen along
+with using the Single linkage criterion for calculating distances is not the
+appropriate configuration to solve this clustering problem. A better linkage
+criterion to use for this problem would be the ward criterion:</p>
+<p><img src="sepal_len_vs_width_ward.png" alt="sepal_len_vs_width_ward"></p>
+<pre><code class="language-python">from sklearn.cluster import AgglomerativeClustering
 
 X = df[['sepal_width', 'sepal_length']]
 
@@ -203,14 +266,16 @@ y_ac = ac.fit_predict(X)
 
 sns.scatterplot(
     data=df,
-    x="sepal_width", y="sepal_length",
+    x=&quot;sepal_width&quot;, y=&quot;sepal_length&quot;,
     hue=y_ac
 )
-</code></pre><p>The result is still unsatisfactory, but there is less error when compared to the original classification.</p>
-<p>Now let's go back to the petal width/length dimensions and see how the agglomerative clustering compares to the K-means clustering applied earlier.</p>
-<p><img alt="petal_len_vs_width_agg" src="petal_len_vs_width_agg.png"></p>
-<pre><code class="language-python">
-from sklearn.cluster import AgglomerativeClustering
+</code></pre>
+<p>The result is still unsatisfactory, but there is less error when compared to
+the original classification.</p>
+<p>Now let's go back to the petal width/length dimensions and see how the
+agglomerative clustering compares to the K-means clustering applied earlier.</p>
+<p><img src="petal_len_vs_width_agg.png" alt="petal_len_vs_width_agg"></p>
+<pre><code class="language-python">from sklearn.cluster import AgglomerativeClustering
 
 X = df[['petal_width', 'petal_length']]
 
@@ -223,14 +288,17 @@ y_ac = ac.fit_predict(X)
 
 sns.scatterplot(
     data=df,
-    x="petal_width", y="petal_length",
+    x=&quot;petal_width&quot;, y=&quot;petal_length&quot;,
     hue=y_ac
 )
-</code></pre><p>The result is very similar to the K-means clustering algorithm, there are only two samples that got a different classification.</p>
-<p>One interesting point to raise is that adding new clusters means creating subdivisions between Versicolor and Virginica, but Setosa continues to be isolated in its own cluster. Using 5 clusters:</p>
-<p><img alt="petal_len_vs_width_agg_5" src="petal_len_vs_width_agg_5.png"></p>
-<pre><code class="language-python">
-from sklearn.cluster import AgglomerativeClustering
+</code></pre>
+<p>The result is very similar to the K-means clustering algorithm, there are only
+two samples that got a different classification.</p>
+<p>One interesting point to raise is that adding new clusters means creating
+subdivisions between Versicolor and Virginica, but Setosa continues to be
+isolated in its own cluster. Using 5 clusters:</p>
+<p><img src="petal_len_vs_width_agg_5.png" alt="petal_len_vs_width_agg_5"></p>
+<pre><code class="language-python">from sklearn.cluster import AgglomerativeClustering
 
 X = df[['petal_width', 'petal_length']]
 
@@ -243,18 +311,35 @@ y_ac = ac.fit_predict(X)
 
 sns.scatterplot(
     data=df,
-    x="petal_width", y="petal_length",
+    x=&quot;petal_width&quot;, y=&quot;petal_length&quot;,
     hue=y_ac
 )
-</code></pre><p>Looking blindly at the data, we could make the mistake of saying that there might be room for more taxonomies to be explored between Versicolor and Virginica based on these two dimensions alone, but in reality this assumption is too big of a jump as it is not considering other dimensions (features) that might be more important for classifying a specie. A more reasonable assertion to say is that Iris Setosa is its own specie as its cluster remains unchanged even when trying to create more clusters for the dataset, whereas the distinction between Versicolor and Virginica remains ambiguous if only looking unilaterally through this set of dimensions.</p>
-<h3>Dendogram</h0>
-<p>We have mentioned above that one of the strengths of the hierarchical algorithm we used is that it does not need to assume an initial number of clusters. We haven't used this advantage yet.</p>
-<p>Hierarchical clustering algorithms create dendrograms in the process of fitting the data. These dendrograms are used to define what is the most optimal amount of clusters to use. This will allows us to understand what mathematics think about our taxonomy.</p>
-<p>The dendrogram can be hard to read when the linkage matrix is large. This is the case as we'll be creating the linkage matrix from all 150 samples. To condense the dendrogram, we can call the scipy function dendogram() with truncate_mode set to 'level' along with the 'p' number of levels we want to display.</p>
-<p><img alt="dendrogram" src="dendrogram.png"></p>
-<pre><code class="language-python">
-# code based and adapted from sklearn:
-# "Plot Hierarchical Clustering Dendrogram"
+</code></pre>
+<p>Looking blindly at the data, we could make the mistake of saying that there
+might be room for more taxonomies to be explored between Versicolor and
+Virginica based on these two dimensions alone, but in reality this assumption
+is too big of a jump as it is not considering other dimensions (features) that
+might be more important for classifying a specie. A more reasonable assertion
+to say is that Iris Setosa is its own specie as its cluster remains unchanged
+even when trying to create more clusters for the dataset, whereas the
+distinction between Versicolor and Virginica remains ambiguous if only looking
+unilaterally through this set of dimensions.</p>
+<h3>Dendogram</h3>
+<p>We have mentioned above that one of the strengths of the hierarchical
+algorithm we used is that it does not need to assume an initial number of
+clusters. We haven't used this advantage yet.</p>
+<p>Hierarchical clustering algorithms create dendrograms in the process of fitting
+the data. These dendrograms are used to define what is the most optimal amount
+of clusters to use. This will allows us to understand what mathematics think
+about our taxonomy.</p>
+<p>The dendrogram can be hard to read when the linkage matrix is large. This is
+the case as we'll be creating the linkage matrix from all 150 samples. To
+condense the dendrogram, we can call the scipy function dendogram() with
+truncate_mode set to 'level' along with the 'p' number of levels we want to
+display.</p>
+<p><img src="dendrogram.png" alt="dendrogram"></p>
+<pre><code class="language-python"># code based and adapted from sklearn:
+# &quot;Plot Hierarchical Clustering Dendrogram&quot;
 
 import numpy as np
 
@@ -274,7 +359,7 @@ def create_linkage_matrix(model):
     for i, children in enumerate(non_leaf_node_children):
         count = 0
         for child in children:
-            if child < n_samples:
+            if child &lt; n_samples:
                 # it is a leaf node
                 count += 1
             else:
@@ -306,12 +391,27 @@ plt.xlabel(
     'Number of points in node '
     '(or index of point if no parenthesis).'
 )
-</code></pre><p>The higher the distance between nodes in the dendrogram, the larger their dissimilarities. In this particular case, there seems to be no ideal choice for picking 2 or 3 clusters. The horizontal red line points out that there is a big dissimilarity between the cluster made of Setosas (orange) versus the cluster made of the combination of both Virginicas and Versicolors (green), which agrees with our previous analysis. This means that naturally, the hierarchical clustering technique would interpret the dataset as belonging to two clusters only.</p>
-<p>There is one problem with this choice of clusters. Dendrograms need to be interpreted, and much of this interpretation comes with intuition. Although the maximum distance points to 2 clusters, the distance between Virginicas and Versicolors is still relatively significant to be ignored. The brown horizontal line might actually be the best pick in terms of dissimilarity distances for this dataset if we are to consider the dissimilarities between Virginicas and Versicolors significant enough for being included in our taxonomy. If so, 3 would be the ideal number of clusters.</p>
-<h2>Other general information for reference (mean, std, min, and max)</h0>
-<p>The code below shows how this extraction of information happens. A more readable format to read this information is provided next.</p>
-<pre><code class="language-python">
-# Overall mean
+</code></pre>
+<p>The higher the distance between nodes in the dendrogram, the larger their
+dissimilarities. In this particular case, there seems to be no ideal choice for
+picking 2 or 3 clusters. The horizontal red line points out that there is a big
+dissimilarity between the cluster made of Setosas (orange) versus the cluster
+made of the combination of both Virginicas and Versicolors (green), which
+agrees with our previous analysis. This means that naturally, the hierarchical
+clustering technique would interpret the dataset as belonging to two clusters
+only.</p>
+<p>There is one problem with this choice of clusters. Dendrograms need to be
+interpreted, and much of this interpretation comes with intuition. Although the
+maximum distance points to 2 clusters, the distance between Virginicas and
+Versicolors is still relatively significant to be ignored. The brown horizontal
+line might actually be the best pick in terms of dissimilarity distances for
+this dataset if we are to consider the dissimilarities between Virginicas and
+Versicolors significant enough for being included in our taxonomy. If so, 3
+would be the ideal number of clusters.</p>
+<h2>Other general information for reference (mean, std, min, and max)</h2>
+<p>The code below shows how this extraction of information happens. A more
+readable format to read this information is provided next.</p>
+<pre><code class="language-python"># Overall mean
 print('Overall Mean:')
 print(df.mean())
 
@@ -377,9 +477,9 @@ print(versicolor_df.max())
 # setosa max
 print('\nVirginica Maximum:')
 print(virginica_df.max())
-</code></pre><h3>Mean</h0>
-<pre><code class="language-">
-Overall Mean:
+</code></pre>
+<h3>Mean</h3>
+<pre><code>Overall Mean:
 sepal_length    5.843333
 sepal_width     3.054000
 petal_length    3.758667
@@ -402,9 +502,9 @@ sepal_length    6.588
 sepal_width     2.974
 petal_length    5.552
 petal_width     2.026
-</code></pre><h3>Standard Deviation</h0>
-<pre><code class="language-">
-Overall Standard Deviation:
+</code></pre>
+<h3>Standard Deviation</h3>
+<pre><code>Overall Standard Deviation:
 sepal_length    0.828066
 sepal_width     0.433594
 petal_length    1.764420
@@ -427,9 +527,9 @@ sepal_length    0.635880
 sepal_width     0.322497
 petal_length    0.551895
 petal_width     0.274650
-</code></pre><h3>Minimum</h0>
-<pre><code class="language-">
-Overall Minimum:
+</code></pre>
+<h3>Minimum</h3>
+<pre><code>Overall Minimum:
 sepal_length    4.3
 sepal_width     2.0
 petal_length    1.0
@@ -452,9 +552,9 @@ sepal_length    4.9
 sepal_width     2.2
 petal_length    4.5
 petal_width     1.4
-</code></pre><h3>Maximum</h0>
-<pre><code class="language-">
-Overall Maximum:
+</code></pre>
+<h3>Maximum</h3>
+<pre><code>Overall Maximum:
 sepal_length    7.9
 sepal_width     4.4
 petal_length    6.9
@@ -478,3 +578,6 @@ sepal_width     3.8
 petal_length    6.9
 petal_width     2.5
 </code></pre>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>
