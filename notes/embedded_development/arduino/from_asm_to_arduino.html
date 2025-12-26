@@ -61,8 +61,8 @@
 <body>
 <p>2024-04-21</p>
 <p>Install the following packages:</p>
-<ol><li><code>avr-gcc</code></li><li><code>avr-binutils</code> (should already come with avr<ul><li>gcc)</li><li><code>avr-libc</code></li><li><code>libserialport</code></li><li><code>avrdude</code></li></ol>
-<b>Assumptions</b> :</li></ul>
+<ol><li><code>avr-gcc</code></li><li><code>avr-binutils</code> (should already come with avr-gcc)</li><li><code>avr-libc</code></li><li><code>libserialport</code></li><li><code>avrdude</code></li></ol>
+<p><b>Assumptions</b>:</p>
 <ul><li>The file you want to compile is called <code>main.S</code>.</li><li>You have an assembly file. If you don't, use the one I provide at the end of this note.</li></ul>
 <h2>Compiling to elf:</h2>
 <pre><code class="language-sh">avr-gcc -DF_CPU=16000000UL -mmcu=atmega328p main.S -o main

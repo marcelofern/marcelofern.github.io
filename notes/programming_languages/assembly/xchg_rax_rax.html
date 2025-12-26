@@ -136,13 +136,12 @@ neg rax
 </code></pre><h2>0x07</h2>
 <p>This also does nothing.</p>
 <p>Say rax is 10.</p>
-<ol><li>inc rax == 11</li><li>neg rax == <ul><li>11</li><li>inc rax == -10</li><li>neg rax == 10</li></ol>
+<ol><li>inc rax == 11</li><li>neg rax == -11</li><li>inc rax == -10</li><li>neg rax == 10</li></ol>
 <pre><code class="language-asm">inc rax
 neg rax
 inc rax
 neg rax
-</code></pre></li></ul>
-<h2>0x08</h2>
+</code></pre><h2>0x08</h2>
 <p><code>rcr</code> is like a shift to the right, which is effectively a division by two.</p>
 <p>The below calculates the average between rax and rdx.</p>
 <p>However, if there's some overflow, or for example if one operator is negative and the other positive, the operation can fail.</p>

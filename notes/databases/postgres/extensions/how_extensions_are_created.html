@@ -87,8 +87,8 @@ relocatable = false
 <p>A list of available keys for the control file is available <a href="https://www.postgresql.org/docs/current/extend-extensions.html">here</a>. There aren't many, only 11.</p>
 <h2>Script File</h2>
 <p>The script file:</p>
-<ul><li>must follow the naming pattern <code>extension--version.sql</code> (for example,<code>bar--1.0.sql</code> for version <ol><li>0 of extension bar) - must by default, be placed on the <code>SHAREDIR/extension</code> directory of the local build. In my case <code>build/share/extension</code>. The control file might decide to specify a different location for the script file though. - can contain any SQL commands. Except the transaction control ones (BEGIN/COMMIT) and commands that can't be executed inside a transaction block like VACUUM. This is because script files are implicitly executed within a transaction.</li></ol>
- For example, this is the script file for <code>pg_repac--1.5.1.sql</code>:</li></ul>
+<ul><li>must follow the naming pattern <code>extension--version.sql</code> (for example,<code>bar--1.0.sql</code> for version 1.0 of extension bar)</li><li>must by default, be placed on the <code>SHAREDIR/extension</code> directory of the local build. In my case <code>build/share/extension</code>. The control file might decide to specify a different location for the script file though.</li><li>can contain any SQL commands. Except the transaction control ones (BEGIN/COMMIT) and commands that can't be executed inside a transaction block like VACUUM. This is because script files are implicitly executed within a transaction.</li></ul>
+<p>For example, this is the script file for <code>pg_repac--1.5.1.sql</code>:</p>
 <pre><code class="language-sql">CREATE SCHEMA repack;
 
 CREATE FUNCTION repack.version() RETURNS text AS

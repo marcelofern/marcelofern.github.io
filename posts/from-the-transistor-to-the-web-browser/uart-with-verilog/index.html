@@ -66,8 +66,8 @@
 <p>UART stands for universal asynchronous receiver-transmitter. An UART is a computer hardware that facilitates asynchronous serial communication.</p>
 <p>UARTs usually send information bit by bit. Starting from the least significant to the most significant one.</p>
 <p>There're usually 3 major components in a UART:</p>
-<ol><li><b>START bit</b>: Is a bit that indicates that the communication has started. Note that if the value of the START bit is 0 it means that the UART transmitter is ready to send data, whereas a value of 1 means that it is not ready. It can be counter intuitive to some.</li><li><b>Payload</b>: This is the information itself, normally a 8<ul><li>bit (1 byte) information is sent, but this can vary from 5-9 bits.</li><li><b>STOP bit</b>: Signals that the payload is now completely sent.</li></ol>
-<img alt="frame_structure" src="frame_structure.png"></li></ul>
+<ol><li><b>START bit</b>: Is a bit that indicates that the communication has started. Note that if the value of the START bit is 0 it means that the UART transmitter is ready to send data, whereas a value of 1 means that it is not ready. It can be counter intuitive to some.</li><li><b>Payload</b>: This is the information itself, normally a 8-bit (1 byte) information is sent, but this can vary from 5-9 bits.</li><li><b>STOP bit</b>: Signals that the payload is now completely sent.</li></ol>
+<p><img alt="frame_structure" src="frame_structure.png"></p>
 <h2>Example codes in Verilog</h2>
 <p>For these examples we're going to use:</p>
 <ul><li>10 MHz clock</li><li>125000 bits per second (baud rate)</li></ul>

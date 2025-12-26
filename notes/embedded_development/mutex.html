@@ -128,7 +128,8 @@
 <blockquote>of signals rather than contention for resources.</blockquote>
 <p>An example of dead lock is as follow:</p>
 <p>Imagine there are two processes locking the same resources in different orders:</p>
-<ul><li>Process A (PA): locks resource R1, then locks resource R2. Then releases both</li><li>Process B (PB): locks resource R2, then locks resource R<ol><li>Then releases both</li></ol>
- In the beginning of both processes, they lock R1 (PA) and R2 (PB), but then when they move on to the next step to lock R2 (PA) and R1 (PB), the processes lock each other, creating a deadlock.</li></ul><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<ul><li>Process A (PA): locks resource R1, then locks resource R2. Then releases both</li><li>Process B (PB): locks resource R2, then locks resource R1. Then releases both</li></ul>
+<p>In the beginning of both processes, they lock R1 (PA) and R2 (PB), but then when they move on to the next step to lock R2 (PA) and R1 (PB), the processes lock each other, creating a deadlock.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

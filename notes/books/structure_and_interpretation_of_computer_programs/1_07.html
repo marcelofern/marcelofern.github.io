@@ -72,7 +72,7 @@
 <blockquote>pprroocceedduurree  tthhaatt  uusseess  tthhiiss  kkiinndd  ooff  eenndd  tteesstt..  DDooeess  tthhiiss  wwoorrkk  bbeetttteerr  ffoorr  ssmmaallll</blockquote>
 <blockquote>aanndd  llaarrggee  nnuummbbeerrss??</blockquote>
 <h2>A Annsswweerr</h2>
- We will first need the function that implement the square<ul><li>root algorithm:</li></ol>
+ We will first need the function that implement the square-root algorithm:</li></ol>
 <pre><code class="language-scm">(define (average x y)
         (/ (+ x y) 2)
 )
@@ -99,8 +99,7 @@
 (define (sqrt x)
         (sqrt-iter 1.0 x)
 )
-</code></pre></li></ul>
-<p>Let's try first to check the result for a few small numbers:</p>
+</code></pre><p>Let's try first to check the result for a few small numbers:</p>
 <pre><code class="language-scm">; The value for this square root is 0.2529...
 (sqrt 0.064)
 ; 0.25311115862564304
@@ -125,6 +124,6 @@
 (sqrt 1999249294194921451)
 </code></pre><p>In the case of a large number like the above, the procedure remains in an infinite loop because whatever value is chosen will never provide the 0.001 threshold as floating numbers have limited precision.</p>
 <p>Finding the proper implementation for this function is hard and there is lengthy discussion in this forum post below:</p>
-<ul><li><a href="<ol><li>http://web.archive.org/web/20220526133324/http://community.schemewiki.org/?sicp-ex-7">forum post</a></li></ol><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<ul><li><a href="http://web.archive.org/web/20220526133324/http://community.schemewiki.org/?sicp-ex-1.7">forum post</a></li></ul><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

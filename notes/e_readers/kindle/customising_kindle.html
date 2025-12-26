@@ -105,7 +105,7 @@
     sudo cp -r Update_KUALBooklet_ALLDEVICES_KS2_install.bin /mnt/kindle/
     </code></pre></li><li>Eject the kindle from the PC, and then umount it:<pre><code class="language-sh">   sudo umount /mnt/kindle
    sudo rm -rf /mnt/kindle
-   </code></pre></li><li>Go to settings <ul><li>> update kindle. Wait a bit</li><li>Now tap the KUAL file, you can see your extensions there.</li><li>Disable OTA updates so that once you enable wifi amazon doesn't try to remove the jailbreak. Follow on next steps.</li><li>Find the firmware version: Home → Menu → Settings → Menu → Device Info</li><li>In my case: Kindle 5.17.1.0.3 (4351900007) - 70971</li><li>Download the <code>renameotabin</code> extension.</li><li>Plug kindle to the PC and Copy the renameotabin folder from the zip to the<code>extensions/</code> folder on your Kindle.<pre><code class="language-sh">    FILES_FOLDER=~/Downloads
+   </code></pre></li><li>Go to settings -> update kindle. Wait a bit</li><li>Now tap the KUAL file, you can see your extensions there.</li><li>Disable OTA updates so that once you enable wifi amazon doesn't try to remove the jailbreak. Follow on next steps.</li><li>Find the firmware version: Home → Menu → Settings → Menu → Device Info</li><li>In my case: Kindle 5.17.1.0.3 (4351900007) - 70971</li><li>Download the <code>renameotabin</code> extension.</li><li>Plug kindle to the PC and Copy the renameotabin folder from the zip to the<code>extensions/</code> folder on your Kindle.<pre><code class="language-sh">    FILES_FOLDER=~/Downloads
     DEVICE=/dev/sda
     sudo mkdir /mnt/kindle
     sudo mount $DEVICE /mnt/kindle
@@ -125,7 +125,8 @@
     </code></pre></li><li>Eject the kindle from the PC, and then umount it:<pre><code class="language-sh">   sudo umount /mnt/kindle
    sudo rm -rf /mnt/kindle
    </code></pre> Notes: - Start KOReader: The designed way to start KOReader - Start KOReader (no framework): Temporarily "kills" the Kindle UI to allocate more resources to KOReader. - Start KOReader (ASAP): Skips a couple of checks and starts KOReader as soon as possible </li></ol>
-<h2>R Reesseettttiinngg</h2>
- If you want to factory reset, downgrade or update your Kindle, you will need to restore the binary by opening KUAL, selecting Rename OTA Binaries and then selecting Restore instead of rename.</li></ul><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<h2>Resetting</h2>
+<p>If you want to factory reset, downgrade or update your Kindle, you will need to restore the binary by opening KUAL, selecting Rename OTA Binaries and then selecting Restore instead of rename.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

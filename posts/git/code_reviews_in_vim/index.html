@@ -84,8 +84,8 @@
 <pre><code class="language-sh">git show <commit_hash>
 </code></pre><h2>Checking Out Each Commit</h2>
 <p>I currently work on codebases that use atomic commits. This essentially means that for each commit:</p>
-<ol><li>The test suite must fully pass.</li><li>The integrity of the codebase isn't in jeopardy (no half<ul><li>done changes between commits).</li><li>The codebase is in a deployable state.</li><li>A commit explains a single change, not multiple.</li></ol>
- For example, a commit title "Change X <b>and</b> Y" is an indication that the commit isn't atomic. Multiple things are changing in the same commit.</li></ul>
+<ol><li>The test suite must fully pass.</li><li>The integrity of the codebase isn't in jeopardy (no half-done changes between commits).</li><li>The codebase is in a deployable state.</li><li>A commit explains a single change, not multiple.</li></ol>
+<p>For example, a commit title "Change X <b>and</b> Y" is an indication that the commit isn't atomic. Multiple things are changing in the same commit.</p>
 <p>Having atomic commits means that I can code-review a Pull Request commit-by-commit.</p>
 <p>Of course there are many more benefits of this practice. For example, I can use <code>git blame</code> effectively. No change will be part of a 40-commits rebased branch with lack of detailed explanation in the commit description.</p>
 <p>So after I have run <code>git log -p master..HEAD</code>, I will go through each commit and perform:</p>

@@ -141,8 +141,8 @@ compile_commands.json: clean
 clean:
 	rm -rf build
 </code></pre><p>Notes:</p>
-<ol><li>The reason the flag <code>--param=min-pagesize=0</code> is set is because of a current bug in avr<ul><li>gcc:<a href="http://web.archive.org/web/20230730125739/https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105523">source</a></li><li>The linker also needs to get the same compiler flags, specially the -mmcu one.</li></ol>
-<h2>M Maakkeeffiillee  ccoommmmaannddss</h2>
+<ol><li>The reason the flag <code>--param=min-pagesize=0</code> is set is because of a current bug in avr-gcc:<a href="http://web.archive.org/web/20230730125739/https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105523">source</a></li><li>The linker also needs to get the same compiler flags, specially the -mmcu one.</li></ol>
+<h2>Makefile commands</h2>
 <pre><code class="language-sh"># Compile the binary.
 make
 
@@ -154,8 +154,7 @@ make tests
 
 # Compile the file for clangd operation.
 make compile_commands.json
-</code></pre></li></ul>
-<p>And voilà! Now you can simply use clangd normally as it will pick up the freshly compile compile_commands.json!</p>
+</code></pre><p>And voilà! Now you can simply use clangd normally as it will pick up the freshly compile compile_commands.json!</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

@@ -64,9 +64,9 @@
 <h2>Reserved Words</h2>
 <p>Always use uppercase for reserved keywords like <code>SELECT</code>, <code>WHERE</code>, or <code>AS</code>.</p>
 <h2>Variable Names</h2>
-<ol><li>Use consistent and descriptive identifiers and names.</li><li>Use lower case names with underscores, such as <code>first_name</code>. Do not use camelCase.</li><li>Functions, such as <code>cardinality</code>, <code>approx_distinct</code>, or <code>substr</code>,<a href="<ul><li>https://www.postgresql.org/docs/10/static/sqlsyntax-lexical.html#SQL-SYNTAX-IDENTIFIERS">are identifiers</a> and should be treated like variable names.</li><li>Names must begin with a letter and may not end in an underscore.</li><li>Only use letters, numbers, and underscores in variable names.</li></ol>
-<h2>B Bee  EExxpplliicciitt</h2>
- When choosing between explicit or implicit syntax, prefer explicit.</li></ul>
+<ol><li>Use consistent and descriptive identifiers and names.</li><li>Use lower case names with underscores, such as <code>first_name</code>. Do not use camelCase.</li><li>Functions, such as <code>cardinality</code>, <code>approx_distinct</code>, or <code>substr</code>,<a href="https://www.postgresql.org/docs/10/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS">are identifiers</a> and should be treated like variable names.</li><li>Names must begin with a letter and may not end in an underscore.</li><li>Only use letters, numbers, and underscores in variable names.</li></ol>
+<h2>Be Explicit</h2>
+<p>When choosing between explicit or implicit syntax, prefer explicit.</p>
 <h3>Aliasing</h3>
 <p>Always include the <code>AS</code> keyword when aliasing a variable or table name, it's easier to read when explicit.</p>
 <p><b>Good</b></p>
@@ -242,8 +242,8 @@ ON
   main_v4.environment.system.os.name = normalized_os_name.os_name
 </code></pre><h2>Parentheses</h2>
 <p>If parentheses span multiple lines:</p>
-<ol><li>The opening parenthesis should terminate the line.</li><li>The closing parenthesis should be lined up under the first character of the line that starts the multi<ul><li>line construct.</li><li>The contents of the parentheses should be indented one level.</li></ol>
- For example:</li></ul>
+<ol><li>The opening parenthesis should terminate the line.</li><li>The closing parenthesis should be lined up under the first character of the line that starts the multi-line construct.</li><li>The contents of the parentheses should be indented one level.</li></ol>
+<p>For example:</p>
 <p><b>Good</b></p>
 <pre><code class="language-sql">WITH sample AS (
   SELECT

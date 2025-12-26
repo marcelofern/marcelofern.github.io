@@ -84,6 +84,6 @@ PWM+ (D 6) PD6 12|    |17  PB3 (D 11) PWM
 <pre><code class="language-asm">ldi r16, (1<<PB5)
 out _SFR_IO_ADDR (DDRB), r16
 </code></pre><p>Note that:</p>
-<ul><li><code>PB5</code> is a macro that evaluates to 5.</li><li>1<<5 = 0b10000.</li><li><code>ldi</code> only works for registers 16 to 3<ol><li> - <code>out</code> copies the value of r16 to an IO port or SFR. - <code>DDRB</code> is a macro that evaluates to the address of DDRB. - <code>_SFR_IO_ADDR</code> is a macro that conver the absolute address of DDRB to the relative address in the special function registers (SFRs). This is because<code>out</code> is optimised to only use relative addresses.</li></ol><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<ul><li><code>PB5</code> is a macro that evaluates to 5.</li><li>1<<5 = 0b10000.</li><li><code>ldi</code> only works for registers 16 to 31.</li><li><code>out</code> copies the value of r16 to an IO port or SFR.</li><li><code>DDRB</code> is a macro that evaluates to the address of DDRB.</li><li><code>_SFR_IO_ADDR</code> is a macro that conver the absolute address of DDRB to the relative address in the special function registers (SFRs). This is because<code>out</code> is optimised to only use relative addresses.</li></ul><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>
