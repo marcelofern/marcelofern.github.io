@@ -35,7 +35,6 @@ be enough to remember the subject.
 - [1.10](books/structure_and_interpretation_of_computer_programs/1_10.md)
 - [1.34](books/structure_and_interpretation_of_computer_programs/1_34.md)
 
-
 Other solutions:
 
 - [source 1](http://web.archive.org/web/20240401022230/http://community.schemewiki.org/?SICP-Solutions)
