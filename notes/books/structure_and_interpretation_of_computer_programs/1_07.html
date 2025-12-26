@@ -59,20 +59,20 @@
   <![endif]-->
 </head>
 <body>
-<h1>Exercise <ol><li>77</h1>
-<h2>Q Quueessttiioonn</h2>
-<blockquote>T Thhee  ``ggoooodd--eennoouugghh??``  tteesstt  uusseedd  iinn  ccoommppuuttiinngg  ssqquuaarree  rroooottss  wwiillll  nnoott  bbee  vveerryy</blockquote>
-<blockquote>eeffffeeccttiivvee  ffoorr  ffiinnddiinngg  tthhee  ssqquuaarree  rroooottss  ooff  vveerryy  ssmmaallll  nnuummbbeerrss..  AAllssoo,,  iinn  rreeaall</blockquote>
-<blockquote>ccoommppuutteerrss,,  aarriitthhmmeettiicc  ooppeerraattiioonnss  aarree  aallmmoosstt  aallwwaayyss  ppeerrffoorrmmeedd  wwiitthh  lliimmiitteedd</blockquote>
-<blockquote>pprreecciissiioonn..  TThhiiss  mmaakkeess  oouurr  tteesstt  iinnaaddeeqquuaattee  ffoorr  vveerryy  llaarrggee  nnuummbbeerrss..  EExxppllaaiinn</blockquote>
-<blockquote>tthheessee  ssttaatteemmeennttss,,  wwiitthh  eexxaammpplleess  sshhoowwiinngg  hhooww  tthhee  tteesstt  ffaaiillss  ffoorr  ssmmaallll  aanndd</blockquote>
-<blockquote>llaarrggee  nnuummbbeerrss..  AAnn  aalltteerrnnaattiivvee  ssttrraatteeggyy  ffoorr  iimmpplleemmeennttiinngg  ``ggoooodd--eennoouugghh??``  iiss  ttoo</blockquote>
-<blockquote>wwaattcchh  hhooww  ``gguueessss``  cchhaannggeess  ffrroomm  oonnee  iinntteerraattiioonn  ttoo  tthhee  nneexxtt  aanndd  ttoo  ssttoopp  wwhheenn</blockquote>
-<blockquote>tthhee  cchhaannggee  iiss  aa  vveerryy  ssmmaallll  ffrraaccttiioonn  ooff  tthhee  gguueessss..  DDeessiiggnn  aa  ssqquuaarree--rroooott</blockquote>
-<blockquote>pprroocceedduurree  tthhaatt  uusseess  tthhiiss  kkiinndd  ooff  eenndd  tteesstt..  DDooeess  tthhiiss  wwoorrkk  bbeetttteerr  ffoorr  ssmmaallll</blockquote>
-<blockquote>aanndd  llaarrggee  nnuummbbeerrss??</blockquote>
-<h2>A Annsswweerr</h2>
- We will first need the function that implement the square-root algorithm:</li></ol>
+<h1>Exercise 1.7</h1>
+<h2>Question</h2>
+<blockquote>The `good-enough?` test used in computing square roots will not be very</blockquote>
+<blockquote>effective for finding the square roots of very small numbers. Also, in real</blockquote>
+<blockquote>computers, arithmetic operations are almost always performed with limited</blockquote>
+<blockquote>precision. This makes our test inadequate for very large numbers. Explain</blockquote>
+<blockquote>these statements, with examples showing how the test fails for small and</blockquote>
+<blockquote>large numbers. An alternative strategy for implementing `good-enough?` is to</blockquote>
+<blockquote>watch how `guess` changes from one interation to the next and to stop when</blockquote>
+<blockquote>the change is a very small fraction of the guess. Design a square-root</blockquote>
+<blockquote>procedure that uses this kind of end test. Does this work better for small</blockquote>
+<blockquote>and large numbers?</blockquote>
+<h2>Answer</h2>
+<p>We will first need the function that implement the square-root algorithm:</p>
 <pre><code class="language-scm">(define (average x y)
         (/ (+ x y) 2)
 )

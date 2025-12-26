@@ -82,8 +82,8 @@ SELECT generate_series(1, 1000000) AS int_field;
 
 VACUUM ANALYZE foo;
 VACUUM ANALYZE bar;
-</code></pre><h2><ol><li>AAdddd  tthhee  ffiieelldd</h2>
- Assume we want to add a foreign key in <code>foo</code> that points to a row in <code>bar</code>.</li></ol>
+</code></pre><h2>1. Add the field</h2>
+<p>Assume we want to add a foreign key in <code>foo</code> that points to a row in <code>bar</code>.</p>
 <pre><code class="language-sql">ALTER TABLE foo ADD COLUMN bar_id BIGINT NULL;
 </code></pre><p>This operation takes an ACCESS EXCLUSIVE LOCK, but for a very short duration. Adding a nullable field in Postgres doesn't require a full table scan starting on version 11.</p>
 <h2>2. Add an index for lookup</h2>

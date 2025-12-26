@@ -123,8 +123,8 @@ ax.set_title('Isolines graph')
 </code></pre><h2>Marching Squares</h2>
 <p>"Marching squares" is an algorithm that efficiently helps us to build isolines. The algorithm is better explained via the image below (courtesy of wikipedia):</p>
 <p><img alt="marching_squares.png" src="marching_squares.png"></p>
-<h2>Step <ol><li>CCrreeaattee  tthhee  tthhrreesshhoolldd  mmaattrriixx</h2>
- The threshold matrix is created by going over the original matrix and substituting the original values by:</li></ol>
+<h2>Step 1. Create the threshold matrix</h2>
+<p>The threshold matrix is created by going over the original matrix and substituting the original values by:</p>
 <ul><li>1 when when the original value is above the isovalue.</li><li>0 when the original value is below the isovalue.</li></ul>
 <p>For the isovalue of 11, we then have the following threshold matrix:</p>
 <pre><code class="language-python">[[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],

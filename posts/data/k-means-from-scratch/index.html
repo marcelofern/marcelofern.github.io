@@ -98,8 +98,8 @@ for point, x, y in zip(points, x_coordinates, y_coordinates):
 
 # plot!
 fig = plt.plot(x_coordinates, y_coordinates, 'o', color='black')
-</code></pre><h2><ol><li>SSeelleecctt  33  rraannddoomm  ddaattaa  ppooiinnttss  ttoo  bbee  tthhee  cceenntteerr  ooff  yyoouurr  cclluusstteerrss..</h2>
- Let's select three numbers between 0 and the length of the dataset.</li></ol>
+</code></pre><h2>1. Select 3 random data points to be the center of your clusters.</h2>
+<p>Let's select three numbers between 0 and the length of the dataset.</p>
 <pre><code class="language-python">import random
 indexes = random.sample(range(1, len(x_coordinates) + 1), 3)
 indexes
