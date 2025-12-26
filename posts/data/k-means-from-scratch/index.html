@@ -69,8 +69,7 @@ A5 = (7,5)
 A6 = (6,4)
 A7 = (1,2)
 A8 = (4,9)
-</code></pre>
-<p><img src="k_means_dataset_white.png" alt="k_means_dataset_white.png"></p>
+</code></pre><p><img alt="k_means_dataset_white.png" src="k_means_dataset_white.png"></p>
 <pre><code class="language-python">import matplotlib.pyplot as plt
 %matplotlib inline
 plt.style.use('seaborn-whitegrid')
@@ -88,27 +87,25 @@ plt.ylim([0,11.2])
 
 # labels!
 for point, x, y in zip(points, x_coordinates, y_coordinates):
-    label = f&quot;{point} ({x},{y})&quot;
+    label = f"{point} ({x},{y})"
     plt.annotate(
         label,
         (x,y),
-        textcoords=&quot;offset points&quot;, # how to position the text
+        textcoords="offset points", # how to position the text
         xytext=(0,10), # distance from text to points (x,y)
         ha='center' # horizontal alignment
     )
 
 # plot!
 fig = plt.plot(x_coordinates, y_coordinates, 'o', color='black')
-</code></pre>
-<h2>1. Select 3 random data points to be the center of your clusters.</h2>
-<p>Let's select three numbers between 0 and the length of the dataset.</p>
+</code></pre><h2><ol><li>SSeelleecctt  33  rraannddoomm  ddaattaa  ppooiinnttss  ttoo  bbee  tthhee  cceenntteerr  ooff  yyoouurr  cclluusstteerrss..</h2>
+ Let's select three numbers between 0 and the length of the dataset.</li></ol>
 <pre><code class="language-python">import random
 indexes = random.sample(range(1, len(x_coordinates) + 1), 3)
 indexes
-&gt;&gt;&gt; [1, 4, 7]
-</code></pre>
-<p>This means that A1, A4, and A7 have been selected to be our initial centroids.</p>
-<p><img src="k_means_first_centroids_white.png" alt="k_means_first_centroids_white.png"></p>
+>>> [1, 4, 7]
+</code></pre><p>This means that A1, A4, and A7 have been selected to be our initial centroids.</p>
+<p><img alt="k_means_first_centroids_white.png" src="k_means_first_centroids_white.png"></p>
 <pre><code class="language-python">import matplotlib.pyplot as plt
 %matplotlib inline
 plt.style.use('seaborn-whitegrid')
@@ -132,11 +129,11 @@ plt.ylim([0,11.2])
 
 # labels!
 for point, x, y in zip(points, x_coordinates, y_coordinates):
-    label = f&quot;{point} ({x},{y})&quot;
+    label = f"{point} ({x},{y})"
     ax.annotate(
         label,
         (x,y),
-        textcoords=&quot;offset points&quot;, # how to position the text
+        textcoords="offset points", # how to position the text
         xytext=(0,10), # distance from text to points (x,y)
         ha='center' # horizontal alignment
     )
@@ -150,15 +147,11 @@ ax.scatter(
     color='red', label='centroids', s=120
 )
 ax.legend()
-</code></pre>
-<h2>2. For each point, find the the closest centroid.</h2>
-<p>We calculate the distance between a given point and the three centroids. The
-point is then assigned to the cluster belonging to the centroid with the
-shortest distance.</p>
+</code></pre><h2>2. For each point, find the the closest centroid.</h2>
+<p>We calculate the distance between a given point and the three centroids. The point is then assigned to the cluster belonging to the centroid with the shortest distance.</p>
 <p>The distance will be calculated by:</p>
 <pre><code class="language-python">Distance(v1, v2) = ( (v1.x - v2.x)**2 + (v1.y - v2.y)**2 ) **.5
-</code></pre>
-<p><img src="k_means_first_clusters_white.png" alt="k_means_first_clusters_white.png"></p>
+</code></pre><p><img alt="k_means_first_clusters_white.png" src="k_means_first_clusters_white.png"></p>
 <pre><code class="language-python">import matplotlib.pyplot as plt
 %matplotlib inline
 plt.style.use('seaborn-whitegrid')
@@ -216,11 +209,11 @@ plt.ylim([0,11.2])
 
 # labels
 for point_name, x, y in zip(points_names, x_coordinates, y_coordinates):
-    label = f&quot;{point_name} ({x},{y})&quot;
+    label = f"{point_name} ({x},{y})"
     ax.annotate(
         label,
         (x,y),
-        textcoords=&quot;offset points&quot;, # how to position the text
+        textcoords="offset points", # how to position the text
         xytext=(0,10), # distance from text to points (x,y)
         ha='center' # horizontal alignment
     )
@@ -251,45 +244,38 @@ ax.scatter(
     color='blue', label='centroid 3', s=120
 )
 ax.legend()
-</code></pre>
-<h2>3. Calculate the new centroids</h2>
-<p>New centroids can be calculated by finding the average point in a given
-cluster:</p>
+</code></pre><h2>3. Calculate the new centroids</h2>
+<p>New centroids can be calculated by finding the average point in a given cluster:</p>
 <pre><code class="language-python">def new_centroid(cluster):
     length = len(cluster)
     mean_x = sum([x for x, _ in cluster])/length
     mean_y = sum([y for _, y in cluster])/length
     return [mean_x, mean_y]
-</code></pre>
-<p>Our new centroids will therefore be:</p>
+</code></pre><p>Our new centroids will therefore be:</p>
 <pre><code class="language-python">[2.0, 10.0]
 [6.0, 6.0]
 [1.5, 3.5]
-</code></pre>
-<h2>4. Repeat</h2>
+</code></pre><h2>4. Repeat</h2>
 <p>Repeat steps 2. and 3. until the algorithm converges</p>
 <h3>Second interaction</h3>
-<p><img src="k_means_second_clusters_white.png" alt="k_means_second_clusters_white.png"></p>
+<p><img alt="k_means_second_clusters_white.png" src="k_means_second_clusters_white.png"></p>
 <p>New centroids:</p>
 <pre><code class="language-python">[3.0, 9.5]
 [6.5, 5.25]
 [1.5, 3.5]
-</code></pre>
-<h3>Third interaction</h3>
-<p><img src="k_means_third_clusters_white.png" alt="k_means_third_clusters_white.png"></p>
+</code></pre><h3>Third interaction</h3>
+<p><img alt="k_means_third_clusters_white.png" src="k_means_third_clusters_white.png"></p>
 <p>New centroids:</p>
 <pre><code class="language-python">[3.6666666666666665, 9.0]
 [7.0, 4.333333333333333]
 [1.5, 3.5]
-</code></pre>
-<h3>Forth interaction (convergence)</h3>
-<p><img src="k_means_third_clusters_white.png" alt="k_means_third_clusters_white.png"></p>
+</code></pre><h3>Forth interaction (convergence)</h3>
+<p><img alt="k_means_third_clusters_white.png" src="k_means_third_clusters_white.png"></p>
 <p>New centroids (same as previous step):</p>
 <pre><code class="language-python">[3.6666666666666665, 9.0]
 [7.0, 4.333333333333333]
 [1.5, 3.5]
-</code></pre>
-<pre><code class="language-python">import matplotlib.pyplot as plt
+</code></pre><pre><code class="language-python">import matplotlib.pyplot as plt
 %matplotlib inline
 plt.style.use('seaborn-whitegrid')
 
@@ -346,11 +332,11 @@ plt.ylim([0,11.2])
 
 # labels
 for point_name, x, y in zip(points_names, x_coordinates, y_coordinates):
-    label = f&quot;{point_name} ({x},{y})&quot;
+    label = f"{point_name} ({x},{y})"
     ax.annotate(
         label,
         (x,y),
-        textcoords=&quot;offset points&quot;, # how to position the text
+        textcoords="offset points", # how to position the text
         xytext=(0,10), # distance from text to points (x,y)
         ha='center' # horizontal alignment
     )
@@ -391,7 +377,6 @@ def new_centroid(cluster):
 print(new_centroid(cluster_1))
 print(new_centroid(cluster_2))
 print(new_centroid(cluster_3))
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

@@ -59,38 +59,25 @@
   <![endif]-->
 </head>
 <body>
-<p>When declaring a function that <em>takes no parameters</em> one should use this syntax:</p>
+<p>When declaring a function that <i>takes no parameters</i> one should use this syntax:</p>
 <pre><code class="language-c">void foo(void);
-</code></pre>
-<p>Instead of:</p>
+</code></pre><p>Instead of:</p>
 <pre><code class="language-c">void foo();
-</code></pre>
-<p>The nuance is that the second form declares that the function takes a number of
-arguments, but doesn't specifies their types nor the count of arguments.</p>
-<p>This implies that the caller needs to know the arguments and the types
-beforehand, otherwise they risk side-effects like corrupting the stack, or some
-other kind of bug.</p>
-<p>The form <code>foo(void)</code> <strong>explicitly</strong> states that the function takes no
-arguments.</p>
-<p>Note that this is only the case in C, and not in C++, where both forms mean
-the same (no arguments).</p>
+</code></pre><p>The nuance is that the second form declares that the function takes a number of arguments, but doesn't specifies their types nor the count of arguments.</p>
+<p>This implies that the caller needs to know the arguments and the types beforehand, otherwise they risk side-effects like corrupting the stack, or some other kind of bug.</p>
+<p>The form <code>foo(void)</code> <b>explicitly</b> states that the function takes no arguments.</p>
+<p>Note that this is only the case in C, and not in C++, where both forms mean the same (no arguments).</p>
 <h2>Standards</h2>
 <p>If you attempt to do this:</p>
-<pre><code>int f();
+<pre><code class="language-">int f();
 int f(int a) {
   return a+42;
 }
-</code></pre>
-<p>It will compile in standards &lt; c2x. But you will get the following warning from
-gcc:</p>
-<blockquote>
-<p>A function declaration without a prototype is deprecated in all versions of C
-and is not supported in C2x.</p>
-</blockquote>
+</code></pre><p>It will compile in standards < c2x. But you will get the following warning from gcc:</p>
+<blockquote>A function declaration without a prototype is deprecated in all versions of C</blockquote>
+<blockquote>and is not supported in C2x.</blockquote>
 <h2>Examples</h2>
-<p>The main function is a good example, as it is always called with the number
-of arguments (at least 1) and the arguments themselves (the name of the
-executable for instance), and it is often defined as <code>int main()</code>.</p>
+<p>The main function is a good example, as it is always called with the number of arguments (at least 1) and the arguments themselves (the name of the executable for instance), and it is often defined as <code>int main()</code>.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

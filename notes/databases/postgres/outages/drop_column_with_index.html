@@ -60,15 +60,11 @@
 </head>
 <body>
 <h1>Drop Column With Index</h1>
-<pre><code>Created at: 2024-12-03
-</code></pre>
-<p>Droping a column will also drop any indexes relating to that column, including
-composite indexes.</p>
-<p>The ALTER TABLE ... DROP COLUMN operation is safe, however, and it should take
-very little time, even though it'll also drop the related indexes.</p>
-<p>The indexes will be dropped as part of the ALTER TABLE ... DROP COLUMN command
-according to this profile trace:</p>
-<pre><code>1.80 ms  72.0%	0 s	                   ATRewriteCatalogs
+<pre><code class="language-">Created at: 2024-12-03
+</code></pre><p>Droping a column will also drop any indexes relating to that column, including composite indexes.</p>
+<p>The ALTER TABLE ... DROP COLUMN operation is safe, however, and it should take very little time, even though it'll also drop the related indexes.</p>
+<p>The indexes will be dropped as part of the ALTER TABLE ... DROP COLUMN command according to this profile trace:</p>
+<pre><code class="language-">1.80 ms  72.0%	0 s	                   ATRewriteCatalogs
 1.80 ms  72.0%	0 s	                    ATExecCmd
 1.80 ms  72.0%	0 s	                     ATExecDropColumn
 1.70 ms  68.0%	0 s	                      performMultipleDeletions
@@ -76,9 +72,7 @@ according to this profile trace:</p>
 1.30 ms  52.0%	0 s	                        deleteOneObject
 700.00 µs  28.0%	0 s	                         doDeletion
 500.00 µs  20.0%	0 s	                          index_drop
-</code></pre>
-<p>The <code>index_drop</code> is the exact same function that is called by the DROP INDEX
-ddl.</p>
+</code></pre><p>The <code>index_drop</code> is the exact same function that is called by the DROP INDEX ddl.</p>
 <p>You can test this using the following script:</p>
 <pre><code class="language-sql">\timing
 
@@ -96,25 +90,24 @@ CREATE INDEX foo_idx2 ON foo (foo);
 DROP INDEX foo_idx2;
 
 \d foo
---                             Table &quot;public.foo&quot;
+--                             Table "public.foo"
 --  Column |  Type   | Collation | Nullable |             Default
 -- --------+---------+-----------+----------+---------------------------------
 --  id     | integer |           | not null | nextval('foo_id_seq'::regclass)
 --  foo    | integer |           |          |
 --  bar    | integer |           |          |
 -- Indexes:
---     &quot;bar_foo_idx&quot; btree (bar, foo)
---     &quot;foo_idx&quot; btree (foo)
+--     "bar_foo_idx" btree (bar, foo)
+--     "foo_idx" btree (foo)
 
 ALTER TABLE foo DROP COLUMN foo;
 
 \d foo
---                             Table &quot;public.foo&quot;
+--                             Table "public.foo"
 --  Column |  Type   | Collation | Nullable |             Default
 -- --------+---------+-----------+----------+---------------------------------
 --  id     | integer |           | not null | nextval('foo_id_seq'::regclass)
 --  bar    | integer |           |          |
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

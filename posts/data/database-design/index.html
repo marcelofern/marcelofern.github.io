@@ -61,187 +61,50 @@
 <body>
 <p>September 2, 2020</p>
 <h2>Data Model</h2>
-<p>A database design usually starts by the high-level description of the schema.
-The idea is to analyse the organisation requirements and frame it on a schema
-that a variety of users would understand.</p>
-<p>The outcome of this exercise, is a data model. A data model is a
-representation (often in a diagram) of the data relationship in an
-organisation. This representation will describe the data and provide a
-guideline of how this data could be manipulated and retrieved.</p>
+<p>A database design usually starts by the high-level description of the schema. The idea is to analyse the organisation requirements and frame it on a schema that a variety of users would understand.</p>
+<p>The outcome of this exercise, is a data model. A data model is a representation (often in a diagram) of the data relationship in an organisation. This representation will describe the data and provide a guideline of how this data could be manipulated and retrieved.</p>
 <p>The data model is composed of three components</p>
-<ul>
-<li>Structural: A collection of relationships that construct the data. This
-includes the diagrams, the entities and their dependencies, what their names
-are, what types of data those entities host, etc.</li>
-<li>Manipulative: The available operations on the data. Directives to instruct
-what data can be retrieved, updated, or deleted.</li>
-<li>Integrity constraints: Checks that guarantee data integrity.</li>
-</ul>
+<ul><li>Structural: A collection of relationships that construct the data. This includes the diagrams, the entities and their dependencies, what their names are, what types of data those entities host, etc.</li><li>Manipulative: The available operations on the data. Directives to instruct what data can be retrieved, updated, or deleted.</li><li>Integrity constraints: Checks that guarantee data integrity.</li></ul>
 <p>The optimal data model can be found if the following criteria is satisfied:</p>
-<ul>
-<li>Consistent: The model represents a clear mapping of the organisation
-information.</li>
-<li>Minimal: No entity or property is dispensable. No non-necessary dependencies
-are present. It is also easy for all the organisation users to understand the
-data model.</li>
-<li>Distinguishable: Different data can be told apart without confusion.</li>
-<li>Non-redundant: There is only one way to represent an entity and its
-attributes.</li>
-<li>Not application bound: The data model should not change based on what
-database system is being used.</li>
-<li>Extensible: New features can be added without breaking the existent schema.</li>
-<li>Easy to draw: If the diagram of a said data-model is difficult to draw, one
-of the criteria above hasn't been completely satisfied.</li>
-</ul>
+<ul><li>Consistent: The model represents a clear mapping of the organisation information.</li><li>Minimal: No entity or property is dispensable. No non-necessary dependencies are present. It is also easy for all the organisation users to understand the data model.</li><li>Distinguishable: Different data can be told apart without confusion.</li><li>Non-redundant: There is only one way to represent an entity and its attributes.</li><li>Not application bound: The data model should not change based on what database system is being used.</li><li>Extensible: New features can be added without breaking the existent schema.</li><li>Easy to draw: If the diagram of a said data-model is difficult to draw, one of the criteria above hasn't been completely satisfied.</li></ul>
 <h2>Entity-Relationship (ER)</h2>
-<p>An entity is an object in the organisation that can be represented in the
-database (a person, location, thing, concept, event, etc...). An entity can
-have any number of attributes. Those attributes are properties that describe
-the data stored in that entity. An entity that represents a location, could
-have a set of coordinates as one of its attributes. Entities are then
-connected via relationships.</p>
+<p>An entity is an object in the organisation that can be represented in the database (a person, location, thing, concept, event, etc...). An entity can have any number of attributes. Those attributes are properties that describe the data stored in that entity. An entity that represents a location, could have a set of coordinates as one of its attributes. Entities are then connected via relationships.</p>
 <h2>Database Design Phases</h2>
 <p>The process of designing a database can be split into three different phases:</p>
-<ul>
-<li>Conceptual Phase: The creation of a data model concept that is put to proof
-against users' requirements. This phase does not involve any particular
-implementation details. This phase will present the entities and their
-attributes.</li>
-<li>Logical Phase: The model concept is enhanced with the relationship logic.
-This means that the relationship between data, its constrains, and data
-retrieval/update/deletion queries are added. The model should then be put to
-proof against users' requirements once more.</li>
-<li>Physical Phase: Decision of how the database is implemented. It takes into
-account which database management system (DBMS) will be used, what tables
-will be created, what security protocol will be implemented, what constraints
-and indexes will be created, and so on.</li>
-</ul>
-<p>Note that the database design is an organic process. The database will change
-as the organisation grows and requires updates.</p>
+<ul><li>Conceptual Phase: The creation of a data model concept that is put to proof against users' requirements. This phase does not involve any particular implementation details. This phase will present the entities and their attributes.</li><li>Logical Phase: The model concept is enhanced with the relationship logic. This means that the relationship between data, its constrains, and data retrieval/update/deletion queries are added. The model should then be put to proof against users' requirements once more.</li><li>Physical Phase: Decision of how the database is implemented. It takes into account which database management system (DBMS) will be used, what tables will be created, what security protocol will be implemented, what constraints and indexes will be created, and so on.</li></ul>
+<p>Note that the database design is an organic process. The database will change as the organisation grows and requires updates.</p>
 <h2>Functional Dependency</h2>
-<p>A functional dependency between attributes describes how those attributes are
-related.</p>
-<p><strong>Formal definition</strong>: If A and B are attributes of a relation R, B is
-functionally dependent on A if each value of A is associated with exactly one
-value of B. In this case, A is called the determinant
-Notation: <code>A ® B</code> (or <code>A -&gt; B</code>)</p>
-<p><strong>Example</strong>: Consider an entity Player with the following attributes:
-<em>playerId, fName, position</em>. We can determine the position of a certain player,
-by knowing what the value of playerId is. In other words, playerId determines
-the position (<code>playerId -&gt; position</code>). But the opposite is not true, knowing
-the position doesn't imply knowing the playerId.</p>
+<p>A functional dependency between attributes describes how those attributes are related.</p>
+<p><b>Formal definition</b>: If A and B are attributes of a relation R, B is functionally dependent on A if each value of A is associated with exactly one value of B. In this case, A is called the determinant Notation: <code>A ® B</code> (or <code>A -> B</code>)</p>
+<p><b>Example</b>: Consider an entity Player with the following attributes: <i>playerId, fName, position</i>. We can determine the position of a certain player, by knowing what the value of playerId is. In other words, playerId determines the position (<code>playerId -> position</code>). But the opposite is not true, knowing the position doesn't imply knowing the playerId.</p>
 <p>Functional dependencies can be broken down into 3 different types:</p>
-<ol>
-<li>Partial Functional Dependency: A -&gt; B is a partial functional dependency if
-there is an attribute that can be removed from A and yet the dependency
-still holds. Consider the entity Player with the attributes playerId, name,
-and teamId. We have that:<pre><code>playerId, name -&gt; teamId
-</code></pre>
-But the name attribute is not really necessary to determine teamId.
-Therefore, the name attribute could be removed but the functional
-dependency would still exist between playerId and teamId.</li>
-<li>Full Functional Dependency: A -&gt; B is a full functional dependency if
-removal of any attribute from A results in the dependency no longer
-existing. Consider the entity Player with attributes playerId and position.
-We then have that:<pre><code>playerId -&gt; position
-</code></pre>
-If we remove the playerId attribute, the dependency no longer exists.</li>
-<li>Transitive Dependency: Given that A, B, and C are attributes of a relation
-and A -&gt; B and B -&gt; C, then C is a transivite dependency of A via B.
-Consider the entity Player:<pre><code>playerId -&gt; name, position, teamId, teamName
-teamId -&gt; teamName
-</code></pre>
-playerId determines the teamName attribute via the teamId attribute. In this
-case, teamName is transitively dependent on playerId via teamId.</li>
-</ol>
-<h2>Normalisation</h2>
-<p>Normalisation is one of the most important aspects of database design. It is
-common to find databases that have more entities than necessary. The same
-redundancy often happens to entities' attributes as well. The normalisation
-technique aims to minimise those redundancies by finding the minimal set of
-entities and attributes required to meet users' requirements.</p>
-<p>A normalised database is easier to manipulate and to understand. Normalisation
-provides easy access to the database, prevents maintenance overheads, and
-enhances user experience in general. Additionally, new users will have a more
-compact learning curve when being introduced to the database for the first
-time.</p>
+<ol><li>Partial Functional Dependency: A <ul><li>> B is a partial functional dependency if there is an attribute that can be removed from A and yet the dependency still holds. Consider the entity Player with the attributes playerId, name, and teamId. We have that:<pre><code class="language-">   playerId, name -> teamId
+   </code></pre> But the name attribute is not really necessary to determine teamId. Therefore, the name attribute could be removed but the functional dependency would still exist between playerId and teamId.</li><li>Full Functional Dependency: A -> B is a full functional dependency if removal of any attribute from A results in the dependency no longer existing. Consider the entity Player with attributes playerId and position. We then have that:<pre><code class="language-">   playerId -> position
+   </code></pre> If we remove the playerId attribute, the dependency no longer exists.</li><li>Transitive Dependency: Given that A, B, and C are attributes of a relation and A -> B and B -> C, then C is a transivite dependency of A via B. Consider the entity Player:<pre><code class="language-">   playerId -> name, position, teamId, teamName
+   teamId -> teamName
+   </code></pre> playerId determines the teamName attribute via the teamId attribute. In this case, teamName is transitively dependent on playerId via teamId.</li></ol>
+<h2>N Noorrmmaalliissaattiioonn</h2>
+ Normalisation is one of the most important aspects of database design. It is common to find databases that have more entities than necessary. The same redundancy often happens to entities' attributes as well. The normalisation technique aims to minimise those redundancies by finding the minimal set of entities and attributes required to meet users' requirements.</li></ul>
+<p>A normalised database is easier to manipulate and to understand. Normalisation provides easy access to the database, prevents maintenance overheads, and enhances user experience in general. Additionally, new users will have a more compact learning curve when being introduced to the database for the first time.</p>
 <p>Normalisation rules can be broken down into the following normal forms:</p>
-<ol>
-<li>First Normal Form</li>
-<li>Second Normal Form</li>
-<li>Third Normal Form</li>
-<li>Boyce and Codd Normal Form (BCNF)</li>
-<li>Fourth Normal Form</li>
-</ol>
+<ol><li>First Normal Form</li><li>Second Normal Form</li><li>Third Normal Form</li><li>Boyce and Codd Normal Form (BCNF)</li><li>Fourth Normal Form</li></ol>
 <h2>First Normal Form (1NF)</h2>
 <p>For a table to be in the 1NF, it must conform to the following 4 rules:</p>
-<ol>
-<li>Single Valued Attributes: Each column in a table should not contain multiple
-values. As a hypothetical example, on a table defining a Location entity, an
-entry in the column &quot;country&quot; cannot be &quot;New Zealand &amp; Brazil&quot;.</li>
-<li>Attribute Domain does not change: In each column, the values stored must be
-of the same type. On a table defining a Location entity, an entry in the
-column &quot;country&quot; cannot be a number, while the other entries are a text.</li>
-<li>Unique name for Attributes/Columns: No repetition of columns names within
-the same entity. The entity &quot;Country&quot; cannot have two columns called
-&quot;population&quot;.</li>
-<li>Order doesn't matter: The order that the data is stored in the table does
-not affect any database operation.</li>
-</ol>
+<ol><li>Single Valued Attributes: Each column in a table should not contain multiple values. As a hypothetical example, on a table defining a Location entity, an entry in the column "country" cannot be "New Zealand & Brazil".</li><li>Attribute Domain does not change: In each column, the values stored must be of the same type. On a table defining a Location entity, an entry in the column "country" cannot be a number, while the other entries are a text.</li><li>Unique name for Attributes/Columns: No repetition of columns names within the same entity. The entity "Country" cannot have two columns called "population".</li><li>Order doesn't matter: The order that the data is stored in the table does not affect any database operation.</li></ol>
 <h2>Second Normal Form (2NF)</h2>
 <p>A table is in the 2NF if:</p>
-<ol>
-<li>It is in the First Normal Form (1NF)</li>
-<li>Has Partial Dependency: An attribute in a table depends on a part of the
-primary key, but not on the whole key. As an example, if we have an entity
-&quot;Student Score&quot; which has the attributes: &quot;student_id&quot;, &quot;subject_id&quot;,
-&quot;score&quot;, and &quot;teacher_name&quot;. The attribute &quot;teacher_name&quot; only depends on
-the &quot;subject_id&quot;, and the primary key of this table is the combination of
-&quot;student_id + subject_id&quot;. Note that to remove this dependency we only need
-to move the &quot;teacher_name&quot; property to the &quot;Subject&quot; entity.</li>
-</ol>
-<p>Alternative Definition: A table is in the first normal form and every
-non-primary-key attribute is fully functionally dependent on the primary key.</p>
+<ol><li>It is in the First Normal Form (1NF)</li><li>Has Partial Dependency: An attribute in a table depends on a part of the primary key, but not on the whole key. As an example, if we have an entity "Student Score" which has the attributes: "student_id", "subject_id", "score", and "teacher_name". The attribute "teacher_name" only depends on the "subject_id", and the primary key of this table is the combination of "student_id + subject_id". Note that to remove this dependency we only need to move the "teacher_name" property to the "Subject" entity.</li></ol>
+<p>Alternative Definition: A table is in the first normal form and every non-primary-key attribute is fully functionally dependent on the primary key.</p>
 <p>Note: A table with transitive dependencies can be in the 2NF.</p>
 <h2>Third Normal Form (3NF)</h2>
 <p>A table is in the 3NF if:</p>
-<ol>
-<li>It is in the Second Normal Form (2NF)</li>
-<li>Does not have Transitive Dependency (TD): The TD happens when a non-prime
-attribute has a dependency on another non-prime attribute. If a &quot;Score&quot;
-entity has the properties: &quot;score_id&quot;, &quot;student_id&quot;, &quot;subject_id&quot;, &quot;marks&quot;,
-&quot;exam_name&quot;, &quot;total_marks&quot;. The prime keys are &quot;student_id&quot; and
-&quot;subject_id&quot;. But the &quot;total_marks&quot; depends on the &quot;exam_name&quot;, that does
-not belong to the prime keys set. In this case, the solution is to create a
-new &quot;Exam&quot; entity with the attributes: &quot;exam_name&quot; and &quot;total_marks&quot;</li>
-</ol>
-<p>Alternative Definition: A table is in the first and second normal form and no
-non-primary-key attribute is transitively dependent on the primary-key.</p>
+<ol><li>It is in the Second Normal Form (2NF)</li><li>Does not have Transitive Dependency (TD): The TD happens when a non<ul><li>prime attribute has a dependency on another non-prime attribute. If a "Score" entity has the properties: "score_id", "student_id", "subject_id", "marks", "exam_name", "total_marks". The prime keys are "student_id" and "subject_id". But the "total_marks" depends on the "exam_name", that does not belong to the prime keys set. In this case, the solution is to create a new "Exam" entity with the attributes: "exam_name" and "total_marks"</li></ol>
+ Alternative Definition: A table is in the first and second normal form and no non-primary-key attribute is transitively dependent on the primary-key.</li></ul>
 <h2>Boyce and Codd Normal Form (BCNF)</h2>
 <p>A table is in the BCNF if:</p>
-<ol>
-<li>It is in the Third Normal Form (3NF)</li>
-<li>For each functional dependency (X -&gt; Y), X should be a super key. If we have
-an entity &quot;Students Subjects&quot; with the attributes: &quot;student_id&quot;, &quot;subject&quot;,
-and &quot;professor&quot;, we have &quot;student_id&quot; and &quot;subject&quot; as the primary keys.
-Given that a subject can have multiple professors, there is a dependency
-between professor -&gt; subject. So we have an attribute depending on a
-prime/super key. To solve this problem, the solution is to create a
-&quot;Professor&quot; entity with the columns &quot;professor_id&quot;, &quot;professor_name&quot;, and
-&quot;subject&quot;.</li>
-</ol>
-<h2>Fourth Normal Form (4NF)</h2>
-<p>A table is in the BCNF if:</p>
-<ol>
-<li>It is in the Boyce and Codd Normal Form (BCNF)</li>
-<li>There is no Multi-Valued Dependency Given that A -&gt; B (B depends on A), if
-multiple values of B exist, then the table has a multi-valued dependency.
-Imagine we have an entity with three columns: &quot;student_id&quot;, &quot;course&quot;, and
-&quot;hobby&quot;. Both &quot;course&quot; and &quot;hobby&quot; depend on the student id. A way to fix it
-is to create two entities: &quot;Student Hobby&quot;, and &quot;Student Course&quot;. This
-dependency usually infers that the table has a combination of columns that
-don't belong together. (Why are hobby and course in the same table?)</li>
-</ol>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<ol><li>It is in the Third Normal Form (3NF)</li><li>For each functional dependency (X <ul><li>> Y), X should be a super key. If we have an entity "Students Subjects" with the attributes: "student_id", "subject", and "professor", we have "student_id" and "subject" as the primary keys. Given that a subject can have multiple professors, there is a dependency between professor -> subject. So we have an attribute depending on a prime/super key. To solve this problem, the solution is to create a "Professor" entity with the columns "professor_id", "professor_name", and "subject".</li></ol>
+<h2>F Foouurrtthh  NNoorrmmaall  FFoorrmm  ((44NNFF))</h2>
+ A table is in the BCNF if:</li></ul>
+<ol><li>It is in the Boyce and Codd Normal Form (BCNF)</li><li>There is no Multi<ul><li>Valued Dependency Given that A -> B (B depends on A), if multiple values of B exist, then the table has a multi-valued dependency. Imagine we have an entity with three columns: "student_id", "course", and "hobby". Both "course" and "hobby" depend on the student id. A way to fix it is to create two entities: "Student Hobby", and "Student Course". This dependency usually infers that the table has a combination of columns that don't belong together. (Why are hobby and course in the same table?)</li></ol><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

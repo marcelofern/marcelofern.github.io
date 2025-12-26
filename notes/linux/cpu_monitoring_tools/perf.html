@@ -60,16 +60,14 @@
 </head>
 <body>
 <h1>perf</h1>
-<pre><code>Created at: 2024-11-12
-</code></pre>
-<p>perf(1): Performance analysis tools for Linux</p>
+<pre><code class="language-">Created at: 2024-11-12
+</code></pre><p>perf(1): Performance analysis tools for Linux</p>
 <h2>One liners</h2>
 <p>First make sure you have this set:</p>
 <pre><code class="language-sh"># Allow use of almost all events by all users.
 # This will be reset if you reboot your computer.
 sudo sysctl -w kernel.perf_event_paranoid=-1
-</code></pre>
-<h3>Recording</h3>
+</code></pre><h3>Recording</h3>
 <pre><code class="language-sh"># Sample on-CPU functions for the specified command, at 99 Hertz:
 perf record -F 99 command
 
@@ -128,17 +126,15 @@ perf sched latency
 
 # List per-event scheduler latency from a scheduler profile:
 perf sched timehist
-</code></pre>
-<h2>Flame graphs</h2>
+</code></pre><h2>Flame graphs</h2>
 <p>(added in Linux 5.8)</p>
 <pre><code class="language-sh">perf record -F 99 -a -g -- sleep 10
 perf script report flamegraph
 $BROWSER flamegraph.html
 
 # Also available as a single command
-perf script flamegraph -a -F 99 sleep 10 &amp;&amp; $BROWSER flamegraph.html
-</code></pre>
-<h2>Hardware Event Selection</h2>
+perf script flamegraph -a -F 99 sleep 10 && $BROWSER flamegraph.html
+</code></pre><h2>Hardware Event Selection</h2>
 <p>To see a list of available hardware events that can be printed:</p>
 <pre><code class="language-sh">perf list
 
@@ -155,10 +151,8 @@ perf script flamegraph -a -F 99 sleep 10 &amp;&amp; $BROWSER flamegraph.html
     L1-icache-load-misses OR cpu/L1-icache-load-misses/
     LLC-loads OR cpu/LLC-loads/
   [...]
-</code></pre>
-<p>You can select some and use it with <code>perf stats -e &lt;command&gt;</code>. The flag <code>e</code>
-needs to be selected to list the <em>events</em> you are choosing.</p>
-<pre><code class="language-sh">EVENTS=&quot;instructions,cycles,branch-instructions,branch-misses,LLC-loads&quot;
+</code></pre><p>You can select some and use it with <code>perf stats -e <command></code>. The flag <code>e</code> needs to be selected to list the <i>events</i> you are choosing.</p>
+<pre><code class="language-sh">EVENTS="instructions,cycles,branch-instructions,branch-misses,LLC-loads"
 perf stat -e $EVENTS man echo
 
  Performance counter stats for 'man echo':
@@ -173,22 +167,7 @@ perf stat -e $EVENTS man echo
 
        0.221092000 seconds user
        0.090197000 seconds sys
-</code></pre>
-<p>Some interesting events are:</p>
-<ul>
-<li><code>L1-dcache-load-misses</code>: Level 1 data cache load misses. This gives you a
-measure of the memory load caused by the application, after some loads have
-been returned from the Level 1 cache. It can be compared with other L1 event
-counters to determine cache hit ratio.</li>
-<li><code>LLC-load-misses</code>: Last level cache load misses. After the last level, this
-accesses main memory, and so this is a measure of main memory load. The
-difference between this and <code>L1-dcache-load-misses</code> gives an idea of the
-effectiveness of the CPU caches beyond Level 1, but other counters are needed
-for completeness.</li>
-<li><code>dTLB-load-misses</code>: Data translation lookaside buffer misses. This shows the
-effectiveness of the MMU to cache page mappings for the workload, and can
-measure the size of the memory workload (working set).</li>
-</ul>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><p>Some interesting events are:</p>
+<ul><li><code>L1-dcache-load-misses</code>: Level 1 data cache load misses. This gives you a measure of the memory load caused by the application, after some loads have been returned from the Level 1 cache. It can be compared with other L1 event counters to determine cache hit ratio.</li><li><code>LLC-load-misses</code> : Last level cache load misses. After the last level, this accesses main memory, and so this is a measure of main memory load. The difference between this and <code>L1-dcache-load-misses</code> gives an idea of the effectiveness of the CPU caches beyond Level 1, but other counters are needed for completeness.</li><li><code>dTLB-load-misses</code> : Data translation lookaside buffer misses. This shows the effectiveness of the MMU to cache page mappings for the workload, and can measure the size of the memory workload (working set).</li></ul><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

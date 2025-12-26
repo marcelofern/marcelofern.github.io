@@ -93,7 +93,7 @@
 ### Transactions
 
 - [Transaction Isolation](databases/postgres/transactions/transaction_isolation.md)
-- [Read only transactions](databases/postgres/transaction/read_only_transactions.md)
+- [Read only transactions](databases/postgres/transactions/read_only_transactions.md)
 
 ### PSQL
 

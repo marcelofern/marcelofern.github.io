@@ -61,43 +61,25 @@
 <body>
 <p>February 24th, 2024</p>
 <h2>Recap of Linux x64 ABI</h2>
-<p>When a function is called in C, the converted x64 assembly code will hold the
-function arguments in the following order:</p>
-<ol>
-<li>rdi</li>
-<li>rsi</li>
-<li>rdx</li>
-<li>rcx</li>
-<li>r8</li>
-<li>r9</li>
-</ol>
-<p>If the function takes more than 6 arguments, the remaining ones will be on
-$rsp+8. This is because $rsp+0 stores the value of rip so that the <code>return</code>
-statement knows where to go:</p>
-<ol start="7">
-<li><code>rsp+8</code></li>
-<li><code>rsp+8*2</code></li>
-<li><code>...</code></li>
-</ol>
+<p>When a function is called in C, the converted x64 assembly code will hold the function arguments in the following order:</p>
+<ol><li>rdi</li><li>rsi</li><li>rdx</li><li>rcx</li><li>r8</li><li>r9</li></ol>
+<p>If the function takes more than 6 arguments, the remaining ones will be on $rsp+8. This is because $rsp+0 stores the value of rip so that the <code>return</code> statement knows where to go:</p>
+<p>7. <code>rsp+8</code> 8. <code>rsp+8*2</code> 9. <code>...</code></p>
 <p>And finally, the result is stored in rax, if any.</p>
 <h2>How to inline code (naive approach)</h2>
-<p>Assembly code can be inlined with <code>asm</code>. You have to be careful with what you
-are doing, because compiled code with optimisations will look very different
-from compiled code without optimisation.</p>
+<p>Assembly code can be inlined with <code>asm</code>. You have to be careful with what you are doing, because compiled code with optimisations will look very different from compiled code without optimisation.</p>
 <p>Take for example this simple function:</p>
 <pre><code class="language-c">int foo(int a) {
-  asm(&quot;add dword ptr [rbp-4], 25&quot;);
+  asm("add dword ptr [rbp-4], 25");
   return a;
 }
 
 int main() {
   return foo(42);
 }
-</code></pre>
-<p>Note that you must compile this with <code>-masm=intel</code>.</p>
-<pre><code>!gcc -masm=intel -o /tmp/a.out % &amp;&amp; /tmp/a.out
-</code></pre>
-<p>This is the output assembly:</p>
+</code></pre><p>Note that you must compile this with <code>-masm=intel</code>.</p>
+<pre><code class="language-">!gcc -masm=intel -o /tmp/a.out % && /tmp/a.out
+</code></pre><p>This is the output assembly:</p>
 <pre><code class="language-asm">  .text
   .globl  foo
 foo:
@@ -105,9 +87,9 @@ foo:
   mov  rbp, rsp
   mov  DWORD PTR -4[rbp], edi
 #APP
-# 2 &quot;/tmp/c_to_assembly.c&quot; 1
+# 2 "/tmp/c_to_assembly.c" 1
   add dword ptr [rbp-4], 25
-# 0 &quot;&quot; 2
+# 0 "" 2
 #NO_APP
   mov  eax, DWORD PTR -4[rbp]
   pop  rbp
@@ -119,8 +101,7 @@ main:
   call  foo
   pop  rbp
   ret
-</code></pre>
-<p>Note how it all falls into place. The program exits returning 42+25 = 67.</p>
+</code></pre><p>Note how it all falls into place. The program exits returning 42+25 = 67.</p>
 <p>However, if we compile with optimisation, this will all go to shambles:</p>
 <pre><code class="language-asm">  .text
   .globl  foo
@@ -128,29 +109,25 @@ main:
 foo:
   mov  eax, edi
 #APP
-# 2 &quot;/tmp/c_to_assembly.c&quot; 1
+# 2 "/tmp/c_to_assembly.c" 1
   add dword ptr [rbp-4], 25
-# 0 &quot;&quot; 2
+# 0 "" 2
 #NO_APP
   ret
 main:
 #APP
-# 2 &quot;/tmp/c_to_assembly.c&quot; 1
+# 2 "/tmp/c_to_assembly.c" 1
   add dword ptr [rbp-4], 25
-# 0 &quot;&quot; 2
+# 0 "" 2
 #NO_APP
   mov  eax, 42
   ret
-</code></pre>
-<p>Look how the compiler inlined the code from <code>foo</code>. The function isn't even
-called anymore.</p>
+</code></pre><p>Look how the compiler inlined the code from <code>foo</code>. The function isn't even called anymore.</p>
 <h2>Extended asm with gcc (better approach)</h2>
-<blockquote>
-<p>With extended asm you can read and write C variables from assembler and
-perform jumps from assembler code to C labels. Extended asm syntax uses
-colons (‘:’) to delimit the operand parameters after the assembler template:</p>
-</blockquote>
-<pre><code>asm asm-qualifiers ( AssemblerTemplate
+<blockquote>With extended asm you can read and write C variables from assembler and</blockquote>
+<blockquote>perform jumps from assembler code to C labels. Extended asm syntax uses</blockquote>
+<blockquote>colons (‘:’) to delimit the operand parameters after the assembler template:</blockquote>
+<pre><code class="language-">asm asm-qualifiers ( AssemblerTemplate
                  : OutputOperands
                  [ : InputOperands
                  [ : Clobbers ] ])
@@ -160,156 +137,75 @@ asm asm-qualifiers ( AssemblerTemplate
                       : InputOperands
                       : Clobbers
                       : GotoLabels)
-</code></pre>
-<p><a href="https://web.archive.org/web/20240128193556/https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html">source</a></p>
+</code></pre><p><a href="https://web.archive.org/web/20240128193556/https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html">source</a></p>
 <p>Note that:</p>
-<blockquote>
-<p>The asm keyword is a GNU extension. When writing code that can be compiled
-with -ansi and the various -std options, use <strong>asm</strong> instead of asm (see
-Alternate Keywords).</p>
-</blockquote>
+<blockquote>The asm keyword is a GNU extension. When writing code that can be compiled</blockquote>
+<blockquote>with -ansi and the various -std options, use __asm__ instead of asm (see</blockquote>
+<blockquote>Alternate Keywords).</blockquote>
 <p>And very importantly:</p>
-<blockquote>
-<p>Since GCC does not parse the assembler template, it has no visibility of any
-symbols it references. This may result in GCC discarding those symbols as
-unreferenced unless they are also listed as input, output, or goto operands.</p>
-</blockquote>
-<hr>
-<blockquote>
-<p>Outputs, inputs, clobbers, and labels are all optional. Colons are only
-required up to the parameter that you wish to use, and having nothing between
-colons is valid when you wish to skip a parameter. For instance, each of
-these (explained below) are valid.</p>
-</blockquote>
-<pre><code class="language-c">    asm(&quot;movq %0, %0&quot; : &quot;+rm&quot; (foo));
-    asm(&quot;addl %0, %1&quot; : &quot;+r&quot; (foo) : &quot;g&quot; (bar));
-    asm(&quot;lfence&quot; : /* no output */ : /* no input */ : &quot;memory&quot;);
-</code></pre>
-<p><a href="https://web.archive.org/web/20230711125434/https://www.felixcloutier.com/documents/gcc-asm.html">source</a></p>
-<ul>
-<li>you specify arguments using %N, where N refers to an argument by its
-zero-based number in order of appearance (outputs and inputs being in the
-same &quot;namespace&quot;, outputs being first)</li>
-<li>you specify named arguments using <code>%[Name]</code>.</li>
-<li>you specify a literal % by using %%, which you will need if you reference
-registers directly in x86 assembly with the <code>AT&amp;T;</code> syntax</li>
-</ul>
-<p><strong>Prefer to name parameters</strong>:</p>
-<p>When you specify the optional <code>[Name]</code> field, you become able to refer to that
-input or output using the <code>%[Name]</code> syntax in the assembler template. For
-instance:</p>
+<blockquote>Since GCC does not parse the assembler template, it has no visibility of any</blockquote>
+<blockquote>symbols it references. This may result in GCC discarding those symbols as</blockquote>
+<blockquote>unreferenced unless they are also listed as input, output, or goto operands.</blockquote>
+<hr><blockquote>Outputs, inputs, clobbers, and labels are all optional. Colons are only</blockquote>
+<blockquote>required up to the parameter that you wish to use, and having nothing between</blockquote>
+<blockquote>colons is valid when you wish to skip a parameter. For instance, each of</blockquote>
+<blockquote>these (explained below) are valid.</blockquote>
+<pre><code class="language-c">    asm("movq %0, %0" : "+rm" (foo));
+    asm("addl %0, %1" : "+r" (foo) : "g" (bar));
+    asm("lfence" : /* no output */ : /* no input */ : "memory");
+</code></pre><p><a href="https://web.archive.org/web/20230711125434/https://www.felixcloutier.com/documents/gcc-asm.html">source</a></p>
+<ul><li>you specify arguments using %N, where N refers to an argument by its zero-based number in order of appearance (outputs and inputs being in the same "namespace", outputs being first)</li><li>you specify named arguments using <code>%[Name]</code>.</li><li>you specify a literal % by using %%, which you will need if you reference registers directly in x86 assembly with the <code>AT&T;</code> syntax</li></ul>
+<p><b>Prefer to name parameters</b>:</p>
+<p>When you specify the optional <code>[Name]</code> field, you become able to refer to that input or output using the <code>%[Name]</code> syntax in the assembler template. For instance:</p>
 <pre><code class="language-c">int foo = 1;
-asm(&quot;inc %[IncrementMe]&quot; : [IncrementMe] &quot;+r&quot; (foo));
+asm("inc %[IncrementMe]" : [IncrementMe] "+r" (foo));
 foo == 2
-</code></pre>
-<p>Even when names are specified, you can still refer to operands using the
-numbered syntax.</p>
+</code></pre><p>Even when names are specified, you can still refer to operands using the numbered syntax.</p>
 <h3>Constraints</h3>
-<p>In the example above we have, right next to the variable, the double quoted
-&quot;+r&quot; constraint.</p>
-<p>The constraint string communicates to GCC what the variable represents.
-For example, take the asm code:</p>
+<p>In the example above we have, right next to the variable, the double quoted "+r" constraint.</p>
+<p>The constraint string communicates to GCC what the variable represents. For example, take the asm code:</p>
 <pre><code class="language-c">imul %0, %1, %2
-</code></pre>
-<ul>
-<li>the first operand has to be a register</li>
-<li>the second operand may be a register or a memory address</li>
-<li>the last operand has to be a constant integer value</li>
-</ul>
-<blockquote>
-<p>The constraint string for each operand must communicate these requirements to
-GCC. For instance, it will ensure that the destination value lives in a
-register that can be used at the point of this statement.</p>
-</blockquote>
-<p>GCC defines many types of constraints, but on 2019's desktop/mobile platforms,
-those are the constraints that are the most likely to be used:</p>
-<ul>
-<li><code>r</code> specifies that the operand must be a general-purpose register</li>
-<li><code>m</code> specifies that the operand must be a memory address</li>
-<li><code>i</code> specifies that the operand must be an integer constant</li>
-<li><code>g</code> specifies that the operand must be a general-purpose register, or a
-memory address, or an integer constant (effectively the same as &quot;rmi&quot;). By
-specifying multiple constraints via <code>g</code> or <code>rmi</code>, you allow the compiler to
-pick the operand kind that suits it best when the same instruction has
-multiple forms.</li>
-</ul>
+</code></pre><ul><li>the first operand has to be a register</li><li>the second operand may be a register or a memory address</li><li>the last operand has to be a constant integer value</li></ul>
+<blockquote>The constraint string for each operand must communicate these requirements to</blockquote>
+<blockquote>GCC. For instance, it will ensure that the destination value lives in a</blockquote>
+<blockquote>register that can be used at the point of this statement.</blockquote>
+<p>GCC defines many types of constraints, but on 2019's desktop/mobile platforms, those are the constraints that are the most likely to be used:</p>
+<ul><li><code>r</code> specifies that the operand must be a general-purpose register</li><li><code>m</code> specifies that the operand must be a memory address</li><li><code>i</code> specifies that the operand must be an integer constant</li><li><code>g</code> specifies that the operand must be a general-purpose register, or a memory address, or an integer constant (effectively the same as "rmi"). By specifying multiple constraints via <code>g</code> or <code>rmi</code>, you allow the compiler to pick the operand kind that suits it best when the same instruction has multiple forms.</li></ul>
 <p>For a list with more constraints go to:</p>
-<ul>
-<li><a href="http://web.archive.org/web/20231224184039/https://gcc.gnu.org/onlinedocs/gcc/Simple-Constraints.html">source</a></li>
-<li><a href="http://web.archive.org/web/20231223081527/https://gcc.gnu.org/onlinedocs/gcc/Machine-Constraints.html">machine-specific constraints</a></li>
-</ul>
+<ul><li><a href="http://web.archive.org/web/20231224184039/https://gcc.gnu.org/onlinedocs/gcc/Simple-Constraints.html">source</a></li><li><a href="http://web.archive.org/web/20231223081527/https://gcc.gnu.org/onlinedocs/gcc/Machine-Constraints.html">machine-specific constraints</a></li></ul>
 <p>Right next to <code>r</code> we have the symbol <code>+</code>, those symbols are:</p>
-<p><strong>Constraint modifying characters</strong></p>
-<ul>
-<li><code>=</code> Means that this operand is write-only by this instruction: the previous
-value is discarded and replaced by new data. Most ARM instructions don't use
-the initial value of its destination register and thus don't have to have
-read access. In those cases use <code>=</code>.</li>
-<li><code>+</code> Means that this operand is both read and written by the instruction
-(read+write value). Almost all x86 instructions read and write to their first
-operand.</li>
-<li><code>&amp;</code> Means (in a particular alternative) that this operand is an earlyclobber
-operand. Its initial value is unspecified. It is not a bug to read from an =&amp;
-operand once it has been assigned a value. This is written before the
-instruction is finished using the input operands. Therefore, this operand may
-not lie in a register that is read by the instruction or as part of any
-memory address.</li>
-<li><code>%</code> Declares the instruction to be commutative for this operand and the
-following operand. This means that the compiler may interchange the two
-operands if that is the cheapest way to make all operands fit the
-constraints.</li>
-</ul>
-<p>Output constraints must begin with either <code>=</code> (a variable overwriting an
-existing value) or <code>+</code> (when reading and writing). When using <code>=</code>, do not
-assume the location contains the existing value on entry to the asm, except
-when the operand is tied to an input; see Input Operands.</p>
+<p><b>Constraint modifying characters</b></p>
+<ul><li><code>=</code> Means that this operand is write-only by this instruction: the previous value is discarded and replaced by new data. Most ARM instructions don't use the initial value of its destination register and thus don't have to have read access. In those cases use <code>=</code>.</li><li><code>+</code> Means that this operand is both read and written by the instruction (read+write value). Almost all x86 instructions read and write to their first operand.</li><li><code>&</code> Means (in a particular alternative) that this operand is an earlyclobber operand. Its initial value is unspecified. It is not a bug to read from an =& operand once it has been assigned a value. This is written before the instruction is finished using the input operands. Therefore, this operand may not lie in a register that is read by the instruction or as part of any memory address.</li><li><code>%</code> Declares the instruction to be commutative for this operand and the following operand. This means that the compiler may interchange the two operands if that is the cheapest way to make all operands fit the constraints.</li></ul>
+<p>Output constraints must begin with either <code>=</code> (a variable overwriting an existing value) or <code>+</code> (when reading and writing). When using <code>=</code>, do not assume the location contains the existing value on entry to the asm, except when the operand is tied to an input; see Input Operands.</p>
 <h3>Clobbers</h3>
-<blockquote>
-<p>While the compiler is aware of changes to entries listed in the output
-operands, the inline asm code may modify more than just the outputs. For
-example, calculations may require additional registers, or the processor may
-overwrite a register as a side effect of a particular assembler instruction.
-In order to inform the compiler of these changes, list them in the clobber
-list. Clobber list items are either register names or the special clobbers
-(listed below). Each clobber list item is a string constant enclosed in
-double quotes and separated by commas.</p>
-</blockquote>
-<ul>
-<li>Register names (on x86, both register and %register are accepted, such as
-<code>rax</code> or <code>%rax</code>)</li>
-<li>The special name <code>cc</code>, which specifies that the assembly altered condition
-flags. On platforms that keep multiple sets of condition flags as separate
-registers, it's also possible to name individual registers: for instance, on
-PowerPC, you can specify that you clobber cr0.</li>
-<li>The special name <code>memory</code>, which specifies that the assembly wrote to memory
-that is not explicitly referenced by an output (for instance, by
-dereferencing an input pointer). A memory clobber prevents the compiler from
-reordering memory operations across the asm statement (although it does not
-prevent the processor from doing it: you need to use an actual memory fence
-to achieve this).</li>
-</ul>
+<blockquote>While the compiler is aware of changes to entries listed in the output</blockquote>
+<blockquote>operands, the inline asm code may modify more than just the outputs. For</blockquote>
+<blockquote>example, calculations may require additional registers, or the processor may</blockquote>
+<blockquote>overwrite a register as a side effect of a particular assembler instruction.</blockquote>
+<blockquote>In order to inform the compiler of these changes, list them in the clobber</blockquote>
+<blockquote>list. Clobber list items are either register names or the special clobbers</blockquote>
+<blockquote>(listed below). Each clobber list item is a string constant enclosed in</blockquote>
+<blockquote>double quotes and separated by commas.</blockquote>
+<ul><li>Register names (on x86, both register and %register are accepted, such as<code>rax</code> or <code>%rax</code>)</li><li>The special name <code>cc</code>, which specifies that the assembly altered condition flags. On platforms that keep multiple sets of condition flags as separate registers, it's also possible to name individual registers: for instance, on PowerPC, you can specify that you clobber cr0.</li><li>The special name <code>memory</code>, which specifies that the assembly wrote to memory that is not explicitly referenced by an output (for instance, by dereferencing an input pointer). A memory clobber prevents the compiler from reordering memory operations across the asm statement (although it does not prevent the processor from doing it: you need to use an actual memory fence to achieve this).</li></ul>
 <h3>Simple Example</h3>
 <pre><code class="language-c">int add(int a, int b) {
-    asm(&quot;add %[a], %[b]&quot; : [a] &quot;+r&quot; (a) : [b] &quot;rm&quot; (b));
+    asm("add %[a], %[b]" : [a] "+r" (a) : [b] "rm" (b));
     return a;
 }
-</code></pre>
-<p>Now note that using this notation, when we compile this code with -O3, we still
-get the correct code!</p>
+</code></pre><p>Now note that using this notation, when we compile this code with -O3, we still get the correct code!</p>
 <pre><code class="language-asm">add:
   mov  eax, edi
 #APP
-# 2 &quot;/tmp/c_to_assembly.c&quot; 1
+# 2 "/tmp/c_to_assembly.c" 1
   addl eax, esi
-# 0 &quot;&quot; 2
+# 0 "" 2
 #NO_APP
   ret
-</code></pre>
-<h3>Fixing our initial example with extended assembly</h3>
+</code></pre><h3>Fixing our initial example with extended assembly</h3>
 <pre><code class="language-c">int foo(int a) {
   asm(
-    &quot;add %[a], 25&quot;
-    : [a] &quot;+r&quot; (a)
+    "add %[a], 25"
+    : [a] "+r" (a)
   );
   return a;
 }
@@ -317,30 +213,28 @@ get the correct code!</p>
 int main() {
   return foo(42);
 }
-</code></pre>
-<p>And the output assembly:</p>
+</code></pre><p>And the output assembly:</p>
 <pre><code class="language-asm">foo:
   mov  eax, edi
 #APP
-# 2 &quot;/tmp/c_to_assembly.c&quot; 1
+# 2 "/tmp/c_to_assembly.c" 1
   add eax, 25
-# 0 &quot;&quot; 2
+# 0 "" 2
 #NO_APP
   ret
   .size  foo, .-foo
-  .section  .text.startup,&quot;ax&quot;,@progbits
+  .section  .text.startup,"ax",@progbits
   .p2align 4
   .globl  main
   .type  main, @function
 main:
   mov  eax, 42
 #APP
-# 2 &quot;/tmp/c_to_assembly.c&quot; 1
+# 2 "/tmp/c_to_assembly.c" 1
   add eax, 25
-# 0 &quot;&quot; 2
+# 0 "" 2
 #NO_APP
   ret
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

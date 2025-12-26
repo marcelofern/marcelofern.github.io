@@ -60,16 +60,12 @@
 </head>
 <body>
 <h1>Building From Source</h1>
-<pre><code>Created at: 2025-02-26
-</code></pre>
-<h2>0. Get cargo and rustc</h2>
-<p>The unfortunate thing about Rust is that Rust requirest Rust to install Rust.
-Does that make sense? So you will need to have some version of Rust installed
-so that you can compile the project.</p>
-<h2>1. Find the correct tar ball</h2>
-<p>I'll usually go for the &quot;stable&quot; version you can find
-<a href="https://forge.rust-lang.org/infra/other-installation-methods.html">here</a>.</p>
-<p>Or simply extend the script below:</p>
+<pre><code class="language-">Created at: 2025-02-26
+</code></pre><h2>0. Get cargo and rustc</h2>
+<p>The unfortunate thing about Rust is that Rust requirest Rust to install Rust. Does that make sense? So you will need to have some version of Rust installed so that you can compile the project.</p>
+<h2><ol><li>FFiinndd  tthhee  ccoorrrreecctt  ttaarr  bbaallll</h2>
+ I'll usually go for the "stable" version you can find<a href="<ul><li>https://forge.rustlang.org/infra/other-installation-methods.html">here</a> .</li></ol>
+ Or simply extend the script below:</li></ul>
 <pre><code class="language-sh">VERSION=1.85.0
 DIR=$HOME/.rust_bin/rust-$VERSION
 rm -rf $DIR
@@ -78,28 +74,23 @@ cd $DIR
 curl -O https://static.rust-lang.org/dist/rustc-$VERSION-src.tar.xz
 tar -xvf rustc-$VERSION-src.tar.xz
 cd rustc-$VERSION-src
-</code></pre>
-<h2>2. Configure the build</h2>
-<p>Rust uses a .toml file to configure the build. A full config file is located at
-the root folder in the source code.</p>
+</code></pre><h2>2. Configure the build</h2>
+<p>Rust uses a .toml file to configure the build. A full config file is located at the root folder in the source code.</p>
 <p>I use this config:</p>
-<pre><code class="language-sh">echo &quot;[llvm]
+<pre><code class="language-sh">echo "[llvm]
 download-ci-llvm = true
 ninja = false
 
 [build]
-cargo = \&quot;$(which cargo)\&quot;
-rustc = \&quot;$(which rustc)\&quot;
+cargo = \"$(which cargo)\"
+rustc = \"$(which rustc)\"
 docs = true
 jobs = 4
 extended = true  # Enables building Cargo, Rustfmt, Clippy, etc.
-&quot; &gt; config.toml
-</code></pre>
-<h2>3. Build</h2>
+" > config.toml
+</code></pre><h2>3. Build</h2>
 <pre><code class="language-sh">./x.py build
-</code></pre>
-<p>That's it! Building rust takes a <strong>long</strong> time. My <code>build</code> directory ended
-up being 5.8GB for rust 1.85.0.</p>
+</code></pre><p>That's it! Building rust takes a <b>long</b> time. My <code>build</code> directory ended up being 5.8GB for rust 1.85.0.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

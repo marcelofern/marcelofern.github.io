@@ -60,21 +60,17 @@
 </head>
 <body>
 <h1>Systemd Startup Analysis</h1>
-<pre><code>Created at: 2024-10-20
-</code></pre>
-<p>In general there are many options to analyse systemd startup time.
-It is useful to read the man page of the system-analyze command itself:</p>
+<pre><code class="language-">Created at: 2024-10-20
+</code></pre><p>In general there are many options to analyse systemd startup time. It is useful to read the man page of the system-analyze command itself:</p>
 <pre><code class="language-sh">man systemd-analyze
-</code></pre>
-<h2>Analysing startup time:</h2>
-<pre><code>[~] systemd-analyze
+</code></pre><h2>Analysing startup time:</h2>
+<pre><code class="language-">[~] systemd-analyze
 Startup finished in 8.986s (firmware) + 5.000s (loader) + 1min 39.128s (kernel) + 10.669s (userspace) = 2min 3.785s
 graphical.target reached after 10.669s in userspace.
-</code></pre>
-<h2>Critical-chain</h2>
-<pre><code>[~] systemd-analyze critical-chain
-The time when unit became active or started is printed after the &quot;@&quot; character.
-The time the unit took to start is printed after the &quot;+&quot; character.
+</code></pre><h2>Critical-chain</h2>
+<pre><code class="language-">[~] systemd-analyze critical-chain
+The time when unit became active or started is printed after the "@" character.
+The time the unit took to start is printed after the "+" character.
 
 graphical.target @10.669s
 └─multi-user.target @10.669s
@@ -88,7 +84,6 @@ graphical.target @10.669s
                 └─sysinit.target @2.353s
                   └─systemd-resolved.service @2.279s +74ms
                     └─run-credentials-systemd\x2dresolved.service.mount @2.742s
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

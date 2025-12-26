@@ -60,61 +60,40 @@
 </head>
 <body>
 <h1>default on Model Field</h1>
-<pre><code>Created at: 2024-11-28
-</code></pre>
-<p>Django allows a model field to be created with a &quot;default&quot; value:</p>
+<pre><code class="language-">Created at: 2024-11-28
+</code></pre><p>Django allows a model field to be created with a "default" value:</p>
 <pre><code class="language-py">my_field = models.IntegerField(default=42, null=False)
-</code></pre>
-<p>But when you create the migration and check what SQL is produced, it will
-output the following:</p>
+</code></pre><p>But when you create the migration and check what SQL is produced, it will output the following:</p>
 <pre><code class="language-sql">-- NOTE: This is for Postgres only, other dbs might trigger
 -- different ddls.
-ALTER TABLE &quot;foo&quot; ADD COLUMN &quot;my_field&quot; integer DEFAULT 42 NOT NULL;
-ALTER TABLE &quot;foo&quot; ALTER COLUMN &quot;my_field&quot; DROP DEFAULT;
-</code></pre>
-<p>The same is true if we used <code>null=True</code>.</p>
-<pre><code class="language-sql">ALTER TABLE &quot;foo&quot; ADD COLUMN &quot;my_field&quot; integer DEFAULT 42 NULL;
-ALTER TABLE &quot;foo&quot; ALTER COLUMN &quot;my_field&quot; DROP DEFAULT;
-</code></pre>
-<p>So why does Django drop the default?</p>
+ALTER TABLE "foo" ADD COLUMN "my_field" integer DEFAULT 42 NOT NULL;
+ALTER TABLE "foo" ALTER COLUMN "my_field" DROP DEFAULT;
+</code></pre><p>The same is true if we used <code>null=True</code>.</p>
+<pre><code class="language-sql">ALTER TABLE "foo" ADD COLUMN "my_field" integer DEFAULT 42 NULL;
+ALTER TABLE "foo" ALTER COLUMN "my_field" DROP DEFAULT;
+</code></pre><p>So why does Django drop the default?</p>
 <h2>Context</h2>
 <p>Django allows <code>default</code> to be a Python callable.</p>
-<p>In certain cases, it is impossible to translate the Python callable into a
-Postgres callable. This means that a translation from Django's <code>default</code> to
-Postgres <code>DEFAULT</code> can be unfeasible.</p>
-<p>Effectively, this means that the <code>default</code> argument on a models.Field, will
-only be enforced on the application level.</p>
-<p>However, this does not explain why Django creates the field with the DEFAULT
-and then immediately drops it.</p>
-<p>The explanation is because in Postgres you can't add a field on an existing
-table that is NOT NULL without setting a default.</p>
+<p>In certain cases, it is impossible to translate the Python callable into a Postgres callable. This means that a translation from Django's <code>default</code> to Postgres <code>DEFAULT</code> can be unfeasible.</p>
+<p>Effectively, this means that the <code>default</code> argument on a models.Field, will only be enforced on the application level.</p>
+<p>However, this does not explain why Django creates the field with the DEFAULT and then immediately drops it.</p>
+<p>The explanation is because in Postgres you can't add a field on an existing table that is NOT NULL without setting a default.</p>
 <p>If you try:</p>
-<pre><code class="language-sql">ALTER TABLE &quot;foo&quot; ADD COLUMN &quot;bar&quot; integer NOT NULL;
-</code></pre>
-<p>You will get the error:</p>
-<pre><code>ERROR:  column &quot;bar&quot; of relation &quot;foo&quot; contains null values
-</code></pre>
-<p>This is not true for the case of <code>null=True</code>, but still, Django performs the
-same ddl. Perhaps for consistency.</p>
-<p>I don't find Django's behaviour very useful, as most times what I really want
-is for the default to be set on the database level.</p>
+<pre><code class="language-sql">ALTER TABLE "foo" ADD COLUMN "bar" integer NOT NULL;
+</code></pre><p>You will get the error:</p>
+<pre><code class="language-">ERROR:  column "bar" of relation "foo" contains null values
+</code></pre><p>This is not true for the case of <code>null=True</code>, but still, Django performs the same ddl. Perhaps for consistency.</p>
+<p>I don't find Django's behaviour very useful, as most times what I really want is for the default to be set on the database level.</p>
 <h2>Context 2</h2>
-<p>When operating on a NOT NULL field, the first SQL below populates all existing
-rows with the DEFAULT, whereas the second one drops the constraint so that the
-application (django) can control the default values.</p>
-<pre><code class="language-sql">ALTER TABLE &quot;foo&quot; ADD COLUMN &quot;my_field&quot; integer DEFAULT 42 NOT NULL;
-ALTER TABLE &quot;foo&quot; ALTER COLUMN &quot;my_field&quot; DROP DEFAULT;
-</code></pre>
-<h2>Fix</h2>
-<p>If you are using Django &gt; 5.0 you can use the new <code>db_default</code> argument when
-initialising the model field.</p>
-<p>If you aren't and you want a database DEFAULT for data-integrity purposes, you
-will have to use <code>SeparateDatabaseAndState</code>.</p>
+<p>When operating on a NOT NULL field, the first SQL below populates all existing rows with the DEFAULT, whereas the second one drops the constraint so that the application (django) can control the default values.</p>
+<pre><code class="language-sql">ALTER TABLE "foo" ADD COLUMN "my_field" integer DEFAULT 42 NOT NULL;
+ALTER TABLE "foo" ALTER COLUMN "my_field" DROP DEFAULT;
+</code></pre><h2>Fix</h2>
+<p>If you are using Django > 5.0 you can use the new <code>db_default</code> argument when initialising the model field.</p>
+<p>If you aren't and you want a database DEFAULT for data-integrity purposes, you will have to use <code>SeparateDatabaseAndState</code>.</p>
 <h2>Outro: Table Rewrites</h2>
-<p>Adding the column with a DEFAULT and then dropping the DEFAULT does not execute
-a table rewrite.</p>
-<p>All the existing rows will be set with the DEFAULT, and new rows will be
-required to pass a value.</p>
+<p>Adding the column with a DEFAULT and then dropping the DEFAULT does not execute a table rewrite.</p>
+<p>All the existing rows will be set with the DEFAULT, and new rows will be required to pass a value.</p>
 <h2>Outro: Callable Defaults</h2>
 <p>This is legal:</p>
 <pre><code class="language-py">def my_default():
@@ -122,25 +101,17 @@ required to pass a value.</p>
 
 class Foo(models.Model):
     my_field = models.IntegerField(default=my_default, null=False)
-</code></pre>
-<p>And the migration looks like this:</p>
-<pre><code class="language-sql">ALTER TABLE &quot;foo&quot; ADD COLUMN &quot;my_field&quot; integer DEFAULT 36 NOT NULL;
-ALTER TABLE &quot;foo&quot; ALTER COLUMN &quot;my_field&quot; DROP DEFAULT;
+</code></pre><p>And the migration looks like this:</p>
+<pre><code class="language-sql">ALTER TABLE "foo" ADD COLUMN "my_field" integer DEFAULT 36 NOT NULL;
+ALTER TABLE "foo" ALTER COLUMN "my_field" DROP DEFAULT;
 COMMIT;
-</code></pre>
-<p>Except that every time I call &quot;sqlmigrate&quot; the DEFAULT value is different.</p>
+</code></pre><p>Except that every time I call "sqlmigrate" the DEFAULT value is different.</p>
 <h2>Outro: Green/Blue Deployment problems</h2>
 <p>If:</p>
-<ul>
-<li>You migrate first, and then deploy code to new servers.</li>
-<li>AND: the migration has a NOT NULL constraint.</li>
-</ul>
+<ul><li>You migrate first, and then deploy code to new servers.</li><li>AND: the migration has a NOT NULL constraint.</li></ul>
 <p>Then:</p>
-<p>The old servers with the old Django code won't know that the field has an
-application-level defined value. Plus, the field is not nullable. You will see
-an error &quot;Column foo cannot be NULL.&quot;.</p>
-<p>In this case it's best to use a nullable field to start, and then remove that
-constraint once all servers are using the new code.</p>
+<p>The old servers with the old Django code won't know that the field has an application-level defined value. Plus, the field is not nullable. You will see an error "Column foo cannot be NULL.".</p>
+<p>In this case it's best to use a nullable field to start, and then remove that constraint once all servers are using the new code.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

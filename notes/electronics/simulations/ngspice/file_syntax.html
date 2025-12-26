@@ -60,12 +60,9 @@
 </head>
 <body>
 <h1>File Syntax</h1>
-<pre><code>Created at: 2025-11-02
-</code></pre>
-<p>For more details on syntax of spice files, refer to the
-<a href="https://ngspice.sourceforge.io/docs/ngspice-manual.pdf">ngspice manual</a></p>
-<p>A basic spice file can be defined with a title, followed by comments or a list
-of nodes forming a netlist and some optional operations and control input.</p>
+<pre><code class="language-">Created at: 2025-11-02
+</code></pre><p>For more details on syntax of spice files, refer to the <a href="https://ngspice.sourceforge.io/docs/ngspice-manual.pdf">ngspice manual</a></p>
+<p>A basic spice file can be defined with a title, followed by comments or a list of nodes forming a netlist and some optional operations and control input.</p>
 <p>For example, a basic voltage divider can be declared as:</p>
 <pre><code class="language-sp">.title Voltage Divider
 
@@ -82,20 +79,17 @@ print all
 .endc
 
 .end
-</code></pre>
-<p>Standard component definitions follow the structure:</p>
-<pre><code>&lt;component name&gt; &lt;left node&gt; &lt;right node&gt; &lt;value&gt;
-</code></pre>
-<h2>DC Signal</h2>
+</code></pre><p>Standard component definitions follow the structure:</p>
+<pre><code class="language-"><component name> <left node> <right node> <value>
+</code></pre><h2>DC Signal</h2>
 <p>For a DC signal connected to ground (0) and to a node called (in) of 1V:</p>
 <pre><code class="language-sp">* format:
-* &lt;source name, starting with &quot;v&quot;&gt; &lt;+node&gt; &lt;-node&gt; &lt;value in volts&gt;
+* <source name, starting with "v"> <+node> <-node> <value in volts>
 
 V1 in 0 1
-</code></pre>
-<h2>AC Signal</h2>
+</code></pre><h2>AC Signal</h2>
 <pre><code class="language-sp">* dc format:
-* &lt;source name, starting with &quot;v&quot;&gt; &lt;+node&gt; &lt;-node&gt; DC &lt;DC value in volts&gt;
+* <source name, starting with "v"> <+node> <-node> DC <DC value in volts>
 * ac format:
 * PULSE (VL VH TD TR TF PW PER PHASE)
 *   VL = starting voltage
@@ -110,10 +104,8 @@ V1 in 0 1
 * A pulse from 0 to 5V, with 1u of delay, rise and fall time. Phase is omitted
 * here, the pulse width and period of repetition are both 1s (quite long).
 V1 in 0 dc 0 PULSE (0 5 1u 1u 1u 1s 1s)
-</code></pre>
-<h2>Dependent sources</h2>
-<p>For a good explanation on how dependent sources work in ngspice watch
-<a href="https://www.youtube.com/watch?v=NlyPUpZd7lw">this video</a></p>
+</code></pre><h2>Dependent sources</h2>
+<p>For a good explanation on how dependent sources work in ngspice watch <a href="https://www.youtube.com/watch?v=NlyPUpZd7lw">this video</a></p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

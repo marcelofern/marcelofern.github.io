@@ -62,7 +62,7 @@
 <p>2024-04-18</p>
 <h2>Basic program</h2>
 <pre><code class="language-asm">; C/C++ preprocessor directives are available.
-#include &lt;avr/io.h&gt;
+#include <avr/io.h>
 
 .section .data
 
@@ -71,8 +71,7 @@
 .section .text
     ; org sets the address in which the assembler starts chucking instructions
     .org 0x00 ;
-</code></pre>
-<h2>Delay routine</h2>
+</code></pre><h2>Delay routine</h2>
 <pre><code class="language-asm">    ; Load an immediate value into r20 that will
     ; create the expected delay in seconds.
     ; This instruction will take 1 cycle, but
@@ -97,12 +96,9 @@ delay:
 ; For a clock of 16MHz like in the ATMega328p:
 ; 16,000,000 instructions per second.
 ; Our delay takes 63.7 micro seconds.
-</code></pre>
-<p>This is too small and barely observable.</p>
-<p>We can't increase the value from 255 because that is as much as we can store in
-an 8bit register.</p>
-<p>We can't add more nop operations because there would be too many of them to fit
-in the flash.</p>
+</code></pre><p>This is too small and barely observable.</p>
+<p>We can't increase the value from 255 because that is as much as we can store in an 8bit register.</p>
+<p>We can't add more nop operations because there would be too many of them to fit in the flash.</p>
 <p>The next idea is to add nested loops.</p>
 <pre><code class="language-asm">delay_1s:
     ; This instruction takes 1 cycle.
@@ -151,18 +147,15 @@ in the flash.</p>
     brne delay1
     ; Ret takes 4 cycles.
     ret
-</code></pre>
-<p>Summing all of the above we get:</p>
+</code></pre><p>Summing all of the above we get:</p>
 <pre><code class="language-py">total = (
     1 + 64 + 16000 + 4_000_000 + 4_000_000
     + 8_000_000 + 16_000 + 16_000
     + 32_000 - 64 + 64 -64 + 4
 )
 print(total)
-&gt;&gt; 16080005
-</code></pre>
-<p>This is pretty close to 16MHz, it is about 1.005 seconds.
-This might be a tolerable number depending on your use case.</p>
+>> 16080005
+</code></pre><p>This is pretty close to 16MHz, it is about 1.005 seconds. This might be a tolerable number depending on your use case.</p>
 <p>If you want to get more accurate, you should use timers and interrupts.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>

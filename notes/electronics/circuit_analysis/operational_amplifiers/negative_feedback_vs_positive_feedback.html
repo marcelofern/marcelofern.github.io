@@ -60,55 +60,34 @@
 </head>
 <body>
 <h1>Negative Feedback vs Positive Feedback</h1>
-<pre><code>Created at: 2025-11-30
-</code></pre>
-<p>Note: In electronics positive feedback is usually a &quot;bad thing&quot; and negative
-feedback is a &quot;good thing&quot; because for most applications it's desirable to
-control the gain (through negative feedback) rather than to drive it to
-extremes (saturation - positive feedback).</p>
+<pre><code class="language-">Created at: 2025-11-30
+</code></pre><p>Note: In electronics positive feedback is usually a "bad thing" and negative feedback is a "good thing" because for most applications it's desirable to control the gain (through negative feedback) rather than to drive it to extremes (saturation - positive feedback).</p>
 <h2>Negative Feedback</h2>
-<p>In this type of connection, the op amp output will be connected back to the
-inverting terminal.</p>
-<p>The output voltage is &quot;sent back&quot; to the negative terminal, so that means that
-the original equation:</p>
-<pre><code>Vout = A*(V+ - V-)
-</code></pre>
-<p>Now becomes</p>
-<pre><code>Vout = A*(V+ - fVout)
+<p>In this type of connection, the op amp output will be connected back to the inverting terminal.</p>
+<p>The output voltage is "sent back" to the negative terminal, so that means that the original equation:</p>
+<pre><code class="language-">Vout = A*(V+ - V-)
+</code></pre><p>Now becomes</p>
+<pre><code class="language-">Vout = A*(V+ - fVout)
 
 Where f = a fraction of what Vout is sending back.
-</code></pre>
-<p>Because A is a very large number:</p>
-<pre><code>Vout/A = V+ - fVout
+</code></pre><p>Because A is a very large number:</p>
+<pre><code class="language-">Vout/A = V+ - fVout
 
 Therefore
 
 0 = V+ - fVout
-</code></pre>
-<p>In practical terms, it means that if the op amp sense any voltage difference
-between its inputs, it will respond by feeding back as much current/voltage
-through the feedback network as is necessary to keep the input difference equal
-to zero! <strong>This is only valid for negative feedback</strong>.</p>
-<p>Negative feedback examples are:</p>
-<ul>
-<li>Inverting amplifier</li>
-<li>Non inverting amplifier</li>
-<li>Buffer</li>
-</ul>
+</code></pre><p>In practical terms, it means that if the op amp sense any voltage difference between its inputs, it will respond by feeding back as much current/voltage through the feedback network as is necessary to keep the input difference equal to zero! <b>This is only valid for negative feedback</b>.</p>
+<p>Negative feedback examples are: - Inverting amplifier - Non inverting amplifier - Buffer</p>
 <h2>Positive Feedback</h2>
-<p>In this case the output sends back a response to the positive terminal
-(non-inverting terminal):</p>
-<pre><code>Vout = A*(V+ - V-)
+<p>In this case the output sends back a response to the positive terminal (non-inverting terminal):</p>
+<pre><code class="language-">Vout = A*(V+ - V-)
 
 Becomes:
 
 Vout = A*(fVout - V-)
 
 Where f = a fraction of what Vout is sending back
-</code></pre>
-<p>Because the fVout component is positive, it will drive the op amp into
-saturation mode, i.e: fVout augments the Vout output, which augments the fVout
-componend, so on so forth.</p>
+</code></pre><p>Because the fVout component is positive, it will drive the op amp into saturation mode, i.e: fVout augments the Vout output, which augments the fVout componend, so on so forth.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

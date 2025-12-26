@@ -60,24 +60,13 @@
 </head>
 <body>
 <h1>A PostgreSQL Planner Primer</h1>
-<pre><code>Created at: 2024-07-25
-</code></pre>
-<p>A planner's job is to simply find the fastest way to fetch data from the
-database for a particular query.</p>
-<p>There are many paths (a.k.a plans) a planner might have to choose from. Just in
-terms of joins here are some query executor implementations for illustration:</p>
-<ul>
-<li>hash join - <a href="https://github.com/postgres/postgres/blob/d01ce180d9b5f0656d499840e138ab9ae9f8bf76/src/backend/executor/nodeHashjoin.c">src/backend/executor/nodeHashjoin.c</a></li>
-<li>nest loop join - <a href="https://github.com/postgres/postgres/blob/d01ce180d9b5f0656d499840e138ab9ae9f8bf76/src/backend/executor/nodeNestloop.c">src/backend/executor/nodeNestloop.c</a></li>
-<li>node merge join - <a href="https://github.com/postgres/postgres/blob/d01ce180d9b5f0656d499840e138ab9ae9f8bf76/src/backend/executor/nodeMergejoin.c">src/backend/executor/nodeMergejoin.c</a></li>
-<li>...</li>
-</ul>
+<pre><code class="language-">Created at: 2024-07-25
+</code></pre><p>A planner's job is to simply find the fastest way to fetch data from the database for a particular query.</p>
+<p>There are many paths (a.k.a plans) a planner might have to choose from. Just in terms of joins here are some query executor implementations for illustration:</p>
+<ul><li>hash join - <a href="https://github.com/postgres/postgres/blob/d01ce180d9b5f0656d499840e138ab9ae9f8bf76/src/backend/executor/nodeHashjoin.c">src/backend/executor/nodeHashjoin.c</a></li><li>nest loop join - <a href="https://github.com/postgres/postgres/blob/d01ce180d9b5f0656d499840e138ab9ae9f8bf76/src/backend/executor/nodeNestloop.c">src/backend/executor/nodeNestloop.c</a></li><li>node merge join - <a href="https://github.com/postgres/postgres/blob/d01ce180d9b5f0656d499840e138ab9ae9f8bf76/src/backend/executor/nodeMergejoin.c">src/backend/executor/nodeMergejoin.c</a></li><li>...</li></ul>
 <h2>Selecting a plan</h2>
-<p>Generally speaking, the plan with the lowest &quot;cost&quot; is the one picked by the
-planner. But how can we see the different plans available, out of curiosity?</p>
-<p>I couldn't find a way to log &quot;discarded&quot; plans after much searching. But on a
-sidetrack, I ended up finding some useful log variables that I think are good
-to set anyway when you are debugging things locally:</p>
+<p>Generally speaking, the plan with the lowest "cost" is the one picked by the planner. But how can we see the different plans available, out of curiosity?</p>
+<p>I couldn't find a way to log "discarded" plans after much searching. But on a sidetrack, I ended up finding some useful log variables that I think are good to set anyway when you are debugging things locally:</p>
 <pre><code class="language-sql">LOAD 'auto_explain';
 -- minimum statement execution time, in milliseconds
 -- that will cause the statement's plan to be logged.
@@ -114,129 +103,94 @@ SET log_planner_stats = on;
 SET debug_print_plan = on;
 -- SET debug_print_parse = on;
 -- SET debug_print_rewritten = on;
-</code></pre>
-<p>This will automatically log the query plan selected by the executor for all
-queries you have performed, which might be handy if you are analysing
-historical queries. So when you run the following query:</p>
+</code></pre><p>This will automatically log the query plan selected by the executor for all queries you have performed, which might be handy if you are analysing historical queries. So when you run the following query:</p>
 <pre><code class="language-sql">SELECT count(*)
 FROM pg_class, pg_index
 WHERE oid = indrelid AND indisunique;
-</code></pre>
-<p>You get the following logs (PS: if you use docker you can simply run
-<code>docker logs &lt;container_id&gt;</code> to see the logs).</p>
-<pre><code>2024-07-25 02:36:46.362 UTC [34] LOG:  duration: 0.161 ms  plan:
-    Query Text: SELECT count(*)
-    FROM pg_class, pg_index
-    WHERE oid = indrelid AND indisunique;
-    Aggregate  (cost=29.61..29.62 rows=1 width=8) (actual time=0.156..0.157 rows=1 loops=1)
-      Output: count(*)
-      Buffers: shared hit=14 read=4
-      -&gt;  Hash Join  (cost=23.23..29.24 rows=149 width=0) (actual time=0.115..0.148 rows=149 loops=1)
-            Inner Unique: true
-            Hash Cond: (pg_index.indrelid = pg_class.oid)
-            Buffers: shared hit=14 read=4
-            -&gt;  Seq Scan on pg_catalog.pg_index  (cost=0.00..5.62 rows=149 width=4) (actual time=0.005..0.021 rows=149 loops=1)
-                  Output: pg_index.indexrelid, ..., etc.
-                  Filter: pg_index.indisunique
-                  Rows Removed by Filter: 13
-                  Buffers: shared hit=4
-            -&gt;  Hash  (cost=18.10..18.10 rows=410 width=4) (actual time=0.100..0.100 rows=410 loops=1)
-                  Output: pg_class.oid
-                  Buckets: 1024  Batches: 1  Memory Usage: 23kB
-                  Buffers: shared hit=10 read=4
-                  -&gt;  Seq Scan on pg_catalog.pg_class  (cost=0.00..18.10 rows=410 width=4) (actual time=0.002..0.055 rows=410 loops=1)
-                        Output: pg_class.oid
-                        Buffers: shared hit=10 read=4
-</code></pre>
-<p>There are many other logs that were triggered as a result of the variables
-above, but I'll skip them here for brevity. You should explore which ones you
-find most valuable for your case.</p>
+</code></pre><p>You get the following logs (PS: if you use docker you can simply run <code>docker logs <container_id></code> to see the logs).</p>
+<pre><code class="language-">2024-07-25 02:36:46.362 UTC [34] LOG:  duration: 0.161 ms  plan:
+	Query Text: SELECT count(*)
+	FROM pg_class, pg_index
+	WHERE oid = indrelid AND indisunique;
+	Aggregate  (cost=29.61..29.62 rows=1 width=8) (actual time=0.156..0.157 rows=1 loops=1)
+	  Output: count(*)
+	  Buffers: shared hit=14 read=4
+	  ->  Hash Join  (cost=23.23..29.24 rows=149 width=0) (actual time=0.115..0.148 rows=149 loops=1)
+	        Inner Unique: true
+	        Hash Cond: (pg_index.indrelid = pg_class.oid)
+	        Buffers: shared hit=14 read=4
+	        ->  Seq Scan on pg_catalog.pg_index  (cost=0.00..5.62 rows=149 width=4) (actual time=0.005..0.021 rows=149 loops=1)
+	              Output: pg_index.indexrelid, ..., etc.
+	              Filter: pg_index.indisunique
+	              Rows Removed by Filter: 13
+	              Buffers: shared hit=4
+	        ->  Hash  (cost=18.10..18.10 rows=410 width=4) (actual time=0.100..0.100 rows=410 loops=1)
+	              Output: pg_class.oid
+	              Buckets: 1024  Batches: 1  Memory Usage: 23kB
+	              Buffers: shared hit=10 read=4
+	              ->  Seq Scan on pg_catalog.pg_class  (cost=0.00..18.10 rows=410 width=4) (actual time=0.002..0.055 rows=410 loops=1)
+	                    Output: pg_class.oid
+	                    Buffers: shared hit=10 read=4
+</code></pre><p>There are many other logs that were triggered as a result of the variables above, but I'll skip them here for brevity. You should explore which ones you find most valuable for your case.</p>
 <p>You must have realised that earlier on I've said:</p>
-<blockquote>
-<p><strong>Generally</strong> speaking, the plan with the lowest &quot;cost&quot; is the one picked by
-the planner.</p>
-</blockquote>
-<p>Why generally and not <strong>always</strong>? One exception occurs when the query has
-numerous joins. In such cases the number of possible plans grows exponentially
-and the planner cannot take all of them into account in a timely manner.
-Instead, the planner uses a selection algorithm that tries to find a good
-compromise that yields a tolerable solution.</p>
+<blockquote>**Generally** speaking, the plan with the lowest "cost" is the one picked by</blockquote>
+<blockquote>the planner.</blockquote>
+<p>Why generally and not <b>always</b>? One exception occurs when the query has numerous joins. In such cases the number of possible plans grows exponentially and the planner cannot take all of them into account in a timely manner. Instead, the planner uses a selection algorithm that tries to find a good compromise that yields a tolerable solution.</p>
 <h2>Reading the Planner Output</h2>
 <p>Given this query:</p>
 <pre><code class="language-sql">EXPLAIN ANALYSE SELECT schemaname, tablename
 FROM pg_tables
 WHERE tableowner = 'postgres'
 ORDER BY tablename;
-</code></pre>
-<p>The planner result is:</p>
-<pre><code>                                                      QUERY PLAN
+</code></pre><p>The planner result is:</p>
+<pre><code class="language-">                                                      QUERY PLAN
 ----------------------------------------------------------------------------------------------------------------------
  Sort  (cost=22.28..22.30 rows=1 width=128) (actual time=0.164..0.168 rows=68 loops=1)
    Sort Key: c.relname
    Sort Method: quicksort  Memory: 36kB
-   -&gt;  Nested Loop Left Join  (cost=0.00..22.27 rows=1 width=128) (actual time=0.011..0.122 rows=68 loops=1)
+   ->  Nested Loop Left Join  (cost=0.00..22.27 rows=1 width=128) (actual time=0.011..0.122 rows=68 loops=1)
          Join Filter: (n.oid = c.relnamespace)
          Rows Removed by Join Filter: 76
-         -&gt;  Seq Scan on pg_class c  (cost=0.00..21.18 rows=1 width=72) (actual time=0.008..0.078 rows=68 loops=1)
-               Filter: ((relkind = ANY ('{r,p}'::&quot;char&quot;[])) AND (pg_get_userbyid(relowner) = 'postgres'::name))
+         ->  Seq Scan on pg_class c  (cost=0.00..21.18 rows=1 width=72) (actual time=0.008..0.078 rows=68 loops=1)
+               Filter: ((relkind = ANY ('{r,p}'::"char"[])) AND (pg_get_userbyid(relowner) = 'postgres'::name))
                Rows Removed by Filter: 342
-         -&gt;  Seq Scan on pg_namespace n  (cost=0.00..1.04 rows=4 width=68) (actual time=0.000..0.000 rows=2 loops=68)
+         ->  Seq Scan on pg_namespace n  (cost=0.00..1.04 rows=4 width=68) (actual time=0.000..0.000 rows=2 loops=68)
  Planning Time: 3.128 ms
  Execution Time: 0.456 ms
-</code></pre>
-<p>On the first row, we have the entry <code>cost=22.28..22.30</code>.
-The first number (22.28) represents the start-up cost to prepare the process
-for execution, i.e., before the first row can be returned,  whereas (22.30) is
-the total cost of retrieving all rows.</p>
-<p>But what unit does &quot;cost&quot; represent? According to Postgres 15 documentation:</p>
-<blockquote>
-<p>The most critical part of the display is the estimated statement execution
-cost, which is the planner's guess at how long it will take to run the
-statement (measured in cost units that are arbitrary, but conventionally mean
-disk page fetches)</p>
-</blockquote>
-<p>Since the query was triggered with the <code>ANALYSE</code> keyword, the query fetched the
-results for real, and the runtime statics were also added.</p>
-<p>The entry <code>actual time=0.164..0.168</code> represents the start-up time and the
-total time in milliseconds. It also gives us the number of rows returned (68).</p>
-<p>Note that since there are two costs (start-up and total), the planner might
-decide to optimise for one over another. For example, when a query is tagged
-with <code>LIMIT 1</code> or <code>EXISTS</code>, it only needs to fetch one row, and it makes more
-sense to optimise by start-up cost than total cost.</p>
+</code></pre><p>On the first row, we have the entry <code>cost=22.28..22.30</code>. The first number (22.28) represents the start-up cost to prepare the process for execution, i.e., before the first row can be returned,  whereas (22.30) is the total cost of retrieving all rows.</p>
+<p>But what unit does "cost" represent? According to Postgres 15 documentation:</p>
+<blockquote>The most critical part of the display is the estimated statement execution</blockquote>
+<blockquote>cost, which is the planner's guess at how long it will take to run the</blockquote>
+<blockquote>statement (measured in cost units that are arbitrary, but conventionally mean</blockquote>
+<blockquote>disk page fetches)</blockquote>
+<p>Since the query was triggered with the <code>ANALYSE</code> keyword, the query fetched the results for real, and the runtime statics were also added.</p>
+<p>The entry <code>actual time=0.164..0.168</code> represents the start-up time and the total time in milliseconds. It also gives us the number of rows returned (68).</p>
+<p>Note that since there are two costs (start-up and total), the planner might decide to optimise for one over another. For example, when a query is tagged with <code>LIMIT 1</code> or <code>EXISTS</code>, it only needs to fetch one row, and it makes more sense to optimise by start-up cost than total cost.</p>
 <h2>Buffers</h2>
 <p>Another useful parameter to <code>EXPLAIN</code> is <code>BUFFERS</code>.</p>
-<p>A buffer is a virtual representation of data that is stored in disk.
-According to the docs, <code>BUFFERS</code> will:</p>
-<blockquote>
-<p>Include information on buffer usage. Specifically, include the number of
-shared blocks hit, read, dirtied, and written, the number of local blocks
-hit, read, dirtied, and written, the number of temp blocks read and written,
-and the time spent reading and writing data file blocks, local blocks and
-temporary file blocks (in milliseconds) if track_io_timing is enabled. A hit
-means that a read was avoided because the block was found already in cache
-when needed. Shared blocks contain data from regular tables and indexes;
-local blocks contain data from temporary tables and indexes; while temporary
-blocks contain short-term working data used in sorts, hashes, Materialize
-plan nodes, and similar cases. The number of blocks dirtied indicates the
-number of previously unmodified blocks that were changed by this query; while
-the number of blocks written indicates the number of previously-dirtied
-blocks evicted from cache by this backend during query processing. The number
-of blocks shown for an upper-level node includes those used by all its child
-nodes. In text format, only non-zero values are printed. This parameter
-defaults to FALSE.</p>
-</blockquote>
-<p>This parameter will allows us to have an idea of how much IO work Postgres will
-do. Each buffers has, usually, 8KiB of data.</p>
-<p><a href="http://web.archive.org/web/20240229223746/https://postgres.ai/blog/20220106-explain-analyze-needs-buffers-to-improve-the-postgres-query-optimization-process">Here's</a>
-a good post about the BUFFERS option</p>
+<p>A buffer is a virtual representation of data that is stored in disk. According to the docs, <code>BUFFERS</code> will:</p>
+<blockquote>Include information on buffer usage. Specifically, include the number of</blockquote>
+<blockquote>shared blocks hit, read, dirtied, and written, the number of local blocks</blockquote>
+<blockquote>hit, read, dirtied, and written, the number of temp blocks read and written,</blockquote>
+<blockquote>and the time spent reading and writing data file blocks, local blocks and</blockquote>
+<blockquote>temporary file blocks (in milliseconds) if track_io_timing is enabled. A hit</blockquote>
+<blockquote>means that a read was avoided because the block was found already in cache</blockquote>
+<blockquote>when needed. Shared blocks contain data from regular tables and indexes;</blockquote>
+<blockquote>local blocks contain data from temporary tables and indexes; while temporary</blockquote>
+<blockquote>blocks contain short-term working data used in sorts, hashes, Materialize</blockquote>
+<blockquote>plan nodes, and similar cases. The number of blocks dirtied indicates the</blockquote>
+<blockquote>number of previously unmodified blocks that were changed by this query; while</blockquote>
+<blockquote>the number of blocks written indicates the number of previously-dirtied</blockquote>
+<blockquote>blocks evicted from cache by this backend during query processing. The number</blockquote>
+<blockquote>of blocks shown for an upper-level node includes those used by all its child</blockquote>
+<blockquote>nodes. In text format, only non-zero values are printed. This parameter</blockquote>
+<blockquote>defaults to FALSE.</blockquote>
+<p>This parameter will allows us to have an idea of how much IO work Postgres will do. Each buffers has, usually, 8KiB of data.</p>
+<p><a href="http://web.archive.org/web/20240229223746/https://postgres.ai/blog/20220106-explain-analyze-needs-buffers-to-improve-the-postgres-query-optimization-process">Here's</a> a good post about the BUFFERS option</p>
 <h2>Caveats</h2>
-<p>Planning relies heavily on the pg_statistic table. This table needs to be
-updated for the planner to select the right plan. This can be arranged by
-enabling the autovacuum daemon.</p>
-<p>Note that if the table changed a lot in a short period of time, in a way that
-changes haven't been acknowledged via autovacuum, you'll need to manually
-vacuum the table to address the potential dead tuples.</p>
-<h2>&quot;Hinting&quot; the planner to chose a specific plan</h2>
+<p>Planning relies heavily on the pg_statistic table. This table needs to be updated for the planner to select the right plan. This can be arranged by enabling the autovacuum daemon.</p>
+<p>Note that if the table changed a lot in a short period of time, in a way that changes haven't been acknowledged via autovacuum, you'll need to manually vacuum the table to address the potential dead tuples.</p>
+<h2>"Hinting" the planner to chose a specific plan</h2>
 <p>TODO: Check the pg_hint_plan extension</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>

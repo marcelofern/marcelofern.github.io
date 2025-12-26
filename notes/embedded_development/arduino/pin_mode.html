@@ -61,12 +61,10 @@
 <body>
 <p>Function declaration:</p>
 <pre><code class="language-c">void pinMode(uint8_t pin, uint8_t mode);
-</code></pre>
-<h2>uint8_t pin</h2>
-<p>The pin variables are declared in the <code>pins_arduino.h</code> header.
-<a href="http://web.archive.org/web/20231021145458/https://github.com/arduino/ArduinoCore-avr/blob/master/variants/standard/pins_arduino.h">source</a></p>
+</code></pre><h2>uint8_t pin</h2>
+<p>The pin variables are declared in the <code>pins_arduino.h</code> header. <a href="http://web.archive.org/web/20231021145458/https://github.com/arduino/ArduinoCore-avr/blob/master/variants/standard/pins_arduino.h">source</a></p>
 <p>These are the pins from my ATMEGA328p mapping:</p>
-<pre><code>                 +-\/-+
+<pre><code class="language-">                 +-\/-+
            PC6  1|    |28  PC5 (AI 5)
      (D 0) PD0  2|    |27  PC4 (AI 4)
      (D 1) PD1  3|    |26  PC3 (AI 3)
@@ -82,8 +80,7 @@ PWM+ (D 6) PD6 12|    |17  PB3 (D 11) PWM
      (D 7) PD7 13|    |16  PB2 (D 10) PWM
      (D 8) PB0 14|    |15  PB1 (D 9) PWM
                  +----+
-</code></pre>
-<p>For example, the LED_BUILTIN pin and the analog pins are defined as:</p>
+</code></pre><p>For example, the LED_BUILTIN pin and the analog pins are defined as:</p>
 <pre><code class="language-c">#define LED_BUILTIN 13
 
 #define PIN_A0   (14)
@@ -94,45 +91,32 @@ PWM+ (D 6) PD6 12|    |17  PB3 (D 11) PWM
 #define PIN_A5   (19)
 #define PIN_A6   (20)
 #define PIN_A7   (21)
-</code></pre>
-<p>The digital pins can be called just with their immediate integer numbers, as in</p>
+</code></pre><p>The digital pins can be called just with their immediate integer numbers, as in</p>
 <pre><code class="language-c">pinMode(10, OUTPUT);
-</code></pre>
-<h2>uint8_t mode</h2>
-<p>These are defined as hexadecimal numbers in the <code>Arduino.h</code> header.
-<a href="http://web.archive.org/web/20240216191208/https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/Arduino.h">source</a></p>
+</code></pre><h2>uint8_t mode</h2>
+<p>These are defined as hexadecimal numbers in the <code>Arduino.h</code> header. <a href="http://web.archive.org/web/20240216191208/https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/Arduino.h">source</a></p>
 <pre><code class="language-c">#define INPUT 0x0
 #define OUTPUT 0x1
 #define INPUT_PULLUP 0x2
-</code></pre>
-<p>One interesting value is INPUT_PULLUP.</p>
-<blockquote>
-<p>There are 20K pullup resistors built into the Atmega chip that can be
-accessed from software. These built-in pullup resistors are accessed by
-setting the pinMode() as INPUT_PULLUP. This effectively inverts the behavior
-of the INPUT mode, where HIGH means the sensor is off, and LOW means the
-sensor is on.</p>
-</blockquote>
-<blockquote>
-<p>The value of this pullup depends on the microcontroller used. On most
-AVR-based boards, the value is guaranteed to be between 20kΩ and 50kΩ. On the
-Arduino Due, it is between 50kΩ and 150kΩ. For the exact value, consult the
-datasheet of the microcontroller on your board.</p>
-</blockquote>
-<blockquote>
-<p>When connecting a sensor to a pin configured with INPUT_PULLUP, the other end
-should be connected to ground. In the case of a simple switch, this causes
-the pin to read HIGH when the switch is open, and LOW when the switch is
-pressed.</p>
-</blockquote>
-<blockquote>
-<p>The pullup resistors provide enough current to dimly light an LED connected
-to a pin that has been configured as an input. If LEDs in a project seem to
-be working, but very dimly, this is likely what is going on.</p>
-</blockquote>
+</code></pre><p>One interesting value is INPUT_PULLUP.</p>
+<blockquote>There are 20K pullup resistors built into the Atmega chip that can be</blockquote>
+<blockquote>accessed from software. These built-in pullup resistors are accessed by</blockquote>
+<blockquote>setting the pinMode() as INPUT_PULLUP. This effectively inverts the behavior</blockquote>
+<blockquote>of the INPUT mode, where HIGH means the sensor is off, and LOW means the</blockquote>
+<blockquote>sensor is on.</blockquote>
+<blockquote>The value of this pullup depends on the microcontroller used. On most</blockquote>
+<blockquote>AVR-based boards, the value is guaranteed to be between 20kΩ and 50kΩ. On the</blockquote>
+<blockquote>Arduino Due, it is between 50kΩ and 150kΩ. For the exact value, consult the</blockquote>
+<blockquote>datasheet of the microcontroller on your board.</blockquote>
+<blockquote>When connecting a sensor to a pin configured with INPUT_PULLUP, the other end</blockquote>
+<blockquote>should be connected to ground. In the case of a simple switch, this causes</blockquote>
+<blockquote>the pin to read HIGH when the switch is open, and LOW when the switch is</blockquote>
+<blockquote>pressed.</blockquote>
+<blockquote>The pullup resistors provide enough current to dimly light an LED connected</blockquote>
+<blockquote>to a pin that has been configured as an input. If LEDs in a project seem to</blockquote>
+<blockquote>be working, but very dimly, this is likely what is going on.</blockquote>
 <h2>pinMode function logic</h2>
-<p>This is the function definition in <code>wiring_digital.c</code>
-<a href="http://web.archive.org/web/20240308164206/https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/wiring_digital.c">source</a></p>
+<p>This is the function definition in <code>wiring_digital.c</code> <a href="http://web.archive.org/web/20240308164206/https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/wiring_digital.c">source</a></p>
 <pre><code class="language-c">void pinMode(uint8_t pin, uint8_t mode)
 {
   uint8_t bit = digitalPinToBitMask(pin);
@@ -148,13 +132,13 @@ be working, but very dimly, this is likely what is going on.</p>
   if (mode == INPUT) {
     uint8_t oldSREG = SREG;
                 cli();
-    *reg &amp;= ~bit;
-    *out &amp;= ~bit;
+    *reg &= ~bit;
+    *out &= ~bit;
     SREG = oldSREG;
   } else if (mode == INPUT_PULLUP) {
     uint8_t oldSREG = SREG;
                 cli();
-    *reg &amp;= ~bit;
+    *reg &= ~bit;
     *out |= bit;
     SREG = oldSREG;
   } else {
@@ -164,18 +148,14 @@ be working, but very dimly, this is likely what is going on.</p>
     SREG = oldSREG;
   }
 }
-</code></pre>
-<p>There are a few macros to take note:</p>
+</code></pre><p>There are a few macros to take note:</p>
 <pre><code class="language-c">#define digitalPinToBitMask(P) ( pgm_read_byte( digital_pin_to_bit_mask_PGM + (P) ) )
 #define digitalPinToPort(P) ( pgm_read_byte( digital_pin_to_port_PGM + (P) ) )
 #define portModeRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_mode_PGM + (P))) )
 #define portOutputRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_output_PGM + (P))) )
-</code></pre>
-<p>But before we get into their details, we need to find out what the <code>pgm</code>
-macro does:</p>
+</code></pre><p>But before we get into their details, we need to find out what the <code>pgm</code> macro does:</p>
 <h3>pgm_read_byte</h3>
-<p>This macro is actually defined in <code>avr/pgmspace.h</code> from avr-libc
-<a href="https://github.com/Patapom/Arduino/blob/master/Libraries/AVR%20Libc/avr-libc-2.0.0/include/avr/pgmspace.h">source</a></p>
+<p>This macro is actually defined in <code>avr/pgmspace.h</code> from avr-libc <a href="https://github.com/Patapom/Arduino/blob/master/Libraries/AVR%20Libc/avr-libc-2.0.0/include/avr/pgmspace.h">source</a></p>
 <pre><code class="language-c">#define pgm_read_byte(address_short)    pgm_read_byte_near(address_short)
 
 // From:
@@ -191,38 +171,17 @@ macro does:</p>
     uint8_t __result;           \
     __asm__ __volatile__        \
     (                           \
-        &quot;lpm %0, Z&quot; &quot;\n\t&quot;      \
-        : &quot;=r&quot; (__result)       \
-        : &quot;z&quot; (__addr16)        \
+        "lpm %0, Z" "\n\t"      \
+        : "=r" (__result)       \
+        : "z" (__addr16)        \
     );                          \
     __result;                   \
 }))
-</code></pre>
-<ul>
-<li><p><code>&quot;lpm %0, Z&quot;</code>: This is the assembly instruction to perform the Load Program
-Memory (LPM) operation. It loads a byte from the program memory into a
-register (%0) using the Z register as a pointer.</p>
-</li>
-<li><p><code>: &quot;=r&quot; (__result)</code>: This is the output operand constraint for the inline
-assembly. It specifies that the result of the LPM operation will be stored in
-the variable __result. &quot;=r&quot; means that the operand will be an output register
-variable.</p>
-</li>
-<li><p><code>: &quot;z&quot; (__addr16)</code>: This is the input operand constraint for the inline
-assembly. It specifies that the address __addr16 will be used as the Z
-register pointer operand for the LPM operation. &quot;z&quot; means that the operand
-will be a register variable containing an address suitable for use with the Z
-register.</p>
-</li>
-</ul>
-<p>In summary, this macro performs an enhanced version of the Load Program Memory
-(LPM) operation to read a byte from flash memory. It takes an address as input,
-reads the byte from that address in flash memory, and returns the byte as the
-result. This macro is often used in AVR microcontroller programming,
-particularly in Arduino sketches, to access data stored in the PROGMEM (PROGram
-MEMory) section.</p>
-<p>The macro <code>pgm_read_word</code> is similar, but reads a word (2 bytes) instead of
-just one :-)</p>
+</code></pre><ul><li><code>"lpm %0, Z"</code>: This is the assembly instruction to perform the Load Program Memory (LPM) operation. It loads a byte from the program memory into a register (%0) using the Z register as a pointer.</li></ul>
+<ul><li><code>: "=r" (__result)</code>: This is the output operand constraint for the inline assembly. It specifies that the result of the LPM operation will be stored in the variable __result. "=r" means that the operand will be an output register variable.</li></ul>
+<ul><li><code>: "z" (__addr16)</code>: This is the input operand constraint for the inline assembly. It specifies that the address __addr16 will be used as the Z register pointer operand for the LPM operation. "z" means that the operand will be a register variable containing an address suitable for use with the Z register.</li></ul>
+<p>In summary, this macro performs an enhanced version of the Load Program Memory (LPM) operation to read a byte from flash memory. It takes an address as input, reads the byte from that address in flash memory, and returns the byte as the result. This macro is often used in AVR microcontroller programming, particularly in Arduino sketches, to access data stored in the PROGMEM (PROGram MEMory) section.</p>
+<p>The macro <code>pgm_read_word</code> is similar, but reads a word (2 bytes) instead of just one :-)</p>
 <h3>digitalPinToPort</h3>
 <pre><code class="language-c">#define digitalPinToPort(p) pgm_read_byte( digital_pin_to_port_PGM + (P) ) )
 
@@ -282,11 +241,8 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
 //      (D 7) PD7 13|    |16  PB2 (D 10) PWM
 //      (D 8) PB0 14|    |15  PB1 (D 9) PWM
 //                  +----+
-</code></pre>
-<p>Note that PROGMEM is a keyword from avr-libc to declare a variable that should
-live in the flash memory.</p>
-<p>Essentially this is walking through an array and finding if the pin is linked
-to port PB (2), PC (3), or PD (4).</p>
+</code></pre><p>Note that PROGMEM is a keyword from avr-libc to declare a variable that should live in the flash memory.</p>
+<p>Essentially this is walking through an array and finding if the pin is linked to port PB (2), PC (3), or PD (4).</p>
 <h3>digitalPinToBitMask</h3>
 <pre><code class="language-c">#define digitalPinToBitMask(P) ( pgm_read_byte( digital_pin_to_bit_mask_PGM + (P) ) )
 
@@ -317,18 +273,12 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
 // from (avr code)
 #ifndef _BV(bit)
   // 2**(bit) - two to the power of bit
-  #define _BV(bit) (1 &lt;&lt; (bit))
+  #define _BV(bit) (1 << (bit))
 #endif
-</code></pre>
-<h3>Putting two and two together</h3>
-<p>You will notice that each port has a bit mask that corresponds to a particular
-pin, that is why we need those two mappings.</p>
-<p>For example, calling <code>pinMode(LED_BUILTIN, OUTPUT)</code>, same as <code>pinMode(13, 1)</code>
-will give us:</p>
-<ul>
-<li>bit == 0b00100000</li>
-<li>port == PB == 2</li>
-</ul>
+</code></pre><h3>Putting two and two together</h3>
+<p>You will notice that each port has a bit mask that corresponds to a particular pin, that is why we need those two mappings.</p>
+<p>For example, calling <code>pinMode(LED_BUILTIN, OUTPUT)</code>, same as <code>pinMode(13, 1)</code> will give us:</p>
+<ul><li>bit == 0b00100000</li><li>port == PB == 2</li></ul>
 <h3>portModeRegister</h3>
 <pre><code class="language-c">#define portModeRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_mode_PGM + (P))) )
 
@@ -336,9 +286,9 @@ will give us:</p>
 const uint16_t PROGMEM port_to_mode_PGM[] = {
   NOT_A_PORT,
   NOT_A_PORT,
-  (uint16_t) &amp;DDRB,
-  (uint16_t) &amp;DDRC,
-  (uint16_t) &amp;DDRD,
+  (uint16_t) &DDRB,
+  (uint16_t) &DDRC,
+  (uint16_t) &DDRD,
 };
 
 // from AVR
@@ -350,12 +300,8 @@ const uint16_t PROGMEM port_to_mode_PGM[] = {
 
 // from
 define __SFR_OFFSET 0x20
-</code></pre>
-<p>In this case we have the address of DDRB</p>
-<p>DDRB is the Data Direction register for port “B”. This means that if you set
-this register to 0xFF (by running DDRB |= 0xFF ), all ports or pins in the “B”
-I/O port act as outputs. If you set DDRB to 0x00 (it’s initialized to 0x00 by
-default), then ports or pins in the “B” I/O port act as inputs.</p>
+</code></pre><p>In this case we have the address of DDRB</p>
+<p>DDRB is the Data Direction register for port “B”. This means that if you set this register to 0xFF (by running DDRB |= 0xFF ), all ports or pins in the “B” I/O port act as outputs. If you set DDRB to 0x00 (it’s initialized to 0x00 by default), then ports or pins in the “B” I/O port act as inputs.</p>
 <h3>portOutputRegister</h3>
 <pre><code class="language-c">#define portOutputRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_output_PGM + (P))) )
 
@@ -363,51 +309,31 @@ default), then ports or pins in the “B” I/O port act as inputs.</p>
 const uint16_t PROGMEM port_to_output_PGM[] = {
   NOT_A_PORT,
   NOT_A_PORT,
-  (uint16_t) &amp;PORTB,
-  (uint16_t) &amp;PORTC,
-  (uint16_t) &amp;PORTD,
+  (uint16_t) &PORTB,
+  (uint16_t) &PORTC,
+  (uint16_t) &PORTD,
 };
-</code></pre>
-<p>In this case we have the address of PORTB, also defined by avr lib.</p>
+</code></pre><p>In this case we have the address of PORTB, also defined by avr lib.</p>
 <h3>INPUT mode</h3>
 <p>Now we have that:</p>
-<ul>
-<li>bit == 0b00100000</li>
-<li>port == PB == 2</li>
-<li>reg == &amp;DDRB (register for port B)</li>
-<li>port == &amp;PORTB</li>
-</ul>
+<ul><li>bit == 0b00100000</li><li>port == PB == 2</li><li>reg == &DDRB (register for port B)</li><li>port == &PORTB</li></ul>
 <p>The input routine is this:</p>
 <pre><code class="language-c">  if (mode == INPUT) {
     uint8_t oldSREG = SREG;
                 cli();
-    *reg &amp;= ~bit;
-    *out &amp;= ~bit;
+    *reg &= ~bit;
+    *out &= ~bit;
     SREG = oldSREG;
   }
-</code></pre>
-<p>The Status Register (SREG) contains various status flags that reflect the
-outcome of arithmetic and logic operations, as well as control flags for
-interrupt handling and other system-level operations.</p>
-<p>The older registers is kept so that it can be reset after the register value
-is updated.</p>
-<p><code>cli();</code>: This macro is used to disable interrupts. When cli() is called, it
-clears the global interrupt flag (the I-bit) in the Status Register (SREG),
-which effectively disables interrupts.</p>
-<p>While temporarily disabling interrupts to ensure atomicity. Disabling
-interrupts prevents interrupt service routines from being executed while the
-bits in the registers are being manipulated, which helps maintain data
-integrity in certain scenarios, particularly in multi-threaded or
-interrupt-driven environments.</p>
+</code></pre><p>The Status Register (SREG) contains various status flags that reflect the outcome of arithmetic and logic operations, as well as control flags for interrupt handling and other system-level operations.</p>
+<p>The older registers is kept so that it can be reset after the register value is updated.</p>
+<p><code>cli();</code>: This macro is used to disable interrupts. When cli() is called, it clears the global interrupt flag (the I-bit) in the Status Register (SREG), which effectively disables interrupts.</p>
+<p>While temporarily disabling interrupts to ensure atomicity. Disabling interrupts prevents interrupt service routines from being executed while the bits in the registers are being manipulated, which helps maintain data integrity in certain scenarios, particularly in multi-threaded or interrupt-driven environments.</p>
 <p>This is a possible reference for cli:</p>
-<pre><code class="language-c">#define cli() __asm__ __volatile__ (&quot;cli&quot; ::: &quot;memory&quot;)
-</code></pre>
-<p>I am not sure why interruptions aren't re-enabled via <code>sei()</code> later on the
-function.</p>
+<pre><code class="language-c">#define cli() __asm__ __volatile__ ("cli" ::: "memory")
+</code></pre><p>I am not sure why interruptions aren't re-enabled via <code>sei()</code> later on the function.</p>
 <h2>Conclusion</h2>
-<p>In a nutshell, this is all the code does.
-It's setting the value of the DDRB register for port B with the bitmask for
-the particular pin and setting it as output or output.</p>
+<p>In a nutshell, this is all the code does. It's setting the value of the DDRB register for port B with the bitmask for the particular pin and setting it as output or output.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

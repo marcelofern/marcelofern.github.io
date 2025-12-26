@@ -61,9 +61,8 @@
 <body>
 <p>February 28, 2024</p>
 <h2>The problem</h2>
-<p>When Django queries are evaluated, they cache the whole result in the QuerySet
-object. For example:</p>
-<pre><code class="language-python">qs = Account.objects.only(&quot;id&quot;, &quot;created_at&quot;, &quot;number&quot;)[:10]
+<p>When Django queries are evaluated, they cache the whole result in the QuerySet object. For example:</p>
+<pre><code class="language-python">qs = Account.objects.only("id", "created_at", "number")[:10]
 assert qs._result_cache is None
 
 result = list(qs)
@@ -74,17 +73,14 @@ result_again = list(qs)
 
 # This is where the result is stored.
 qs._result_cache
-</code></pre>
-<p>Triggering the following query</p>
-<pre><code class="language-sql">SELECT &quot;account&quot;.&quot;id&quot;,
-       &quot;account&quot;.&quot;created_at&quot;
-       &quot;account&quot;.&quot;number&quot;
-  FROM &quot;account&quot;
- ORDER BY &quot;accounts_account&quot;.&quot;created_at&quot; DESC
+</code></pre><p>Triggering the following query</p>
+<pre><code class="language-sql">SELECT "account"."id",
+       "account"."created_at"
+       "account"."number"
+  FROM "account"
+ ORDER BY "accounts_account"."created_at" DESC
  LIMIT 10
-</code></pre>
-<p>This is fine if your query is not returning an extremely high number of
-objects.</p>
+</code></pre><p>This is fine if your query is not returning an extremely high number of objects.</p>
 <h2>Verifying memory use of querysets</h2>
 <pre><code class="language-python"># use pympler because sys.asizeof doesn't follow references memory use!
 from pympler import asizeof
@@ -95,19 +91,15 @@ asizeof.asizeof(ten_accounts)
 
 # or fancy results
 print(asizeof.asized(ten_accounts, detail=1).format())
-</code></pre>
-<h2>Using iterator</h2>
-<p>Iterator can help us reduce the memory overhead of queries as they only
-pull data from the database as needed.</p>
+</code></pre><h2>Using iterator</h2>
+<p>Iterator can help us reduce the memory overhead of queries as they only pull data from the database as needed.</p>
 <pre><code class="language-python">from pympler import asizeof
 
 qs = Account.objects.iterator(chunk_size=2)
 for i in qs:
     print(asizeof.asizeof(qs))
-</code></pre>
-<h2>Caveats</h2>
-<p>If you use an iterator in a transaction, it will hold locks until all the
-Python code is processed.</p>
+</code></pre><h2>Caveats</h2>
+<p>If you use an iterator in a transaction, it will hold locks until all the Python code is processed.</p>
 <p>Run this in one shell:</p>
 <pre><code class="language-python">import time
 from django.db import transaction
@@ -116,19 +108,17 @@ from django.db import transaction
 with transaction.atomic():
     for account in Account.objects.iterator():
         time.sleep(1)
-</code></pre>
-<p>And this in another:</p>
+</code></pre><p>And this in another:</p>
 <pre><code class="language-python">from django.db import connection
 
 with connection.cursor() as cursor:
     cursor.execute(
-        &quot;&quot;&quot;
+        """
         LOCK TABLE accounts_account IN ACCESS EXCLUSIVE MODE;
         SELECT pg_sleep(1);
-        &quot;&quot;&quot;,
+        """,
     )
-</code></pre>
-<p>You will be locked. But this is true if you are not using <code>iterator()</code> as well.</p>
+</code></pre><p>You will be locked. But this is true if you are not using <code>iterator()</code> as well.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

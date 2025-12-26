@@ -59,11 +59,9 @@
   <![endif]-->
 </head>
 <body>
-<h1>Exercise 1.6</h1>
-<h2>Pre-exercise theory</h2>
-<p>First of all, this question is based on the procedures <code>good-enough?</code>,
-<code>improve</code>, <code>guess</code>, <code>improve</code>, and <code>sqrt-iter</code> that have just been
-written in the section prior to the exercise.</p>
+<h1>Exercise <ol><li>66</h1>
+<h2>P Prree--eexxeerrcciissee  tthheeoorryy</h2>
+ First of all, this question is based on the procedures <code>good-enough?</code>,<code>improve</code> , <code>guess</code>, <code>improve</code>, and <code>sqrt-iter</code> that have just been written in the section prior to the exercise.</li></ol>
 <p>These procedures are layed out below:</p>
 <pre><code class="language-scm">(define (average x y)
         (/ (+ x y) 2)
@@ -78,7 +76,7 @@ written in the section prior to the exercise.</p>
 )
 
 (define (good-enough? guess x)
-        (&lt; (abs (- (square guess) x)) 0.001)
+        (< (abs (- (square guess) x)) 0.001)
 )
 
 (define (sqrt-iter guess x)
@@ -91,30 +89,21 @@ written in the section prior to the exercise.</p>
 (define (sqrt x)
         (sqrt-iter 1.0 x)
 )
-</code></pre>
-<h2>Question</h2>
-<blockquote>
-<p>Alyssa P. Hacker doesn't see why <code>if</code> needs to be provided as a special form.
-&quot;Why can't I just define it as an ordinary procedure in terms of <code>cond</code>?&quot; she
-asks. Alyssa's friend Eva Lu Ator claims this can indeed be done, and she
-defines a new version of <code>if</code>:</p>
-</blockquote>
+</code></pre><h2>Question</h2>
+<blockquote>Alyssa P. Hacker doesn't see why `if` needs to be provided as a special form.</blockquote>
+<blockquote>"Why can't I just define it as an ordinary procedure in terms of `cond`?" she</blockquote>
+<blockquote>asks. Alyssa's friend Eva Lu Ator claims this can indeed be done, and she</blockquote>
+<blockquote>defines a new version of `if`:</blockquote>
 <pre><code class="language-scm">(define (new-if predicate then-clause else-clause)
         (cond (predicate then-clause) (else else-clause))
 )
-</code></pre>
-<blockquote>
-<p>Eva demonstrates the program for Alyssa:</p>
-</blockquote>
+</code></pre><blockquote>Eva demonstrates the program for Alyssa:</blockquote>
 <pre><code class="language-scm">(new-if (= 2 3) 0 5)
 ; 5
 
 (new-if (= 1 1) 0 5)
 ; 0
-</code></pre>
-<blockquote>
-<p>Delighted, Alyssa uses new-if to rewrite the square-root program:</p>
-</blockquote>
+</code></pre><blockquote>Delighted, Alyssa uses new-if to rewrite the square-root program:</blockquote>
 <pre><code class="language-scm">(define (sqrt-iter guess x)
         (new-if (good-enough? guess x)
                 guess
@@ -123,19 +112,12 @@ defines a new version of <code>if</code>:</p>
                 )
         )
 )
-</code></pre>
-<h2>Answer</h2>
-<p>If one tries to run the program above with that alteration, it will never
-resolve as it will turn into an infinite loop.</p>
-<p>The <code>else-clause</code> includes a recursion to the function itself, and the Scheme
-interpreter can't deal with recursions in this way as shown in exercise 1.5.</p>
-<p>With the <code>new-if</code> function being a procedure, the interpreter will try to
-evaluate both arguments before applying the reduction due to the
-applicative-order evaluation nature of the interpreter.</p>
-<p>The <code>if</code> conditional is different. It only evaluates the predicate and <em>then</em>
-it evaluates which condition needs to run next.</p>
-<p>Essentially, it is not possible to mimic the <code>cond</code> and <code>if</code> operators because
-they do not follow applicative-order evaluation.</p>
+</code></pre><h2>Answer</h2>
+<p>If one tries to run the program above with that alteration, it will never resolve as it will turn into an infinite loop.</p>
+<p>The <code>else-clause</code> includes a recursion to the function itself, and the Scheme interpreter can't deal with recursions in this way as shown in exercise 1.5.</p>
+<p>With the <code>new-if</code> function being a procedure, the interpreter will try to evaluate both arguments before applying the reduction due to the applicative-order evaluation nature of the interpreter.</p>
+<p>The <code>if</code> conditional is different. It only evaluates the predicate and _then_ it evaluates which condition needs to run next.</p>
+<p>Essentially, it is not possible to mimic the <code>cond</code> and <code>if</code> operators because they do not follow applicative-order evaluation.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

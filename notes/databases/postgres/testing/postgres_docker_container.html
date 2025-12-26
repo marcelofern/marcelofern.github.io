@@ -60,9 +60,8 @@
 </head>
 <body>
 <h1>Postgres Docker Container</h1>
-<pre><code>Created at: 2024-10-22
-</code></pre>
-<p>Here is a command for running a throw-away postgres container:</p>
+<pre><code class="language-">Created at: 2024-10-22
+</code></pre><p>Here is a command for running a throw-away postgres container:</p>
 <pre><code class="language-sh">HOST_PORT=5400
 VERSION=15
 PASSWORD=postgres
@@ -81,17 +80,10 @@ docker run \
     -v ${VOLUME_NAME}:/var/lib/postgresql/data \
     --shm-size=4g \
     postgres:$VERSION
-</code></pre>
-<ul>
-<li>I always need to pick a different port so that my test container doesn't
-overlap with whatever Postgres container I am running for work.</li>
-<li>Make sure to add a generous shm size otherwise your container might run out
-of space if you are storing a lot of data there.</li>
-</ul>
+</code></pre><ul><li>I always need to pick a different port so that my test container doesn't overlap with whatever Postgres container I am running for work.</li><li>Make sure to add a generous shm size otherwise your container might run out of space if you are storing a lot of data there.</li></ul>
 <p>To stop and remove everything:</p>
 <pre><code class="language-sh">docker stop $CONTAINER_NAME
 docker rm -v $CONTAINER_NAME
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

@@ -60,12 +60,10 @@
 </head>
 <body>
 <h1>Updating JSONB columns</h1>
-<pre><code>Created at: 2025-08-17
-</code></pre>
-<p>Postgres provides a helpful function to update a value in a jsonb column:</p>
-<pre><code>jsonb_set ( target jsonb, path text[], new_value jsonb [, create_if_missing boolean ] ) → jsonb
-</code></pre>
-<p><a href="https://www.postgresql.org/docs/17/functions-json.html">source</a></p>
+<pre><code class="language-">Created at: 2025-08-17
+</code></pre><p>Postgres provides a helpful function to update a value in a jsonb column:</p>
+<pre><code class="language-">jsonb_set ( target jsonb, path text[], new_value jsonb [, create_if_missing boolean ] ) → jsonb
+</code></pre><p><a href="https://www.postgresql.org/docs/17/functions-json.html">source</a></p>
 <h2>Example (no nested json fields)</h2>
 <pre><code class="language-sql">DROP TABLE IF EXISTS foo;
 CREATE TABLE foo (
@@ -74,36 +72,35 @@ CREATE TABLE foo (
 );
 INSERT INTO foo (bar) VALUES
   (
-    '{&quot;hello&quot;: &quot;world&quot;}'
+    '{"hello": "world"}'
   ),
   (
-    '{&quot;hello&quot;: &quot;friends&quot;}'
+    '{"hello": "friends"}'
   )
 ;
 
 SELECT * FROM foo;
 --  id |        bar
 -- ----+--------------------
---   1 | {&quot;hello&quot;: &quot;world&quot;}
---   2 | {&quot;world&quot;: &quot;hello&quot;}
+--   1 | {"hello": "world"}
+--   2 | {"world": "hello"}
 -- (2 rows)
 
 UPDATE
   foo
 SET
-  bar = jsonb_set(bar, '{hello}', '&quot;folks&quot;', false)
+  bar = jsonb_set(bar, '{hello}', '"folks"', false)
 WHERE
-  bar-&gt;&gt;'hello' = 'world'
+  bar->>'hello' = 'world'
 ;
 
 SELECT * FROM foo;
 
 --  id |         bar
 -- ----+----------------------
---   1 | {&quot;hello&quot;: &quot;folks&quot;}
---   2 | {&quot;hello&quot;: &quot;friends&quot;}
-</code></pre>
-<h2>Example (nested json fields)</h2>
+--   1 | {"hello": "folks"}
+--   2 | {"hello": "friends"}
+</code></pre><h2>Example (nested json fields)</h2>
 <pre><code class="language-sql">DROP TABLE IF EXISTS foo;
 CREATE TABLE foo (
   id SERIAL PRIMARY KEY,
@@ -111,34 +108,33 @@ CREATE TABLE foo (
 );
 INSERT INTO foo (bar) VALUES
   (
-    '{&quot;foo&quot;: {&quot;bar&quot; : &quot;buzz&quot;}}'
+    '{"foo": {"bar" : "buzz"}}'
   ),
   (
-    '{&quot;buzz&quot;: {&quot;bar&quot;: &quot;foo&quot;}}'
+    '{"buzz": {"bar": "foo"}}'
   )
 ;
 
 SELECT * FROM foo;
 --  id |           bar
 -- ----+--------------------------
---   1 | {&quot;foo&quot;: {&quot;bar&quot;: &quot;buzz&quot;}}
---   2 | {&quot;buzz&quot;: {&quot;bar&quot;: &quot;foo&quot;}}
+--   1 | {"foo": {"bar": "buzz"}}
+--   2 | {"buzz": {"bar": "foo"}}
 
 UPDATE
   foo
 SET
-  bar = jsonb_set(bar, '{foo,bar}', '&quot;buzzbar&quot;', false)
+  bar = jsonb_set(bar, '{foo,bar}', '"buzzbar"', false)
 WHERE
-  bar-&gt;'foo'-&gt;&gt;'bar' = 'buzz'
+  bar->'foo'->>'bar' = 'buzz'
 ;
 
 SELECT * FROM foo;
 
 --  id |             bar
 -- ----+-----------------------------
---   2 | {&quot;buzz&quot;: {&quot;bar&quot;: &quot;foo&quot;}}
---   1 | {&quot;foo&quot;: {&quot;bar&quot;: &quot;buzzbar&quot;}}
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+--   2 | {"buzz": {"bar": "foo"}}
+--   1 | {"foo": {"bar": "buzzbar"}}
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

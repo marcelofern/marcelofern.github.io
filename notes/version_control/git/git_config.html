@@ -60,14 +60,12 @@
 </head>
 <body>
 <h1>git config</h1>
-<pre><code>Created at: 2025-03-08
-</code></pre>
-<p>A few notes on having better settings for git.</p>
+<pre><code class="language-">Created at: 2025-03-08
+</code></pre><p>A few notes on having better settings for git.</p>
 <h2>Listing Branches</h2>
 <p>The default way sorting branches for display via <code>git branch</code> is alphanumeric.</p>
 <pre><code class="language-sh">git config --global branch.sort -committerdate
-</code></pre>
-<h2>Listing Tags</h2>
+</code></pre><h2>Listing Tags</h2>
 <p>Listing semver tags using alphanumeric ordering can be messy. For example:</p>
 <pre><code class="language-sh"># 101 shouldn't come after 1000
 $ git tag
@@ -76,77 +74,46 @@ nightly/0.5.1000
 nightly/0.5.1001
 nightly/0.5.101
 nightly/0.5.1010
-</code></pre>
-<pre><code class="language-sh">git config --global tag.sort version:refname
-</code></pre>
-<h2>Pick a Default Branch</h2>
-<p>It doesn't need to be <code>main</code>, but just pick one so that git won't display the
-annoying message:</p>
-<pre><code>hint: Using 'master' as the name for the initial branch. This default branch name
+</code></pre><pre><code class="language-sh">git config --global tag.sort version:refname
+</code></pre><h2>Pick a Default Branch</h2>
+<p>It doesn't need to be <code>main</code>, but just pick one so that git won't display the annoying message:</p>
+<pre><code class="language-">hint: Using 'master' as the name for the initial branch. This default branch name
 hint: is subject to change. To configure the initial branch name to use in all
 hint: of your new repositories, which will suppress this warning, call:
 hint:
-hint:   git config --global init.defaultBranch &lt;name&gt;
+hint:   git config --global init.defaultBranch <name>
 hint:
 hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
 hint: 'development'. The just-created branch can be renamed via this command:
-</code></pre>
-<pre><code class="language-sh">git config --global init.defaultBranch main
-</code></pre>
-<h2>Update The Diff Algorithm</h2>
-<p>By default git uses the &quot;myers&quot; algorithm. But there are better alternatives.
-The &quot;histogram&quot; algorithm is often a better choice.</p>
+</code></pre><pre><code class="language-sh">git config --global init.defaultBranch main
+</code></pre><h2>Update The Diff Algorithm</h2>
+<p>By default git uses the "myers" algorithm. But there are better alternatives. The "histogram" algorithm is often a better choice.</p>
 <pre><code class="language-sh">git config --global diff.algorithm histogram
-</code></pre>
-<h2>Make the diff output for moved code better</h2>
-<p>When moving code from one place to another, the default is to display the code
-as added. But you can colour-code it so that moved code appears different than
-new code. For that, you use colorMoved</p>
-<p><code>diff.colorMoved</code>: If set to either a valid <mode> or a true value, moved lines
-in a diff are colored differently. For details of valid modes see --color-moved
-in git-diff(1). If simply set to true the default color mode will be used. When
-set to false, moved lines are not colored.</p>
+</code></pre><h2>Make the diff output for moved code better</h2>
+<p>When moving code from one place to another, the default is to display the code as added. But you can colour-code it so that moved code appears different than new code. For that, you use colorMoved</p>
+<p><code>diff.colorMoved</code>: If set to either a valid <mode> or a true value, moved lines in a diff are colored differently. For details of valid modes see --color-moved in git-diff(1). If simply set to true the default color mode will be used. When set to false, moved lines are not colored.</p>
 <pre><code class="language-sh">git config --global diff.colorMoved plain
-</code></pre>
-<p><code>plain</code>: Any line that is added in one location and was removed in another
-location will be colored with <code>color.diff.newMoved</code>. Similarly
-<code>color.diff.oldMoved</code> will be used for removed lines that are added somewhere
-else in the diff. This mode picks up any moved line, but it is not very useful
-in a review to determine if a block of code was moved without permutation.</p>
+</code></pre><p><code>plain</code>: Any line that is added in one location and was removed in another location will be colored with <code>color.diff.newMoved</code>. Similarly <code>color.diff.oldMoved</code> will be used for removed lines that are added somewhere else in the diff. This mode picks up any moved line, but it is not very useful in a review to determine if a block of code was moved without permutation.</p>
 <h2>Better diffs with file renames</h2>
-<p><code>diff.renames</code>: Whether and how Git detects renames. If set to false, rename
-detection is disabled. If set to true, basic rename detection is enabled. If
-set to copies or copy, Git will detect copies, as well. Defaults to true. Note
-that this affects only git diff Porcelain like git-diff(1) and git-log(1), and
-not lower level commands such as git-diff-files(1).</p>
+<p><code>diff.renames</code>: Whether and how Git detects renames. If set to false, rename detection is disabled. If set to true, basic rename detection is enabled. If set to copies or copy, Git will detect copies, as well. Defaults to true. Note that this affects only git diff Porcelain like git-diff(1) and git-log(1), and not lower level commands such as git-diff-files(1).</p>
 <pre><code class="language-sh">git config --global diff.renames true
-</code></pre>
-<h2>Better diff headers</h2>
+</code></pre><h2>Better diff headers</h2>
 <pre><code class="language-sh">git config --global diff.mnemonicPrefix true
-</code></pre>
-<p>Instead of showing <code>a/ b/</code> in the changes header, it shows <code>i/ w/</code> where &quot;i&quot;
-is the local index, and &quot;w&quot; is the work tree.</p>
+</code></pre><p>Instead of showing <code>a/ b/</code> in the changes header, it shows <code>i/ w/</code> where "i" is the local index, and "w" is the work tree.</p>
 <h2>Better push settings</h2>
 <pre><code class="language-sh"># When pushing, push to the current branch with the same name on the remote.
 git config --global push.default simple
 
 # If the branch trying to be pushed to doesn't exist in the remote, create it.
 git config --global push.autoSetupRemote true
-</code></pre>
-<h2>Better &quot;typo&quot; correction</h2>
-<p>If you typed the wrong git command, git may try to correct it for you by asking
-you to prompt <code>Y/n</code>:</p>
+</code></pre><h2>Better "typo" correction</h2>
+<p>If you typed the wrong git command, git may try to correct it for you by asking you to prompt <code>Y/n</code>:</p>
 <pre><code class="language-sh">git config --global help.autocorrect prompt
-</code></pre>
-<h2>Better git commit tips</h2>
-<p>When running <code>git commit</code>, you usually see a &quot;commented out&quot; information about
-the files you are including and what they've changed. This change will also
-show you the &quot;diff&quot; in that window:</p>
+</code></pre><h2>Better git commit tips</h2>
+<p>When running <code>git commit</code>, you usually see a "commented out" information about the files you are including and what they've changed. This change will also show you the "diff" in that window:</p>
 <pre><code class="language-sh">git config --global commit.verbose true
-</code></pre>
-<h2>Outro</h2>
-<p>Readings:
-- <a href="https://blog.gitbutler.com/how-git-core-devs-configure-git/">how git core devs configure git</a></p>
+</code></pre><h2>Outro</h2>
+<p>Readings: - <a href="https://blog.gitbutler.com/how-git-core-devs-configure-git/">how git core devs configure git</a></p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

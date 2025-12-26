@@ -60,44 +60,37 @@
 </head>
 <body>
 <h1>Set Ordering</h1>
-<p>Python sets do not have an order.
-However, a developer may be confused by this:</p>
-<pre><code class="language-python">&gt;&gt;&gt; list({&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;})
+<p>Python sets do not have an order. However, a developer may be confused by this:</p>
+<pre><code class="language-python">>>> list({"1", "2", "3", "4"})
 ['2', '4', '1', '3']
 
 # Repeat the line above and get the same ordering:
-&gt;&gt;&gt; list({&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;})
+>>> list({"1", "2", "3", "4"})
 ['2', '4', '1', '3']
 
 # You can repeat forever and it will always have
 # The same ordering.
-</code></pre>
-<p><strong>Why does this happen?</strong></p>
-<p>The Python hashing algorithm relies on a seed value that is computed when the
-interpreter process starts.</p>
-<p>The hashing algorithm uses this initial seed to create the hashing function
-that will be used for the rest of the life-time of the python process.</p>
-<p>So in the example above, the ordering of the set-converted-list will always be
-the same, but as soon as a different process is initialised, the ordering of
-the result will likely be different:</p>
-<pre><code>$ python
+</code></pre><p><b>Why does this happen?</b></p>
+<p>The Python hashing algorithm relies on a seed value that is computed when the interpreter process starts.</p>
+<p>The hashing algorithm uses this initial seed to create the hashing function that will be used for the rest of the life-time of the python process.</p>
+<p>So in the example above, the ordering of the set-converted-list will always be the same, but as soon as a different process is initialised, the ordering of the result will likely be different:</p>
+<pre><code class="language-">$ python
 Python 3.12.3 (main, Apr 23 2024, 09:16:07) [GCC 13.2.1 20240417] on linux
-Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
-&gt;&gt;&gt; list({&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;})
+Type "help", "copyright", "credits" or "license" for more information.
+>>> list({"1", "2", "3", "4"})
 ['2', '4', '3', '1']
-&gt;&gt;&gt; exit()
+>>> exit()
 $ python
 Python 3.12.3 (main, Apr 23 2024, 09:16:07) [GCC 13.2.1 20240417] on linux
-Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
-&gt;&gt;&gt; list({&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;})
+Type "help", "copyright", "credits" or "license" for more information.
+>>> list({"1", "2", "3", "4"})
 ['4', '1', '2', '3']
-&gt;&gt;&gt; exit()
+>>> exit()
 $ python
 Python 3.12.3 (main, Apr 23 2024, 09:16:07) [GCC 13.2.1 20240417] on linux
-Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
-&gt;&gt;&gt; list({&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;})
+Type "help", "copyright", "credits" or "license" for more information.
+>>> list({"1", "2", "3", "4"})
 ['1', '4', '2', '3']
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

@@ -60,10 +60,8 @@
 </head>
 <body>
 <h1>NULLS NOT DISTINCT</h1>
-<pre><code>Created at: 2025-04-09
-</code></pre>
-<p>By default, NULL values are treated as distinct values. This means that when
-making comparisons, <code>NULL != NULL</code>. Instead, NULL is considered &quot;unkown&quot;.</p>
+<pre><code class="language-">Created at: 2025-04-09
+</code></pre><p>By default, NULL values are treated as distinct values. This means that when making comparisons, <code>NULL != NULL</code>. Instead, NULL is considered "unkown".</p>
 <p>This means that the index above won't do what you expect:</p>
 <pre><code class="language-sql">CREATE UNIQUE INDEX
   foo_idx
@@ -71,9 +69,7 @@ ON
   bar (my_column)
 WHERE
   my_column IS NULL;
-</code></pre>
-<p>You might have thought that &quot;there can be one row in the <code>bar</code> table where
-my_column is NULL&quot;, but that is not correct.</p>
+</code></pre><p>You might have thought that "there can be one row in the <code>bar</code> table where my_column is NULL", but that is not correct.</p>
 <h2>Constraints</h2>
 <p>The same is valid for constraints:</p>
 <pre><code class="language-sql">DROP TABLE IF EXISTS foo;
@@ -86,10 +82,8 @@ SELECT count(*) FROM foo WHERE val IS NOT NULL;
 
 -- This works
 ALTER TABLE foo ADD CONSTRAINT unique_val UNIQUE (val);
-</code></pre>
-<h2>Postgres 15</h2>
-<p>In Postgres 15+ the feature <code>NULLS NOT DISTINCT</code> is available when creating
-unique indexes. The correct way of creating the index above would be:</p>
+</code></pre><h2>Postgres 15</h2>
+<p>In Postgres 15+ the feature <code>NULLS NOT DISTINCT</code> is available when creating unique indexes. The correct way of creating the index above would be:</p>
 <pre><code class="language-sql">CREATE UNIQUE INDEX
   foo_idx
 ON
@@ -97,10 +91,8 @@ ON
 NULLS NOT DISTINCT
 WHERE
   my_column IS NULL;
-</code></pre>
-<h2>Older Versions</h2>
-<p>There is a workaround for older Postgres versions. You can use &quot;COALESCE&quot; to
-store an actual value in the index when the entry is set to NULL.</p>
+</code></pre><h2>Older Versions</h2>
+<p>There is a workaround for older Postgres versions. You can use "COALESCE" to store an actual value in the index when the entry is set to NULL.</p>
 <p>Supposing <code>my_column</code> is a time stamp:</p>
 <pre><code class="language-sql">CREATE UNIQUE INDEX
   foo_idx
@@ -108,11 +100,8 @@ ON
   bar (COALESCE(my_column, '1970-01-01 00:00:00'))
 WHERE
   my_column IS NULL;
-</code></pre>
-<p>Make sure to pick a sentinel value (in this case 1970-01-01 midnight) that no
-other entry in the table would likely obtain.</p>
-<p>It looks funky, but remember that this is the value stored in the index; the
-table still stores the NULL value against that column.</p>
+</code></pre><p>Make sure to pick a sentinel value (in this case 1970-01-01 midnight) that no other entry in the table would likely obtain.</p>
+<p>It looks funky, but remember that this is the value stored in the index; the table still stores the NULL value against that column.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

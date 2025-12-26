@@ -60,38 +60,20 @@
 </head>
 <body>
 <h1>Profiling Postgres On Mac</h1>
-<pre><code>Created at: 2024-10-24
-</code></pre>
-<p>This post is about profiling Postgres <strong>on Mac</strong>. The profiling tools used here
-are not OS agnostic. Alternatives for Linux and BSD exist. I have written a
-separated note for Linux, so check that out if you are interested.</p>
+<pre><code class="language-">Created at: 2024-10-24
+</code></pre><p>This post is about profiling Postgres <b>on Mac</b>. The profiling tools used here are not OS agnostic. Alternatives for Linux and BSD exist. I have written a separated note for Linux, so check that out if you are interested.</p>
 <p>The main goal is to check what happens when a Postgres query is triggered.</p>
 <h2>Building Postgres From Source</h2>
-<p>Follow my note called &quot;Building From Source&quot;.</p>
+<p>Follow my note called "Building From Source".</p>
 <h2>Profiling with Instruments</h2>
-<p>&quot;Instruments&quot; is an application that is part of the macos XCode platform (now
-an app).</p>
+<p>"Instruments" is an application that is part of the macos XCode platform (now an app).</p>
 <p>Instruments let's you profile all sorts of different things:</p>
-<ul>
-<li>Memory allocations</li>
-<li>CPU profiling</li>
-<li>Time-based sampling</li>
-<li>Activity Monitor</li>
-<li>etc...</li>
-</ul>
+<ul><li>Memory allocations</li><li>CPU profiling</li><li>Time-based sampling</li><li>Activity Monitor</li><li>etc...</li></ul>
 <h2>Time Profiler</h2>
-<p>This profiler is very similar to the Linux <code>perf</code> program. It let's you track
-which parts of an application have run and for how long. Note that it uses
-sampling so not all bits that have run will necessarily have been sampled.</p>
-<p>By default Instruments will try to profile all the process running in your
-machine, and you don't want that. You can &quot;click&quot; at the top of the navigation
-bar at the top, that shows your Mac device name, and select which running
-process you want to profile.</p>
+<p>This profiler is very similar to the Linux <code>perf</code> program. It let's you track which parts of an application have run and for how long. Note that it uses sampling so not all bits that have run will necessarily have been sampled.</p>
+<p>By default Instruments will try to profile all the process running in your machine, and you don't want that. You can "click" at the top of the navigation bar at the top, that shows your Mac device name, and select which running process you want to profile.</p>
 <p>The configurations available for selection are self-explanatory, but I use:</p>
-<ul>
-<li>Recording Mode: deferred.</li>
-<li>Time Profile: High frequency.</li>
-</ul>
+<ul><li>Recording Mode: deferred.</li><li>Time Profile: High frequency.</li></ul>
 <h2>Example</h2>
 <p>What happens when we are dropping a unique constraint in Postgres?</p>
 <pre><code class="language-sql">-- Table with a single integer field.
@@ -119,21 +101,18 @@ SELECT generate_series(200001, 290001);
 -- Make the dead tuples
 UPDATE example_table
 SET int_field = int_field + 10000000
-WHERE int_field &gt; 200000;
+WHERE int_field > 200000;
 
 -- Check number of dead rows, it should be about 90,000
 SELECT n_dead_tup FROM pg_stat_user_tables WHERE relname = 'example_table';
 
 -- Print the process id.
 select pg_backend_pid();
-</code></pre>
-<p>Now go back to the Instruments interface, and try to find the terminal
-executing the process id printed by the <code>pg_backend_pid</code> commmand.</p>
-<p>Hit the &quot;record&quot; and perform this query:</p>
+</code></pre><p>Now go back to the Instruments interface, and try to find the terminal executing the process id printed by the <code>pg_backend_pid</code> commmand.</p>
+<p>Hit the "record" and perform this query:</p>
 <pre><code class="language-sql">ALTER TABLE example_table
 DROP CONSTRAINT unique_int_field;
-</code></pre>
-<p><img src="instruments_macos_profile.png" alt="instruments_macos_profile"></p>
+</code></pre><p><img alt="instruments_macos_profile" src="instruments_macos_profile.png"></p>
 <pre><code class="language-sh">5.60 ms  100.0%	0 s	 postgres (7414)
 5.60 ms  100.0%	0 s	  Main Thread  0xe633
 5.60 ms  100.0%	0 s	   start
@@ -177,9 +156,7 @@ DROP CONSTRAINT unique_int_field;
 200.00 µs   3.6%	0 s	          ReadCommand
 100.00 µs   1.8%	0 s	          AbortCurrentTransaction
 100.00 µs   1.8%	0 s	          EmitErrorReport
-</code></pre>
-<p>You can change at the top of the tab to show a flamegraph instead of a call
-chain.</p>
+</code></pre><p>You can change at the top of the tab to show a flamegraph instead of a call chain.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

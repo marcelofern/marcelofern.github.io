@@ -61,33 +61,17 @@
 <body>
 <h1>DROP INDEX CONCURRENTLY</h1>
 <p>The drop index concurrently happens on stages.</p>
-<p><a href="http://web.archive.org/web/20240822023238/https://postgrespro.com/list/thread-id/1788181">The original suggestion for implementation</a>
-raised the following:</p>
-<blockquote>
-<ol>
-<li>set an index as &quot;invalid&quot;, to ensure no backend will use it in planning.</li>
-</ol>
-</blockquote>
-<blockquote>
-<ol start="2">
-<li>wait for the xmin horizon to advance to ensure no open snapshots that may
-not see the invalidation of the index are gone (is there a way to tighten
-that up? although even this conservative version would be 80-90% of the value
-for us...).</li>
-</ol>
-</blockquote>
-<blockquote>
-<ol start="3">
-<li>then use performDeletions without taking a lock on the parent table,
-similar to what's in tablecmds.c already.</li>
-</ol>
-</blockquote>
-<blockquote>
-<p>A DROP INDEX CONCURRENTLY may leave an invalid index if aborted instead of
-waiting for statement confirmation, just like CREATE INDEX CONCURRENTLY.</p>
-</blockquote>
-<p>The following is a sandbox that will touch on the final note above regarding
-leaving the index as INVALID when the DROP INDEX operation is aborted.</p>
+<p><a href="http://web.archive.org/web/20240822023238/https://postgrespro.com/list/thread-id/1788181">The original suggestion for implementation</a> raised the following:</p>
+<blockquote>1) set an index as "invalid", to ensure no backend will use it in planning.</blockquote>
+<blockquote>2) wait for the xmin horizon to advance to ensure no open snapshots that may</blockquote>
+<blockquote>not see the invalidation of the index are gone (is there a way to tighten</blockquote>
+<blockquote>that up? although even this conservative version would be 80-90% of the value</blockquote>
+<blockquote>for us...).</blockquote>
+<blockquote>3) then use performDeletions without taking a lock on the parent table,</blockquote>
+<blockquote>similar to what's in tablecmds.c already.</blockquote>
+<blockquote>A DROP INDEX CONCURRENTLY may leave an invalid index if aborted instead of</blockquote>
+<blockquote>waiting for statement confirmation, just like CREATE INDEX CONCURRENTLY.</blockquote>
+<p>The following is a sandbox that will touch on the final note above regarding leaving the index as INVALID when the DROP INDEX operation is aborted.</p>
 <pre><code class="language-sql">-- 1. Create a Test Database and Connect
 CREATE DATABASE test_db;
 \c test_db;
@@ -121,9 +105,7 @@ DROP INDEX CONCURRENTLY IF EXISTS test_index;
 
 -- 8. [SESSION 2] End the Transaction in the other session
 COMMIT;
-</code></pre>
-<p>This was the main patch provided in the original discussion that implemented
-the DROP INDEX CONCURRENTLY operation:</p>
+</code></pre><p>This was the main patch provided in the original discussion that implemented the DROP INDEX CONCURRENTLY operation:</p>
 <pre><code class="language-diff">+	 * Drop Index concurrently is similar in many ways to creating an
 +	 * index concurrently, so some actions are similar to DefineIndex()
 +	 */
@@ -132,7 +114,7 @@ the DROP INDEX CONCURRENTLY operation:</p>
 +		/*
 +		 * Mark index invalid by updating its pg_index entry
 +		 *
-+		 * Don't Assert(indexForm-&gt;indisvalid) because we may be trying to
++		 * Don't Assert(indexForm->indisvalid) because we may be trying to
 +		 * clear up after an error when trying to create an index which left
 +		 * the index invalid
 +		 */
@@ -141,13 +123,13 @@ the DROP INDEX CONCURRENTLY operation:</p>
 +		tuple = SearchSysCacheCopy1(INDEXRELID,
 +										 ObjectIdGetDatum(indexId));
 +		if (!HeapTupleIsValid(tuple))
-+			elog(ERROR, &quot;cache lookup failed for index %u&quot;, indexId);
++			elog(ERROR, "cache lookup failed for index %u", indexId);
 +		indexForm = (Form_pg_index) GETSTRUCT(tuple);
 +
-+		indexForm-&gt;indisvalid = false;	/* make unusable for queries */
-+		indexForm-&gt;indisready = false;	/* make invisible to changes */
++		indexForm->indisvalid = false;	/* make unusable for queries */
++		indexForm->indisready = false;	/* make invisible to changes */
 +
-+		simple_heap_update(indexRelation, &amp;tuple-&gt;t_self, tuple);
++		simple_heap_update(indexRelation, &tuple->t_self, tuple);
 +		CatalogUpdateIndexes(indexRelation, tuple);
 +
 +		heap_close(indexRelation, RowExclusiveLock);
@@ -160,11 +142,11 @@ the DROP INDEX CONCURRENTLY operation:</p>
 +		CacheInvalidateRelcache(userHeapRelation);
 +
 +		/* save lockrelid and locktag for below, then close but keep locks */
-+		heaprelid = userHeapRelation-&gt;rd_lockInfo.lockRelId;
++		heaprelid = userHeapRelation->rd_lockInfo.lockRelId;
 +		SET_LOCKTAG_RELATION(heaplocktag, heaprelid.dbId, heaprelid.relId);
 +		heap_close(userHeapRelation, NoLock);
 +
-+		indexrelid = userIndexRelation-&gt;rd_lockInfo.lockRelId;
++		indexrelid = userIndexRelation->rd_lockInfo.lockRelId;
 +		SET_LOCKTAG_RELATION(indexlocktag, indexrelid.dbId, indexrelid.relId);
 +		index_close(userIndexRelation, NoLock);
 +
@@ -184,8 +166,8 @@ the DROP INDEX CONCURRENTLY operation:</p>
 +		 * cannot block, even if someone else is waiting for access, because we
 +		 * already have the same lock within our transaction.
 +		 */
-+		LockRelationIdForSession(&amp;heaprelid, ShareUpdateExclusiveLock);
-+		LockRelationIdForSession(&amp;indexrelid, ShareUpdateExclusiveLock);
++		LockRelationIdForSession(&heaprelid, ShareUpdateExclusiveLock);
++		LockRelationIdForSession(&indexrelid, ShareUpdateExclusiveLock);
 +
 +		PopActiveSnapshot();
 +		CommitTransactionCommand();
@@ -210,7 +192,7 @@ the DROP INDEX CONCURRENTLY operation:</p>
 +		 * check for that.	Also, prepared xacts are not reported, which is fine
 +		 * since they certainly aren't going to do anything more.
 +		 */
-+		old_lockholders = GetLockConflicts(&amp;heaplocktag, AccessExclusiveLock);
++		old_lockholders = GetLockConflicts(&heaplocktag, AccessExclusiveLock);
 +
 +		while (VirtualTransactionIdIsValid(*old_lockholders))
 +		{
@@ -230,23 +212,22 @@ the DROP INDEX CONCURRENTLY operation:</p>
 +	}
 +
 +	/*
-     * All predicate locks on the index are about to be made invalid. Promote
-     * them to relation locks on the heap.
-     */
+ 	 * All predicate locks on the index are about to be made invalid. Promote
+ 	 * them to relation locks on the heap.
+ 	 */
 @@ -1378,6 +1496,15 @@ index_drop(Oid indexId)
-     * Close owning rel, but keep lock
-     */
-    heap_close(userHeapRelation, NoLock);
+ 	 * Close owning rel, but keep lock
+ 	 */
+ 	heap_close(userHeapRelation, NoLock);
 +
 +	/*
 +	 * Release the session locks before we go.
 +	 */
 +	if (concurrent)
 +	{
-+		UnlockRelationIdForSession(&amp;heaprelid, ShareUpdateExclusiveLock);
-+		UnlockRelationIdForSession(&amp;indexrelid, ShareUpdateExclusiveLock);
++		UnlockRelationIdForSession(&heaprelid, ShareUpdateExclusiveLock);
++		UnlockRelationIdForSession(&indexrelid, ShareUpdateExclusiveLock);
 +	}
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

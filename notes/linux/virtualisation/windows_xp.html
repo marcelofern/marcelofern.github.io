@@ -60,55 +60,34 @@
 </head>
 <body>
 <h1>Windows XP</h1>
-<pre><code>Created at: 2025-05-18
-</code></pre>
-<p>Microsoft does not offer Windows XP any more. You might have to find other ways
-of getting it. Through a physical CD or a web link (somewhere).</p>
+<pre><code class="language-">Created at: 2025-05-18
+</code></pre><p>Microsoft does not offer Windows XP any more. You might have to find other ways of getting it. Through a physical CD or a web link (somewhere).</p>
 <h2>VirtualBox Installation Options</h2>
-<p>Make sure to enable <strong>Guest Additions</strong> so that you can share folders.</p>
+<p>Make sure to enable <b>Guest Additions</b> so that you can share folders.</p>
 <p>Once the virtual machine is up, go to:</p>
-<ul>
-<li>Devices -&gt; &quot;Insert Guest Additions CD Image&quot;</li>
-</ul>
-<p>Then go to &quot;my computer&quot; and</p>
-<ul>
-<li>double click on the CD icons.</li>
-<li>also run the floppy disk.</li>
-</ul>
+<ul><li>Devices -> "Insert Guest Additions CD Image"</li></ul>
+<p>Then go to "my computer" and - double click on the CD icons. - also run the floppy disk.</p>
 <h2>Screen Adjusment</h2>
-<p>Use &quot;Auto-resize guest display&quot;.</p>
+<p>Use "Auto-resize guest display".</p>
 <h2>Adding A Shared Folder</h2>
-<p>Create a folder in your <strong>host</strong> that will be the shared folder. Like
-<code>mkdir ~/Documents/vm_shared</code>. Move the .exe there.</p>
+<p>Create a folder in your <b>host</b> that will be the shared folder. Like <code>mkdir ~/Documents/vm_shared</code>. Move the .exe there.</p>
 <p>Now in Virtualbox, in the windows XP window, go to:</p>
-<p>-&gt; Devices -&gt; Shared Folders</p>
+<ul><li>> Devices -> Shared Folders</li></ul>
 <p>Add that folder, make it auto-mount and permanent.</p>
-<blockquote>
-<p>In a Windows guest, shared folders are browseable and therefore visible in
-Windows Explorer. So, to attach the host's shared folder to your Windows
-guest, open Windows Explorer and look for it under &quot;My Networking Places&quot; -&gt;
-&quot;Entire Network&quot; -&gt; &quot;VirtualBox Shared Folders&quot;. By right-clicking on a
-shared folder and selecting &quot;Map network drive&quot; from the menu that pops up,
-you can assign a drive letter to that shared folder.</p>
-</blockquote>
-<p>But in windows XP, it will instead be at &quot;My Computer&quot;.
-You may need to reset the VM.</p>
+<blockquote>In a Windows guest, shared folders are browseable and therefore visible in</blockquote>
+<blockquote>Windows Explorer. So, to attach the host's shared folder to your Windows</blockquote>
+<blockquote>guest, open Windows Explorer and look for it under "My Networking Places" -></blockquote>
+<blockquote>"Entire Network" -> "VirtualBox Shared Folders". By right-clicking on a</blockquote>
+<blockquote>shared folder and selecting "Map network drive" from the menu that pops up,</blockquote>
+<blockquote>you can assign a drive letter to that shared folder.</blockquote>
+<p>But in windows XP, it will instead be at "My Computer". You may need to reset the VM.</p>
 <h2>Internet (in progress)</h2>
-<p>The default internet explorer is Microsfot Explorer, which isn't supported by
-a lot of websites. Latest Chrome and Firefox don't support windows XP.</p>
-<p>Download Firefox in the <strong>host</strong> machine by finding the
-latest version in the ftp server, for example:</p>
-<ul>
-<li>https://ftp.mozilla.org/pub/firefox/releases/138.0/win32/en-US/</li>
-</ul>
+<p>The default internet explorer is Microsfot Explorer, which isn't supported by a lot of websites. Latest Chrome and Firefox don't support windows XP.</p>
+<p>Download Firefox in the <b>host</b> machine by finding the latest version in the ftp server, for example:</p>
+<ul><li>https://ftp.mozilla.org/pub/firefox/releases/138.0/win32/en-US/</li></ul>
 <h2>Display</h2>
-<p>Drag the window to make it bigger, the VM will auto adjust. Else:
-Change the dimensions from inside Windows, in the control panel.</p>
+<p>Drag the window to make it bigger, the VM will auto adjust. Else: Change the dimensions from inside Windows, in the control panel.</p>
 <h2>Tips</h2>
-<ul>
-<li>When installing the virtual box, do not select more than 3GB memory as it
-won't work.</li>
-</ul>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<ul><li>When installing the virtual box, do not select more than 3GB memory as it won't work.</li></ul><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

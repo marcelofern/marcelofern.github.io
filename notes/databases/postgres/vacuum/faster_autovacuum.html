@@ -60,42 +60,34 @@
 </head>
 <body>
 <h1>Faster autovacuum</h1>
-<pre><code>Created at: 2025-04-30
-</code></pre>
-<p>In order to speed up autovacuum, you can disable <code>vacuum_index_cleanup</code>.</p>
+<pre><code class="language-">Created at: 2025-04-30
+</code></pre><p>In order to speed up autovacuum, you can disable <code>vacuum_index_cleanup</code>.</p>
 <pre><code class="language-sql">alter table foo set (vacuum_index_cleanup off);
-</code></pre>
-<h2>Index Cleanup</h2>
+</code></pre><h2>Index Cleanup</h2>
 <p>From the docs:</p>
-<blockquote>
-<p>Normally, VACUUM will skip index vacuuming when there are very few dead
-tuples in the table. The cost of processing all of the table's indexes is
-expected to greatly exceed the benefit of removing dead index tuples when
-this happens. This option can be used to force VACUUM to process indexes when
-there are more than zero dead tuples. The default is AUTO, which allows
-VACUUM to skip index vacuuming when appropriate. If INDEX_CLEANUP is set to
-ON, VACUUM will conservatively remove all dead tuples from indexes. This may
-be useful for backwards compatibility with earlier releases of PostgreSQL
-where this was the standard behavior.</p>
-</blockquote>
-<blockquote>
-<p>INDEX_CLEANUP can also be set to OFF to force VACUUM to always skip index
-vacuuming, even when there are many dead tuples in the table. This may be
-useful when it is necessary to make VACUUM run as quickly as possible to
-avoid imminent transaction ID wraparound (see Section 24.1.5). However, the
-wraparound failsafe mechanism controlled by vacuum_failsafe_age will
-generally trigger automatically to avoid transaction ID wraparound failure,
-and should be preferred. If index cleanup is not performed regularly,
-performance may suffer, because as the table is modified indexes will
-accumulate dead tuples and the table itself will accumulate dead line
-pointers that cannot be removed until index cleanup is completed.</p>
-</blockquote>
-<blockquote>
-<p>This option has no effect for tables that have no index and is ignored if the
-FULL option is used. It also has no effect on the transaction ID wraparound
-failsafe mechanism. When triggered it will skip index vacuuming, even when
-INDEX_CLEANUP is set to ON.</p>
-</blockquote>
+<blockquote>Normally, VACUUM will skip index vacuuming when there are very few dead</blockquote>
+<blockquote>tuples in the table. The cost of processing all of the table's indexes is</blockquote>
+<blockquote>expected to greatly exceed the benefit of removing dead index tuples when</blockquote>
+<blockquote>this happens. This option can be used to force VACUUM to process indexes when</blockquote>
+<blockquote>there are more than zero dead tuples. The default is AUTO, which allows</blockquote>
+<blockquote>VACUUM to skip index vacuuming when appropriate. If INDEX_CLEANUP is set to</blockquote>
+<blockquote>ON, VACUUM will conservatively remove all dead tuples from indexes. This may</blockquote>
+<blockquote>be useful for backwards compatibility with earlier releases of PostgreSQL</blockquote>
+<blockquote>where this was the standard behavior.</blockquote>
+<blockquote>INDEX_CLEANUP can also be set to OFF to force VACUUM to always skip index</blockquote>
+<blockquote>vacuuming, even when there are many dead tuples in the table. This may be</blockquote>
+<blockquote>useful when it is necessary to make VACUUM run as quickly as possible to</blockquote>
+<blockquote>avoid imminent transaction ID wraparound (see Section 24.1.5). However, the</blockquote>
+<blockquote>wraparound failsafe mechanism controlled by vacuum_failsafe_age will</blockquote>
+<blockquote>generally trigger automatically to avoid transaction ID wraparound failure,</blockquote>
+<blockquote>and should be preferred. If index cleanup is not performed regularly,</blockquote>
+<blockquote>performance may suffer, because as the table is modified indexes will</blockquote>
+<blockquote>accumulate dead tuples and the table itself will accumulate dead line</blockquote>
+<blockquote>pointers that cannot be removed until index cleanup is completed.</blockquote>
+<blockquote>This option has no effect for tables that have no index and is ignored if the</blockquote>
+<blockquote>FULL option is used. It also has no effect on the transaction ID wraparound</blockquote>
+<blockquote>failsafe mechanism. When triggered it will skip index vacuuming, even when</blockquote>
+<blockquote>INDEX_CLEANUP is set to ON.</blockquote>
 <h2>What to do after</h2>
 <p>You will need to <code>REINDEX</code> the indexes that weren't vacuumed.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>

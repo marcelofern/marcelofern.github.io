@@ -60,13 +60,11 @@
 </head>
 <body>
 <h1>Installing From Source</h1>
-<pre><code>Created at: 2025-11-01
-</code></pre>
-<p>This script clones the repository and installs the executable in
-<code>/usr/local/bin/ngspice</code>.</p>
+<pre><code class="language-">Created at: 2025-11-01
+</code></pre><p>This script clones the repository and installs the executable in <code>/usr/local/bin/ngspice</code>.</p>
 <pre><code class="language-sh"># Create tmp folder for the build
-DIR=&quot;/tmp/ngspice_build&quot;
-rm -rf $DIR &amp;&amp; mkdir $DIR &amp;&amp; cd $DIR
+DIR="/tmp/ngspice_build"
+rm -rf $DIR && mkdir $DIR && cd $DIR
 
 # Shadow-clone the repo in the specific commit
 git init
@@ -76,7 +74,6 @@ git reset --hard 600ff137961587503a3bd8247d79849b6a1db3f6
 
 # ngspice alreayd comes with an installation script
 sudo ./compile_linux.sh
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

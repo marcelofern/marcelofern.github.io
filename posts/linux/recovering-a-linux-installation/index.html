@@ -61,51 +61,32 @@
 <body>
 <p>January 08, 2023</p>
 <h2>The problem</h2>
-<p>Yesterday I was trying to play with a Windows VM. For that to work, I needed to
-pass a flag into the Linux kernel, as my 11th generation Intel processor had a
-little glitch that needed patching.</p>
-<p>I followed the Arch Linux wiki, and added the parameter to the grub
-initialisation, and... Of course, grub stopped working.</p>
-<p>Not only that, I couldn't get into my OS at all. So I had to go onto recovery
-mode.</p>
+<p>Yesterday I was trying to play with a Windows VM. For that to work, I needed to pass a flag into the Linux kernel, as my 11th generation Intel processor had a little glitch that needed patching.</p>
+<p>I followed the Arch Linux wiki, and added the parameter to the grub initialisation, and... Of course, grub stopped working.</p>
+<p>Not only that, I couldn't get into my OS at all. So I had to go onto recovery mode.</p>
 <h2>Getting into recovery mode</h2>
-<p>The first step is to put your Linux .iso in a flash drive. Let's assume you've
-done that already.</p>
+<p>The first step is to put your Linux .iso in a flash drive. Let's assume you've done that already.</p>
 <p>You'll boot your flash card system up, and the first thing you'll do is:</p>
 <pre><code class="language-sh">$ fdisk -l  # or lsblk
-</code></pre>
-<p>If you have a hard-drive like mine, you'll have a drive like <strong>/dev/nvmeXnY</strong>.
-Usually under that drive you have 3 partitions. One for <strong>/boot</strong>, another for
-<strong>/home</strong>, and a final one for <strong>/</strong> (root). But sometimes home and root
-partitions live under the same partition, so beware.</p>
-<p>You'll then need to mount that partition. In my case, I wanted to start with
-my joint home and root partition like this:</p>
+</code></pre><p>If you have a hard-drive like mine, you'll have a drive like <b>/dev/nvmeXnY</b>. Usually under that drive you have 3 partitions. One for <b>/boot</b>, another for <b>/home</b>, and a final one for <b>/</b> (root). But sometimes home and root partitions live under the same partition, so beware.</p>
+<p>You'll then need to mount that partition. In my case, I wanted to start with my joint home and root partition like this:</p>
 <pre><code class="language-sh">$ mount /dev/nvme0n1p2 /mnt
-</code></pre>
-<h2>Unknown filesystem type &quot;LVM2_member&quot;.</h2>
+</code></pre><h2>Unknown filesystem type "LVM2_member".</h2>
 <p>If you didn't see this error, go to the next section!</p>
-<blockquote>
-<p>unknown filesystem type &quot;LVM2_member&quot;.</p>
-</blockquote>
+<blockquote>unknown filesystem type "LVM2_member".</blockquote>
 <p>So I need to find what the name of the lv driver is mapped to:</p>
 <pre><code class="language-sh">$ lvdisplay
-</code></pre>
-<p>Now you have a name that looks something like <strong>/dev/lvm/lvroot</strong>. Let's mount
-that.</p>
+</code></pre><p>Now you have a name that looks something like <b>/dev/lvm/lvroot</b>. Let's mount that.</p>
 <pre><code class="language-sh">mount /dev/lvm/lvroot /mnt
-</code></pre>
-<h2>Unknown filesystem type 'crypto_LUKS'</h2>
+</code></pre><h2>Unknown filesystem type 'crypto_LUKS'</h2>
 <p>If you didn't see the below error, skip to the next section!</p>
-<blockquote>
-<p>unknown filesystem type 'crypto_LUKS'</p>
-</blockquote>
+<blockquote>unknown filesystem type 'crypto_LUKS'</blockquote>
 <p>Of course, my hard-drive is encrypted. So let's map the encrypted drive...</p>
 <pre><code class="language-sh"># If you had the error above (LVM2_member), it will be:
 $ cryptsetup luksOpen /dev/lvm/lvroot mydata
 # Otherwise it will be
 $ cryptsetup luksOpen /dev/nvme0n1p2 mydata
-</code></pre>
-<p>It will ask you for a password.</p>
+</code></pre><p>It will ask you for a password.</p>
 <h2>Mount your system</h2>
 <p>Now you can finally mount it:</p>
 <pre><code class="language-sh"># If you had the errors above it will be:
@@ -113,26 +94,19 @@ $ mount /dev/mapper/mydata /mnt
 
 # Otherwise you can mount directly:
 $ mount /dev/nvme0n1p2 /mnt
-</code></pre>
-<p>If you have a boot partition, mount that as well now:</p>
+</code></pre><p>If you have a boot partition, mount that as well now:</p>
 <pre><code class="language-sh">$ mount /dev/nvme0n1p1 /mnt/boot
-</code></pre>
-<p>(Optional) You might need to mount some other necessary stuff such as:</p>
-<pre><code class="language-sh"> for i in /sys /proc /run /dev; do sudo mount --rbind &quot;$i&quot; &quot;/mnt$i&quot;; done
-</code></pre>
-<h2>Get into the system</h2>
+</code></pre><p>(Optional) You might need to mount some other necessary stuff such as:</p>
+<pre><code class="language-sh"> for i in /sys /proc /run /dev; do sudo mount --rbind "$i" "/mnt$i"; done
+ </code></pre><h2>Get into the system</h2>
 <p>Now you can get into the system and debug it:</p>
 <pre><code class="language-sh">$ arch-chroot /mnt
-</code></pre>
-<p>Good luck!</p>
+</code></pre><p>Good luck!</p>
 <h2>Optional: Fixing Grub</h2>
-<p>I've broken grub for the first time today after 7 years of arch linux
-(2024-07-14), once a <code>yay</code> upgrade crashed midway through.</p>
+<p>I've broken grub for the first time today after 7 years of arch linux (2024-07-14), once a <code>yay</code> upgrade crashed midway through.</p>
 <pre><code class="language-sh"># call
 grub-mkconfig -o /boot/grub/grub.cfg
-</code></pre>
-<p>I wasn't able to go further than this given that recovering a luks
-encrypted hard drive via grub isn't something standard.</p>
+</code></pre><p>I wasn't able to go further than this given that recovering a luks encrypted hard drive via grub isn't something standard.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

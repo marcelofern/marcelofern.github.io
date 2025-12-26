@@ -61,25 +61,14 @@
 <body>
 <p>2024-04-26</p>
 <h2>Intro and important terms</h2>
-<ul>
-<li>The ATMega328p has 3 timers, all of them have PWM support, and they are named
-by a number: timer 0, timer 1, timer 2.</li>
-<li>Both timer 0 and 2 are 8 bit timers, only timer 1 is 16 bits.</li>
-<li>The counter value can be accessed via register <code>TCNTn</code> (n=0,1,2).</li>
-</ul>
+<ul><li>The ATMega328p has 3 timers, all of them have PWM support, and they are named by a number: timer 0, timer 1, timer 2.</li><li>Both timer 0 and 2 are 8 bit timers, only timer 1 is 16 bits.</li><li>The counter value can be accessed via register <code>TCNTn</code> (n=0,1,2).</li></ul>
 <h2>Timer/Counter 0</h2>
-<p>The following are details about operation mode of timer/counter 0.
-The are few differences between the timers, but most of the content below is
-generalisable.</p>
+<p>The following are details about operation mode of timer/counter 0. The are few differences between the timers, but most of the content below is generalisable.</p>
 <h3>Normal mode</h3>
-<p>In this mode, the counter always go up (incremental instead of decremental),
-and no counter clear is performed. The counter value is simply wrapped when it
-reach the maximum (255) back to zero.</p>
+<p>In this mode, the counter always go up (incremental instead of decremental), and no counter clear is performed. The counter value is simply wrapped when it reach the maximum (255) back to zero.</p>
 <p>This mode is set when the waveform generation mode value is WGM02:0 = 0.</p>
 <h3>Fast PWM mode</h3>
-<p>In this mode, a high frequency PWM waveform generation is available.
-The counter counts from BOTTOM to TOP then restarts from BOTTOM. TOP is defined
-as 0xFF when WGM2:0 = 3, and OCR0A when WGM2:0 = 7.</p>
+<p>In this mode, a high frequency PWM waveform generation is available. The counter counts from BOTTOM to TOP then restarts from BOTTOM. TOP is defined as 0xFF when WGM2:0 = 3, and OCR0A when WGM2:0 = 7.</p>
 <p>The PWM frequency for the output can be calculated by the following equation:</p>
 <p><code>f_pwm = f_clk / (N*256)</code></p>
 <p>For the 16bit timer this becomes:</p>
@@ -115,9 +104,9 @@ as 0xFF when WGM2:0 = 3, and OCR0A when WGM2:0 = 7.</p>
    *  OCR0A = (256*0.5) = 128.
    *  OCR0B = (256*0.3) = 77.
    */
-  DDRD |= (1 &lt;&lt; PD5) | (1 &lt;&lt; PD6);
-  TCCR0A |= (1 &lt;&lt; COM0A1) | (1 &lt;&lt; COM0B1) | (1 &lt;&lt; WGM01) | (1 &lt;&lt; WGM00);
-  TCCR0B |= (1 &lt;&lt; CS00);
+  DDRD |= (1 << PD5) | (1 << PD6);
+  TCCR0A |= (1 << COM0A1) | (1 << COM0B1) | (1 << WGM01) | (1 << WGM00);
+  TCCR0B |= (1 << CS00);
   OCR0A = (256 * 0.5);
   OCR0B = (256 * 0.3);
 }
@@ -149,10 +138,10 @@ void timer1_init() {
    *  OCR1A = (65536*0.5) = 32768.
    *  OCR1B = (65536*0.25) = 16384.
    */
-  DDRB |= (1 &lt;&lt; PB1) | (1 &lt;&lt; PB2);
-  TCCR1A |= (1 &lt;&lt; COM1A1) | (1 &lt;&lt; COM1B1) | (1 &lt;&lt; WGM12) | (1 &lt;&lt; WGM11) |
-            (1 &lt;&lt; WGM10);
-  TCCR1B |= (1 &lt;&lt; CS11);
+  DDRB |= (1 << PB1) | (1 << PB2);
+  TCCR1A |= (1 << COM1A1) | (1 << COM1B1) | (1 << WGM12) | (1 << WGM11) |
+            (1 << WGM10);
+  TCCR1B |= (1 << CS11);
   OCR1A = (uint16_t)(65535 * 0.5);
   OCR1B = (uint16_t)(65535 * 0.25);
 }
@@ -186,21 +175,15 @@ void timer2_init() {
    *  OCR2A = (256*0.5) = 128.
    *  OCR2B = (256*0.3) = 77.
    */
-  DDRD |= (1 &lt;&lt; PD3);
-  DDRB |= (1 &lt;&lt; PB3);
+  DDRD |= (1 << PD3);
+  DDRB |= (1 << PB3);
 
-  TCCR2A |= (1 &lt;&lt; COM2A1) | (1 &lt;&lt; COM2B1) | (1 &lt;&lt; WGM21) | (1 &lt;&lt; WGM20);
-  TCCR2B |= (1 &lt;&lt; CS22) | (1 &lt;&lt; CS20);
+  TCCR2A |= (1 << COM2A1) | (1 << COM2B1) | (1 << WGM21) | (1 << WGM20);
+  TCCR2B |= (1 << CS22) | (1 << CS20);
   OCR2A = (256 * 0.5);
   OCR2B = (256 * 0.3);
 }
-</code></pre>
-<ul>
-<li><code>TCCR1A</code>: Timer/Counter1 Control Register A.</li>
-<li><code>TCCR1B</code>: Timer/Counter1 Control Register B.</li>
-<li><code>CS12</code>: Clock select. A value of 1 &lt;&lt; CS12 | 1 &lt;&lt; CS10, gives clk/1024
-(from prescaler) which is 16Mhz/1024 == 15,625hz.</li>
-</ul>
+</code></pre><ul><li><code>TCCR1A</code>: Timer/Counter1 Control Register A.</li><li><code>TCCR1B</code> : Timer/Counter1 Control Register B.</li><li><code>CS12</code> : Clock select. A value of 1 << CS12 | 1 << CS10, gives clk/1024 (from prescaler) which is 16Mhz/1024 == 15,625hz.</li></ul>
 <h2>Further reading</h2>
 <p><a href="http://web.archive.org/web/20240120043955/https://docs.arduino.cc/tutorials/generic/secrets-of-arduino-pwm">source</a></p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>

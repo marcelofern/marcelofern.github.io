@@ -60,9 +60,8 @@
 </head>
 <body>
 <h1>A Basic psql Workflow</h1>
-<p>This is a workflow that only relies on vim and psql.
-All of the commands below should be executed inside a psql shell.</p>
-<pre><code>-- Step 0: create local and env variables for the file name
+<p>This is a workflow that only relies on vim and psql. All of the commands below should be executed inside a psql shell.</p>
+<pre><code class="language-">-- Step 0: create local and env variables for the file name
 
 \set FILE_NAME /tmp/queries.sql
 \setenv FILE_NAME /tmp/queries.sql
@@ -74,27 +73,19 @@ All of the commands below should be executed inside a psql shell.</p>
 -- Step 2: edit the file with your queries:
 
 \e :FILE_NAME
-</code></pre>
-<p>You can now use vim to write down your queries.
-Every time you close the buffer, the query will be run by psql.</p>
-<p>You can reopen the file with <code>\e :FILE_NAME</code>.
-I usually just use <code>:F</code> for the variable name to save some keystrokes.</p>
-<p>Sadly there is no way to simply set the default buffer to write using psql.
-After analysing the code, the code for <code>\e</code> uses <code>getenv(&quot;TMPDIR&quot;)</code> (standard C
-function) to grab a new buffer name of the format <code>tmp_dir/psql.edit.PID.sql</code></p>
+</code></pre><p>You can now use vim to write down your queries. Every time you close the buffer, the query will be run by psql.</p>
+<p>You can reopen the file with <code>\e :FILE_NAME</code>. I usually just use <code>:F</code> for the variable name to save some keystrokes.</p>
+<p>Sadly there is no way to simply set the default buffer to write using psql. After analysing the code, the code for <code>\e</code> uses <code>getenv("TMPDIR")</code> (standard C function) to grab a new buffer name of the format <code>tmp_dir/psql.edit.PID.sql</code></p>
 <h2>Tip 1: Use meaningful file names</h2>
-<p>This helps you by keeping a record of queries and experiments that you have
-run in the past.</p>
+<p>This helps you by keeping a record of queries and experiments that you have run in the past.</p>
 <h2>Tip 2: Use \x</h2>
-<p>When you have too many columns to display, it's best to use <code>\x</code> so that each
-column is represented in a line.</p>
+<p>When you have too many columns to display, it's best to use <code>\x</code> so that each column is represented in a line.</p>
 <h2>Tip 3: Use a vim function:</h2>
-<p>You can simply type <code>\e</code> and execute the command <code>PsqlBuffer</code> and all will be
-set for you. You can execute <code>\e :F</code> for follow up edits.</p>
+<p>You can simply type <code>\e</code> and execute the command <code>PsqlBuffer</code> and all will be set for you. You can execute <code>\e :F</code> for follow up edits.</p>
 <pre><code class="language-lua">
 function PsqlBuffer(file_path)
-    -- Use it with :PsqlBuffer &lt;file_name&gt;
-    -- note that &lt;file_name&gt; is optional.
+    -- Use it with :PsqlBuffer <file_name>
+    -- note that <file_name> is optional.
     -- the default file is `/tmp/queries.sql`
     file_path = file_path or '/tmp/queries.sql'
     vim.fn.system('touch ' .. file_path)
@@ -103,23 +94,19 @@ function PsqlBuffer(file_path)
 
     local bufnr = vim.api.nvim_get_current_buf()
     local current_line = vim.fn.line('.')
-    vim.api.nvim_buf_set_lines(bufnr, current_line, current_line, true, vim.split(text, &quot;\n&quot;))
+    vim.api.nvim_buf_set_lines(bufnr, current_line, current_line, true, vim.split(text, "\n"))
 end
 
-vim.api.nvim_command('command! -nargs=? PsqlBuffer lua PsqlBuffer(&lt;f-args&gt;)')
-</code></pre>
-<h2>Tip 4: Print SQL of psql backslash commands:</h2>
-<pre><code>\set ECHO_HIDDEN 1
-</code></pre>
-<p>And to turn it off, simply set <code>ECHO_HIDDEN</code> to 0.</p>
+vim.api.nvim_command('command! -nargs=? PsqlBuffer lua PsqlBuffer(<f-args>)')
+</code></pre><h2>Tip 4: Print SQL of psql backslash commands:</h2>
+<pre><code class="language-">\set ECHO_HIDDEN 1
+</code></pre><p>And to turn it off, simply set <code>ECHO_HIDDEN</code> to 0.</p>
 <h2>Tip 5: Print query SQL with results</h2>
 <p>This is often handy when you are copy/pasting results of queries.</p>
 <p>Set the <code>ECHO</code> variable to <code>all</code></p>
-<pre><code>\set ECHO all
-</code></pre>
-<p>When you are done, set <code>ECHO</code> to <code>none</code></p>
-<pre><code>\set ECHO none
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<pre><code class="language-">\set ECHO all
+</code></pre><p>When you are done, set <code>ECHO</code> to <code>none</code></p>
+<pre><code class="language-">\set ECHO none
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

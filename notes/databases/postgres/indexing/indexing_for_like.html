@@ -61,8 +61,7 @@
 <body>
 <p>February 1, 2024</p>
 <h1>Introduction</h1>
-<p>When working in a Django application, an index can be created for a field
-using the <code>db_index</code> argument, or the <code>Meta.indexes</code> attribute.</p>
+<p>When working in a Django application, an index can be created for a field using the <code>db_index</code> argument, or the <code>Meta.indexes</code> attribute.</p>
 <pre><code class="language-python">class MyModel(models.Model):
     my_field = models.CharField(
         max_length=255,
@@ -74,33 +73,29 @@ using the <code>db_index</code> argument, or the <code>Meta.indexes</code> attri
     # OR instead of using db_index=True:
     class Meta:
         indexes = [
-            models.Index(fields=[&quot;my_field&quot;]),
+            models.Index(fields=["my_field"]),
             models.Index(
-                fields=[&quot;my_field&quot;],
-                name=&quot;my_field_idx_like&quot;,
-                opclasses=[&quot;varchar_pattern_ops&quot;],
+                fields=["my_field"],
+                name="my_field_idx_like",
+                opclasses=["varchar_pattern_ops"],
             ),
         ]
-</code></pre>
-<p>As of Django 4.1.12, the migration will generate the following indexes:</p>
+</code></pre><p>As of Django 4.1.12, the migration will generate the following indexes:</p>
 <pre><code class="language-sql">BEGIN;
 --
 -- Add field my_field to my_model
 --
-ALTER TABLE &quot;app_mymodel&quot; ADD COLUMN &quot;my_field&quot; varchar(255) NULL;
-CREATE INDEX &quot;app_mymodel_my_field_0ad260d5&quot; ON &quot;mymodel&quot; (&quot;my_field&quot;);
-CREATE INDEX &quot;app_mymodel_my_field_0ad260d5_like&quot; ON &quot;mymodel&quot; (&quot;my_field&quot; varchar_pattern_ops);
+ALTER TABLE "app_mymodel" ADD COLUMN "my_field" varchar(255) NULL;
+CREATE INDEX "app_mymodel_my_field_0ad260d5" ON "mymodel" ("my_field");
+CREATE INDEX "app_mymodel_my_field_0ad260d5_like" ON "mymodel" ("my_field" varchar_pattern_ops);
 COMMIT;
-</code></pre>
-<p>The second index is allegedly the one we should use for LIKE filtering.
-But only <em>some</em> LIKE filters, not <em>all</em>.</p>
+</code></pre><p>The second index is allegedly the one we should use for LIKE filtering. But only <i>some</i> LIKE filters, not <i>all</i>.</p>
 <h2>Creating a test schema with mock data</h2>
 <h3>Create a mock database using psql</h3>
 <pre><code class="language-sql">CREATE DATABASE like_experiments;
 
 \c like_experiments
-</code></pre>
-<h3>Create the table and indexes</h3>
+</code></pre><h3>Create the table and indexes</h3>
 <pre><code class="language-sql">CREATE TABLE mymodel (
     id SERIAL PRIMARY KEY,
     my_field VARCHAR(255) NULL DEFAULT NULL
@@ -111,49 +106,42 @@ CREATE INDEX mymodel_my_field_idx ON mymodel (my_field);
 
 -- Create index with varchar_pattern_ops on my_field
 CREATE INDEX mymodel_my_field_idx_like ON mymodel USING btree (my_field varchar_pattern_ops);
-</code></pre>
-<h3>Create 100,000 rows</h3>
+</code></pre><h3>Create 100,000 rows</h3>
 <pre><code class="language-sql">BEGIN;
 DO $$
 DECLARE
     i INT := 1;
 BEGIN
-    WHILE i &lt;= 100000 LOOP
+    WHILE i <= 100000 LOOP
         INSERT INTO mymodel (my_field) VALUES ('Value_' || i);
         i := i + 1;
     END LOOP;
 END $$;
 COMMIT;
-</code></pre>
-<h2>Three variations of anchor filtering</h2>
+</code></pre><h2>Three variations of anchor filtering</h2>
 <h3>Anchor in the middle:</h3>
 <pre><code class="language-sql">explain analyse select * from mymodel where my_field like 'wat%r';
 
                                                              QUERY PLAN
 -------------------------------------------------------------------------------------------------------------------------------------
  Index Scan using mymodel_my_field_idx_like on mymodel  (cost=0.42..8.44 rows=10 width=15) (actual time=0.041..0.041 rows=0 loops=1)
-   Index Cond: (((my_field)::text ~&gt;=~ 'wat'::text) AND ((my_field)::text ~&lt;~ 'wau'::text))
+   Index Cond: (((my_field)::text ~>=~ 'wat'::text) AND ((my_field)::text ~<~ 'wau'::text))
    Filter: ((my_field)::text ~~ 'wat%r'::text)
  Planning Time: 0.394 ms
  Execution Time: 0.082 ms
-</code></pre>
-<ul>
-<li><code>~&gt;=~</code>: checks for results that start with <code>wat</code>.</li>
-<li><code>~&lt;~</code>: checks for results that less (unicode-wise) than <code>wau</code>.</li>
-</ul>
-<p>Note that the &quot;r&quot; character after the anchor is not used in the Index Cond.</p>
+</code></pre><ul><li><code>~>=~</code>: checks for results that start with <code>wat</code>.</li><li><code>~<~</code> : checks for results that less (unicode-wise) than <code>wau</code>.</li></ul>
+<p>Note that the "r" character after the anchor is not used in the Index Cond.</p>
 <h3>Anchor in the end:</h3>
 <pre><code class="language-sql">explain analyse select * from mymodel where my_field like 'wat%r';
 
                                                              QUERY PLAN
 -------------------------------------------------------------------------------------------------------------------------------------
  Index Scan using mymodel_my_field_idx_like on mymodel  (cost=0.42..8.44 rows=10 width=15) (actual time=0.020..0.021 rows=0 loops=1)
-   Index Cond: (((my_field)::text ~&gt;=~ 'wate'::text) AND ((my_field)::text ~&lt;~ 'watf'::text))
+   Index Cond: (((my_field)::text ~>=~ 'wate'::text) AND ((my_field)::text ~<~ 'watf'::text))
    Filter: ((my_field)::text ~~ 'wate%'::text)
  Planning Time: 0.245 ms
  Execution Time: 0.040 ms
-</code></pre>
-<p>No much difference from the previous query plan.</p>
+</code></pre><p>No much difference from the previous query plan.</p>
 <h3>Anchor in the front:</h3>
 <pre><code class="language-sql">explain analyse select * from mymodel where my_field like '%ater';
 
@@ -164,28 +152,18 @@ COMMIT;
    Rows Removed by Filter: 100000
  Planning Time: 0.088 ms
  Execution Time: 8.226 ms
-</code></pre>
-<p>The index is not used at all, as Postgres is not able to traverse the B-tree
-index based on a suffix alone.</p>
+</code></pre><p>The index is not used at all, as Postgres is not able to traverse the B-tree index based on a suffix alone.</p>
 <h2>Using a GIN Trigram index</h2>
 <pre><code class="language-sql">CREATE EXTENSION pg_trgm;
 
-CREATE INDEX &quot;mymodel_my_field_idx_gin_like&quot; ON &quot;mymodel&quot; USING gin (&quot;my_field&quot; gin_trgm_ops);
-</code></pre>
-<p>From the Postgres documentation:</p>
-<blockquote>
-<p>The <code>pg_trgm</code> module provides functions and operators for determining the
-similarity of alphanumeric text based on trigram matching, as well as index
-operator classes that support fast searching for similar strings.</p>
-</blockquote>
-<p>And what is &quot;trigram matching&quot;?</p>
-<p>Trigram matching is a technique used in text search and pattern matching to
-find similarities between strings based on sequences of three consecutive
-characters, known as trigrams. A trigram is a three-character substring
-extracted from a longer string.</p>
-<p>For example, given the string &quot;hello,&quot; the trigrams would be &quot;hel,&quot; &quot;ell,&quot; and
-&quot;llo.&quot; The idea is to compare these trigrams between two strings to measure
-their similarity or match.</p>
+CREATE INDEX "mymodel_my_field_idx_gin_like" ON "mymodel" USING gin ("my_field" gin_trgm_ops);
+</code></pre><p>From the Postgres documentation:</p>
+<blockquote>The `pg_trgm` module provides functions and operators for determining the</blockquote>
+<blockquote>similarity of alphanumeric text based on trigram matching, as well as index</blockquote>
+<blockquote>operator classes that support fast searching for similar strings.</blockquote>
+<p>And what is "trigram matching"?</p>
+<p>Trigram matching is a technique used in text search and pattern matching to find similarities between strings based on sequences of three consecutive characters, known as trigrams. A trigram is a three-character substring extracted from a longer string.</p>
+<p>For example, given the string "hello," the trigrams would be "hel," "ell," and "llo." The idea is to compare these trigrams between two strings to measure their similarity or match.</p>
 <p>If we rerun our query starting with the anchor, we now have:</p>
 <pre><code class="language-sql">explain analyse select * from mymodel where my_field like '%ater';
 
@@ -193,15 +171,12 @@ their similarity or match.</p>
 ----------------------------------------------------------------------------------------------------------------------------------------
  Bitmap Heap Scan on mymodel  (cost=28.08..64.12 rows=10 width=15) (actual time=0.009..0.010 rows=0 loops=1)
    Recheck Cond: ((my_field)::text ~~ '%ater'::text)
-   -&gt;  Bitmap Index Scan on mymodel_my_field_idx_gin_like  (cost=0.00..28.07 rows=10 width=0) (actual time=0.008..0.008 rows=0 loops=1)
+   ->  Bitmap Index Scan on mymodel_my_field_idx_gin_like  (cost=0.00..28.07 rows=10 width=0) (actual time=0.008..0.008 rows=0 loops=1)
          Index Cond: ((my_field)::text ~~ '%ater'::text)
  Planning Time: 0.136 ms
  Execution Time: 0.040 ms
-</code></pre>
-<p>The index was picked up, and the cost went down from 1791 in the Seq Scan case
-to 64.12. Not too bad.</p>
-<p>Note that this index is only chosen by the planner when the query is
-left-anchored. Otherwise, it will still pick the B-tree index.</p>
+</code></pre><p>The index was picked up, and the cost went down from 1791 in the Seq Scan case to 64.12. Not too bad.</p>
+<p>Note that this index is only chosen by the planner when the query is left-anchored. Otherwise, it will still pick the B-tree index.</p>
 <p>If we drop the B-tree index, the new index will be picked up:</p>
 <pre><code class="language-sql">explain analyse select * from mymodel where my_field like 'wate%';
 
@@ -209,17 +184,13 @@ left-anchored. Otherwise, it will still pick the B-tree index.</p>
 ----------------------------------------------------------------------------------------------------------------------------------------
  Bitmap Heap Scan on mymodel  (cost=36.08..72.12 rows=10 width=15) (actual time=0.018..0.019 rows=0 loops=1)
    Recheck Cond: ((my_field)::text ~~ 'wate%'::text)
-   -&gt;  Bitmap Index Scan on mymodel_my_field_idx_gin_like  (cost=0.00..36.08 rows=10 width=0) (actual time=0.017..0.017 rows=0 loops=1)
+   ->  Bitmap Index Scan on mymodel_my_field_idx_gin_like  (cost=0.00..36.08 rows=10 width=0) (actual time=0.017..0.017 rows=0 loops=1)
          Index Cond: ((my_field)::text ~~ 'wate%'::text)
  Planning Time: 0.114 ms
  Execution Time: 0.049 ms
-</code></pre>
-<p>However, as you can see, the cost is higher (from 8.44 to 72.12). Whether or
-not the bump in the cost is not high enough to justify having a whole B-tree
-index is not in my knowledge yet.</p>
+</code></pre><p>However, as you can see, the cost is higher (from 8.44 to 72.12). Whether or not the bump in the cost is not high enough to justify having a whole B-tree index is not in my knowledge yet.</p>
 <h2>Limitations of the trigram index</h2>
-<p>The index will only be picked up if there're more than 3 characters in the
-filter.</p>
+<p>The index will only be picked up if there're more than 3 characters in the filter.</p>
 <pre><code class="language-sql">explain analyse select * from mymodel where my_field like '%w';
 
                                               QUERY PLAN
@@ -236,11 +207,10 @@ explain analyse select * from mymodel where my_field like '%wa';
 ----------------------------------------------------------------------------------------------------------------------------------------
  Bitmap Heap Scan on mymodel  (cost=12.08..48.12 rows=10 width=15) (actual time=0.022..0.023 rows=0 loops=1)
    Recheck Cond: ((my_field)::text ~~ '%wa'::text)
-   -&gt;  Bitmap Index Scan on mymodel_my_field_idx_gin_like  (cost=0.00..12.07 rows=10 width=0) (actual time=0.020..0.020 rows=0 loops=1)
+   ->  Bitmap Index Scan on mymodel_my_field_idx_gin_like  (cost=0.00..12.07 rows=10 width=0) (actual time=0.020..0.020 rows=0 loops=1)
          Index Cond: ((my_field)::text ~~ '%wa'::text)
  Planning Time: 0.088 ms
  Execution Time: 0.063 ms
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

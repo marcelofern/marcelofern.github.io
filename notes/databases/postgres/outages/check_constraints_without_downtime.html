@@ -60,29 +60,24 @@
 </head>
 <body>
 <h1>CHECK constraints without downtime</h1>
-<pre><code>Created at: 2024-12-09
-</code></pre>
-<p>The following ddl is used to add a check constraint on an existing table:</p>
-<pre><code class="language-sql">ALTER TABLE foo ADD CONSTRAINT bar_not_negative CHECK (bar &gt;= 0);
-</code></pre>
-<p>However, this operation can be dangerous and create an outage on your app.</p>
+<pre><code class="language-">Created at: 2024-12-09
+</code></pre><p>The following ddl is used to add a check constraint on an existing table:</p>
+<pre><code class="language-sql">ALTER TABLE foo ADD CONSTRAINT bar_not_negative CHECK (bar >= 0);
+</code></pre><p>However, this operation can be dangerous and create an outage on your app.</p>
 <p>For example, imagine the following schema:</p>
 <pre><code class="language-sql">DROP TABLE IF EXISTS foo;
 CREATE TABLE foo (id SERIAL, bar int);
 
 -- Add a bit of data
 INSERT INTO foo (bar) SELECT generate_series(1, 10000);
-</code></pre>
-<p>Now in a transaction, add the following CHECK constraint:</p>
+</code></pre><p>Now in a transaction, add the following CHECK constraint:</p>
 <pre><code class="language-sql">-- Get debug information
 SET client_min_messages=debug1;
 BEGIN;
-ALTER TABLE foo ADD CONSTRAINT bar_not_negative CHECK (bar &gt;= 0);
+ALTER TABLE foo ADD CONSTRAINT bar_not_negative CHECK (bar >= 0);
 
 -- Just leave the transaction open for now.
-</code></pre>
-<p>Now let's see which locks this transaction is holding by opening another psql
-shell and executing:</p>
+</code></pre><p>Now let's see which locks this transaction is holding by opening another psql shell and executing:</p>
 <pre><code class="language-sql">SELECT
     l.locktype,
     l.mode,
@@ -101,35 +96,22 @@ WHERE
     -- change it to the pid of the psql shell executing the ALTER TABLE.
     -- a.pid = 21665;
     a.pid != pg_backend_pid();
-</code></pre>
-<pre><code> locktype |        mode         | granted | relation | relname |
+</code></pre><pre><code class="language-"> locktype |        mode         | granted | relation | relname |
 ----------+---------------------+---------+----------+---------+
  relation | AccessExclusiveLock | t       |  2007262 | foo     |
-</code></pre>
-<p>An AccessExclusiveLock will block all reads and writes on the table while the
-constraint is being added. It's the highest level of locking in Postgres.</p>
+ </code></pre><p>An AccessExclusiveLock will block all reads and writes on the table while the constraint is being added. It's the highest level of locking in Postgres.</p>
 <p>You'll also see that Postgres printed:</p>
-<pre><code>DEBUG:  verifying table &quot;foo&quot;
-</code></pre>
-<p>This means that Postgres is going through the whole table to check for any
-existing violation of the CHECK constraint. And it does that while holding an
-Access Exclusive lock.</p>
+<pre><code class="language-">DEBUG:  verifying table "foo"
+</code></pre><p>This means that Postgres is going through the whole table to check for any existing violation of the CHECK constraint. And it does that while holding an Access Exclusive lock.</p>
 <h2>A better way</h2>
 <p>First create a NOT VALID constraint</p>
 <pre><code class="language-sql">BEGIN;
-ALTER TABLE foo ADD CONSTRAINT bar_not_negative CHECK (bar &gt;= 0) NOT VALID;
-</code></pre>
-<p>You'll notice that postgres didn't print <code>verifying table &quot;foo&quot;</code>. That is
-because it doesn't have too. The constraint will only be enforced for new
-writes.</p>
-<p>Note that this operation still holds an AccessExclusiveLock, but because it
-doesn't need to verify the whole table, it runs very fast.</p>
+ALTER TABLE foo ADD CONSTRAINT bar_not_negative CHECK (bar >= 0) NOT VALID;
+</code></pre><p>You'll notice that postgres didn't print <code>verifying table "foo"</code>. That is because it doesn't have too. The constraint will only be enforced for new writes.</p>
+<p>Note that this operation still holds an AccessExclusiveLock, but because it doesn't need to verify the whole table, it runs very fast.</p>
 <p>Then, you can validate the constraint in a separated step:</p>
 <pre><code class="language-sql">ALTER TABLE foo VALIDATE CONSTRAINT bar_not_negative;
-</code></pre>
-<p>This time Postgres will print <code>verifying table &quot;foo&quot;</code>, but it will only acquire
-a ShareUpdateExclusiveLock in this case, which won't block any reads or writes
-on that table.</p>
+</code></pre><p>This time Postgres will print <code>verifying table "foo"</code>, but it will only acquire a ShareUpdateExclusiveLock in this case, which won't block any reads or writes on that table.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

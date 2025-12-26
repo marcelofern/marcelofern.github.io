@@ -61,8 +61,7 @@
 <body>
 <p>October 2, 2020</p>
 <h2>Creating Tables</h2>
-<p>Tables can be created using the CREATE TABLE command. Examples using an Oracle
-database:</p>
+<p>Tables can be created using the CREATE TABLE command. Examples using an Oracle database:</p>
 <pre><code class="language-sql">CREATE TABLE TEAM
 (
   TEAM_ID CHAR(5) PRIMARY KEY,
@@ -78,32 +77,13 @@ CREATE TABLE PLAYER
   LAST_NAME VARCHAR2(30) NOT NULL,
   TEAM_ID CHAR(5) REFERENCES TEAM(TEAM_ID),
 );
-</code></pre>
-<p>Note: When using a database such as Oracle, Postgres, MySQL, etc, make sure to
-be aware of naming conventions.</p>
+</code></pre><p>Note: When using a database such as Oracle, Postgres, MySQL, etc, make sure to be aware of naming conventions.</p>
 <h2>Defining Constraints</h2>
-<p>Constraints are created to preserve the data integrity in the database. They
-are imposed on one or more columns, and can be used to check the acceptability
-and accuracy of the data.</p>
+<p>Constraints are created to preserve the data integrity in the database. They are imposed on one or more columns, and can be used to check the acceptability and accuracy of the data.</p>
 <p>There are two types of constraints:</p>
-<ul>
-<li>Column Constraints: Defined along with the column definition in a CREATE
-TABLE statement.</li>
-<li>Table Constraints: Defined at the end of the table definition after listing
-all the columns. Tables with multiple primary keys should be defined at the
-of the table definition as a table constraint.</li>
-</ul>
+<ul><li>Column Constraints: Defined along with the column definition in a CREATE TABLE statement.</li><li>Table Constraints: Defined at the end of the table definition after listing all the columns. Tables with multiple primary keys should be defined at the of the table definition as a table constraint.</li></ul>
 <p>Some commonly used constraints are:</p>
-<ul>
-<li>PRIMARY KEY</li>
-<li>UNIQUE</li>
-<li>NOT NULL</li>
-<li>REFERENCES table(column)</li>
-<li>ON DELETE CASCADE</li>
-<li>ON DELETE SET NULL</li>
-<li>DEFAULT value</li>
-<li>CHECK (condition)</li>
-</ul>
+<ul><li>PRIMARY KEY</li><li>UNIQUE</li><li>NOT NULL</li><li>REFERENCES table(column)</li><li>ON DELETE CASCADE</li><li>ON DELETE SET NULL</li><li>DEFAULT value</li><li>CHECK (condition)</li></ul>
 <p>This is how it would look in a CREATE TABLE statement:</p>
 <pre><code class="language-sql">
      CREATE TABLE MOCK_TABLE
@@ -113,193 +93,88 @@ of the table definition as a table constraint.</li>
       COL3 VARCHAR2(5) REFERENCES TEST(COL3) ON DELETE CASCADE,
       COL4 DATE DEFAULT SYSDATE,
       COL5 UNIQUE,
-      COL6 NUMBER(4) CHECK (COL6 &gt; 100)
+      COL6 NUMBER(4) CHECK (COL6 > 100)
     );
-</code></pre>
-<pre><code class="language-sql"> CREATE TABLE MOCK_TABLE
+</code></pre><pre><code class="language-sql"> CREATE TABLE MOCK_TABLE
 (
   COL1 CHAR(5),
   COL2 NUMBER(10) NOT NULL,
   COL3 VARCHAR2(5)
   COL4 DATE DEFAULT SYSDATE,
   COL5 UNIQUE,
-  COL6 NUMBER(4) CHECK (COL6 &gt; 100),
+  COL6 NUMBER(4) CHECK (COL6 > 100),
   CONSTRAINT MOCK_TABLE_PK PRIMARY KEY (COL1),
   CONSTRAINT MOCK_TABLE_FK FOREIGN KEY (COL3) REFERENCES TEST(COL3),
   CONSTRAINT COL5_UPPERCASE CHECK (COl5 = UPPER(COL5))
 );
-</code></pre>
-<p>As a tip to organise your database, you might want to define all your tables
-without any foreign keys and then create them at the end using the ALTER
-command:</p>
+</code></pre><p>As a tip to organise your database, you might want to define all your tables without any foreign keys and then create them at the end using the ALTER command:</p>
 <pre><code class="language-sql">ALTER TABLE PLAYER
 ADD FOREIGN KEY (TEAM_ID) REFERENCES TEAM(TEAM_ID)
-</code></pre>
-<h2>Modifying Tables</h2>
-<p>Table attributes can be added, modified, or deleted. The same is valid for
-table constraints.</p>
+</code></pre><h2>Modifying Tables</h2>
+<p>Table attributes can be added, modified, or deleted. The same is valid for table constraints.</p>
 <p>A few examples using the ALTER TABLE command:</p>
 <pre><code class="language-sql">ALTER TABLE tableName + (one of the below)
-</code></pre>
-<ol>
-<li></li>
-</ol>
-<pre><code class="language-sql">ADD columnName VARCHAR2(30) NOT NULL
-</code></pre>
-<ol start="2">
-<li></li>
-</ol>
-<pre><code class="language-sql">   DROP columnName [RESTRICT | CASCADE]
-</code></pre>
-<ol start="3">
-<li></li>
-</ol>
-<pre><code class="language-sql">  ALTER columnName SET DEFAULT defaultOption
-</code></pre>
-<ol start="4">
-<li></li>
-</ol>
-<pre><code class="language-sql">  ALTER columnName DROP DEFAULT
-</code></pre>
-<ol start="5">
-<li></li>
-</ol>
-<pre><code class="language-sql">  ADD CONSTRAINT constraintName tableConstraintDefinition
-</code></pre>
-<ol start="6">
-<li></li>
-</ol>
-<pre><code class="language-sql">  DROP CONSTRAINT constraintName [RESTRICT | CASCADE]
-</code></pre>
-<ol start="7">
-<li></li>
-</ol>
-<pre><code class="language-sql">  DISABLE CONSTRAINT constraintName
-</code></pre>
-<ol start="8">
-<li></li>
-</ol>
-<pre><code class="language-sql">  ENABLE constraintName
-</code></pre>
-<ol start="9">
-<li></li>
-</ol>
-<pre><code class="language-sql">  RENAME constraintName TO newConstraintName
-</code></pre>
-<p>A few &quot;real world&quot; examples:</p>
+</code></pre><ol><li><pre><code class="language-sql">  ADD columnName VARCHAR2(30) NOT NULL
+  </code></pre></li><li><pre><code class="language-sql">     DROP columnName [RESTRICT | CASCADE]
+  </code></pre></li><li><pre><code class="language-sql">    ALTER columnName SET DEFAULT defaultOption
+  </code></pre></li><li><pre><code class="language-sql">    ALTER columnName DROP DEFAULT
+  </code></pre></li><li><pre><code class="language-sql">    ADD CONSTRAINT constraintName tableConstraintDefinition
+  </code></pre></li><li><pre><code class="language-sql">    DROP CONSTRAINT constraintName [RESTRICT | CASCADE]
+  </code></pre></li><li><pre><code class="language-sql">    DISABLE CONSTRAINT constraintName
+  </code></pre></li><li><pre><code class="language-sql">    ENABLE constraintName
+  </code></pre></li><li><pre><code class="language-sql">    RENAME constraintName TO newConstraintName
+  </code></pre></li></ol>
+<p>A few "real world" examples:</p>
 <pre><code class="language-sql">ALTER TABLE PLAYER ADD PRIMARY KEY (ID);
 
-ALTER TABLE PLAYER ADD CHECK(SALARY &gt; 0);
-</code></pre>
-<p>Ultimately, tables can also be completely deleted with the DROP TABLE command.
-Be aware that tables with child tables might require a CASCADE operation.</p>
+ALTER TABLE PLAYER ADD CHECK(SALARY > 0);
+</code></pre><p>Ultimately, tables can also be completely deleted with the DROP TABLE command. Be aware that tables with child tables might require a CASCADE operation.</p>
 <pre><code class="language-sql">DROP TABLE TEAM CASCADE CONSTRAINTS;
-</code></pre>
-<h2>Indexes</h2>
-<p>Indexes are used to increase the performance of database queries. Some
-advantages and disadvantages are listed below:</p>
-<p><strong>Advantages</strong>:</p>
-<ul>
-<li>Speeds up SELECT queries</li>
-<li>They can be used for sorting</li>
-<li>Unique indexes guarantee uniquely identifiable records in the database</li>
-</ul>
-<p><strong>Disadvantages</strong>:</p>
-<ul>
-<li>Take additional disk space</li>
-<li>Slow down INSERT, UPDATE, and DELETE operations. But it can speed up an
-UPDATE query if the WHERE condition has an indexed field.</li>
-</ul>
+</code></pre><h2>Indexes</h2>
+<p>Indexes are used to increase the performance of database queries. Some advantages and disadvantages are listed below:</p>
+<p><b>Advantages</b>:</p>
+<ul><li>Speeds up SELECT queries</li><li>They can be used for sorting</li><li>Unique indexes guarantee uniquely identifiable records in the database</li></ul>
+<p><b>Disadvantages</b>:</p>
+<ul><li>Take additional disk space</li><li>Slow down INSERT, UPDATE, and DELETE operations. But it can speed up an UPDATE query if the WHERE condition has an indexed field.</li></ul>
 <p>Indexes can be created using the CREATE INDEX statement:</p>
 <pre><code class="language-sql">CREATE INDEX PNAME ON PLAYER(NAME);
-</code></pre>
-<p>Or dropped using DROP INDEX</p>
+</code></pre><p>Or dropped using DROP INDEX</p>
 <pre><code class="language-sql">DROP INDEX PNAME;
-</code></pre>
-<p>Unique indexes can also be added to ensure uniqueness of non-primary data. The
-benefit of using unique indexes versus UNIQUE constraint is that the index not
-only will guarantee data uniqueness but will also speed up queries</p>
+</code></pre><p>Unique indexes can also be added to ensure uniqueness of non-primary data. The benefit of using unique indexes versus UNIQUE constraint is that the index not only will guarantee data uniqueness but will also speed up queries</p>
 <pre><code class="language-sql">CREATE UNIQUE INDEX PNICKNAME ON PLAYER(NICKNAME);
-</code></pre>
-<p>Only create an index if:</p>
-<ul>
-<li>A table is large</li>
-<li>A column is likely to appear in the WHERE clause or ORDER BY clause.</li>
-<li>A column has values which each occur in fewer than 20% of the rows</li>
-<li>Multiple columns are continually referenced together (concatenated index on
-multiple columns)</li>
-<li>All the column values are distinct (unique index)</li>
-<li>The table is to be used primarily for queries (data retrieval)</li>
-</ul>
+</code></pre><p>Only create an index if:</p>
+<ul><li>A table is large</li><li>A column is likely to appear in the WHERE clause or ORDER BY clause.</li><li>A column has values which each occur in fewer than 20% of the rows</li><li>Multiple columns are continually referenced together (concatenated index on multiple columns)</li><li>All the column values are distinct (unique index)</li><li>The table is to be used primarily for queries (data retrieval)</li></ul>
 <h2>Sequences</h2>
-<p>Sequences are particularly useful to help data entry, especially in the primary
-key column. The primary key must have a unique value, and more often than not,
-to be sequential. Manually ensuring uniqueness on a PK is very time-consuming
-and may lead to future flaws.</p>
+<p>Sequences are particularly useful to help data entry, especially in the primary key column. The primary key must have a unique value, and more often than not, to be sequential. Manually ensuring uniqueness on a PK is very time-consuming and may lead to future flaws.</p>
 <p>Sequences can be created using the CREATE SEQUENCE command:</p>
 <pre><code class="language-sql">CREATE SEQUENCE testseq;
-</code></pre>
-<pre><code class="language-sql">CREATE SEQUENCE testseq
+</code></pre><pre><code class="language-sql">CREATE SEQUENCE testseq
 START WITH 777
 INCREMENT BY 22
 MAXVALUE 100000
 CYCLE
-</code></pre>
-<p>Once created, an index can be used in an INSERT statement</p>
+</code></pre><p>Once created, an index can be used in an INSERT statement</p>
 <pre><code class="language-sql">INSERT INTO PLAYER VALUES
 (testseq.NEXTVAL, 'Ronaldo', 'Real Madrid', 7);
-</code></pre>
-<p>Note: NEXTVAL initialises the sequence or generate the next value. CURRVAL
-returns the current sequence value, but it only works if you already called
-NEXTVAL during the current user session.</p>
+</code></pre><p>Note: NEXTVAL initialises the sequence or generate the next value. CURRVAL returns the current sequence value, but it only works if you already called NEXTVAL during the current user session.</p>
 <h2>Copying A Table</h2>
 <p>There are 3 ways to create a new table from an existing table:</p>
-<ol>
-<li>Create a new structure and only copy the data. In this case, define the
-structure using the CREATE TABLE clause and then add the data from the
-previous table using a SELECT query in an INSERT statement. Make sure that
-the new table has the same data types from the columns you are fetching data
-from.<pre><code class="language-sql">INSERT INTO TOP_SCORERS
-SELECT FIRST_NAME, LAST_NAME, TEAM_ID, GOALS
-FROM PLAYER
-WHERE GOALS &gt; 100;
-</code></pre>
-</li>
-<li>Copy the structure and the data. In this case, omit the column definitions
-in the CREATE TABLE STATEMENT and then use a SELECT statement to fill in
-the data.<pre><code class="language-sql">CREATE TABLE PLAYER_COPY AS (SELECT * FROM INSTRUCTOR);
-</code></pre>
-</li>
-<li>Copy only the structure. In this case, omit the column definitions in the
-CREATE TABLE statement and then use use a SELECT statement with a WHERE
-clause that is never going to be true, like 1=2.<pre><code class="language-sql">CREATE TABLE PLAYER_STRUCT AS (SELECT * FROM PLAYER WHERE 1=2);
-</code></pre>
-</li>
-</ol>
+<ol><li> Create a new structure and only copy the data. In this case, define the structure using the CREATE TABLE clause and then add the data from the previous table using a SELECT query in an INSERT statement. Make sure that the new table has the same data types from the columns you are fetching data from.<pre><code class="language-sql">   INSERT INTO TOP_SCORERS
+   SELECT FIRST_NAME, LAST_NAME, TEAM_ID, GOALS
+   FROM PLAYER
+   WHERE GOALS > 100;
+   </code></pre></li><li>Copy the structure and the data. In this case, omit the column definitions in the CREATE TABLE STATEMENT and then use a SELECT statement to fill in the data.<pre><code class="language-sql">   CREATE TABLE PLAYER_COPY AS (SELECT * FROM INSTRUCTOR);
+   </code></pre></li><li>Copy only the structure. In this case, omit the column definitions in the CREATE TABLE statement and then use use a SELECT statement with a WHERE clause that is never going to be true, like 1=2.<pre><code class="language-sql">   CREATE TABLE PLAYER_STRUCT AS (SELECT * FROM PLAYER WHERE 1=2);
+   </code></pre></li></ol>
 <h2>Transactions</h2>
-<p>A transaction is the representation of a logical unit of work for the
-database. Transactions can be initiated by any SQL statement, and for a
-transaction to be successful, all the tasks within the transaction need to be
-completed successfully.</p>
-<p>The default transaction mode is &quot;auto-commit&quot;. It will commit each transaction
-as soon as possible after the user executes each query. Multi-user database
-applications will require more control over transactions to make sure that data
-in the database isn't duplicated or to prevent data inconsistencies.</p>
-<p>COMMIT statements can be used to save changes immediately during the active
-session.</p>
-<p>ROLLBACK statements can be used to reverse the changes made since the last
-COMMIT statement, or in the active session.</p>
+<p>A transaction is the representation of a logical unit of work for the database. Transactions can be initiated by any SQL statement, and for a transaction to be successful, all the tasks within the transaction need to be completed successfully.</p>
+<p>The default transaction mode is "auto-commit". It will commit each transaction as soon as possible after the user executes each query. Multi-user database applications will require more control over transactions to make sure that data in the database isn't duplicated or to prevent data inconsistencies.</p>
+<p>COMMIT statements can be used to save changes immediately during the active session.</p>
+<p>ROLLBACK statements can be used to reverse the changes made since the last COMMIT statement, or in the active session.</p>
 <p>Rules of thumb:</p>
-<ul>
-<li>Before starting updates for a transaction, COMMIT any previous updates</li>
-<li>Complete the updates for the transaction, if the transaction can't be
-completed use ROLLBACK, otherwise use COMMIT</li>
-</ul>
-<p>Note that COMMIT makes the data changes in a transaction permanent. Running a
-ROLLBACK straight after a COMMIT cannot reverse that update</p>
-<p>Also keep in mind that ROLLBACK will only reverse data changes but won't
-reverse (delete) any database objects created/altered using CREATE, ALTER, and
-DROP.</p>
+<ul><li>Before starting updates for a transaction, COMMIT any previous updates</li><li>Complete the updates for the transaction, if the transaction can't be completed use ROLLBACK, otherwise use COMMIT</li></ul>
+<p>Note that COMMIT makes the data changes in a transaction permanent. Running a ROLLBACK straight after a COMMIT cannot reverse that update</p>
+<p>Also keep in mind that ROLLBACK will only reverse data changes but won't reverse (delete) any database objects created/altered using CREATE, ALTER, and DROP.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

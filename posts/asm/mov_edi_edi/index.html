@@ -60,18 +60,15 @@
 </head>
 <body>
 <h1>mov edi, edi</h1>
-<pre><code>Created at: 2024-06-08
+<pre><code class="language-">Created at: 2024-06-08
 Updated at: 2024-07-27
-</code></pre>
-<p>I had a surprise today when I saw the instruction <code>mov edi, edi</code> as the first
-instruction of a function call.</p>
+</code></pre><p>I had a surprise today when I saw the instruction <code>mov edi, edi</code> as the first instruction of a function call.</p>
 <p>This is my C code:</p>
 <pre><code class="language-c">unsigned int func(unsigned int idx) {
   static unsigned int my_table[] = {10, 20, 30, 40};
   return my_table[idx];
 }
-</code></pre>
-<p>Which returned the following x86 assembly (compiled via gcc):</p>
+</code></pre><p>Which returned the following x86 assembly (compiled via gcc):</p>
 <pre><code class="language-asm">func:
   mov  edi, edi
   lea  rax, my_table.0[rip]
@@ -87,11 +84,7 @@ my_table.0:
   .long  20
   .long  30
   .long  40
-</code></pre>
-<p>This code was compiled with the flag -O3, which I thought was going to
-eliminate all useless instructions. To my surprise, when I removed all the
-unsigned keywords from the function, the <code>mov edi, edi</code> disappeared in favour
-of a <code>movsx rdi, edi</code>! Here's the equivalent asm code:</p>
+</code></pre><p>This code was compiled with the flag -O3, which I thought was going to eliminate all useless instructions. To my surprise, when I removed all the unsigned keywords from the function, the <code>mov edi, edi</code> disappeared in favour of a <code>movsx rdi, edi</code>! Here's the equivalent asm code:</p>
 <pre><code class="language-asm">func:
   movsx  rdi, edi
   lea  rax, my_table.0[rip]
@@ -107,26 +100,15 @@ my_table.0:
   .long  20
   .long  30
   .long  40
-</code></pre>
-<p>I went on a spiral of research, and I found many links pointing to this
-instruction being necessary in Microsoft Windows, so that the OS could operate
-hot-patching. <a href="http://web.archive.org/web/20240610022212/https://devblogs.microsoft.com/oldnewthing/20110921-00/?p=9583">source</a></p>
-<p>However, I compiled this on Linux. This should not be relevant to me. Here is
-the catch; that <code>mov edi, edi</code> operation is used for zero'ing the most
-significant 32 bits of the <code>rdi</code> register.</p>
-<p>It does not seem obvious, but the answer can be found in the x86 tour of Intel
-manuals <a href="http://web.archive.org/web/20240610022212/http://web.archive.org/web/20240415061928/http://x86asm.net/articles/x86-64-tour-of-intel-manuals/">source</a></p>
-<blockquote>
-<p>General-purpose Registers (...)</p>
-<p>32-bit operands generate a 32-bit result, zero-extended to a 64-bit result
-in the destination general-purpose register. (...)</p>
-</blockquote>
-<p>UPDATE: In case it wasn't clear from the quote above, the zero-extension only
-works for 32 bit operands. If you run <code>mov di, di</code> (di is 16 bits long), the
-zero-extension <strong>will not happen</strong>.</p>
-<hr>
-<p>The zero-extension is indeed what happens when I try to run the following mock
-assembly code below:</p>
+</code></pre><p>I went on a spiral of research, and I found many links pointing to this instruction being necessary in Microsoft Windows, so that the OS could operate hot-patching. <a href="http://web.archive.org/web/20240610022212/https://devblogs.microsoft.com/oldnewthing/20110921-00/?p=9583">source</a></p>
+<p>However, I compiled this on Linux. This should not be relevant to me. Here is the catch; that <code>mov edi, edi</code> operation is used for zero'ing the most significant 32 bits of the <code>rdi</code> register.</p>
+<p>It does not seem obvious, but the answer can be found in the x86 tour of Intel manuals <a href="http://web.archive.org/web/20240610022212/http://web.archive.org/web/20240415061928/http://x86asm.net/articles/x86-64-tour-of-intel-manuals/">source</a></p>
+<blockquote>General-purpose Registers (...)</blockquote>
+<blockquote></blockquote>
+<blockquote>  32-bit operands generate a 32-bit result, zero-extended to a 64-bit result</blockquote>
+<blockquote>  in the destination general-purpose register. (...)</blockquote>
+<p>UPDATE: In case it wasn't clear from the quote above, the zero-extension only works for 32 bit operands. If you run <code>mov di, di</code> (di is 16 bits long), the zero-extension <b>will not happen</b>.</p>
+<hr><p>The zero-extension is indeed what happens when I try to run the following mock assembly code below:</p>
 <pre><code class="language-asm">main:
   ; Load `rdi` with all one's.
   mov rdi, 0xFFFFFFFFFFFFFFFF
@@ -134,43 +116,20 @@ assembly code below:</p>
   ; rdi will be 0x0000000011111111
   mov edi, edi
   ret
-</code></pre>
-<p>This was not obvious to me at all. The initial instruction <code>mov edi, edi</code> just
-looked like a nop equivalent with two bytes...</p>
+</code></pre><p>This was not obvious to me at all. The initial instruction <code>mov edi, edi</code> just looked like a nop equivalent with two bytes...</p>
 <p>Coming back to my original function:</p>
 <pre><code class="language-asm">unsigned int func(unsigned int idx) {
   static unsigned int my_table[] = {10, 20, 30, 40};
   return my_table[idx];
 }
-</code></pre>
-<p>Since I am using unsigned integers, the compiler can trust that the arguments
-passed to that function in assembly won't be more than 32 bits long in my
-machine.</p>
-<p>UPDATE: The compiler actually doesn't need to &quot;trust&quot; anything, it actually
-does not matter. The <code>movsx</code> instruction accepts operands of different sizes.
-This means that the 32 bits in <code>edi</code> will be moved with sign-extension to fit
-the 64 bits of <code>rdi</code>. The underlying 32 bit value will remain the same, and it
-doesn't matter what bits were in the most-significant upper 32bits of <code>rdi</code>
-before the <code>mov</code> operation - they will just be completely ignored. That is why
-the instruction <code>mov edi, edi</code> is not necessary beforehand!</p>
-<hr>
-<p>Remember that the ABI for C functions calls in assembly is that the first
-argument to the function, in this case idx, will be passed in the register rdi.</p>
-<p>So this function is cleaning up the most significant bits of rdi for us. I am
-still not totally sure why this is necessary, but perhaps the compiler assumes
-that some garbage could be held in the most significant bits of rdi and tries
-to clean that up first to avoid potential bugs.</p>
-<p>This assumption makes sense to me at first, because down in the assembly
-function body, we rely on rdi for finding the address offset of the element in
-the table that we want to return: <code>mov eax, DWORD PTR [rax+rdi*4]</code>.</p>
-<p>Now remains the question: &quot;Why is there an assumption by the compiler that rdi
-can contain garbage in the most significant bits?&quot;.</p>
-<p>This can happen if the function is being called with a &quot;casted&quot; value given
-that casting per-se does not clean up unused bits of a 64bit register. That
-could happen if a 64 bit integer was casted down to a 32 bit one.</p>
-<p>Again, this is very much based on my own understanding on how assembly works in
-my platform, if you think that I got something wrong please send me an email at
-marceelofernandes@gmail.com.</p>
+</code></pre><p>Since I am using unsigned integers, the compiler can trust that the arguments passed to that function in assembly won't be more than 32 bits long in my machine.</p>
+<p>UPDATE: The compiler actually doesn't need to "trust" anything, it actually does not matter. The <code>movsx</code> instruction accepts operands of different sizes. This means that the 32 bits in <code>edi</code> will be moved with sign-extension to fit the 64 bits of <code>rdi</code>. The underlying 32 bit value will remain the same, and it doesn't matter what bits were in the most-significant upper 32bits of <code>rdi</code> before the <code>mov</code> operation - they will just be completely ignored. That is why the instruction <code>mov edi, edi</code> is not necessary beforehand!</p>
+<hr><p>Remember that the ABI for C functions calls in assembly is that the first argument to the function, in this case idx, will be passed in the register rdi.</p>
+<p>So this function is cleaning up the most significant bits of rdi for us. I am still not totally sure why this is necessary, but perhaps the compiler assumes that some garbage could be held in the most significant bits of rdi and tries to clean that up first to avoid potential bugs.</p>
+<p>This assumption makes sense to me at first, because down in the assembly function body, we rely on rdi for finding the address offset of the element in the table that we want to return: <code>mov eax, DWORD PTR [rax+rdi*4]</code>.</p>
+<p>Now remains the question: "Why is there an assumption by the compiler that rdi can contain garbage in the most significant bits?".</p>
+<p>This can happen if the function is being called with a "casted" value given that casting per-se does not clean up unused bits of a 64bit register. That could happen if a 64 bit integer was casted down to a 32 bit one.</p>
+<p>Again, this is very much based on my own understanding on how assembly works in my platform, if you think that I got something wrong please send me an email at marceelofernandes@gmail.com.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

@@ -60,12 +60,10 @@
 </head>
 <body>
 <h1>Operation Point</h1>
-<pre><code>Created at: 2025-11-02
-</code></pre>
-<p>Operation point means DC steady-state: It finds the voltages and currents in a
-circuit when all signals have settled to a constant, non-time-varying value.</p>
+<pre><code class="language-">Created at: 2025-11-02
+</code></pre><p>Operation point means DC steady-state: It finds the voltages and currents in a circuit when all signals have settled to a constant, non-time-varying value.</p>
 <p>Given the following voltage divider:</p>
-<p><img src="voltage_divider.png" alt="voltage_divider.png"></p>
+<p><img alt="voltage_divider.png" src="voltage_divider.png"></p>
 <p>A simple file to describe this circuit can be:</p>
 <pre><code class="language-sp">Voltage Divider
 
@@ -74,8 +72,7 @@ V1 in 0 1
 R1 in out 1k
 R2 out 0 2k
 .end
-</code></pre>
-<p>Then on ngspice run:</p>
+</code></pre><p>Then on ngspice run:</p>
 <pre><code class="language-sh"># Operation point
 op
 
@@ -85,7 +82,6 @@ print all
 in = 1.000000e+00
 out = 6.666667e-01
 v1#branch = -3.33333e-04
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

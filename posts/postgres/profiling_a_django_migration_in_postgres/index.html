@@ -60,124 +60,80 @@
 </head>
 <body>
 <h1>Profiling a Django Migration in Postgres</h1>
-<pre><code>Created at: 2025-02-17
-</code></pre>
-<p>In this post I want to start from the end. I want to look into the SQL for a
-particular schema change, and then verify whether a Django migration that
-produces this change is safe to run in production or not.</p>
-<p>Let's start with a question:
-<em>Is the following schema change safe to run in a production database?</em></p>
+<pre><code class="language-">Created at: 2025-02-17
+</code></pre><p>In this post I want to start from the end. I want to look into the SQL for a particular schema change, and then verify whether a Django migration that produces this change is safe to run in production or not.</p>
+<p>Let's start with a question: _Is the following schema change safe to run in a production database?_</p>
 <pre><code class="language-sql">ALTER TABLE foo ADD COLUMN bar int NOT NULL DEFAULT 1234;
-</code></pre>
-<p>In this hypothetical scenario, <code>foo</code> is:</p>
-<ul>
-<li>Fairly large (over 100GB).</li>
-<li>Used in anger in production.</li>
-<li>Running on a supported Postgres version (&gt; v12).</li>
-</ul>
-<p>Without answering the question yet, I want you to consider this other
-statement:</p>
+</code></pre><p>In this hypothetical scenario, <code>foo</code> is:</p>
+<ul><li>Fairly large (over 100GB).</li><li>Used in anger in production.</li><li>Running on a supported Postgres version (> v12).</li></ul>
+<p>Without answering the question yet, I want you to consider this other statement:</p>
 <pre><code class="language-sql">ALTER TABLE foo ADD COLUMN buzz int NOT NULL DEFAULT (random() * 10000)::int;
-</code></pre>
-<p>So, have you figured if either (or both) of those are safe to run?</p>
-<p>If not, you might want to start thinking about what Postgres would have to do
-in order to have a <code>NOT NULL</code> column with a <code>DEFAULT</code> value.</p>
-<p>Would it need to scan the table and store those values in existing rows? What
-if the new rows didn't fit in the page? Is there a way to do it so that
-Postgres doesn't need to scan the table?</p>
-<p>One of the worst things that can happen when you perform a schema change is for
-it to end up rewriting the table. Rewriting takes time, and while the table is
-being rewritten, the DDL statement will be holding an access exclusive lock,
-not permitting any other sessions and transactions to read or write to the
-table.</p>
+</code></pre><p>So, have you figured if either (or both) of those are safe to run?</p>
+<p>If not, you might want to start thinking about what Postgres would have to do in order to have a <code>NOT NULL</code> column with a <code>DEFAULT</code> value.</p>
+<p>Would it need to scan the table and store those values in existing rows? What if the new rows didn't fit in the page? Is there a way to do it so that Postgres doesn't need to scan the table?</p>
+<p>One of the worst things that can happen when you perform a schema change is for it to end up rewriting the table. Rewriting takes time, and while the table is being rewritten, the DDL statement will be holding an access exclusive lock, not permitting any other sessions and transactions to read or write to the table.</p>
 <h2>Supposition: The table is rewritten</h2>
-<p>So starting with the first statement, let's investigate whether it rewrites the
-table or not. We will first need to get the <code>foo</code> table up, and populate it.</p>
+<p>So starting with the first statement, let's investigate whether it rewrites the table or not. We will first need to get the <code>foo</code> table up, and populate it.</p>
 <pre><code class="language-sql">-- Create the table
 DROP TABLE IF EXISTS foo;
 CREATE TABLE foo (id SERIAL PRIMARY KEY);
 
 -- Insert 100_000 rows.
 INSERT INTO foo (id) SELECT generate_series(1, 100000);
-</code></pre>
-<p>Next, we want to know what Postgres is doing internally. For that, we'll need
-to profile what happens when the <code>ALTER TABLE</code> command is running.</p>
-<p>Note: As I am writing this post on a Mac, I will use &quot;Instruments&quot; to profile
-Postgres, but if you are on a Linux machine you can use <code>perf</code> instead. I wrote
-a guide
-<a href="https://marcelofern.com/notes/databases/postgres/internals/profiling_postgres_on_linux.html">here</a>
-for the Linux users.</p>
-<p>The first step is to grab the process id of the <code>psql</code> shell we are going to
-use for profiling:</p>
+</code></pre><p>Next, we want to know what Postgres is doing internally. For that, we'll need to profile what happens when the <code>ALTER TABLE</code> command is running.</p>
+<p>Note: As I am writing this post on a Mac, I will use "Instruments" to profile Postgres, but if you are on a Linux machine you can use <code>perf</code> instead. I wrote a guide <a href="https://marcelofern.com/notes/databases/postgres/internals/profiling_postgres_on_linux.html">here</a> for the Linux users.</p>
+<p>The first step is to grab the process id of the <code>psql</code> shell we are going to use for profiling:</p>
 <pre><code class="language-sql">SELECT pg_backend_pid();
-</code></pre>
-<p>Then, open the &quot;Time Profiler&quot; tool on Instruments.</p>
-<p><img src="img_time_profiler.png" alt="img_time_profiler.png"></p>
-<p>And find the Postgres process. In terms of configuration I mostly use the
-defaults. I only change the frequency to &quot;High&quot;, and recording mode to
-&quot;Deferred&quot;:</p>
-<p><img src="img_time_profiler_config.png" alt="img_time_profiler_config.png"></p>
+</code></pre><p>Then, open the "Time Profiler" tool on Instruments.</p>
+<p><img alt="img_time_profiler.png" src="img_time_profiler.png"></p>
+<p>And find the Postgres process. In terms of configuration I mostly use the defaults. I only change the frequency to "High", and recording mode to "Deferred":</p>
+<p><img alt="img_time_profiler_config.png" src="img_time_profiler_config.png"></p>
 <p>Now we hit <code>RECORD</code>, and perform these statements on psql:</p>
 <pre><code class="language-sql">BEGIN;
 ALTER TABLE foo ADD COLUMN buzz int NOT NULL DEFAULT (random() * 1000)::int;
-</code></pre>
-<p>And then we hit <code>STOP</code>. The profiler result would look something like this:</p>
-<p><img src="img_default_random_profile.png" alt="img_default_random_profile.png"></p>
+</code></pre><p>And then we hit <code>STOP</code>. The profiler result would look something like this:</p>
+<p><img alt="img_default_random_profile.png" src="img_default_random_profile.png"></p>
 <p>There is a suspicious call to <code>ATRewriteTable</code>... This is not good!</p>
-<p>Let's see what the other alter table with a constant default does. But first,
-let's rollback that transaction.</p>
+<p>Let's see what the other alter table with a constant default does. But first, let's rollback that transaction.</p>
 <pre><code class="language-sql">ROLLBACK;
-</code></pre>
-<p>And now let's run our Time Profiler and then execute the command:</p>
+</code></pre><p>And now let's run our Time Profiler and then execute the command:</p>
 <pre><code class="language-sql">BEGIN;
 ALTER TABLE foo ADD COLUMN bar int NOT NULL DEFAULT 12345;
-</code></pre>
-<p><img src="img_default_constant_profile.png" alt="img_default_constant_profile.png"></p>
+</code></pre><p><img alt="img_default_constant_profile.png" src="img_default_constant_profile.png"></p>
 <p>Wait a minute... Is this calling <code>ATRewriteTables</code>?</p>
-<p>Yes! But this is a false positive... Calling this function doesn't mean that it
-is actually rewritting the table. Perhaps a better name for that function
-should be <code>ATMaybeRewriteTables</code>? ...</p>
-<p>In any case, if <code>ATRewriteTables</code> is going to actually do anything, it will
-call the <code>ATRewriteTable</code> (note the singular) function, where the magic
-happens.</p>
+<p>Yes! But this is a false positive... Calling this function doesn't mean that it is actually rewritting the table. Perhaps a better name for that function should be <code>ATMaybeRewriteTables</code>? ...</p>
+<p>In any case, if <code>ATRewriteTables</code> is going to actually do anything, it will call the <code>ATRewriteTable</code> (note the singular) function, where the magic happens.</p>
 <p>But also, scrolling down that function I see the pattern:</p>
-<pre><code class="language-c">    if (newrel || needscan)
-    {
-        if (newrel)
-            ereport(DEBUG1,
-                    (errmsg_internal(&quot;rewriting table \&quot;%s\&quot;&quot;,
-                                     RelationGetRelationName(oldrel))));
-        else
-            ereport(DEBUG1,
-                    (errmsg_internal(&quot;verifying table \&quot;%s\&quot;&quot;,
-                                     RelationGetRelationName(oldrel))));
-</code></pre>
-<p>So this means that Postgres writes to the logger when it's rewriting or
-verifying a table. This configuration can be turned on by:</p>
+<pre><code class="language-c">	if (newrel || needscan)
+	{
+		if (newrel)
+			ereport(DEBUG1,
+					(errmsg_internal("rewriting table \"%s\"",
+									 RelationGetRelationName(oldrel))));
+		else
+			ereport(DEBUG1,
+					(errmsg_internal("verifying table \"%s\"",
+									 RelationGetRelationName(oldrel))));
+</code></pre><p>So this means that Postgres writes to the logger when it's rewriting or verifying a table. This configuration can be turned on by:</p>
 <pre><code class="language-sql">SET client_min_messages=debug1;
-</code></pre>
-<p>So if we run the SQL statements again, we'll see that log message showing up in
-the <code>psql</code> shell:</p>
+</code></pre><p>So if we run the SQL statements again, we'll see that log message showing up in the <code>psql</code> shell:</p>
 <pre><code class="language-sql">BEGIN;
 
 ALTER TABLE foo ADD COLUMN buzz int NOT NULL DEFAULT (random() * 10000)::int;
--- DEBUG:  rewriting table &quot;foo&quot;
+-- DEBUG:  rewriting table "foo"
 
 -- This one doesn't print anything, as the table is not rewritten.
 ALTER TABLE foo ADD COLUMN bar int NOT NULL DEFAULT 12345;
 
 ROLLBACK;
-</code></pre>
-<h2>The Django Equivalent</h2>
-<p>Say we have the following &quot;dumb&quot; model:</p>
+</code></pre><h2>The Django Equivalent</h2>
+<p>Say we have the following "dumb" model:</p>
 <pre><code class="language-python">class Foo(models.Model):
     pass
-</code></pre>
-<p>Let's add a new integer field with a default:</p>
+</code></pre><p>Let's add a new integer field with a default:</p>
 <pre><code class="language-python">class Foo(models.Model):
     bar = models.IntegerField(null=False, default=10)
-</code></pre>
-<p>Django will create the following migration automatically:</p>
+</code></pre><p>Django will create the following migration automatically:</p>
 <pre><code class="language-py"># Generated by Django 5.1.6 on 2025-02-17 05:54
 
 from django.db import migrations, models
@@ -196,77 +152,56 @@ class Migration(migrations.Migration):
             field=models.IntegerField(default=10),
         ),
     ]
-</code></pre>
-<p>Which results in these SQL statements:</p>
+</code></pre><p>Which results in these SQL statements:</p>
 <pre><code class="language-sql">BEGIN;
 --
 -- Add field bar to foo
 --
-ALTER TABLE &quot;myfoo&quot; ADD COLUMN &quot;bar&quot; integer DEFAULT 10 NOT NULL;
-ALTER TABLE &quot;myfoo&quot; ALTER COLUMN &quot;bar&quot; DROP DEFAULT;
+ALTER TABLE "myfoo" ADD COLUMN "bar" integer DEFAULT 10 NOT NULL;
+ALTER TABLE "myfoo" ALTER COLUMN "bar" DROP DEFAULT;
 COMMIT;
-</code></pre>
-<p>Why is Django creating a default and dropping it immediately?
-This happens due to the consequences of three considerations:</p>
-<ol>
-<li>Django allows <code>default</code> to be a callable:<pre><code class="language-py">def my_default():
-    import random
-    return random.randint(0, 42)
+</code></pre><p>Why is Django creating a default and dropping it immediately? This happens due to the consequences of three considerations:</p>
+<ol><li>Django allows <code>default</code> to be a callable:<pre><code class="language-py">    def my_default():
+        import random
+        return random.randint(0, 42)
 
-class Foo(models.Model):
-    bar = models.IntegerField(null=False, default=my_default)
-</code></pre>
-In this case, Django grabs the first value returned by <code>my_default</code> as the
-value to generate the DDL statement. If you run <code>sqlmigrate</code> multiple
-times, it will even generate different outputs!<pre><code class="language-sql">-- ./manage.py sqlmigrate app 0004
+    class Foo(models.Model):
+        bar = models.IntegerField(null=False, default=my_default)
+    </code></pre> In this case, Django grabs the first value returned by <code>my_default</code> as the value to generate the DDL statement. If you run <code>sqlmigrate</code> multiple times, it will even generate different outputs!<pre><code class="language-sql">    -- ./manage.py sqlmigrate app 0004
 
-BEGIN;
-ALTER TABLE &quot;foo&quot; ADD COLUMN &quot;bar&quot; integer DEFAULT 15 NOT NULL;
-ALTER TABLE &quot;foo&quot; ALTER COLUMN &quot;bar&quot; DROP DEFAULT;
-COMMIT;
+    BEGIN;
+    ALTER TABLE "foo" ADD COLUMN "bar" integer DEFAULT 15 NOT NULL;
+    ALTER TABLE "foo" ALTER COLUMN "bar" DROP DEFAULT;
+    COMMIT;
 
--- ./manage.py sqlmigrate app 0004
+    -- ./manage.py sqlmigrate app 0004
 
-BEGIN;
---
--- Add field bar to foo
---
-ALTER TABLE &quot;foo&quot; ADD COLUMN &quot;bar&quot; integer DEFAULT 4 NOT NULL;
-ALTER TABLE &quot;foo&quot; ALTER COLUMN &quot;bar&quot; DROP DEFAULT;
-COMMIT;
-</code></pre>
-</li>
-<li>As a consequence of the above, the callable may contain a very complex logic
-that isn't able to be reproduced as SQL. This means that Django has to
-enforce the default in the application level, not in the database level.</li>
-<li>If the above is true, why have a <code>DEFAULT</code> then? That's because adding a NOT
-NULL without a default in an existing table is an error in Postgres:<pre><code class="language-sql">ALTER TABLE foo ADD COLUMN buzz_buzz int NOT NULL;
--- ERROR:  column &quot;buzz_buzz&quot; of relation &quot;foo&quot; contains null values
-</code></pre>
-</li>
-</ol>
-<p>We can see these limitations as a consequence of Django's design to allow the
-<code>default</code> argument to work with callables.</p>
+    BEGIN;
+    --
+    -- Add field bar to foo
+    --
+    ALTER TABLE "foo" ADD COLUMN "bar" integer DEFAULT 4 NOT NULL;
+    ALTER TABLE "foo" ALTER COLUMN "bar" DROP DEFAULT;
+    COMMIT;
+    </code></pre></li><li>As a consequence of the above, the callable may contain a very complex logic that isn't able to be reproduced as SQL. This means that Django has to enforce the default in the application level, not in the database level.</li><li>If the above is true, why have a <code>DEFAULT</code> then? That's because adding a NOT NULL without a default in an existing table is an error in Postgres:<pre><code class="language-sql">   ALTER TABLE foo ADD COLUMN buzz_buzz int NOT NULL;
+   -- ERROR:  column "buzz_buzz" of relation "foo" contains null values
+   </code></pre></li></ol>
+<p>We can see these limitations as a consequence of Django's design to allow the <code>default</code> argument to work with callables.</p>
 <h2>Further Problems</h2>
-<p>If your database can be used by people from <em>outside</em> the Django application,
-the defaults won't be honoured. From a data-integrity perspective, it is best
-to enforce rules on the database than on the application.</p>
+<p>If your database can be used by people from _outside_ the Django application, the defaults won't be honoured. From a data-integrity perspective, it is best to enforce rules on the database than on the application.</p>
 <h2>A Little Plot Twist</h2>
-<p>Luckily, Django 5.0 now includes the parameter <code>Field.db_default</code> that allows
-the default to be enforced on the database level!</p>
+<p>Luckily, Django 5.0 now includes the parameter <code>Field.db_default</code> that allows the default to be enforced on the database level!</p>
 <p>So you can have this change:</p>
 <pre><code class="language-python">class Foo(models.Model):
     bar = models.IntegerField(null=False, db_default=10)
-</code></pre>
-<p>Which creates these changes:</p>
+</code></pre><p>Which creates these changes:</p>
 <pre><code class="language-sql">BEGIN;
 --
 -- Add field bar to foo
 --
-ALTER TABLE &quot;myfoo&quot; ADD COLUMN &quot;bar&quot; integer DEFAULT 10 NOT NULL;
+ALTER TABLE "myfoo" ADD COLUMN "bar" integer DEFAULT 10 NOT NULL;
 COMMIT;
-</code></pre>
-<p>Note how the <code>DEFAULT</code> is not dropped in this case.</p>
+</code></pre><p>Note how the <code>DEFAULT</code> is not dropped in this case.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

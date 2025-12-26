@@ -60,11 +60,8 @@
 </head>
 <body>
 <h1>FKs Without Downtime</h1>
-<pre><code>Created at: 2024-10-29
-</code></pre>
-<p>In order to create a foreign key in an existing table without downtime, a few
-extra operations are necessary to ensure no application downtime will be
-caused.</p>
+<pre><code class="language-">Created at: 2024-10-29
+</code></pre><p>In order to create a foreign key in an existing table without downtime, a few extra operations are necessary to ensure no application downtime will be caused.</p>
 <h2>Setting up the environment</h2>
 <p>We need a schema and a table with some rows:</p>
 <pre><code class="language-sql">DROP TABLE IF EXISTS foo;
@@ -85,51 +82,31 @@ SELECT generate_series(1, 1000000) AS int_field;
 
 VACUUM ANALYZE foo;
 VACUUM ANALYZE bar;
-</code></pre>
-<h2>1. Add the field</h2>
-<p>Assume we want to add a foreign key in <code>foo</code> that points to a row in <code>bar</code>.</p>
+</code></pre><h2><ol><li>AAdddd  tthhee  ffiieelldd</h2>
+ Assume we want to add a foreign key in <code>foo</code> that points to a row in <code>bar</code>.</li></ol>
 <pre><code class="language-sql">ALTER TABLE foo ADD COLUMN bar_id BIGINT NULL;
-</code></pre>
-<p>This operation takes an ACCESS EXCLUSIVE LOCK, but for a very short duration.
-Adding a nullable field in Postgres doesn't require a full table scan starting
-on version 11.</p>
+</code></pre><p>This operation takes an ACCESS EXCLUSIVE LOCK, but for a very short duration. Adding a nullable field in Postgres doesn't require a full table scan starting on version 11.</p>
 <h2>2. Add an index for lookup</h2>
 <p>Before we can add the constraint, we need an index to look the bar_id field up.</p>
 <pre><code class="language-sql">SET lock_timeout TO '0';
 CREATE INDEX CONCURRENTLY IF NOT EXISTS foo_bar_fk ON foo (bar_id);
-</code></pre>
-<p>This operation takes an ShareUpdateExclusiveLock. It won't block reads or
-writes on the table.</p>
-<p>This is important because as soon as the constraint is created, any deletion
-on the <code>bar</code> table will need to look into <code>foo</code> to verify what to do next, like
-cascading deletions (ON DELETE / ON UPDATE ...).</p>
-<p>I've debugged Postgres source code, and the <code>RI_Fkey_restrict_del</code> trigger
-ultimately calls <code>ri_restrict</code> which triggers the following query to check
-that <code>foo</code> has a FK to the soon-to-be-deleted bar</p>
+</code></pre><p>This operation takes an ShareUpdateExclusiveLock. It won't block reads or writes on the table.</p>
+<p>This is important because as soon as the constraint is created, any deletion on the <code>bar</code> table will need to look into <code>foo</code> to verify what to do next, like cascading deletions (ON DELETE / ON UPDATE ...).</p>
+<p>I've debugged Postgres source code, and the <code>RI_Fkey_restrict_del</code> trigger ultimately calls <code>ri_restrict</code> which triggers the following query to check that <code>foo</code> has a FK to the soon-to-be-deleted bar</p>
 <pre><code class="language-sql">-- x is my local user
-SELECT 1 FROM ONLY &quot;public&quot;.&quot;foo&quot; x
-WHERE $1 OPERATOR(pg_catalog.=) &quot;bar_id&quot;
+SELECT 1 FROM ONLY "public"."foo" x
+WHERE $1 OPERATOR(pg_catalog.=) "bar_id"
 FOR KEY SHARE OF x
-</code></pre>
-<p>The same happens when trying to change the <code>id</code> of an existing <code>bar</code> row.</p>
+</code></pre><p>The same happens when trying to change the <code>id</code> of an existing <code>bar</code> row.</p>
 <h2>3. Add the constraint in INVALID mode.</h2>
-<p>This will make the constraint only act on new inserts and updates on the table.
-Existing rows (potentially violated by containing fks of rows that don't exist
-any more in the referenced table), won't be checked unless they're being
-updated.</p>
+<p>This will make the constraint only act on new inserts and updates on the table. Existing rows (potentially violated by containing fks of rows that don't exist any more in the referenced table), won't be checked unless they're being updated.</p>
 <pre><code class="language-sql">ALTER TABLE foo
 ADD CONSTRAINT fk_bar FOREIGN KEY (bar_id)
 REFERENCES bar (id)
 DEFERRABLE INITIALLY DEFERRED
 NOT VALID;
-</code></pre>
-<p>This operation will take a ShareRowExclusive lock on <strong>both</strong> the foo table
-and the bar table. This will not block reads, but it will block insert,
-updates, and deletes. This will only happen for a short time, as this operation
-won't need to scan the whole table.</p>
-<p>Postgres implementation calls <code>ATController</code> (alter table controller) which
-skips the operation <code>ATRewriteTables</code> and will only call <code>ATRewriteCatalogs</code>.
-This means that <code>RI_Initial_Check</code> is never called:</p>
+</code></pre><p>This operation will take a ShareRowExclusive lock on <b>both</b> the foo table and the bar table. This will not block reads, but it will block insert, updates, and deletes. This will only happen for a short time, as this operation won't need to scan the whole table.</p>
+<p>Postgres implementation calls <code>ATController</code> (alter table controller) which skips the operation <code>ATRewriteTables</code> and will only call <code>ATRewriteCatalogs</code>. This means that <code>RI_Initial_Check</code> is never called:</p>
 <pre><code class="language-c">/*
  * RI_Initial_Check -
  *
@@ -137,45 +114,28 @@ This means that <code>RI_Initial_Check</code> is never called:</p>
  * This is not a trigger procedure, but is called during ALTER TABLE
  * ADD FOREIGN KEY to validate the initial table contents.
  */
-</code></pre>
-<p>Note:</p>
-<ul>
-<li>DEFERRED INITIALLY DEFERRED means the constraint won't be checked until the
-end of the transaction. If necessary, This behaviour can be changed on an
-transaction-per-transaction basis (via <code>SET CONSTRAINTS</code>).</li>
-</ul>
-<p>Note: <code>ON DELETE RESTRICT</code> can be used here, otherwise <code>NO ACTION</code> is the
-default.</p>
-<blockquote>
-<p>Restricting and cascading deletes are the two most common options. RESTRICT
-prevents deletion of a referenced row. NO ACTION means that if any
-referencing rows still exist when the constraint is checked, an error is
-raised; this is the default behavior if you do not specify anything. (The
-essential difference between these two choices is that NO ACTION allows the
-check to be deferred until later in the transaction, whereas RESTRICT does
-not.)</p>
-</blockquote>
+</code></pre><p>Note: - DEFERRED INITIALLY DEFERRED means the constraint won't be checked until the end of the transaction. If necessary, This behaviour can be changed on an transaction-per-transaction basis (via <code>SET CONSTRAINTS</code>).</p>
+<p>Note: <code>ON DELETE RESTRICT</code> can be used here, otherwise <code>NO ACTION</code> is the default.</p>
+<blockquote>Restricting and cascading deletes are the two most common options. RESTRICT</blockquote>
+<blockquote>prevents deletion of a referenced row. NO ACTION means that if any</blockquote>
+<blockquote>referencing rows still exist when the constraint is checked, an error is</blockquote>
+<blockquote>raised; this is the default behavior if you do not specify anything. (The</blockquote>
+<blockquote>essential difference between these two choices is that NO ACTION allows the</blockquote>
+<blockquote>check to be deferred until later in the transaction, whereas RESTRICT does</blockquote>
+<blockquote>not.)</blockquote>
 <p>That means if you do this:</p>
 <pre><code class="language-sql">INSERT INTO foo (int_field, bar_id) values (1, 42);
 DELETE FROM bar WHERE id = 42;
-</code></pre>
-<p>You'll get:</p>
-<pre><code>ERROR:  update or delete on table &quot;bar&quot; violates foreign key constraint &quot;fk_bar&quot; on table &quot;foo&quot;
-DETAIL:  Key (id)=(42) is still referenced from table &quot;foo&quot;.
-</code></pre>
-<h2>4. Validate The Constraint</h2>
-<p>Provided there are no invalid entries in foo, i.e., no rows in foo point to
-fks in bar that don't exist, you can validate the constraint:</p>
+</code></pre><p>You'll get:</p>
+<pre><code class="language-">ERROR:  update or delete on table "bar" violates foreign key constraint "fk_bar" on table "foo"
+DETAIL:  Key (id)=(42) is still referenced from table "foo".
+</code></pre><h2>4. Validate The Constraint</h2>
+<p>Provided there are no invalid entries in foo, i.e., no rows in foo point to fks in bar that don't exist, you can validate the constraint:</p>
 <pre><code class="language-sql">ALTER TABLE foo VALIDATE CONSTRAINT fk_bar;
-</code></pre>
-<p>This query will take a ShareUpdateExclusive lock on the foo table (does
-not block reads nor writes), and a RowShare lock on the bar table (does
-not block reads nor writes).</p>
-<p>This will call <code>RI_Initial_Check</code>, but with a weaker lock (share update excl)
-called from <code>validateForeignKeyConstraint</code>.</p>
+</code></pre><p>This query will take a ShareUpdateExclusive lock on the foo table (does not block reads nor writes), and a RowShare lock on the bar table (does not block reads nor writes).</p>
+<p>This will call <code>RI_Initial_Check</code>, but with a weaker lock (share update excl) called from <code>validateForeignKeyConstraint</code>.</p>
 <h2>5. OPTIONAL: Set a NOT NULL constraint</h2>
-<p>It might be that you never want the bar_id field to be null. In this case
-there are a few extra steps you need to perform:</p>
+<p>It might be that you never want the bar_id field to be null. In this case there are a few extra steps you need to perform:</p>
 <pre><code class="language-sql">-- The below still requires ACCESS EXCLUSIVE lock, but doesn't require a full
 -- table scan.
 -- This check will only be applied to new or modified rows, existing rows
@@ -195,14 +155,13 @@ ALTER TABLE foo VALIDATE CONSTRAINT bar_id_not_null;
 -- Requires ACCESS EXCLUSIVE LOCK, but foo_not_null proves that there is no
 -- NULL in this column and a full table scan is not required. Therefore, the
 -- ALTER TABLE command should be fast.
--- If you are not on Postgres &gt;=12, you should skip this as it will take a lot
+-- If you are not on Postgres >=12, you should skip this as it will take a lot
 -- of time, and the current CHECK constraint might be good enough.
 ALTER TABLE foo ALTER COLUMN bar_id SET NOT NULL;
 
 -- The CHECK constraint has fulfilled its obligation and can now departure.
 -- This takes an ACCESS EXCLUSIVE lock, but should run very fast.
 ALTER TABLE foo DROP CONSTRAINT bar_id_not_null;
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

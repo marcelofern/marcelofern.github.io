@@ -60,9 +60,8 @@
 </head>
 <body>
 <h1>Changing SERIAL column to IDENTITY without downtime</h1>
-<pre><code>Created at: 2025-11-17
-</code></pre>
-<p>Tested on Postgres 15.</p>
+<pre><code class="language-">Created at: 2025-11-17
+</code></pre><p>Tested on Postgres 15.</p>
 <pre><code class="language-sql">-- Make the script idempotent
 DROP TABLE IF EXISTS foo;
 
@@ -98,7 +97,7 @@ BEGIN
     RAISE NOTICE 'The last value of the sequence is: %', last_value;
 
     -- Drop the field default, else we'd get the error:
-    -- column &quot;id&quot; of relation &quot;foo&quot; already has a default value.
+    -- column "id" of relation "foo" already has a default value.
     ALTER TABLE foo ALTER COLUMN id DROP DEFAULT;
 
     -- Set the column to be GENERATED ALWAYS AS IDENTITY with the restart value
@@ -112,7 +111,6 @@ END $$;
 
 -- Insert data into foo to validate there's no duplicated id conflict.
 INSERT INTO foo DEFAULT VALUES;
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

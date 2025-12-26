@@ -60,17 +60,13 @@
 </head>
 <body>
 <h1>ALTER SEQUENCE ... CYCLE</h1>
-<pre><code>Created at: 2025-08-19
-</code></pre>
-<p>The CYCLE keyword means:</p>
-<blockquote>
-<p>The optional CYCLE key word can be used to enable the sequence to wrap around
-when the maxvalue or minvalue has been reached by an ascending or descending
-sequence respectively. If the limit is reached, the next number generated
-will be the minvalue or maxvalue, respectively.</p>
-</blockquote>
-<p>Setting this value will update the <code>seqcycle</code> column in the <code>pg_sequence</code>
-catalog table.</p>
+<pre><code class="language-">Created at: 2025-08-19
+</code></pre><p>The CYCLE keyword means:</p>
+<blockquote>The optional CYCLE key word can be used to enable the sequence to wrap around</blockquote>
+<blockquote>when the maxvalue or minvalue has been reached by an ascending or descending</blockquote>
+<blockquote>sequence respectively. If the limit is reached, the next number generated</blockquote>
+<blockquote>will be the minvalue or maxvalue, respectively.</blockquote>
+<p>Setting this value will update the <code>seqcycle</code> column in the <code>pg_sequence</code> catalog table.</p>
 <h2>Example</h2>
 <pre><code class="language-sql">DROP TABLE IF EXISTS foo CASCADE;
 CREATE SEQUENCE seq;
@@ -78,10 +74,8 @@ CREATE TABLE foo (id INTEGER);
 ALTER TABLE foo ALTER COLUMN id SET DEFAULT nextval('seq');
 
 ALTER SEQUENCE seq MINVALUE -2147483647 MAXVALUE 2147483647 CYCLE;
-</code></pre>
-<h2>SYNTAX for ALTER SEQUENCE</h2>
-<p>Syntax for ALTER SEQUENCE:</p>
-<pre><code>#&gt; \h ALTER SEQUENCE
+</code></pre><h2>SYNTAX for ALTER SEQUENCE</h2>
+<p>Syntax for ALTER SEQUENCE: <pre><code class="language-">#> \h ALTER SEQUENCE
 Command:     ALTER SEQUENCE
 Description: change the definition of a sequence generator
 Syntax:
@@ -96,10 +90,9 @@ ALTER SEQUENCE [ IF EXISTS ] name
 ALTER SEQUENCE [ IF EXISTS ] name SET { LOGGED | UNLOGGED }
 ALTER SEQUENCE [ IF EXISTS ] name OWNER TO { new_owner | CURRENT_ROLE | CURRENT_USER | SESSION_USER }
 ALTER SEQUENCE [ IF EXISTS ] name RENAME TO new_name
-ALTER SEQUENCE [ IF EXISTS ] name SET SCHEMA new_schema
+ALTER SEQUENCE [ IF EXISTS ] name SET SCHEMA new_schema</p>
 
 URL: https://www.postgresql.org/docs/15/sql-altersequence.html
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

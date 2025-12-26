@@ -72,44 +72,31 @@ and esi, 0
 sub edi, edi
 push 0
 pop rbp
-</code></pre>
-<p>The interesting trick here is:</p>
+</code></pre><p>The interesting trick here is:</p>
 <pre><code class="language-asm">loop $
-</code></pre>
-<p>The above creates an infinite loop until RCX reaches zero. The mark <code>$</code>
-corresponds to the current location or address in the code. This means that
-<code>loop</code> will loop back to itself.</p>
+</code></pre><p>The above creates an infinite loop until RCX reaches zero. The mark <code>$</code> corresponds to the current location or address in the code. This means that <code>loop</code> will loop back to itself.</p>
 <h2>0x01</h2>
-<p>rax and rdx are summed, where rax stores the value of the summation, and rdx
-stores the old value of rax before the summation.</p>
-<p>It can also compute the rcx'd element of the fibonnaci sequence assuming that
-rax = 0 and rdx = 1.</p>
+<p>rax and rdx are summed, where rax stores the value of the summation, and rdx stores the old value of rax before the summation.</p>
+<p>It can also compute the rcx'd element of the fibonnaci sequence assuming that rax = 0 and rdx = 1.</p>
 <pre><code class="language-asm">.loop:
     xadd rax, rdx
     loop .loop
-</code></pre>
-<p>Note that <code>xadd</code> (Exchange and add) means:</p>
-<blockquote>
-<p>Exchanges the first operand (destination operand) with the second operand
-(source operand), then loads the sum of the two values into the destination
-operand. The destination operand can be a register or a memory location; the
-source operand is a register.</p>
-</blockquote>
+</code></pre><p>Note that <code>xadd</code> (Exchange and add) means:</p>
+<blockquote>Exchanges the first operand (destination operand) with the second operand</blockquote>
+<blockquote>(source operand), then loads the sum of the two values into the destination</blockquote>
+<blockquote>operand. The destination operand can be a register or a memory location; the</blockquote>
+<blockquote>source operand is a register.</blockquote>
 <h2>0x02</h2>
-<p>Returns 0 if rax is 0, returns 1 otherwise. Perhaps a boolean check.
-The resulting value is stored in rax itself.</p>
+<p>Returns 0 if rax is 0, returns 1 otherwise. Perhaps a boolean check. The resulting value is stored in rax itself.</p>
 <pre><code class="language-asm">neg rax
 sbb rax, rax
 neg rax
-</code></pre>
-<p>Note that <code>sbb</code> (Subtraction with borrow) means:</p>
-<blockquote>
-<p>Adds the source operand (second operand) and the carry (CF) flag, and
-subtracts the result from the destination operand (first operand). The result
-of the subtraction is stored in the destination operand. The destination
-operand can be a register or a memory location; the source operand can be an
-immediate, a register, or a memory location.</p>
-</blockquote>
+</code></pre><p>Note that <code>sbb</code> (Subtraction with borrow) means:</p>
+<blockquote>Adds the source operand (second operand) and the carry (CF) flag, and</blockquote>
+<blockquote>subtracts the result from the destination operand (first operand). The result</blockquote>
+<blockquote>of the subtraction is stored in the destination operand. The destination</blockquote>
+<blockquote>operand can be a register or a memory location; the source operand can be an</blockquote>
+<blockquote>immediate, a register, or a memory location.</blockquote>
 <p>And <code>neg</code> is a two's complement negation.</p>
 <h2>0x03</h2>
 <p>This returns the least of two numbers (rax or rdx):</p>
@@ -117,109 +104,71 @@ immediate, a register, or a memory location.</p>
 sbb rcx, rcx
 and rcx, rdx
 add rax, rcx
-</code></pre>
-<p>In other words:</p>
-<pre><code>if rdx &gt; rax:
+</code></pre><p>In other words:</p>
+<pre><code class="language-">if rdx > rax:
   return rax
 else:
   return rdx
-</code></pre>
-<p>Note that <code>sbb</code> (Subtraction with borrow) means:</p>
-<blockquote>
-<p>Adds the source operand (second operand) and the carry (CF) flag, and
-subtracts the result from the destination operand (first operand). The result
-of the subtraction is stored in the destination operand. The destination
-operand can be a register or a memory location; the source operand can be an
-immediate, a register, or a memory location.</p>
-</blockquote>
+</code></pre><p>Note that <code>sbb</code> (Subtraction with borrow) means:</p>
+<blockquote>Adds the source operand (second operand) and the carry (CF) flag, and</blockquote>
+<blockquote>subtracts the result from the destination operand (first operand). The result</blockquote>
+<blockquote>of the subtraction is stored in the destination operand. The destination</blockquote>
+<blockquote>operand can be a register or a memory location; the source operand can be an</blockquote>
+<blockquote>immediate, a register, or a memory location.</blockquote>
 <h2>0x04</h2>
 <p>Toggles the case of a char (upper/lower)</p>
 <pre><code class="language-asm">xor al, 0x20
-</code></pre>
-<h2>0x05</h2>
+</code></pre><h2>0x05</h2>
 <p>I had to look this one up online:</p>
-<blockquote>
-<p>Allows to branch depending on whether rax is in range [5,9] using only one
-jbe jump.</p>
-</blockquote>
+<blockquote>Allows to branch depending on whether rax is in range [5,9] using only one</blockquote>
+<blockquote>jbe jump.</blockquote>
 <pre><code class="language-asm">sub rax, 5
 cmp rax, 4
-</code></pre>
-<h2>0x06</h2>
+</code></pre><h2>0x06</h2>
 <p>This does nothing.</p>
-<p>The <code>NOT</code> instruction is a logical negation. If you have 1010, it becomes 0101.
-The <code>NEG</code> instruction is the two's complement negative.</p>
+<p>The <code>NOT</code> instruction is a logical negation. If you have 1010, it becomes 0101. The <code>NEG</code> instruction is the two's complement negative.</p>
 <p>The two's compliment algorithm is basically:</p>
-<ul>
-<li>Step 1: starting with the binary representation of the number, with the
-leading bit being a sign bit;</li>
-<li>Step 2: inverting (or flipping) all bits – changing every 0 to 1, and every 1
-to 0;</li>
-<li>Step 3: adding 1 to the entire inverted number, ignoring any overflow.
-Accounting for overflow will produce the wrong value for the result.</li>
-</ul>
-<p>So negating and adding one, is the same thing as <code>NEG</code>. So we're basically
-executing <code>NEG</code> twice, which give us the same result.</p>
+<ul><li>Step 1: starting with the binary representation of the number, with the leading bit being a sign bit;</li><li>Step 2: inverting (or flipping) all bits – changing every 0 to 1, and every 1 to 0;</li><li>Step 3: adding 1 to the entire inverted number, ignoring any overflow. Accounting for overflow will produce the wrong value for the result.</li></ul>
+<p>So negating and adding one, is the same thing as <code>NEG</code>. So we're basically executing <code>NEG</code> twice, which give us the same result.</p>
 <pre><code class="language-asm">not rax
 inc rax
 neg rax
-</code></pre>
-<h2>0x07</h2>
+</code></pre><h2>0x07</h2>
 <p>This also does nothing.</p>
 <p>Say rax is 10.</p>
-<ol>
-<li>inc rax == 11</li>
-<li>neg rax == -11</li>
-<li>inc rax == -10</li>
-<li>neg rax == 10</li>
-</ol>
+<ol><li>inc rax == 11</li><li>neg rax == <ul><li>11</li><li>inc rax == -10</li><li>neg rax == 10</li></ol>
 <pre><code class="language-asm">inc rax
 neg rax
 inc rax
 neg rax
-</code></pre>
+</code></pre></li></ul>
 <h2>0x08</h2>
 <p><code>rcr</code> is like a shift to the right, which is effectively a division by two.</p>
 <p>The below calculates the average between rax and rdx.</p>
-<p>However, if there's some overflow, or for example if one operator is negative
-and the other positive, the operation can fail.</p>
+<p>However, if there's some overflow, or for example if one operator is negative and the other positive, the operation can fail.</p>
 <p>Try setting rax to -20 and rdx to 30, for example.</p>
 <pre><code class="language-asm">add rax, rdx
 rcr rax, 1
-</code></pre>
-<h2>0x09</h2>
+</code></pre><h2>0x09</h2>
 <p>Calculates rax/8 and rounds it up to the near integer.</p>
-<p>Try with:</p>
-<ul>
-<li>rax = 9</li>
-<li>rax = 7</li>
-<li>rax = 8</li>
-<li>rax = 15</li>
-</ul>
+<p>Try with: - rax = 9 - rax = 7 - rax = 8 - rax = 15</p>
 <pre><code class="language-asm">shr rax, 3
 adc rax, 0
-</code></pre>
-<h2>0x0a</h2>
-<blockquote>
-<p>Increments by one an arbitrarily long little-endian integer at rdi.</p>
-</blockquote>
+</code></pre><h2>0x0a</h2>
+<blockquote>Increments by one an arbitrarily long little-endian integer at rdi.</blockquote>
 <p>I had to look this one up.</p>
 <pre><code class="language-asm">add byte [rdi], 1
 .loop:
     inc rdi
     adc byte [rdi], 0
     loop .loop
-</code></pre>
-<h2>0x0b</h2>
+</code></pre><h2>0x0b</h2>
 <p>My solution was: Negate <code>rdx</code> if <code>rax</code> == 0, do a <code>not</code> otherwise.</p>
-<blockquote>
-<p>Computes the negation of the 128-bit integer stored in the RDX:RAX registers
-(thanks Aviya Erenfeld!).</p>
-</blockquote>
+<blockquote>Computes the negation of the 128-bit integer stored in the RDX:RAX registers</blockquote>
+<blockquote>(thanks Aviya Erenfeld!).</blockquote>
 <pre><code class="language-asm">not rdx
 neg rax
 sbb rdx, -1
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

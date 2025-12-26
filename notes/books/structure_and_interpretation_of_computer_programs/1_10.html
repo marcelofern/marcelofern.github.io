@@ -59,11 +59,9 @@
   <![endif]-->
 </head>
 <body>
-<h1>Exercise 1.10</h1>
-<blockquote>
-<p>The following procedure computes a mathematical function called Ackermann's
-function:</p>
-</blockquote>
+<h1>Exercise <ol><li>1100</h1>
+<blockquote>T Thhee  ffoolllloowwiinngg  pprroocceedduurree  ccoommppuutteess  aa  mmaatthheemmaattiiccaall  ffuunnccttiioonn  ccaalllleedd  AAcckkeerrmmaannnn''ss</blockquote>
+<blockquote>ffuunnccttiioonn::</blockquote>
 <pre><code class="language-scm">(define (A x y)
         (cond ((= y 0) 0)
               ((= x 0) (* 2 y))
@@ -74,16 +72,14 @@ function:</p>
               )
         )
 )
-</code></pre>
+</code></pre></li></ol>
 <h2>First question</h2>
 <p>What are the values of the following expressions?</p>
 <pre><code class="language-scm">(A 1 10)
 (A 2 4)
 (A 3 3)
-</code></pre>
-<h2>First answer</h2>
-<p>In neither case, the value of y or x fall into the conditional shortcuts. We
-thus need to recursively comput the <code>else</code> branch.</p>
+</code></pre><h2>First answer</h2>
+<p>In neither case, the value of y or x fall into the conditional shortcuts. We thus need to recursively comput the <code>else</code> branch.</p>
 <pre><code class="language-scm">(A 1 10)
 (A 0 (A 1 9))
 (A 0 (A 0 (A 1 8))
@@ -149,31 +145,23 @@ thus need to recursively comput the <code>else</code> branch.</p>
 (A 1 16)
 ; again we fall back to (A 1 16) which
 ; we know is 2**16.
-</code></pre>
-<h2>Question 2</h2>
-<blockquote>
-<p>Consider the following procedures, where A is the procedure defined above:</p>
-</blockquote>
+</code></pre><h2>Question 2</h2>
+<blockquote>Consider the following procedures, where A is the procedure defined above:</blockquote>
 <pre><code class="language-scm">(define (f n) (A 0 n))
 (define (g n) (A 1 n))
 (define (h n) (A 2 n))
 (define (k n) (* 5 n n))
-</code></pre>
-<blockquote>
-<p>Give concise mathematical definitions for the functions computed by the
-procedures f, g, and h for positive integer values of n. For example, (k n)
-computes 5n**2.</p>
-</blockquote>
+</code></pre><blockquote>Give concise mathematical definitions for the functions computed by the</blockquote>
+<blockquote>procedures f, g, and h for positive integer values of n. For example, (k n)</blockquote>
+<blockquote>computes 5n**2.</blockquote>
 <h2>Second Answer</h2>
-<pre><code>f -&gt; 2*n
-g -&gt; 2**n for n &gt; 0.
-h -&gt; 2**(2**(2**(...))) n times.
-</code></pre>
-<p>Auxiliary python script to print the recursion for x and y.</p>
+<pre><code class="language-">f -> 2*n
+g -> 2**n for n > 0.
+h -> 2**(2**(2**(...))) n times.
+</code></pre><p>Auxiliary python script to print the recursion for x and y.</p>
 <pre><code class="language-python">
 def p(x, y):
-    print(f&quot;(A {x-1} (A {x} {y-1}))&quot;)
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+    print(f"(A {x-1} (A {x} {y-1}))")
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

@@ -61,147 +61,77 @@
 <body>
 <p>July 04, 2023</p>
 <h2>Electric/Digital Pianos</h2>
-<p>In the past week I have been thinking about buying a digital piano.
-I've watched a lot of Youtube videos to find the perfect one. The problem is
-that anything half decent costs about $1,500 NZD.</p>
+<p>In the past week I have been thinking about buying a digital piano. I've watched a lot of Youtube videos to find the perfect one. The problem is that anything half decent costs about $1,500 NZD.</p>
 <p>No way I'm going to pay that much.</p>
-<p>This is when I remembered I have an Alesis MIDI keyboard and a couple of
-Raspberry Pi's lying around. After some Googling, I've figured I could
-transform a Raspeberry Pi into a sound module, connect it to my speaker, and
-play it away.</p>
+<p>This is when I remembered I have an Alesis MIDI keyboard and a couple of Raspberry Pi's lying around. After some Googling, I've figured I could transform a Raspeberry Pi into a sound module, connect it to my speaker, and play it away.</p>
 <p>The below is a step-by-step manual of how I managed to get this setup working.</p>
 <h2>Raspberry Pi OS</h2>
-<p>We will use the <code>rpi-imager</code> package to build our OS image. You can find
-official support for Ubuntu, Mac, or Windows. The package is also ported to
-other OS by users (Arch linux, for example).</p>
-<p>The app gives you a feel options to build your OS. Here is what you have to
-input:</p>
-<ol>
-<li><p>Make sure you select the <code>Raspberry Pi OS Lite</code> version. This version
-does not include the desktop environment, which we don't need. We want as less
-things running in our OS as possible since audio processing is really sensitive
-to lags. The <code>Raspberry Pi OS Lite</code> comes in two flavours: 32-bit or 64-bit. We
-will prefer the <strong>64-bit</strong> as it runs faster (at the expense of more memory
-use). You have to check whether your Raspberry Pi device supports 64-bit first.
-If not, it is still fine to go with a 32-bit OS. If you end up finding any
-performance issues, come back to this instruction and try running a 64-bit Pi
-instead (realistically, you should be fine with 32-bit).</p>
-</li>
-<li><p>Enable ssh. This option is behind the cog icon. We will use ssh as our main
-interface to connect to our Raspberry Pi. Make sure to set a user and a
-password. For this tutorial I will be using the user <code>admin</code>.</p>
-</li>
-<li><p>Configure wireless LAN. This option is also behind the cog icon.</p>
-</li>
-<li><p>Set the hostname to something sensible like
-&quot;<code>raspberrypisoundmodule.local</code>&quot;. This is particularly useful if you have
-other Raspberries in your network and you don't want hostnames to mingle.</p>
-</li>
-</ol>
+<p>We will use the <code>rpi-imager</code> package to build our OS image. You can find official support for Ubuntu, Mac, or Windows. The package is also ported to other OS by users (Arch linux, for example).</p>
+<p>The app gives you a feel options to build your OS. Here is what you have to input:</p>
+<ol><li>Make sure you select the <code>Raspberry Pi OS Lite</code> version. This version does not include the desktop environment, which we don't need. We want as less things running in our OS as possible since audio processing is really sensitive to lags. The <code>Raspberry Pi OS Lite</code> comes in two flavours: 32<ul><li>bit or 64-bit. We will prefer the <b>64-bit</b> as it runs faster (at the expense of more memory use). You have to check whether your Raspberry Pi device supports 64-bit first. If not, it is still fine to go with a 32-bit OS. If you end up finding any performance issues, come back to this instruction and try running a 64-bit Pi instead (realistically, you should be fine with 32-bit).</li></ol>
+ 2. Enable ssh. This option is behind the cog icon. We will use ssh as our main interface to connect to our Raspberry Pi. Make sure to set a user and a password. For this tutorial I will be using the user <code>admin</code>.</li></ul>
+<p>3. Configure wireless LAN. This option is also behind the cog icon.</p>
+<p>4. Set the hostname to something sensible like "<code>raspberrypisoundmodule.local</code>". This is particularly useful if you have other Raspberries in your network and you don't want hostnames to mingle.</p>
 <h2>SSH connection</h2>
-<p>To connect to your Raspberry Pi, invoke the ssh command with the argument
-<code>&lt;user&gt;@&lt;hostname&gt;</code>. In my case this will be:</p>
+<p>To connect to your Raspberry Pi, invoke the ssh command with the argument <code><user>@<hostname></code>. In my case this will be:</p>
 <pre><code class="language-sh">ssh admin@raspberrypisoundmodule.local
-</code></pre>
-<h2>Audio configuration</h2>
-<p>Make sure your Raspberry Pi is set to work with high quality analogue audio.
-Edit your <code>/boot/config.txt</code> file to include the following line at the top:</p>
-<pre><code>audio_pwm_mode=2
-</code></pre>
-<p>Note that a modern Raspberry Pi will have this option enabled by default.</p>
+</code></pre><h2>Audio configuration</h2>
+<p>Make sure your Raspberry Pi is set to work with high quality analogue audio. Edit your <code>/boot/config.txt</code> file to include the following line at the top:</p>
+<pre><code class="language-">audio_pwm_mode=2
+</code></pre><p>Note that a modern Raspberry Pi will have this option enabled by default.</p>
 <h2>User configuration</h2>
-<p>We will add the user <code>admin</code> to the <code>audio</code> group so that this user is allowed
-to access and interact with audio-related resources. This user should already
-be linked to this group, but we will do so anyway in case you are using a
-version of Pi OS that doesn't do so.</p>
+<p>We will add the user <code>admin</code> to the <code>audio</code> group so that this user is allowed to access and interact with audio-related resources. This user should already be linked to this group, but we will do so anyway in case you are using a version of Pi OS that doesn't do so.</p>
 <pre><code class="language-sh">sudo usermod -a -G audio admin
-</code></pre>
-<p>You should now see the link between the user and the group when you run:</p>
+</code></pre><p>You should now see the link between the user and the group when you run:</p>
 <pre><code class="language-sh">getent group
-</code></pre>
-<h2>Setting audio resource limits</h2>
-<p>Now we are going to edit <code>/etc/security/limits.d/audio.conf</code>.
-This file is used to set resource limits for processes related to audio. By
-doing this, we will be able to control and allocate system resources for
-audio applications like CPU usage, memory, and more.</p>
+</code></pre><h2>Setting audio resource limits</h2>
+<p>Now we are going to edit <code>/etc/security/limits.d/audio.conf</code>. This file is used to set resource limits for processes related to audio. By doing this, we will be able to control and allocate system resources for audio applications like CPU usage, memory, and more.</p>
 <p>We will add the following two lines to the top of the file:</p>
 <pre><code class="language-sh">@audio - rtprio 80
 @audio - memlock unlimited
-</code></pre>
-<p>The first line will set the real-time priority (rtprio) for audio applications
-to 80. This will help the OS to prioritise our audio. Values here range from
-1 to 99 (the value of 100 is reserved for the highest priority processes like
-the kernel itself and essential system components). We won't be setting max
-priority here because it could impact the system's stability and
-responsiveness, 80 should be plenty.</p>
-<p>The second line sets the memory lock (memlock) limit for audio processes.
-This memory lock will prevent specific memory regions from being swapped out
-to disk, making sure the OS has fast access to critical data. In this case,
-audio processes will be able to set <code>unlimited</code> amount of memory lock.</p>
-<p>These two lines together will make sure we have sufficient resources (and
-priority) for a smooth audio operation on our Pi.</p>
+</code></pre><p>The first line will set the real-time priority (rtprio) for audio applications to 80. This will help the OS to prioritise our audio. Values here range from 1 to 99 (the value of 100 is reserved for the highest priority processes like the kernel itself and essential system components). We won't be setting max priority here because it could impact the system's stability and responsiveness, 80 should be plenty.</p>
+<p>The second line sets the memory lock (memlock) limit for audio processes. This memory lock will prevent specific memory regions from being swapped out to disk, making sure the OS has fast access to critical data. In this case, audio processes will be able to set <code>unlimited</code> amount of memory lock.</p>
+<p>These two lines together will make sure we have sufficient resources (and priority) for a smooth audio operation on our Pi.</p>
 <h2>Identifying the sound card</h2>
 <p>To verify what sound card you will be using, type the following command:</p>
 <pre><code class="language-sh">aplay -l
-</code></pre>
-<p>Analyse the output, and find what the proper card id is. In my case, I will
-use card 0.</p>
-<pre><code>**** List of PLAYBACK Hardware Devices ****
+</code></pre><p>Analyse the output, and find what the proper card id is. In my case, I will use card 0.</p>
+<pre><code class="language-">**** List of PLAYBACK Hardware Devices ****
 card 0: Headphones [bcm2835 Headphones], device 0: bcm2835 Headphones [bcm2835 Headphones]
   Subdevices: 8/8
 ...
-</code></pre>
-<h2>Update the alsa config file</h2>
+</code></pre><h2>Update the alsa config file</h2>
 <p>Open the file <code>/usr/share/alsa/alsa.conf</code> and search for the following lines</p>
-<pre><code>defaults.ctl.card 0
+<pre><code class="language-">defaults.ctl.card 0
 defaults.pcm.card 0
-</code></pre>
-<p>Again, my card id is <strong>0</strong>. If you have a different card id, make sure change
-the number 0 by whatever card id you have.</p>
-<p>Once you have done that, run the <code>alsamixer</code> command to check if you can play
-with the playback output volume.</p>
+</code></pre><p>Again, my card id is <b>0</b>. If you have a different card id, make sure change the number 0 by whatever card id you have.</p>
+<p>Once you have done that, run the <code>alsamixer</code> command to check if you can play with the playback output volume.</p>
 <h2>Testing that the speaker works</h2>
-<p>Once you've connected your speaker (or headphones), you can run the following
-command to output whitenoise to your device:</p>
-<pre><code>speaker-test -c2
-</code></pre>
-<p>You can also test with a wav file, which should have been included in your OS
-installation:</p>
-<pre><code>speaker-test -c2 --test=wav -w /usr/share/sounds/alsa/Front_Center.wav
-</code></pre>
-<p>If this doesn't work immediately, it might have been because you've changed
-the default configurations in the previous steps. Try performing a
-<code>sudo reboot</code> to restart the raspberry pi.</p>
+<p>Once you've connected your speaker (or headphones), you can run the following command to output whitenoise to your device:</p>
+<pre><code class="language-">speaker-test -c2
+</code></pre><p>You can also test with a wav file, which should have been included in your OS installation:</p>
+<pre><code class="language-">speaker-test -c2 --test=wav -w /usr/share/sounds/alsa/Front_Center.wav
+</code></pre><p>If this doesn't work immediately, it might have been because you've changed the default configurations in the previous steps. Try performing a <code>sudo reboot</code> to restart the raspberry pi.</p>
 <h2>Install FluidSynth</h2>
-<p>FluidSynth is going to be the application that will convert our MIDI into a
-synthesiser.</p>
-<pre><code>sudo apt-get update &amp;&amp; sudo apt-get install fluidsynth
-</code></pre>
-<h2>Download sound fonts (optional)</h2>
-<p>If you don't want to download fonts, you can use the default that comes with
-fluidsynth which is a very basic piano located at:
-<code>/usr/share/sounds/sf2/FluidR3_GM.sf2</code></p>
-<p>Otherwise, there are many free sound fonts in the internet. I will give no
-guarantee that the link below will still be working when you read this article,
-but you can download some fonts using this command.</p>
+<p>FluidSynth is going to be the application that will convert our MIDI into a synthesiser.</p>
+<pre><code class="language-">sudo apt-get update && sudo apt-get install fluidsynth
+</code></pre><h2>Download sound fonts (optional)</h2>
+<p>If you don't want to download fonts, you can use the default that comes with fluidsynth which is a very basic piano located at: <code>/usr/share/sounds/sf2/FluidR3_GM.sf2</code></p>
+<p>Otherwise, there are many free sound fonts in the internet. I will give no guarantee that the link below will still be working when you read this article, but you can download some fonts using this command.</p>
 <pre><code class="language-sh">curl -o fonts.sf2 https://musical-artifacts.com/artifacts/1390/alex_gm.sf2
 sudo mv fonts.sf2 /usr/share/sounds/sf2
-</code></pre>
-<h2>Create the sound configuration file</h2>
-<p>In your home directory, create a folder <code>inst</code> and add a file named <code>keyboard</code>
-with the following content:</p>
-<pre><code>echo &quot;loading soundfont&quot;
+</code></pre><h2>Create the sound configuration file</h2>
+<p>In your home directory, create a folder <code>inst</code> and add a file named <code>keyboard</code> with the following content:</p>
+<pre><code class="language-">echo "loading soundfont"
 
 gain 3
 
-load &quot;/usr/share/sounds/sf2/FluidR3_GM.sf2&quot;
+load "/usr/share/sounds/sf2/FluidR3_GM.sf2"
 
 select 0 1 0 0
 
-echo &quot;loaded&quot;
-</code></pre>
-<p>Change the <code>load</code> command to point to the location of the file you have
-downloaded.</p>
+echo "loaded"
+</code></pre><p>Change the <code>load</code> command to point to the location of the file you have downloaded.</p>
 <h2>Script for configuring FluidSynth</h2>
 <p>Create a script called <code>synth.sh</code> in your home directory with this content:</p>
 <pre><code class="language-sh">#!/bin/bash
@@ -218,13 +148,13 @@ killall fluidsynth
 INSTRUMENT_FILE=~/inst/keyboard
 
 # Find this by running `acconnect -o` and swapping the string variables.
-KEYBOARD_NAME=&quot;V61&quot;
+KEYBOARD_NAME="V61"
 
 # -si: Enables the software MIDI interface. This option allows FluidSynth to
 # receive MIDI messages from external sources.
 #
-# -p &quot;fluid&quot;: Specifies the name of the MIDI port or client. In this case, it
-# is set to &quot;fluid&quot;.
+# -p "fluid": Specifies the name of the MIDI port or client. In this case, it
+# is set to "fluid".
 #
 # -C0: Sets the MIDI channel offset to 0. This means that the MIDI channel
 # numbers will start from 0 instead of the default 1.
@@ -251,12 +181,12 @@ KEYBOARD_NAME=&quot;V61&quot;
 # -m alsa_seq: Sets the MIDI driver to ALSA sequencer. This allows FluidSynth
 # to connect to MIDI devices and software via the ALSA sequencer interface.
 
-fluidsynth -si -p &quot;fluid&quot; -C0 -R0 -r48000 -c2 -z1024 -f $INSTRUMENT_FILE -a alsa -m alsa_seq &amp;
+fluidsynth -si -p "fluid" -C0 -R0 -r48000 -c2 -z1024 -f $INSTRUMENT_FILE -a alsa -m alsa_seq &
 
 sleep 3
 
 
-IS_MIDI_CONNECTED=$(aconnect -o | grep &quot;$KEYBOARD_NAME&quot;)
+IS_MIDI_CONNECTED=$(aconnect -o | grep "$KEYBOARD_NAME")
 
 if [[ $IS_MIDI_CONNECTED ]]
 then
@@ -265,23 +195,15 @@ then
 fi
 
 exit 0
-</code></pre>
-<p>Make sure the file is executable:</p>
-<pre><code>chmod +x synth.sh
-</code></pre>
-<h2>Edit your bashrc to initialise the script automatically</h2>
-<p>Put this line at the end of your <code>.bashrc</code> file (don't forget to <code>cd ~</code> first):</p>
-<pre><code>./synth.sh
-</code></pre>
+</code></pre><p>Make sure the file is executable:</p>
+<pre><code class="language-">chmod +x synth.sh
+</code></pre><h2>Edit your bashrc to initialise the script automatically</h2>
+<p>Put this line at the end of your <code>.bashrc</code> file (don't forget to <code>cd ~</code> first): <pre><code class="language-">./synth.sh
+</code></pre></p>
 <h2>Auto login</h2>
 <p>Run <code>sudo raspi-config</code></p>
-<ol>
-<li>Go to &quot;System Options&quot;</li>
-<li>Go to &quot;Boot / Auto Login&quot;</li>
-<li>Select &quot;Console auto login&quot;</li>
-</ol>
-<p>Now once your raspberry pi boots, it will automatically run the script to
-activate the midi keyboard.</p>
+<ol><li>Go to "System Options"</li><li>Go to "Boot / Auto Login"</li><li>Select "Console auto login"</li></ol>
+<p>Now once your raspberry pi boots, it will automatically run the script to activate the midi keyboard.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

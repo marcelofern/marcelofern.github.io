@@ -60,129 +60,66 @@
 </head>
 <body>
 <h1>VACUUM Phases</h1>
-<pre><code>Created at: 2025-01-08
-</code></pre>
-<ol>
-<li><p><strong>INITIALIZING</strong>: VACUUM is preparing to begin scanning the heap. This phase
-is expected to be very brief.</p>
-</li>
-<li><p><strong>SCANNING HEAP</strong>: VACUUM is currently scanning the heap. It will prune and
-defragment each page if required, and possibly perform freezing activity. The
-heap_blks_scanned column can be used to monitor the progress of the scan.</p>
-</li>
-<li><p><strong>VACUUMING INDEXES</strong>: VACUUM is currently vacuuming the indexes. If a table
-has any indexes, this will happen at least once per vacuum, after the heap
-has been completely scanned. It may happen multiple times per vacuum if
-maintenance_work_mem (or, in the case of autovacuum, autovacuum_work_mem if
-set) is insufficient to store the number of dead tuples found.</p>
-</li>
-<li><p><strong>VACUUMING HEAP</strong>: VACUUM is currently vacuuming the heap. Vacuuming the
-heap is distinct from scanning the heap, and occurs after each instance of
-vacuuming indexes. If heap_blks_scanned is less than heap_blks_total (see
-notes below), the system will return to scanning the heap after this phase is
-completed; otherwise, it will begin cleaning up indexes after this phase is
-completed.</p>
-</li>
-<li><p><strong>CLEANING UP INDEXES</strong>: VACUUM is currently cleaning up indexes. This
-occurs after the heap has been completely scanned and all vacuuming of the
-indexes and the heap has been completed.</p>
-</li>
-<li><p><strong>TRUNCATING HEAP</strong>: VACUUM is currently truncating the heap so as to return
-empty pages at the end of the relation to the operating system. This occurs
-after cleaning up indexes.</p>
-</li>
-<li><p><strong>PERFORMING FINAL CLEANUP</strong>: VACUUM is performing final cleanup. During this
-phase, VACUUM will vacuum the free space map, update statistics in pg_class,
-and report statistics to the cumulative statistics system. When this phase is
-completed, VACUUM will end.</p>
-</li>
-</ol>
+<pre><code class="language-">Created at: 2025-01-08
+</code></pre><ol><li><b>INITIALIZING</b>: VACUUM is preparing to begin scanning the heap. This phase is expected to be very brief.</li></ol>
+<p>2. <b>SCANNING HEAP</b>: VACUUM is currently scanning the heap. It will prune and defragment each page if required, and possibly perform freezing activity. The heap_blks_scanned column can be used to monitor the progress of the scan.</p>
+<p>3. <b>VACUUMING INDEXES</b>: VACUUM is currently vacuuming the indexes. If a table has any indexes, this will happen at least once per vacuum, after the heap has been completely scanned. It may happen multiple times per vacuum if maintenance_work_mem (or, in the case of autovacuum, autovacuum_work_mem if set) is insufficient to store the number of dead tuples found.</p>
+<p>4. <b>VACUUMING HEAP</b>: VACUUM is currently vacuuming the heap. Vacuuming the heap is distinct from scanning the heap, and occurs after each instance of vacuuming indexes. If heap_blks_scanned is less than heap_blks_total (see notes below), the system will return to scanning the heap after this phase is completed; otherwise, it will begin cleaning up indexes after this phase is completed.</p>
+<p>5. <b>CLEANING UP INDEXES</b>: VACUUM is currently cleaning up indexes. This occurs after the heap has been completely scanned and all vacuuming of the indexes and the heap has been completed.</p>
+<p>6. <b>TRUNCATING HEAP</b>: VACUUM is currently truncating the heap so as to return empty pages at the end of the relation to the operating system. This occurs after cleaning up indexes.</p>
+<p>7. <b>PERFORMING FINAL CLEANUP</b>: VACUUM is performing final cleanup. During this phase, VACUUM will vacuum the free space map, update statistics in pg_class, and report statistics to the cumulative statistics system. When this phase is completed, VACUUM will end.</p>
 <p>Notes:</p>
-<ul>
-<li>heap_blks_total: Total number of heap blocks in the table. This number is
-reported as of the beginning of the scan; blocks added later will not be (and
-need not be) visited by this VACUUM.</li>
-</ul>
+<ul><li>heap_blks_total: Total number of heap blocks in the table. This number is reported as of the beginning of the scan; blocks added later will not be (and need not be) visited by this VACUUM.</li></ul>
 <p><a href="https://www.postgresql.org/docs/current/progress-reporting.html#VACUUM-PHASES">source</a></p>
 <h2>Progress Reporting</h2>
-<blockquote>
-<p>Whenever VACUUM is running, the pg_stat_progress_vacuum view will contain one
-row for each backend (including autovacuum worker processes) that is
-currently vacuuming. The tables below describe the information that will be
-reported and provide information about how to interpret it. Progress for
-VACUUM FULL commands is reported via pg_stat_progress_cluster because both
-VACUUM FULL and CLUSTER rewrite the table, while regular VACUUM only modifies
-it in place.</p>
-</blockquote>
+<blockquote>Whenever VACUUM is running, the pg_stat_progress_vacuum view will contain one</blockquote>
+<blockquote>row for each backend (including autovacuum worker processes) that is</blockquote>
+<blockquote>currently vacuuming. The tables below describe the information that will be</blockquote>
+<blockquote>reported and provide information about how to interpret it. Progress for</blockquote>
+<blockquote>VACUUM FULL commands is reported via pg_stat_progress_cluster because both</blockquote>
+<blockquote>VACUUM FULL and CLUSTER rewrite the table, while regular VACUUM only modifies</blockquote>
+<blockquote>it in place.</blockquote>
 <p><code>pg_stat_progress_vacuum</code> View</p>
-<p>pid integer:</p>
-<blockquote>
-<p>Process ID of backend.</p>
+<p>pid integer: <blockquote>PPrroocceessss  IIDD  ooff  bbaacckkeenndd..</p>
 </blockquote>
-<p>datid oid:</p>
-<blockquote>
-<p>OID of the database to which this backend is connected.</p>
+<p>datid oid: <blockquote>OOIIDD  ooff  tthhee  ddaattaabbaassee  ttoo  wwhhiicchh  tthhiiss  bbaacckkeenndd  iiss  ccoonnnneecctteedd..</p>
 </blockquote>
-<p>datname name:</p>
-<blockquote>
-<p>Name of the database to which this backend is connected.</p>
+<p>datname name: <blockquote>NNaammee  ooff  tthhee  ddaattaabbaassee  ttoo  wwhhiicchh  tthhiiss  bbaacckkeenndd  iiss  ccoonnnneecctteedd..</p>
 </blockquote>
-<p>relid oid:</p>
-<blockquote>
-<p>OID of the table being vacuumed.</p>
+<p>relid oid: <blockquote>OOIIDD  ooff  tthhee  ttaabbllee  bbeeiinngg  vvaaccuuuummeedd..</p>
 </blockquote>
-<p>phase text:</p>
-<blockquote>
-<p>Current processing phase of vacuum. See Table 27.46.</p>
+<p>phase text: <blockquote>CCuurrrreenntt  pprroocceessssiinngg  pphhaassee  ooff  vvaaccuuuumm..  SSeeee  TTaabbllee  2277..4466..</p>
 </blockquote>
-<p>heap_blks_total bigint</p>
-<blockquote>
-<p>Total number of heap blocks in the table. This number is reported as of the
-beginning of the scan; blocks added later will not be (and need not be)
-visited by this VACUUM.</p>
+<p>heap_blks_total bigint <blockquote>TToottaall  nnuummbbeerr  ooff  hheeaapp  bblloocckkss  iinn  tthhee  ttaabbllee..  TThhiiss  nnuummbbeerr  iiss  rreeppoorrtteedd  aass  ooff  tthhee</blockquote>
+<blockquote>bbeeggiinnnniinngg  ooff  tthhee  ssccaann;;  bblloocckkss  aaddddeedd  llaatteerr  wwiillll  nnoott  bbee  ((aanndd  nneeeedd  nnoott  bbee))</blockquote>
+<blockquote>vviissiitteedd  bbyy  tthhiiss  VVAACCUUUUMM..</p>
 </blockquote>
-<p>heap_blks_scanned bigint:</p>
-<blockquote>
-<p>Number of heap blocks scanned. Because the visibility map is used to optimize
-scans, some blocks will be skipped without inspection; skipped blocks are
-included in this total, so that this number will eventually become equal to
-heap_blks_total when the vacuum is complete. This counter only advances when
-the phase is scanning heap.</p>
+<p>heap_blks_scanned bigint: <blockquote>NNuummbbeerr  ooff  hheeaapp  bblloocckkss  ssccaannnneedd..  BBeeccaauussee  tthhee  vviissiibbiilliittyy  mmaapp  iiss  uusseedd  ttoo  ooppttiimmiizzee</blockquote>
+<blockquote>ssccaannss,,  ssoommee  bblloocckkss  wwiillll  bbee  sskkiippppeedd  wwiitthhoouutt  iinnssppeeccttiioonn;;  sskkiippppeedd  bblloocckkss  aarree</blockquote>
+<blockquote>iinncclluuddeedd  iinn  tthhiiss  ttoottaall,,  ssoo  tthhaatt  tthhiiss  nnuummbbeerr  wwiillll  eevveennttuuaallllyy  bbeeccoommee  eeqquuaall  ttoo</blockquote>
+<blockquote>hheeaapp__bbllkkss__ttoottaall  wwhheenn  tthhee  vvaaccuuuumm  iiss  ccoommpplleettee..  TThhiiss  ccoouunntteerr  oonnllyy  aaddvvaanncceess  wwhheenn</blockquote>
+<blockquote>tthhee  pphhaassee  iiss  ssccaannnniinngg  hheeaapp..</p>
 </blockquote>
-<p>heap_blks_vacuumed bigint:</p>
-<blockquote>
-<p>Number of heap blocks vacuumed. Unless the table has no indexes, this counter
-only advances when the phase is vacuuming heap. Blocks that contain no dead
-tuples are skipped, so the counter may sometimes skip forward in large
-increments.</p>
+<p>heap_blks_vacuumed bigint: <blockquote>NNuummbbeerr  ooff  hheeaapp  bblloocckkss  vvaaccuuuummeedd..  UUnnlleessss  tthhee  ttaabbllee  hhaass  nnoo  iinnddeexxeess,,  tthhiiss  ccoouunntteerr</blockquote>
+<blockquote>oonnllyy  aaddvvaanncceess  wwhheenn  tthhee  pphhaassee  iiss  vvaaccuuuummiinngg  hheeaapp..  BBlloocckkss  tthhaatt  ccoonnttaaiinn  nnoo  ddeeaadd</blockquote>
+<blockquote>ttuupplleess  aarree  sskkiippppeedd,,  ssoo  tthhee  ccoouunntteerr  mmaayy  ssoommeettiimmeess  sskkiipp  ffoorrwwaarrdd  iinn  llaarrggee</blockquote>
+<blockquote>iinnccrreemmeennttss..</p>
 </blockquote>
-<p>index_vacuum_count bigint:</p>
-<blockquote>
-<p>Number of completed index vacuum cycles.</p>
+<p>index_vacuum_count bigint: <blockquote>NNuummbbeerr  ooff  ccoommpplleetteedd  iinnddeexx  vvaaccuuuumm  ccyycclleess..</p>
 </blockquote>
-<p>max_dead_tuple_bytes bigint:</p>
-<blockquote>
-<p>Amount of dead tuple data that we can store before needing to perform an
-index vacuum cycle, based on maintenance_work_mem.</p>
+<p>max_dead_tuple_bytes bigint: <blockquote>AAmmoouunntt  ooff  ddeeaadd  ttuuppllee  ddaattaa  tthhaatt  wwee  ccaann  ssttoorree  bbeeffoorree  nneeeeddiinngg  ttoo  ppeerrffoorrmm  aann</blockquote>
+<blockquote>iinnddeexx  vvaaccuuuumm  ccyyccllee,,  bbaasseedd  oonn  mmaaiinntteennaannccee__wwoorrkk__mmeemm..</p>
 </blockquote>
-<p>dead_tuple_bytes bigint:</p>
-<blockquote>
-<p>Amount of dead tuple data collected since the last index vacuum cycle.</p>
+<p>dead_tuple_bytes bigint: <blockquote>AAmmoouunntt  ooff  ddeeaadd  ttuuppllee  ddaattaa  ccoolllleecctteedd  ssiinnccee  tthhee  llaasstt  iinnddeexx  vvaaccuuuumm  ccyyccllee..</p>
 </blockquote>
-<p>num_dead_item_ids bigint:</p>
-<blockquote>
-<p>Number of dead item identifiers collected since the last index vacuum cycle.</p>
+<p>num_dead_item_ids bigint: <blockquote>NNuummbbeerr  ooff  ddeeaadd  iitteemm  iiddeennttiiffiieerrss  ccoolllleecctteedd  ssiinnccee  tthhee  llaasstt  iinnddeexx  vvaaccuuuumm  ccyyccllee..</p>
 </blockquote>
-<p>indexes_total bigint:</p>
-<blockquote>
-<p>Total number of indexes that will be vacuumed or cleaned up. This number is
-reported at the beginning of the vacuuming indexes phase or the cleaning up
-indexes phase.</p>
+<p>indexes_total bigint: <blockquote>TToottaall  nnuummbbeerr  ooff  iinnddeexxeess  tthhaatt  wwiillll  bbee  vvaaccuuuummeedd  oorr  cclleeaanneedd  uupp..  TThhiiss  nnuummbbeerr  iiss</blockquote>
+<blockquote>rreeppoorrtteedd  aatt  tthhee  bbeeggiinnnniinngg  ooff  tthhee  vvaaccuuuummiinngg  iinnddeexxeess  pphhaassee  oorr  tthhee  cclleeaanniinngg  uupp</blockquote>
+<blockquote>iinnddeexxeess  pphhaassee..</p>
 </blockquote>
-<p>indexes_processed bigint:</p>
-<blockquote>
-<p>Number of indexes processed. This counter only advances when the phase is
-vacuuming indexes or cleaning up indexes.</p>
+<p>indexes_processed bigint: <blockquote>NNuummbbeerr  ooff  iinnddeexxeess  pprroocceesssseedd..  TThhiiss  ccoouunntteerr  oonnllyy  aaddvvaanncceess  wwhheenn  tthhee  pphhaassee  iiss</blockquote>
+<blockquote>vvaaccuuuummiinngg  iinnddeexxeess  oorr  cclleeaanniinngg  uupp  iinnddeexxeess..</p>
 </blockquote>
 <h2>Useful Queries</h2>
 <pre><code class="language-sql">SELECT
@@ -209,11 +146,9 @@ vacuuming indexes or cleaning up indexes.</p>
 FROM pg_stat_progress_vacuum p
 JOIN pg_stat_activity a using (pid)
 ORDER BY now() - a.xact_start DESC;
-</code></pre>
-<p>Or simpler:</p>
+</code></pre><p>Or simpler:</p>
 <pre><code class="language-sql">SELECT * FROM pg_stat_progress_vacuum
 WHERE oid = 'my_sweet_table'::regclass;
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

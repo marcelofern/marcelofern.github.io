@@ -60,9 +60,8 @@
 </head>
 <body>
 <h1>Fastest Way To Find If Table Is Empty</h1>
-<pre><code>Created at: 2025-03-24
-</code></pre>
-<p>Using Postgres 15 as a base:</p>
+<pre><code class="language-">Created at: 2025-03-24
+</code></pre><p>Using Postgres 15 as a base:</p>
 <pre><code class="language-sql">\timing on
 
 DROP TABLE IF EXISTS foo;
@@ -83,12 +82,8 @@ SELECT MIN(id) FROM foo;
 -- ~1.15ms
 -- EXPLAIN (ANALYZE ON, BUFFERS ON, COSTS OFF)
 SELECT EXISTS (SELECT 1 FROM foo LIMIT 1);
-</code></pre>
-<p>The difference between the last two queries is small. But the <code>SELECT EXISTS</code>
-is a little bit faster in all cases. It will also work better for cases where
-there the table has no primary key index available.</p>
-<p>I also ended up asking this question in the Postgres mailing list, and people
-seem to agree with the EXISTS approach: <a href="https://www.postgresql.org/message-id/flat/CAM2F1VMbOEubpXk44B5KaWKX0OSVrA8-9xqidhJMNtDprhTSTg%40mail.gmail.com">link</a></p>
+</code></pre><p>The difference between the last two queries is small. But the <code>SELECT EXISTS</code> is a little bit faster in all cases. It will also work better for cases where there the table has no primary key index available.</p>
+<p>I also ended up asking this question in the Postgres mailing list, and people seem to agree with the EXISTS approach: <a href="https://www.postgresql.org/message-id/flat/CAM2F1VMbOEubpXk44B5KaWKX0OSVrA8-9xqidhJMNtDprhTSTg%40mail.gmail.com">link</a></p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

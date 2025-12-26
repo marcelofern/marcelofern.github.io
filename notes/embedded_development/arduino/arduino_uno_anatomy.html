@@ -59,51 +59,23 @@
   <![endif]-->
 </head>
 <body>
-<p><img src="arduino_uno_board_anatomy.png" alt="arduino_uno_board_anatomy"></p>
+<p><img alt="arduino_uno_board_anatomy" src="arduino_uno_board_anatomy.png"></p>
 <h2>Summary</h2>
-<p><img src="arduino_uno_board_anatomy.svg" alt="arduino_uno_board_anatomy"></p>
-<p>Your UNO board might not look <em>exactly</em> like this, but the pins will be the
-same.</p>
-<p>Along with the description below:
-<a href="http://web.archive.org/web/20231205160445/https://docs.arduino.cc/tutorials/uno-rev3/board-anatomy">source</a>
-<a href="http://web.archive.org/web/20240125150406/https://docs.arduino.cc/tutorials/uno-rev3/intro-to-board">source 2</a>
-<a href="http://web.archive.org/web/20240324080100/https://en.wikipedia.org/wiki/Arduino_UNO">source 3</a></p>
-<ol>
-<li><p>Digital pins Use these pins with pinMode(), digitalRead(), digitalWrite(),
-and analogWrite(). analogWrite() works only on the pins with the PWM symbol.
-Each pin has an internal pull-up resistor which can be turned on and off
-using digitalWrite() (w/ a value of HIGH or LOW, respectively) when the pin
-is configured as an input. The maximum current per pin is 40 mA.</p>
-</li>
-<li><p>Pin 13 LED The only actuator built-in to your board. Besides being a handy
-target for your first blink sketch, this LED is very useful for debugging.</p>
-</li>
-<li><p>Power LED Indicates that your Arduino is receiving power. Useful for
-debugging.</p>
-</li>
-<li><p>ATmega microcontroller The heart of your board.</p>
-</li>
-<li><p>Analog in Use these pins with analogRead().</p>
-</li>
-<li><p>GND and 5V pins Use these pins to provide +5V power and ground to your
-circuits.</p>
-</li>
-<li><p>Power connector This is how you power your Arduino when it's not plugged
-into a USB port for power. Can accept voltages between 7-12V.</p>
-</li>
-<li><p>TX and RX LEDs These LEDs indicate communication between your Arduino and
-your computer. Expect them to flicker rapidly during sketch upload as well
-as during serial communication. Useful for debugging.</p>
-</li>
-<li><p>USB port Used for powering your Arduino UNO, uploading your sketches to your
-Arduino, and for communicating with your Arduino sketch (via Serial.
-println() etc.).</p>
-</li>
-<li><p>Reset button Resets the ATmega microcontroller.</p>
-</li>
-</ol>
+<p><img alt="arduino_uno_board_anatomy" src="arduino_uno_board_anatomy.svg"></p>
+<p>Your UNO board might not look _exactly_ like this, but the pins will be the same.</p>
+<p>Along with the description below: <a href="http://web.archive.org/web/20231205160445/https://docs.arduino.cc/tutorials/uno-rev3/board-anatomy">source</a> <a href="http://web.archive.org/web/20240125150406/https://docs.arduino.cc/tutorials/uno-rev3/intro-to-board">source 2</a> <a href="http://web.archive.org/web/20240324080100/https://en.wikipedia.org/wiki/Arduino_UNO">source 3</a></p>
+<ol><li>Digital pins Use these pins with pinMode(), digitalRead(), digitalWrite(), and analogWrite(). analogWrite() works only on the pins with the PWM symbol. Each pin has an internal pull<ul><li>up resistor which can be turned on and off using digitalWrite() (w/ a value of HIGH or LOW, respectively) when the pin is configured as an input. The maximum current per pin is 40 mA.</li></ol>
+ 2. Pin 13 LED The only actuator built-in to your board. Besides being a handy target for your first blink sketch, this LED is very useful for debugging.</li></ul>
+<p>3. Power LED Indicates that your Arduino is receiving power. Useful for debugging.</p>
+<p>4. ATmega microcontroller The heart of your board.</p>
+<p>5. Analog in Use these pins with analogRead().</p>
+<p>6. GND and 5V pins Use these pins to provide +5V power and ground to your circuits.</p>
+<p>7. Power connector This is how you power your Arduino when it's not plugged into a USB port for power. Can accept voltages between 7-12V.</p>
+<p>8. TX and RX LEDs These LEDs indicate communication between your Arduino and your computer. Expect them to flicker rapidly during sketch upload as well as during serial communication. Useful for debugging.</p>
+<p>9. USB port Used for powering your Arduino UNO, uploading your sketches to your Arduino, and for communicating with your Arduino sketch (via Serial. println() etc.).</p>
+<p>10. Reset button Resets the ATmega microcontroller.</p>
 <h2>ATMEL ATMEGA8 in ASCII</h2>
-<pre><code>                 +-\/-+
+<pre><code class="language-">                 +-\/-+
            PC6  1|    |28  PC5 (AI 5)
      (D 0) PD0  2|    |27  PC4 (AI 4)
      (D 1) PD1  3|    |26  PC3 (AI 3)
@@ -119,7 +91,6 @@ PWM+ (D 6) PD6 12|    |17  PB3 (D 11) PWM
      (D 7) PD7 13|    |16  PB2 (D 10) PWM
      (D 8) PB0 14|    |15  PB1 (D 9) PWM
                  +----+
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

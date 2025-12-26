@@ -62,44 +62,16 @@
 <p>February 24th, 2024</p>
 <h2>TLDR</h2>
 <p>The order of arguments is passed in the following registers:</p>
-<ol>
-<li>rdi</li>
-<li>rsi</li>
-<li>rdx</li>
-<li>rcx</li>
-<li>r8</li>
-<li>r9</li>
-</ol>
-<p>If the assembly function takes more than 6 arguments, the remaining ones
-will be on $rsp+8. This is because $rsp+0 stores the value of rip that
-will be returning to the C code after the <code>ret</code> instruction.</p>
-<ol start="7">
-<li><code>rsp+8</code></li>
-<li><code>rsp+8*2</code></li>
-<li><code>...</code></li>
-</ol>
+<ol><li>rdi</li><li>rsi</li><li>rdx</li><li>rcx</li><li>r8</li><li>r9</li></ol>
+<p>If the assembly function takes more than 6 arguments, the remaining ones will be on $rsp+8. This is because $rsp+0 stores the value of rip that will be returning to the C code after the <code>ret</code> instruction.</p>
+<p>7. <code>rsp+8</code> 8. <code>rsp+8*2</code> 9. <code>...</code></p>
 <h2>Callee-saved registers vs Caller-saved registers</h2>
-<p>The following registers are callee-saved, meaning that callee functions should
-not have altered the content of these registers at the point in which they
-return back to the caller. It is fine to change them and reset them to the
-original value though:</p>
-<ul>
-<li>rbx</li>
-<li>rbp</li>
-<li>r12</li>
-<li>r13</li>
-<li>r14</li>
-<li>r15</li>
-</ul>
-<p>All other registers except the stack pointer rsp are classified as caller-saved
-registers. This means that any function can modify them. If those registers
-mean anything to the caller, they must be saved. Otherwise, the callee is free
-to change them and so a bug may happen.</p>
+<p>The following registers are callee-saved, meaning that callee functions should not have altered the content of these registers at the point in which they return back to the caller. It is fine to change them and reset them to the original value though:</p>
+<ul><li>rbx</li><li>rbp</li><li>r12</li><li>r13</li><li>r14</li><li>r15</li></ul>
+<p>All other registers except the stack pointer rsp are classified as caller-saved registers. This means that any function can modify them. If those registers mean anything to the caller, they must be saved. Otherwise, the callee is free to change them and so a bug may happen.</p>
 <h2>The sandbox</h2>
-<p>First off, when you call an assembly function from C, you need to know
-which registers will contain the arguments of the function call.</p>
-<p>We are going to do so by experimentation. First we'll compile the function
-<code>foo</code> in assembly.</p>
+<p>First off, when you call an assembly function from C, you need to know which registers will contain the arguments of the function call.</p>
+<p>We are going to do so by experimentation. First we'll compile the function <code>foo</code> in assembly.</p>
 <p>The function does absolutely nothing, and just returns.</p>
 <pre><code class="language-asm">section .text
 
@@ -107,13 +79,9 @@ global foo
 
 foo:
     ret
-</code></pre>
-<p>We will compile it as such:</p>
-<pre><code>!nasm -f elf64 -g -F dwarf -o /tmp/foo.o %
-</code></pre>
-<p>Now we will make our C code call <code>foo</code>, and pretend it has a bunch of
-parameters. We will also put an asm label &quot;b:&quot; so that we can put another
-breakpoint and inspect the <code>result</code> variable.</p>
+</code></pre><p>We will compile it as such:</p>
+<pre><code class="language-">!nasm -f elf64 -g -F dwarf -o /tmp/foo.o %
+</code></pre><p>Now we will make our C code call <code>foo</code>, and pretend it has a bunch of parameters. We will also put an asm label "b:" so that we can put another breakpoint and inspect the <code>result</code> variable.</p>
 <pre><code class="language-c">extern int foo(
     int a,
     int b,
@@ -132,14 +100,12 @@ breakpoint and inspect the <code>result</code> variable.</p>
 
 int main() {
     int result = foo(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13);
-    asm(&quot;b: nop&quot;);
+    asm("b: nop");
 }
-</code></pre>
-<p>We'll compile our C code with gcc:</p>
-<pre><code>!gcc -g -no-pie -o /tmp/a.out % /tmp/foo.o
-</code></pre>
-<p>And we will inspect the result with gdb:</p>
-<pre><code>gdb /tmp/final_program
+</code></pre><p>We'll compile our C code with gcc:</p>
+<pre><code class="language-">!gcc -g -no-pie -o /tmp/a.out % /tmp/foo.o
+</code></pre><p>And we will inspect the result with gdb:</p>
+<pre><code class="language-">gdb /tmp/final_program
 
 # add a break point on foo and on b
 (gdb) b foo
@@ -168,7 +134,7 @@ int main() {
 # r13            0x7fffffffe558      140737488348504
 # r14            0x7ffff7ffd000      140737354125312
 # r15            0x403e30            4210224
-# rip            0x401160            0x401160 &lt;foo&gt;
+# rip            0x401160            0x401160 <foo>
 # eflags         0x216               [ PF AF IF ]
 
 # Looking at the table above, we have so that the order is:
@@ -210,10 +176,8 @@ int main() {
 $5 = 4198662
 
 # Result contains the value that was stored in rax.
-</code></pre>
-<h2>Another way</h2>
-<p>Another way of seeing this is by compiling this C code and inspecting the
-assembly:</p>
+</code></pre><h2>Another way</h2>
+<p>Another way of seeing this is by compiling this C code and inspecting the assembly:</p>
 <pre><code class="language-c">int foo(
     int a,
     int b,
@@ -235,10 +199,8 @@ assembly:</p>
 int main() {
     int result = foo(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13);
 }
-</code></pre>
-<p>In this example, the variables will start at $rsp+16 because $rsp has the
-$rip, and $rsp+8 has $rbp that was pushed at the beginning of the function.</p>
-<pre><code class="language-asm">  .file  &quot;c_to_assembly.c&quot;
+</code></pre><p>In this example, the variables will start at $rsp+16 because $rsp has the $rip, and $rsp+8 has $rbp that was pushed at the beginning of the function.</p>
+<pre><code class="language-asm">  .file  "c_to_assembly.c"
   .intel_syntax noprefix
   .text
   .globl  foo
@@ -306,9 +268,8 @@ main:
   leave
   ret
   .size  main, .-main
-  .ident  &quot;GCC: (GNU) 13.2.1 20230801&quot;
-  .section  .note.GNU-stack,&quot;&quot;,@progbits
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+  .ident  "GCC: (GNU) 13.2.1 20230801"
+  .section  .note.GNU-stack,"",@progbits
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

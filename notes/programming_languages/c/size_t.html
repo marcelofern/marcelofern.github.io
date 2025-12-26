@@ -60,24 +60,18 @@
 </head>
 <body>
 <p>According to P.J. Plauger</p>
-<blockquote>
-<p>Its origins lie in the old <code>&lt;std.h&gt;</code> header we developed at Whitesmiths, Ltd.
-in the late 1970s. We used the typedef BYTES as the type of sizeof, to be
-sure we could count all the bytes in the largest declarable (or allocatable)
-object. X3J11 chose <code>size_t</code> to follow the <code>*_t</code> convention that had begun to
-creep up in Posix.</p>
-</blockquote>
+<blockquote>Its origins lie in the old `<std.h>` header we developed at Whitesmiths, Ltd.</blockquote>
+<blockquote>in the late 1970s. We used the typedef BYTES as the type of sizeof, to be</blockquote>
+<blockquote>sure we could count all the bytes in the largest declarable (or allocatable)</blockquote>
+<blockquote>object. X3J11 chose `size_t` to follow the `*_t` convention that had begun to</blockquote>
+<blockquote>creep up in Posix.</blockquote>
 <p><a href="http://web.archive.org/web/20220818070526/https://bytes.com/topic/c/answers/221996-origin-size_t-curious">source</a></p>
-<p>Essentially, C needed a portable way to represent the sizes of objects
-in memory. Before the <code>size_t</code> came about, it was common practice to use
-<code>unsigned int</code> instead. K&amp;R C book has a reference to <code>size_t</code> on the Appendix
-A (page 204).</p>
+<p>Essentially, C needed a portable way to represent the sizes of objects in memory. Before the <code>size_t</code> came about, it was common practice to use <code>unsigned int</code> instead. K&R C book has a reference to <code>size_t</code> on the Appendix A (page 204).</p>
 <p>From the man page, <code>size_t</code> is defined as:</p>
-<pre><code>Used  for  a  count of bytes.  It is the result of the sizeof() operator.
+<pre><code class="language-">Used  for  a  count of bytes.  It is the result of the sizeof() operator.
 It is an unsigned integer type capable of storing values in the range [0,
 SIZE_MAX].
-</code></pre>
-<p>The <code>SIZE_MAX</code> value is defined as:</p>
+</code></pre><p>The <code>SIZE_MAX</code> value is defined as:</p>
 <pre><code class="language-c">/* Limit of `size_t' type.  */
 # if __WORDSIZE == 64
 #  define SIZE_MAX		(18446744073709551615UL)
@@ -88,33 +82,22 @@ SIZE_MAX].
 #   define SIZE_MAX		(4294967295U)
 #  endif
 # endif
-</code></pre>
-<p>In my machine I'm getting the value of <code>4294967295l</code> from the script below:</p>
-<pre><code class="language-c">#include &lt;stdint.h&gt;
-#include &lt;stdio.h&gt;
+</code></pre><p>In my machine I'm getting the value of <code>4294967295l</code> from the script below:</p>
+<pre><code class="language-c">#include <stdint.h>
+#include <stdio.h>
 
 int main() {
-  printf(&quot;sizemax is: %ul&quot;, SIZE_MAX);
+  printf("sizemax is: %ul", SIZE_MAX);
 }
-</code></pre>
-<h2>Common use</h2>
-<p>Apart from functions that deal with memory (alloc and company), the <code>size_t</code>
-type is also used for array indexing.</p>
-<p>Given that <code>size_t</code> is a portable type, and it is unsigned by virtue, it is
-a natural type for array indexing.</p>
-<p>Besides that, <code>size_t</code> is typically large enough to represent the maximum size
-of an array that can be allocated in memory.</p>
-<p>In other words, it is capable of holding the size of the largest object you can
-allocate. It is useful for indexing because this means it can index into the
-largest array you can allocate.</p>
+</code></pre><h2>Common use</h2>
+<p>Apart from functions that deal with memory (alloc and company), the <code>size_t</code> type is also used for array indexing.</p>
+<p>Given that <code>size_t</code> is a portable type, and it is unsigned by virtue, it is a natural type for array indexing.</p>
+<p>Besides that, <code>size_t</code> is typically large enough to represent the maximum size of an array that can be allocated in memory.</p>
+<p>In other words, it is capable of holding the size of the largest object you can allocate. It is useful for indexing because this means it can index into the largest array you can allocate.</p>
 <p>Some standard library function implementations use <code>size_t</code> internally:</p>
-<ul>
-<li><code>strcpy</code> <a href="https://elixir.bootlin.com/glibc/glibc-2.17/source/string/strncpy.c">source</a></li>
-<li><code>strcat</code> <a href="https://elixir.bootlin.com/glibc/glibc-2.17/source/string/strncat.c">source</a></li>
-</ul>
-<p>Also, using <code>int</code> (as an alternative) for the index can cause an extra ASM
-instruction on x86-64:</p>
-<pre><code class="language-c">// ; zero-extending idx (in edx) is &quot;free&quot; by simply using rsi.
+<ul><li><code>strcpy</code> <a href="https://elixir.bootlin.com/glibc/glibc-2.17/source/string/strncpy.c">source</a></li><li><code>strcat</code><a href="https://elixir.bootlin.com/glibc/glibc-2.17/source/string/strncat.c">source</a></li></ul>
+<p>Also, using <code>int</code> (as an alternative) for the index can cause an extra ASM instruction on x86-64:</p>
+<pre><code class="language-c">// ; zero-extending idx (in edx) is "free" by simply using rsi.
 // get_index:
 //   movzx  eax, BYTE PTR [rdi+rsi]
 //   ret
@@ -132,38 +115,28 @@ char get_index(char *ptr, int idx)
 {
    return ptr[idx];
 }
-</code></pre>
-<h2>Do not do these</h2>
-<ol>
-<li>Remember that <code>size_t</code> is <strong>unsigned</strong>. Do not mingle arithmetic operations
-between <code>size_t</code> and other signed types. For example,</li>
-</ol>
-<pre><code class="language-c">#include &lt;stdio.h&gt;
+</code></pre><h2>Do not do these</h2>
+<ol><li>Remember that <code>size_t</code> is <b>unsigned</b>. Do not mingle arithmetic operations between <code>size_t</code> and other signed types. For example,<pre><code class="language-c">#include <stdio.h>
 
 int main() {
   size_t foo = 10;
   int bar = -20;
   size_t foo_bar = foo + bar;
 
-  // This prints: &quot;foo_bar is 18446744073709551606&quot;
-  printf(&quot;foo_bar is %lu&quot;, foo_bar);
+  // This prints: "foo_bar is 18446744073709551606"
+  printf("foo_bar is %lu", foo_bar);
 }
-</code></pre>
-<ol start="2">
-<li>Make sure that arithmetic doesn't overflow:</li>
-</ol>
-<pre><code class="language-c">#include &lt;stdio.h&gt;
-#include &lt;stdint.h&gt;
+</code></pre></li><li>Make sure that arithmetic doesn't overflow:<pre><code class="language-c">#include <stdio.h>
+#include <stdint.h>
 
 int main() {
   size_t foo = (SIZE_MAX - 10);
   int bar = 11;
   size_t foo_bar = foo + bar;
 
-  // This prints: &quot;foo_bar is 0&quot;
-  printf(&quot;foo_bar is %lu&quot;, foo_bar);
+  // This prints: "foo_bar is 0"
+  printf("foo_bar is %lu", foo_bar);
 }
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre></li></ol><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

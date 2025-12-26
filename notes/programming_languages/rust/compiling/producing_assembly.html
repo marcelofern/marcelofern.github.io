@@ -60,10 +60,9 @@
 </head>
 <body>
 <h1>Producing Assembly</h1>
-<pre><code>Created at: 2025-02-28
-</code></pre>
-<h2>Using rustc</h2>
-<pre><code class="language-sh"># The following generates a &quot;main.s&quot; file in the same directory.
+<pre><code class="language-">Created at: 2025-02-28
+</code></pre><h2>Using rustc</h2>
+<pre><code class="language-sh"># The following generates a "main.s" file in the same directory.
 rustc --emit=asm main.rs
 
 # Useful flags
@@ -77,23 +76,19 @@ rustc -C opt-level=3 --emit=asm main.rs
 # If you want LLVM intermediate representation
 # instead of assembly (this will create a .ll file):
 rustc --emit=llvm-ir main.rs
-</code></pre>
-<h2>Using cargo (in a cargo project)</h2>
+</code></pre><h2>Using cargo (in a cargo project)</h2>
 <pre><code class="language-sh"># This will create a `.s` file in
 # $ROOT/target/release/deps/
 cargo rustc --release -- --emit=asm
 
-# Or just to run as &quot;debug&quot;
+# Or just to run as "debug"
 cargo rustc -- --emit=asm
 
 # The same flags from rustc are available here
 cargo rustc --release -- -C opt-level=3 --emit=asm
-</code></pre>
-<h2>Using cargo asm</h2>
+</code></pre><h2>Using cargo asm</h2>
 <p>Using cargo-asm to Generate Assembly from Rust Code</p>
-<p><code>cargo-asm</code> is a more interactive and user-friendly tool for inspecting
-the assembly of Rust functions. It allows you to view assembly output
-for specific functions rather than the entire binary.</p>
+<p><code>cargo-asm</code> is a more interactive and user-friendly tool for inspecting the assembly of Rust functions. It allows you to view assembly output for specific functions rather than the entire binary.</p>
 <pre><code class="language-sh"># it needs to be installed first:
 cargo install --force cargo-show-asm
 
@@ -109,25 +104,23 @@ cargo asm prj::foo::bar
 # If you want to see the underlying rust code:
 cargo asm prj::foo --rust
 
-# If you want to &quot;simplify&quot; the output for readibility:
+# If you want to "simplify" the output for readibility:
 cargo asm prj::foo --simplify
-</code></pre>
-<p>Example code to test:</p>
-<pre><code>use std::io;
+</code></pre><p>Example code to test:</p>
+<pre><code class="language-">use std::io;
 
 #[inline(never)]
-fn foo(x: i64, y: i64) -&gt; i64 {
+fn foo(x: i64, y: i64) -> i64 {
     return x + y;
 }
 
 fn main() {
     let mut input = String::new();
-    io::stdin().read_line(&amp;mut input).unwrap(); // Read user input
+    io::stdin().read_line(&mut input).unwrap(); // Read user input
     let x: i64 = input.trim().parse().unwrap(); // Convert to i64
     let result = foo(x, x);
-    println!(&quot;{}&quot;, result)
+    println!("{}", result)
 }
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

@@ -60,34 +60,23 @@
 </head>
 <body>
 <h1>if versus case versus map</h1>
-<pre><code>Created at: 2023-03-06
+<pre><code class="language-">Created at: 2023-03-06
 Updated at: 2024-07-29
-</code></pre>
-<p>Note 2024-03-23: I need to make this more agnostic by adapting it to C. Also
-remove the images in favour of listings.</p>
-<p>Note 2024-07-29: The following information from the CSAPP book (3rd) is
-relevant to this discussion:</p>
-<blockquote>
-<p>The advantage of using a jump table over a long sequence of if-else
-statements is that the time taken to perform the switch is independent of the
-number of switch cases. Gcc selects the method of translating a switch
-statement based on the number of cases and the sparsity of the case values.
-Jump tables are used when there are a number of cases (e.g., four or more)
-and they span a small range of values.</p>
-</blockquote>
+</code></pre><p>Note 2024-03-23: I need to make this more agnostic by adapting it to C. Also remove the images in favour of listings.</p>
+<p>Note 2024-07-29: The following information from the CSAPP book (3rd) is relevant to this discussion:</p>
+<blockquote>The advantage of using a jump table over a long sequence of if-else</blockquote>
+<blockquote>statements is that the time taken to perform the switch is independent of the</blockquote>
+<blockquote>number of switch cases. Gcc selects the method of translating a switch</blockquote>
+<blockquote>statement based on the number of cases and the sparsity of the case values.</blockquote>
+<blockquote>Jump tables are used when there are a number of cases (e.g., four or more)</blockquote>
+<blockquote>and they span a small range of values.</blockquote>
 <h2>The introduction</h2>
-<p>There're a many misconceptions about how <code>if</code> and <code>case</code> statements are
-compiled, and how they perform. As those statements grow large (20+
-lines) code-reviewers commonly recommend refactoring the conditional chains
-into a mapper to improve code clarity.</p>
-<p>So the idea here is to check whether or not the code is cleaner, and how much
-we pay in performance in order to have &quot;cleaner&quot; (TBD) code.</p>
+<p>There're a many misconceptions about how <code>if</code> and <code>case</code> statements are compiled, and how they perform. As those statements grow large (20+ lines) code-reviewers commonly recommend refactoring the conditional chains into a mapper to improve code clarity.</p>
+<p>So the idea here is to check whether or not the code is cleaner, and how much we pay in performance in order to have "cleaner" (TBD) code.</p>
 <h2>The example</h2>
-<p>Let's start with a simple example. Say you're developing a game of chess and
-you need to return a <code>char</code> representation of the chess piece at hand. Easy:</p>
+<p>Let's start with a simple example. Say you're developing a game of chess and you need to return a <code>char</code> representation of the chess piece at hand. Easy:</p>
 <pre><code class="language-cpp">enum Pieces {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING};
-</code></pre>
-<p>Our first function will use <code>if</code> statements:</p>
+</code></pre><p>Our first function will use <code>if</code> statements:</p>
 <pre><code class="language-cpp">char if_func(PieceType piece) {
   if (piece == PAWN) { return 'p'; }
   if (piece == KNIGHT) { return 'k'; }
@@ -96,8 +85,7 @@ you need to return a <code>char</code> representation of the chess piece at hand
   if (piece == QUEEN) { return 'q'; }
   return 'k';
 };
-</code></pre>
-<p>And here is another example using case statements.</p>
+</code></pre><p>And here is another example using case statements.</p>
 <pre><code class="language-cpp">char case_func(PieceType piece) {
   switch(piece) {
     case PAWN: return 'p';
@@ -108,76 +96,54 @@ you need to return a <code>char</code> representation of the chess piece at hand
     default: return 'k';
   }
 };
-</code></pre>
-<p>Before going any further, let's compare the assembly code generated from these
-two functions.</p>
+</code></pre><p>Before going any further, let's compare the assembly code generated from these two functions.</p>
 <h2>Assembly code</h2>
 <p>Firstly, let's start with the assembly code for the <code>if</code> statement version:</p>
-<p><img src="if_assembly.png" alt="if_assembly"></p>
-<p>Very straightforward. Store the input value in a register, compare with the
-integers corresponding to the enum (0, 1, 2, 3, 4, 5) in a sequence and spit
-out the equivalent <code>char</code> (as an int).</p>
+<p><img alt="if_assembly" src="if_assembly.png"></p>
+<p>Very straightforward. Store the input value in a register, compare with the integers corresponding to the enum (0, 1, 2, 3, 4, 5) in a sequence and spit out the equivalent <code>char</code> (as an int).</p>
 <p>How does this compare to the <code>case</code> statement?</p>
-<p><img src="case_assembly.png" alt="case_assembly"></p>
-<p>The <code>case</code> statement seems more complicated for the programmer unfamiliar with
-Assembly language. However, the code is just a producing a lookup table.</p>
+<p><img alt="case_assembly" src="case_assembly.png"></p>
+<p>The <code>case</code> statement seems more complicated for the programmer unfamiliar with Assembly language. However, the code is just a producing a lookup table.</p>
 <h2>Benchmarking</h2>
-<p>Before proceeding to the &quot;clean&quot; code approach, let's run some benchmarking
-to see how the if statement compares to the case one.</p>
+<p>Before proceeding to the "clean" code approach, let's run some benchmarking to see how the if statement compares to the case one.</p>
 <p>Our test bench will look like this:</p>
-<pre><code class="language-cpp">#include &lt;catch2/catch.hpp&gt;
-std::vector&lt;PieceType&gt; pieces = {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING};
+<pre><code class="language-cpp">#include <catch2/catch.hpp>
+std::vector<PieceType> pieces = {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING};
 
 void test_if() {
-  for (int i = 0; i &lt; 1000000; i++) {
-    for (const auto &amp;piece : pieces) {
+  for (int i = 0; i < 1000000; i++) {
+    for (const auto &piece : pieces) {
       if_func(piece);
     }
   }
 };
 
 void test_case() {
-  for (int i = 0; i &lt; 1000000; i++) {
-    for (const auto &amp;piece : pieces) {
+  for (int i = 0; i < 1000000; i++) {
+    for (const auto &piece : pieces) {
       case_func(piece);
     }
   }
 };
 
-TEST_CASE(&quot;IF vs CASE&quot;) {
-  BENCHMARK(&quot;test case&quot;) { return test_case(); };
-  BENCHMARK(&quot;test if&quot;) { return test_if(); };
+TEST_CASE("IF vs CASE") {
+  BENCHMARK("test case") { return test_case(); };
+  BENCHMARK("test if") { return test_if(); };
 }
-</code></pre>
-<p>We will run through the vector one million times for each sample, and then
-we'll analyse how they compare.</p>
-<p><img src="case_vs_if.png" alt="case_vs_if"></p>
-<p>This is an unfortunate scenario for our <code>case</code> statement. Lookup tables get
-better as the number of different <code>case</code>s raises. But in this function we only
-have a few <code>case</code>s and their occurrence is evenly distributed due to the way
-the benchmark code was set. That's why our <code>if</code> statement with many <code>cmp</code>s and
-<code>jmp</code>s somehow managed to perform better.</p>
-<p>In other words, the worst case scenario for our <code>if</code> statement (when it
-receives a 'king' and it needs to jump all the way down the assembly
-instruction chain) only happens 1 out of 6 times. Whereas the <code>case</code> function
-needs to always use the lookup table no matter what.</p>
-<p>I used this example on purpose, because generally speaking developers say that
-<code>case</code> statements are faster than <code>if</code> statements. While this is true for many
-scenarios, this isn't <strong>always</strong> true.</p>
-<p>If we had cherry picked our vector of pieces to only contain Kings, the result
-would be different. Consider substituting this line:</p>
-<pre><code class="language-cpp">// std::vector&lt;PieceType&gt; pieces = {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING};
+</code></pre><p>We will run through the vector one million times for each sample, and then we'll analyse how they compare.</p>
+<p><img alt="case_vs_if" src="case_vs_if.png"></p>
+<p>This is an unfortunate scenario for our <code>case</code> statement. Lookup tables get better as the number of different <code>case</code>s raises. But in this function we only have a few <code>case</code>s and their occurrence is evenly distributed due to the way the benchmark code was set. That's why our <code>if</code> statement with many <code>cmp</code>s and <code>jmp</code>s somehow managed to perform better.</p>
+<p>In other words, the worst case scenario for our <code>if</code> statement (when it receives a 'king' and it needs to jump all the way down the assembly instruction chain) only happens 1 out of 6 times. Whereas the <code>case</code> function needs to always use the lookup table no matter what.</p>
+<p>I used this example on purpose, because generally speaking developers say that <code>case</code> statements are faster than <code>if</code> statements. While this is true for many scenarios, this isn't <b>always</b> true.</p>
+<p>If we had cherry picked our vector of pieces to only contain Kings, the result would be different. Consider substituting this line:</p>
+<pre><code class="language-cpp">// std::vector<PieceType> pieces = {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING};
 
-std::vector&lt;PieceType&gt; pieces = {KING, KING, KING, KING, KING, KING};
-</code></pre>
-<p>The results are quite different as we've reached the worst case scenario more
-times.</p>
-<p><img src="case_vs_if_2.png" alt="case_vs_if_2"></p>
-<p>Now we finally reached equivalence by unbalancing our sampling data. In real
-life it will be difficult to tell how the distribution of our samples will look
-like, so why don't we run this example with a Gaussian distribution?</p>
-<pre><code class="language-cpp">// std::vector&lt;PieceType&gt; pieces = {KING, KING, KING, KING, KING, KING};
-std::vector&lt;PieceType&gt; pieces = {
+std::vector<PieceType> pieces = {KING, KING, KING, KING, KING, KING};
+</code></pre><p>The results are quite different as we've reached the worst case scenario more times.</p>
+<p><img alt="case_vs_if_2" src="case_vs_if_2.png"></p>
+<p>Now we finally reached equivalence by unbalancing our sampling data. In real life it will be difficult to tell how the distribution of our samples will look like, so why don't we run this example with a Gaussian distribution?</p>
+<pre><code class="language-cpp">// std::vector<PieceType> pieces = {KING, KING, KING, KING, KING, KING};
+std::vector<PieceType> pieces = {
   PAWN,
   KNIGHT, KNIGHT,
   BISHOP, BISHOP, BISHOP, BISHOP,
@@ -185,24 +151,16 @@ std::vector&lt;PieceType&gt; pieces = {
   QUEEN, QUEEN,
   KING,
 };
-</code></pre>
-<p>That looks fair! Let's see the results:</p>
-<p><img src="case_vs_if_3.png" alt="case_vs_if_3"></p>
-<p>With 6 different variables to switch from, our <code>if</code> statement is comparable to
-a <code>case</code> statement. For anything less than that, <code>if</code> statements will usually
-be faster, and for anything more than that, they will usually be slower.</p>
-<p>I'm being really picky here, in real-life situations this difference probably
-doesn't matter, but now you know.</p>
+</code></pre><p>That looks fair! Let's see the results:</p>
+<p><img alt="case_vs_if_3" src="case_vs_if_3.png"></p>
+<p>With 6 different variables to switch from, our <code>if</code> statement is comparable to a <code>case</code> statement. For anything less than that, <code>if</code> statements will usually be faster, and for anything more than that, they will usually be slower.</p>
+<p>I'm being really picky here, in real-life situations this difference probably doesn't matter, but now you know.</p>
 <h2>The clean code alternative</h2>
-<p>Let's have a brief pause on benchmarking here to talk about something that
-happens in my daily at my job.</p>
-<p>A code reviewer will look at our <code>if</code> or <code>case</code> function and will block the
-Pull Request saying:</p>
-<blockquote>
-<p>Mmmm, this doesn't look super clean. Can we move it to a mapper instead?</p>
-</blockquote>
+<p>Let's have a brief pause on benchmarking here to talk about something that happens in my daily at my job.</p>
+<p>A code reviewer will look at our <code>if</code> or <code>case</code> function and will block the Pull Request saying:</p>
+<blockquote>Mmmm, this doesn't look super clean. Can we move it to a mapper instead?</blockquote>
 <p>So you end up with something like this:</p>
-<pre><code class="language-cpp">std::unordered_map&lt;PieceType, char&gt; mapper = {
+<pre><code class="language-cpp">std::unordered_map<PieceType, char> mapper = {
   {PAWN, 'p'},
   {KNIGHT, 'k'},
   {BISHOP, 'b'},
@@ -214,58 +172,36 @@ Pull Request saying:</p>
 char mapper_func(PieceType piece) {
   return mapper[piece];
 }
-</code></pre>
-<p>So much cleaner, right?! The reviewer will be happy that you reduced a
-monstrous chain of <code>if</code> (or <code>case</code>) statements into a single, clean, 1 line
-function.</p>
-<p>More over, a common argument is that &quot;it's easier to test, and therefore to
-obtain high coverage&quot;. And indeed, it's easy to obtain coverage if all you're
-doing is making sure that the return line is hit, but if you want to have real
-coverage that branches out to all paths, your test will actually look
-identical for either case.</p>
-<p>In reality I haven't seen any substantial evidence to actually convince me that
-this is indeed cleaner or more useful - and it will most likely come down to
-personal preference, which is unfortunate for the reviewer and for the person
-who created the PR.</p>
-<p>But the central question still is: why use a full on hash table just for
-looking up 6 different values? Isn't this too overkill? Does the clean code
-excuse really matters here? Is the alternative if or case statement even
-&quot;dirty&quot;?</p>
-<p>Let's see how this performs. We'll add another benchmarking using this new
-mapper function and rerun the code.</p>
+</code></pre><p>So much cleaner, right?! The reviewer will be happy that you reduced a monstrous chain of <code>if</code> (or <code>case</code>) statements into a single, clean, 1 line function.</p>
+<p>More over, a common argument is that "it's easier to test, and therefore to obtain high coverage". And indeed, it's easy to obtain coverage if all you're doing is making sure that the return line is hit, but if you want to have real coverage that branches out to all paths, your test will actually look identical for either case.</p>
+<p>In reality I haven't seen any substantial evidence to actually convince me that this is indeed cleaner or more useful - and it will most likely come down to personal preference, which is unfortunate for the reviewer and for the person who created the PR.</p>
+<p>But the central question still is: why use a full on hash table just for looking up 6 different values? Isn't this too overkill? Does the clean code excuse really matters here? Is the alternative if or case statement even "dirty"?</p>
+<p>Let's see how this performs. We'll add another benchmarking using this new mapper function and rerun the code.</p>
 <pre><code class="language-cpp">void test_mapper() {
-  for (int i = 0; i &lt; 1000000; i++) {
-    for (const auto &amp;piece : pieces) {
+  for (int i = 0; i < 1000000; i++) {
+    for (const auto &piece : pieces) {
       mapper_func(piece);
     }
   }
 };
 
 // ...
-  BENCHMARK(&quot;test mapper&quot;) { return test_mapper(); };
+  BENCHMARK("test mapper") { return test_mapper(); };
 // ...
-</code></pre>
-<p><img src="case_vs_if_vs_mapper.png" alt="case_vs_if_vs_mapper"></p>
-<p>This is too slow! We are running almost 10x slower now on our &quot;clean&quot; code
-approach. This is obvious, we don't need a hash table here, we're just
-returning based on a enum of 6 different types.</p>
+</code></pre><p><img alt="case_vs_if_vs_mapper" src="case_vs_if_vs_mapper.png"></p>
+<p>This is too slow! We are running almost 10x slower now on our "clean" code approach. This is obvious, we don't need a hash table here, we're just returning based on a enum of 6 different types.</p>
 <h2>Conclusion</h2>
-<ul>
-<li>Beware of &quot;clean code&quot; conventions without reason. If some of they propagate
-throughout your code base you end up with much slower code.</li>
-<li>If you have too many conditionals (say more than 6) prefer using
-<code>switch</code>/<code>case</code> statements, otherwise <code>if</code> is fine.</li>
-</ul>
+<ul><li>Beware of "clean code" conventions without reason. If some of they propagate throughout your code base you end up with much slower code.</li><li>If you have too many conditionals (say more than 6) prefer using<code>switch</code> /<code>case</code> statements, otherwise <code>if</code> is fine.</li></ul>
 <h2>Benchmark code</h2>
 <pre><code class="language-cpp">#define CATCH_CONFIG_MAIN
 #define CATCH_CONFIG_ENABLE_BENCHMARKING
-#include &lt;catch2/catch.hpp&gt;
-#include &lt;vector&gt;
-#include &lt;unordered_map&gt;
+#include <catch2/catch.hpp>
+#include <vector>
+#include <unordered_map>
 
 enum PieceType {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING};
 
-std::unordered_map&lt;PieceType, char&gt; mapper = {
+std::unordered_map<PieceType, char> mapper = {
   {PAWN, 'p'},
   {KNIGHT, 'k'},
   {BISHOP, 'b'},
@@ -298,9 +234,9 @@ char case_func(PieceType piece) {
   }
 };
 
-#include &lt;catch2/catch.hpp&gt;
-/* std::vector&lt;PieceType&gt; pieces = {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING}; */
-std::vector&lt;PieceType&gt; pieces = {
+#include <catch2/catch.hpp>
+/* std::vector<PieceType> pieces = {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING}; */
+std::vector<PieceType> pieces = {
   PAWN,
   KNIGHT, KNIGHT,
   BISHOP, BISHOP, BISHOP, BISHOP,
@@ -310,35 +246,34 @@ std::vector&lt;PieceType&gt; pieces = {
 };
 
 void test_if() {
-  for (int i = 0; i &lt; 1000000; i++) {
-    for (const auto &amp;piece : pieces) {
+  for (int i = 0; i < 1000000; i++) {
+    for (const auto &piece : pieces) {
       if_func(piece);
     }
   }
 };
 
 void test_case() {
-  for (int i = 0; i &lt; 1000000; i++) {
-    for (const auto &amp;piece : pieces) {
+  for (int i = 0; i < 1000000; i++) {
+    for (const auto &piece : pieces) {
       case_func(piece);
     }
   }
 };
 
 void test_mapper() {
-  for (int i = 0; i &lt; 1000000; i++) {
-    for (const auto &amp;piece : pieces) {
+  for (int i = 0; i < 1000000; i++) {
+    for (const auto &piece : pieces) {
       mapper_func(piece);
     }
   }
 };
 
-TEST_CASE(&quot;IF vs CASE vs MAP&quot;) {
-  BENCHMARK(&quot;test case&quot;) { return test_case(); };
-  BENCHMARK(&quot;test if&quot;) { return test_if(); };
-  BENCHMARK(&quot;test mapper&quot;) { return test_mapper(); };
+TEST_CASE("IF vs CASE vs MAP") {
+  BENCHMARK("test case") { return test_case(); };
+  BENCHMARK("test if") { return test_if(); };
+  BENCHMARK("test mapper") { return test_mapper(); };
 }
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

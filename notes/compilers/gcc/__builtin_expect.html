@@ -59,36 +59,26 @@
   <![endif]-->
 </head>
 <body>
-<h1><code>__builtin_expect</code></h1>
-<pre><code>Created at: 2024-10-26
-</code></pre>
-<p>The built-in function <code>__builtin_expect</code> is used to help the hardware with
-branch prediction.</p>
+<h1><code>____bbuuiillttiinn__eexxppeecctt`</code></h1>
+<pre><code class="language-">Created at: 2024-10-26
+</code></pre><p>The built-in function <code>__builtin_expect</code> is used to help the hardware with branch prediction.</p>
 <p>It has the following declaration:</p>
 <pre><code class="language-c">long __builtin_expect (long exp, long c)
-</code></pre>
-<p>From the documentation:</p>
-<blockquote>
-<p>You may use __builtin_expect to provide the compiler with branch prediction
-information. In general, you should prefer to use actual profile feedback for
-this (-fprofile-arcs), as programmers are notoriously bad at predicting how
-their programs actually perform. However, there are applications in which
-this data is hard to collect.</p>
-</blockquote>
-<blockquote>
-<p>The return value is the value of exp, which should be an integral expression.
-The semantics of the built-in are that it is expected that exp == c. For
-example:</p>
-</blockquote>
+</code></pre><p>From the documentation:</p>
+<blockquote>You may use __builtin_expect to provide the compiler with branch prediction</blockquote>
+<blockquote>information. In general, you should prefer to use actual profile feedback for</blockquote>
+<blockquote>this (-fprofile-arcs), as programmers are notoriously bad at predicting how</blockquote>
+<blockquote>their programs actually perform. However, there are applications in which</blockquote>
+<blockquote>this data is hard to collect.</blockquote>
+<blockquote>The return value is the value of exp, which should be an integral expression.</blockquote>
+<blockquote>The semantics of the built-in are that it is expected that exp == c. For</blockquote>
+<blockquote>example:</blockquote>
 <pre><code class="language-c">if (__builtin_expect (x, 0))
   foo ();
-</code></pre>
-<blockquote>
-<p>indicates that we do not expect to call foo, since we expect x to be zero.</p>
-</blockquote>
+</code></pre><blockquote>indicates that we do not expect to call foo, since we expect x to be zero.</blockquote>
 <h2>Example</h2>
 <p>Take for example this code:</p>
-<pre><code class="language-c">#include &lt;stdbool.h&gt;
+<pre><code class="language-c">#include <stdbool.h>
 
 extern bool foo();
 extern void foo_is_false(void);
@@ -102,8 +92,7 @@ int main() {
   }
   return 0;
 }
-</code></pre>
-<p>Compiling with <code>gcc -03</code> you get this assembly:</p>
+</code></pre><p>Compiling with <code>gcc -03</code> you get this assembly:</p>
 <pre><code class="language-asm">main:
   sub  rsp, 8
   xor  eax, eax
@@ -118,12 +107,9 @@ int main() {
 .L2:
   call  foo_is_false@PLT
   jmp  .L3
-</code></pre>
-<p>Note how we jump to &quot;foo_is_false&quot; after the test.
-Now let's switch that line for:</p>
+</code></pre><p>Note how we jump to "foo_is_false" after the test. Now let's switch that line for:</p>
 <pre><code class="language-c">  if (__builtin_expect(foo(), true)) {
-</code></pre>
-<p>We get:</p>
+</code></pre><p>We get:</p>
 <pre><code class="language-asm">main:
   sub  rsp, 8
   xor  eax, eax
@@ -138,21 +124,16 @@ Now let's switch that line for:</p>
 .L6:
   call  foo_is_true@PLT
   jmp  .L3
-</code></pre>
-<p>The difference is subtle, but see how the <code>foo_is_true</code> and <code>foo_is_false</code>
-calls have swapped places.</p>
-<h2><code>__builtin_expect_with_probability</code></h2>
-<p>This is another built in that helps with branch prediction. However, it takes
-a &quot;probability&quot; argument taking a float value from 0 to 1.</p>
+</code></pre><p>The difference is subtle, but see how the <code>foo_is_true</code> and <code>foo_is_false</code> calls have swapped places.</p>
+<h2><code>____bbuuiillttiinn__eexxppeecctt__wwiitthh__pprroobbaabbiilliittyy`</code></h2>
+<p>This is another built in that helps with branch prediction. However, it takes a "probability" argument taking a float value from 0 to 1.</p>
 <pre><code class="language-c">long __builtin_expect_with_probability(long exp, long c, double probability)
-</code></pre>
-<p>If we change the if conditional to:</p>
+</code></pre><p>If we change the if conditional to:</p>
 <pre><code class="language-c">// Expects it to be true
 if (__builtin_expect_with_probability(foo(), false, 0.4)) {
 
 // Expects it to be false
 if (__builtin_expect_with_probability(foo(), false, 0.6)) {
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

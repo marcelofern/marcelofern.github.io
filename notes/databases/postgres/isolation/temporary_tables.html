@@ -60,19 +60,14 @@
 </head>
 <body>
 <h1>Temporary Tables</h1>
-<pre><code>Created at: 2025-04-22
-</code></pre>
-<p>Temporary tables only live for the length of that session (or transaction when
-insite a BEGIN/COMMIT block).</p>
+<pre><code class="language-">Created at: 2025-04-22
+</code></pre><p>Temporary tables only live for the length of that session (or transaction when insite a BEGIN/COMMIT block).</p>
 <p>They can be created with the <code>TEMPORARY</code> or <code>TEMP</code> keyword:</p>
 <pre><code class="language-sql">CREATE TEMP TABLE table_name(
    ...
 );
-</code></pre>
-<p>Because temporary tables are session/transaction-only, multiple sessions can
-create a temporary table with the same name.</p>
-<p>This means that temporary tables can be used programatically to store the
-results of some complex calculation pertaining to the session or transaction.</p>
+</code></pre><p>Because temporary tables are session/transaction-only, multiple sessions can create a temporary table with the same name.</p>
+<p>This means that temporary tables can be used programatically to store the results of some complex calculation pertaining to the session or transaction.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

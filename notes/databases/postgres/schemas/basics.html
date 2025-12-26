@@ -60,9 +60,8 @@
 </head>
 <body>
 <h1>Schema Basics</h1>
-<pre><code>Created at: 2025-05-05
-</code></pre>
-<h2>Creation And Deletion</h2>
+<pre><code class="language-">Created at: 2025-05-05
+</code></pre><h2>Creation And Deletion</h2>
 <pre><code class="language-sql">CREATE SCHEMA myschema;
 -- With authorisation for a user
 CREATE SCHEMA schema_name AUTHORIZATION user_name;
@@ -70,22 +69,19 @@ CREATE SCHEMA schema_name AUTHORIZATION user_name;
 -- Might have to use CASCADE if the schema isn't empty
 DROP SCHEMA myschema;
 DROP SCHEMA myschema CASCADE;
-</code></pre>
-<h2>Search Path</h2>
-<blockquote>
-<p>Qualified names are tedious to write, and it's often best not to wire a
-particular schema name into applications anyway. Therefore tables are often
-referred to by unqualified names, which consist of just the table name. The
-system determines which table is meant by following a search path, which is a
-list of schemas to look in. The first matching table in the search path is
-taken to be the one wanted. If there is no match in the search path, an error
-is reported, even if matching table names exist in other schemas in the
-database.</p>
-</blockquote>
+</code></pre><h2>Search Path</h2>
+<blockquote>Qualified names are tedious to write, and it's often best not to wire a</blockquote>
+<blockquote>particular schema name into applications anyway. Therefore tables are often</blockquote>
+<blockquote>referred to by unqualified names, which consist of just the table name. The</blockquote>
+<blockquote>system determines which table is meant by following a search path, which is a</blockquote>
+<blockquote>list of schemas to look in. The first matching table in the search path is</blockquote>
+<blockquote>taken to be the one wanted. If there is no match in the search path, an error</blockquote>
+<blockquote>is reported, even if matching table names exist in other schemas in the</blockquote>
+<blockquote>database.</blockquote>
 <pre><code class="language-sql">SHOW search_path;
 --  search_path
 -- --------------
---  &quot;$user&quot;, public
+--  "$user", public
 
 
 -- Allow querying tables without the `myschema.` prefix.
@@ -93,8 +89,7 @@ database.</p>
 -- table of the same name, myschema will return its table when selecting
 -- without the schema prefix.
 SET search_path TO myschema, public;
-</code></pre>
-<h2>Sequences Are Schema Aware</h2>
+</code></pre><h2>Sequences Are Schema Aware</h2>
 <pre><code class="language-sql">CREATE SCHEMA IF NOT EXISTS schema1;
 CREATE SCHEMA IF NOT EXISTS schema2;
 
@@ -105,8 +100,7 @@ CREATE SEQUENCE schema2.my_sequence;
 -- Test that both sequences can exist and be used independently
 SELECT nextval('schema1.my_sequence') AS schema1_seq;
 SELECT nextval('schema2.my_sequence') AS schema2_seq;
-</code></pre>
-<h2>Functions Are Schema Aware</h2>
+</code></pre><h2>Functions Are Schema Aware</h2>
 <pre><code class="language-sql">-- Create schemas
 CREATE SCHEMA IF NOT EXISTS schema1;
 CREATE SCHEMA IF NOT EXISTS schema2;
@@ -127,8 +121,7 @@ $$ LANGUAGE plpgsql;
 -- Test calling both functions
 SELECT schema1.my_function() AS result_schema1;
 SELECT schema2.my_function() AS result_schema2;
-</code></pre>
-<h2>Indexes Are Schema Aware</h2>
+</code></pre><h2>Indexes Are Schema Aware</h2>
 <pre><code class="language-sql">-- Create schemas
 CREATE SCHEMA IF NOT EXISTS schema1;
 CREATE SCHEMA IF NOT EXISTS schema2;
@@ -147,8 +140,7 @@ CREATE INDEX same_name_idx ON schema2.my_table(name);
 -- Test the existence of indexes
 SELECT * FROM pg_indexes WHERE tablename = 'my_table' AND schemaname = 'schema1';
 SELECT * FROM pg_indexes WHERE tablename = 'my_table' AND schemaname = 'schema2';
-</code></pre>
-<h2>A table from one schema can ref a table from another</h2>
+</code></pre><h2>A table from one schema can ref a table from another</h2>
 <pre><code class="language-sql">-- Create two schemas
 CREATE SCHEMA IF NOT EXISTS schema1;
 CREATE SCHEMA IF NOT EXISTS schema2;
@@ -181,7 +173,6 @@ BEGIN
         VALUES (FLOOR(RANDOM() * 100 + 1)::INT);
     END LOOP;
 END $$;
-</code></pre>
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>
