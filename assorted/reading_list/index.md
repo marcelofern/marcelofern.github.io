@@ -1,7 +1,16 @@
 Reading list resources:
+
  - [www.doradolist.com](www.doradolist.com)
  - [reddit r/eebooks](https://www.reddit.com/r/eebooks/)
  - [https://standardebooks.org](https://standardebooks.org)
+
+## Fiction
+- The Eye of Osiris - R. Austin Freeman
+
+## Science Fiction
+- We Who Are about To... - Joanna Russ
+- The Body Snatchers - Jack Finney
+
 
 ## Digital Circuits
 

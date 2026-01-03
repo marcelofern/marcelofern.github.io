@@ -59,7 +59,17 @@
   <![endif]-->
 </head>
 <body>
-<h1>Kindle</h1>
-<ul><li><a href="kindle/downloading_kindle_highlights.html">downloading kindle highlights</a></li><li><a href="kindle/customising_kindle.html">customising kindle</a></li><li><a href="kindle/converting_koreader_lua_highlights_to_text.html">converting koreader lua highlights to text</a></li></ul><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<h1>Converting koreader lua highlights to text</h1>
+<pre><code class="language-lua">-- The below is the ONLY variable that needs to change.
+-- Ensure this is the full path to the book highlights directory.
+highlights_dir = "/mnt/kindle/books/fiction/The Green Mile - Stephen King.sdr"
+
+highlights = dofile(highlights_dir .. "/metadata.epub.lua")
+
+for i, annotation in ipairs(highlights.annotations) do
+    print("> " .. annotation.text)
+    print("") -- print an empty line
+end
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>
