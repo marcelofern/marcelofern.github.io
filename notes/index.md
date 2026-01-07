@@ -1,7 +1,6 @@
 ## High-level computing
 
 - [Databases](databases/index.md)
-- [Message brokers](message_brokers/index.md)
 - [Programming languages](programming_languages/index.md)
 - [Security](security/index.md)
 - [Linux](linux/index.md)
@@ -9,6 +8,7 @@
 - [Version Control](version_control/index.md)
 - [Text Editors](text_editors/index.md)
 - [Terminal Multiplexers](terminal_multiplexers/index.md)
+- [Message brokers](message_brokers/index.md)
 
 ## Low-level computing
 

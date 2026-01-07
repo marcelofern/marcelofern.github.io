@@ -4,13 +4,20 @@ Reading list resources:
  - [reddit r/eebooks](https://www.reddit.com/r/eebooks/)
  - [https://standardebooks.org](https://standardebooks.org)
 
-## Fiction
-- The Eye of Osiris - R. Austin Freeman
-
 ## Science Fiction
+- Snow Crash - 	Neal Stephenson.
+- Atlas Shrugged - Ayn Rand.
+- Project Hail Mary - Andy Weir (may be good as an audio book).
+- The Martian - Andy Weir
+- The Expanse (series) - James S. A. Corey
+- Children of Time - Adrian Tchaikovsky
+- We Who Are about To... - Joanna Russ 
 - We Who Are about To... - Joanna Russ
 - The Body Snatchers - Jack Finney
 
+## Fiction
+- The Da Vinci Code - Dan Brown
+- The Eye of Osiris - R. Austin Freeman
 
 ## Digital Circuits
 
@@ -25,6 +32,7 @@ Reading list resources:
 
 ## Computer Systems
 
+- The Unix Haters Handbook - Simson Garfinkel
 - Computer System a Programmer's Approach - Bryant O'Hallaron
 - The UNIX programming environment - Brian K. & Rob Pike
 - C Interfaces and Implementations - David Hanson
@@ -106,3 +114,9 @@ Reading list resources:
 ## Blog Posts
 
 - https://cloud.google.com/blog/products/databases/deep-dive-into-postgresql-vacuum-garbage-collector
+
+## Great software engineering blog posts
+
+- [21 Lessons From 14 Years at Google](https://addyosmani.com/blog/21-lessons/)
+- [Choose boring technology](https://boringtechnology.club/)
+- [The law of leaky abstractions](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/)
