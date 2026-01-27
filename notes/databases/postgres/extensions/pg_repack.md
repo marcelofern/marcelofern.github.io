@@ -33,11 +33,11 @@ Here is what it is capable of doing:
 The problem with VACUUM FULL is that it blocks reads and writes.
 
 An article worth reading is Amazon's "Reducing bloat in tables and indexes with
-pg_repac [source](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.pg_repack.html)
+pg_repack [source](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.pg_repack.html)
 
 ## Requirements
 
-- To ensure efficient performance, the target table should possess either a
+- To ensure efficient performance, the target table should have either a
   primary key or at least a unique index covering a non-null column.
 - Executing a complete table repack necessitates available disk space roughly
   twice the size of the target table(s) and their associated indexes.
@@ -88,7 +88,7 @@ There are 7 steps performed by pg_repack here:
      5 | (100013) |
    ```
    The above means that rows 100012 and 100013 were inserted and then deleted
-   (empty data in the row).
+   (empty data in the row) after being updated (row 3).
 3. **Create new table**: Create the new table.
 4. **Add indexes in the new table**: Add index on the PK for query performance.
 5. **Apply changes from log table**: For synchronisation.
@@ -543,7 +543,9 @@ Then:
    extensions is that if you perform DROP EXTENSION, it will automatically
    delete these triggers and clean up everything nicely. And then you can just
    CREATE EXTENSION again and you're all set to retry.
-5. Create the pktype (index) `SELECT repack.create_index_type(2093614,2093608)`.
+5. Create the pktype (index)
+   `SELECT repack.create_index_type(2093614,2093608)`.
+   This is the index used for the repacking process.
 6. Create the log table: `SELECT repack.create_log_table(2093608)`.
 7. Create the trigger
    ```sql
@@ -554,7 +556,7 @@ Then:
 8. Enable the trigger `ALTER TABLE public.table_for_repack ENABLE ALWAYS TRIGGER repack_trigger`.
 9. Disable autovacuum: `SELECT repack.disable_autovacuum('repack.log_2093608')`
    I'm not sure why this is needed. Worth checking history of this (see
-   bin/pg_repack.c:1389)
+   bin/pg_repack.c:1389). Guess: Maybe becuase it's append/delete only?
 10. Ask for another connection (async) to lock the `table_for_repack` in
     AccessShare mode to avoid DDLs trying to change that table of running
     before we repack. That would affect our repacking process. DDLs are killed
@@ -568,8 +570,9 @@ Then:
 Now the process of starting to backfill starts
 
 1. BEGIN ISOLATION LEVEL SERIALIZABLE (this is used to avoid race condition
-   between the create_table statement and rows subsequently being added to the
-   log table).
+   between the create_table statement (which pulls in all existing rows from
+   the source table) and rows subsequently being added to the log table) -
+   NOTE: this is from a comment in the source code.
 2. `SET work_mem = maintanence_work_mem`
    `SELECT set_config('work_mem', current_setting('maintenance_work_mem'), true)", 0, NULL);`
 3. Fetch all active transaction virtual ids (see SQL_XID_SNAPSHOT_90200 for query).
@@ -597,7 +600,7 @@ Now the process of starting to backfill starts
 10. Grab oid of the existing table
     `SELECT 'repack.table_2093608'::regclass::oid`
 11. Creates the indexes on the destination table
-12. Keeps running `apply_log` on a ethernal loop which runs
+12. Keeps running `apply_log` on an ethernal loop which runs
     ```
     LOG: (query) SELECT repack.repack_apply($1, $2, $3, $4, $5, $6)
     LOG:    (param:0) = SELECT * FROM repack.log_2093608 ORDER BY id LIMIT $1
@@ -642,7 +645,6 @@ count: 1000
 
 The `repack_prepare` function parses and prepares the SQL to be executed, but
 doesn't run it. It's the job of `execute_plan` to do so.
-
 
 
 ## Debugging
@@ -690,9 +692,9 @@ For this to take effect, remember to recompile the C project and then:
 DROP EXTENSION pg_repack CASCADE; CREATE EXTENSION pg_repack;
 ```
 
-Also, if I wanted to pause the program I dropped some `sleep()` calls, this was
-helpful when I wanted to throw some more data in the table_to_repack while the
-repack apply process was running.
+Also, to pause the program I dropped some `sleep()` calls, this was helpful
+when I wanted to throw some more data in the table_to_repack while the repack
+apply process was running.
 
 ```sql
 INSERT INTO table_for_repack (name, value) VALUES ('my_name000', 42);

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Row locks</h1>
+<pre><code class="language-">Created at: 2026-01-14
+</code></pre><p>Despite Postgres documentation having _some_ information on row locks, you usually can't see them in the catalog table <code>pg_locks</code>:</p>
+<blockquote>Although tuples are a lockable type of object, information about row-level</blockquote>
+<blockquote>locks is stored on disk, not in memory, and therefore row-level locks</blockquote>
+<blockquote>normally do not appear in this view. If a process is waiting for a row-level</blockquote>
+<blockquote>lock, it will usually appear in the view as waiting for the permanent</blockquote>
+<blockquote>transaction ID of the current holder of that row lock.</blockquote>
+<p>As per the above, row-level lock is stored on disk. This information is stored in the xmax field - which serves two purposes:</p>
+<ol><li>Store the transation id (xid) of the transaction that deleted the tuple. I.e., either a delete or an update operation.</li><li>Or store row locks.</li></ol>
+<p>What happens if both need to be stored at the same time? Well, This never happens. A tuple can't be deleted and locked at the same time.</p>
+<p>The advantage of storing these locks on disk is that the pg_locks underlying table won't go past its size limit. But at the same time they increase I/O load since we are effectivaly dirtying the buffer for this row and it needs to be written to disk during the next checkpoint. <a href="https://www.cybertec-postgresql.com/en/whats-in-an-xmax/#the-two-meanings-of-xmax">More information, including what happens when multiple locks on the same row</a></p>
+<h2>Row lock Cheatsheet</h2>
+<pre><code class="language-">|                   | FOR KEY SHARE | FOR SHARE | FOR NO KEY UPDATE | FOR UPDATE |
+|-------------------|---------------|-----------|-------------------|------------|
+| FOR KEY SHARE     |               |           |                   |      X     |
+| FOR SHARE         |               |           |         X         |      X     |
+| FOR NO KEY UPDATE |               |     X     |         X         |      X     |
+| FOR UPDATE        |       X       |     X     |         X         |      X     |
+</code></pre><blockquote>Row-level locks do not affect data querying; they block only writers and</blockquote>
+<blockquote>lockers to the same row. Row-level locks are released at transaction end or</blockquote>
+<blockquote>during savepoint rollback, just like table-level locks.</blockquote>
+<h2>When to use SELECT ... FOR UPDATE</h2>
+<p>Most people use <code>SELECT ... FOR UPDATE</code> but it can cause problems. This lock should only be taken when you are DELETING the row, or updating a unique key column or a primary key column (basically a column that can be used as FK on another table). In other words, an UPDATE statement that modifies a column that is part of a non-partial non-expression unique index.</p>
+<p>If that is not the case, use <code>SELECT ... FOR NO KEY UPDATE</code>. This ensures you are not blocking inserts into other tables that refer the table being updated. <a href="https://www.cybertec-postgresql.com/en/row-locks-in-postgresql/">More info</a></p>
+<p>Avoid using this against a row in a table referenced by a foreign key as you will block all INSERTs from other tables that also reference this row. <a href="https://www.cybertec-postgresql.com/en/select-for-update-considered-harmful-postgresql/">More info</a></p>
+<h2>When to use SELECT ... FOR NO KEY UPDATE</h2>
+<p>Any time when you are updating a non-primary key column and a non-unique key column.</p>
+<h2>When to use SELECT ... FOR KEY SHARE</h2>
+<p>I have never seen a usecase for this.</p>
+<p>In fact, Postgres uses this level of lock internally. Whenever an INSERT happens in a table with a foreign key, this lock will be taken in the referenced table.</p>
+<p>This prevents a race condition in which another transaction might delete the referenced row before the INSERT finishes.</p>
+<h2>When to use SELECT ... FOR SHARE</h2>
+<p>I have never seen a usecase for this. Postgres also does not use this lock internally.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

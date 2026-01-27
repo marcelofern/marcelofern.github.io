@@ -46,6 +46,7 @@
 - [Deadlock Demonstration](databases/postgres/locks/deadlock_demonstration.md)
 - [Advisory Lock](databases/postgres/locks/advisory_lock.md)
 - [Drop trigger locks](databases/postgres/locks/drop_trigger_locks.md)
+- [Row locks](databases/postgres/locks/row_locks.md)
 
 ### Triggers
 

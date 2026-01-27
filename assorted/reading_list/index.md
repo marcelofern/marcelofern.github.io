@@ -19,6 +19,10 @@ Reading list resources:
 - The Da Vinci Code - Dan Brown
 - The Eye of Osiris - R. Austin Freeman
 
+## Nonfiction
+
+- The Soul of a New Machine - Tracy Kidder (Pulitzer Prize for General Nonfiction)
+
 ## Digital Circuits
 
 - Digital Integrated Circuits - Jan M. Rabaey et al.
@@ -120,3 +124,5 @@ Reading list resources:
 - [21 Lessons From 14 Years at Google](https://addyosmani.com/blog/21-lessons/)
 - [Choose boring technology](https://boringtechnology.club/)
 - [The law of leaky abstractions](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/)
+- [You can't design software you don't work on](https://www.seangoedecke.com/you-cant-design-software-you-dont-work-on/)
+- [Seeing like a software company](https://www.seangoedecke.com/seeing-like-a-software-company/)

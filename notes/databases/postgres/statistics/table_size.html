@@ -59,7 +59,36 @@
   <![endif]-->
 </head>
 <body>
-<h1>Assorted</h1>
-<ul><li><a href="library/index.html">Library</a></li><li><a href="reading_list/index.html">Reading list</a></li><li><a href="food_recipes/index.html">Food Recipes</a></li><li><a href="tramping/index.html">Tramping</a></li></ul><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<h1>Table Size</h1>
+<pre><code class="language-">Created at: 2026-01-23
+</code></pre><h2>Table size (including toast)</h2>
+<pre><code class="language-sql">SELECT
+  pg_size_pretty(pg_relation_size(c.oid))                 AS table_size,
+  pg_size_pretty(pg_indexes_size(c.oid))                  AS index_size,
+  pg_size_pretty(pg_total_relation_size(c.reltoastrelid)) AS toast_size,
+  pg_size_pretty(pg_total_relation_size(c.oid))           AS total_size
+FROM
+  pg_class c
+JOIN
+  pg_namespace n
+  ON n.oid = c.relnamespace
+WHERE
+  n.nspname = 'public'
+  AND c.relname = 'events_externalevent'
+;
+</code></pre><h2>Top 100 heaviest tables</h2>
+<pre><code class="language-sql">SELECT
+  relname AS table,
+  pg_size_pretty(pg_total_relation_size(relid)) AS total_size
+FROM
+  pg_catalog.pg_statio_user_tables
+WHERE
+  schemaname = 'public'
+ORDER BY
+  pg_total_relation_size(relid) DESC
+LIMIT
+  100
+;
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

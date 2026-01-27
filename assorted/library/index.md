@@ -83,6 +83,7 @@ ones in this list to be good enough to be shared with the public.
 - King, Stephen - 11/22/63 ([review](assorted/library/11_22_63/index.md)).
 - King, Stephen - The Green Mile ([review](assorted/library/the_green_mile/index.md)).
 - King, Stephen - The Stand ([review](assorted/library/the_stand/index.md)).
+- King, Stephen - Under the dome ([review](assorted/library/under_the_dome/index.md)).
 - Marquez, Gabriel Garcia - One Hundred Years of Solitude ([review](assorted/library/one-hundred-years-of-solitude/index.md))
 - Orwell, George - 1984 ([review](assorted/library/1984/index.md))
 - Shusterman, Neal - Arc of a Scythe Series ([review](assorted/library/arc-of-a-scythe/index.md))
