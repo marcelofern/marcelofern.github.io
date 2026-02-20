@@ -22,6 +22,7 @@ Reading list resources:
 ## Nonfiction
 
 - The Soul of a New Machine - Tracy Kidder (Pulitzer Prize for General Nonfiction)
+- How Big Things Get Done (The financial times - best books of 2023)
 
 ## Digital Circuits
 
