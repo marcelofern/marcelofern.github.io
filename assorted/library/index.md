@@ -98,6 +98,7 @@ ones in this list to be good enough to be shared with the public.
 
 ## General Technology
 
+- Kider, Tracy - The Sould of a New Machine. ([review](assorted/library/the-soul-of-a-new-machine/index.md))
 - Monteiro, Mike - Ruined By Design ([review](assorted/library/ruined-by-design/index.md))
 - Newport, Cal - Digital Minimalism ([review](assorted/library/digital-minimalism/index.md))
 - Stallman, Richard - Free as in freedom ([review](assorted/library/free-as-in-freedom/index.md))
