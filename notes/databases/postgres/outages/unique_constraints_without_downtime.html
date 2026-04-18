@@ -113,11 +113,7 @@ Where table_constraint_using_index is:
 </code></pre><p>By default, constraints are set as DEFERRABLE INITIALLY IMMEDIATE unless specified.</p>
 <p>Deferrability cheat-sheet:</p>
 <ul><li><code>DEFERRABLE</code>: the default deferrability can be changed in a transaction.</li><li><code>NOT DEFERRABLE</code> : the default deferrability <b>cannot</b> be changed in a transaction. Plus, will always be IMMEDIATE. Trying to set it otherwise will result in error: ERROR:  constraint declared INITIALLY DEFERRED must be DEFERRABLE LINE 4: NOT DEFERRABLE INITIALLY DEFERRED;</li><li><code>INITIALLY DEFERRED</code> : by default, wait until the end of the transaction to check the constraint.</li><li><code>INITIALLY IMMEDIATE</code> : by default, check the constraint immediately, that is, without waiting until the end of the transaction.</li></ul>
-<blockquote>Upon creation, a constraint is given one of three characteristics: DEFERRABLE</blockquote>
-<blockquote>INITIALLY DEFERRED, DEFERRABLE INITIALLY IMMEDIATE, or NOT DEFERRABLE. The</blockquote>
-<blockquote>third class is always IMMEDIATE and is not affected by the SET CONSTRAINTS</blockquote>
-<blockquote>command. The first two classes start every transaction in the indicated mode,</blockquote>
-<blockquote>but their behavior can be changed within a transaction by SET CONSTRAINTS.</blockquote>
+<blockquote>Upon creation, a constraint is given one of three characteristics: DEFERRABLE INITIALLY DEFERRED, DEFERRABLE INITIALLY IMMEDIATE, or NOT DEFERRABLE. The third class is always IMMEDIATE and is not affected by the SET CONSTRAINTS command. The first two classes start every transaction in the indicated mode, but their behavior can be changed within a transaction by SET CONSTRAINTS.</blockquote>
 <h2>Sandbox Example</h2>
 <pre><code class="language-sql">DROP TABLE IF EXISTS foo;
 CREATE TABLE foo (

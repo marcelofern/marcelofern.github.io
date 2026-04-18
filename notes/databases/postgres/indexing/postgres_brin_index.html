@@ -61,16 +61,7 @@
 <body>
 <p>2024-07-08</p>
 <h1>BRIN Index (Block Range Index)</h1>
-<blockquote>BRIN is designed for handling very large tables in which certain columns have</blockquote>
-<blockquote>some natural correlation with their physical location within the table.</blockquote>
-<blockquote></blockquote>
-<blockquote>BRIN works in terms of block ranges (or “page ranges”). A block range is a</blockquote>
-<blockquote>group of pages that are physically adjacent in the table; for each block</blockquote>
-<blockquote>range, some summary info is stored by the index. For example, a table storing</blockquote>
-<blockquote>a store's sale orders might have a date column on which each order was</blockquote>
-<blockquote>placed, and most of the time the entries for earlier orders will appear</blockquote>
-<blockquote>earlier in the table as well; a table storing a ZIP code column might have</blockquote>
-<blockquote>all codes for a city grouped together naturally.</blockquote>
+<blockquote>BRIN is designed for handling very large tables in which certain columns have some natural correlation with their physical location within the table.  BRIN works in terms of block ranges (or “page ranges”). A block range is a group of pages that are physically adjacent in the table; for each block range, some summary info is stored by the index. For example, a table storing a store's sale orders might have a date column on which each order was placed, and most of the time the entries for earlier orders will appear earlier in the table as well; a table storing a ZIP code column might have all codes for a city grouped together naturally.</blockquote>
 <p><a href="https://www.postgresql.org/docs/current/brin-intro.html">source</a></p>
 <p>In general, BRIN requires very low INSERT-time overhead, and very small index size.</p>
 <h2>When to use</h2>

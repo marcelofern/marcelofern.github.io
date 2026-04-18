@@ -84,10 +84,7 @@ PWM+ (D 6) PD6 12|    |17  PB3 (D 11) PWM
                  +----+
 </code></pre><p>Therefore you want to set port 19 as <b>output</b>. And according to our schematics above, that is PB5. You also want to toggle between HIGH and LOW every second so that the led can blink.</p>
 <p>That is the equivalent of saying:</p>
-<blockquote>I want to set the data direction bit for port PB5 to OUT=1 via DDRB.</blockquote>
-<blockquote>I want to set the data register port to 1 via PORTB for 1 second.</blockquote>
-<blockquote>I want to set the data register port to 0 via PORTB for 1 second.</blockquote>
-<blockquote>I want to loop infinitely between these two states above.</blockquote>
+<blockquote>I want to set the data direction bit for port PB5 to OUT=1 via DDRB. I want to set the data register port to 1 via PORTB for 1 second. I want to set the data register port to 0 via PORTB for 1 second. I want to loop infinitely between these two states above.</blockquote>
 <h2>What if I want to <b>read</b> the value (INPUT)</h2>
 <p>Independently of the setting of data direction bit DDxn, the port pin can be read through the PINxn register bit.</p>
 <h2>Cheat sheet table</h2>
@@ -100,22 +97,13 @@ PWM+ (D 6) PD6 12|    |17  PB3 (D 11) PWM
 | 1    | 1      | X             | Output | No      | Output high(source)                         |
 </code></pre><h2>The authority</h2>
 <p>The ATMega328P datasheet is the authority when it comes down to explaining what each IO port does:</p>
-<blockquote>The DDxn bit in the DDRx register selects the direction of this pin. If DDxn</blockquote>
-<blockquote>is written logic one, Pxn is configured as an output pin.</blockquote>
+<blockquote>The DDxn bit in the DDRx register selects the direction of this pin. If DDxn is written logic one, Pxn is configured as an output pin.</blockquote>
 <blockquote>If DDxn is written logic zero, Pxn is configured as an input pin.</blockquote>
-<blockquote>If PORTxn is written logic one when the pin is configured as an input pin,</blockquote>
-<blockquote>the pull-up resistor is activated. To switch the pull-up resistor off, PORTxn</blockquote>
-<blockquote>has to be written logic zero or the pin has to be configured as an output</blockquote>
-<blockquote>pin.</blockquote>
-<blockquote>The port pins are tri-stated ({DDxn, PORTxn} = 0b00) when reset condition</blockquote>
-<blockquote>becomes active, even if no clocks are running.</blockquote>
-<blockquote>If PORTxn is written logic one when the pin is configured as an output pin,</blockquote>
-<blockquote>the port pin is driven high (one).</blockquote>
-<blockquote>If PORTxn is written logic zero when the pin is configured as an output pin,</blockquote>
-<blockquote>the port pin is driven low (zero)</blockquote>
-<blockquote>Writing a logic one to PINxn toggles the value of PORTxn, independent on the</blockquote>
-<blockquote>value of DDRxn. Note that the SBI instruction can be used to toggle one</blockquote>
-<blockquote>single bit in a port.</blockquote>
+<blockquote>If PORTxn is written logic one when the pin is configured as an input pin, the pull-up resistor is activated. To switch the pull-up resistor off, PORTxn has to be written logic zero or the pin has to be configured as an output pin.</blockquote>
+<blockquote>The port pins are tri-stated ({DDxn, PORTxn} = 0b00) when reset condition becomes active, even if no clocks are running.</blockquote>
+<blockquote>If PORTxn is written logic one when the pin is configured as an output pin, the port pin is driven high (one).</blockquote>
+<blockquote>If PORTxn is written logic zero when the pin is configured as an output pin, the port pin is driven low (zero)</blockquote>
+<blockquote>Writing a logic one to PINxn toggles the value of PORTxn, independent on the value of DDRxn. Note that the SBI instruction can be used to toggle one single bit in a port.</blockquote>
 <p><a href="http://web.archive.org/web/20240328200801/https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf">source</a></p>
 <h2>Example</h2>
 <p>The documentation provides two examples:</p>

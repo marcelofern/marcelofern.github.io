@@ -75,9 +75,7 @@
 <p>Indexes can also become defragmented for the same reasons. The <code>pgstattuple.pgstatindex</code> function is useful for checking index fragmentation. Focus on the <code>avg_leaf_density</code> value, anything below 20% isn't great. <a href="https://dba.stackexchange.com/questions/331052/what-is-acceptable-level-of-btree-index-fragmentation-in-postgres">source</a>.</p>
 <h2>Bloat</h2>
 <p>To find the bloat of a table, Postgres' wiki recommends:</p>
-<blockquote>To obtain more accurate information about database bloat, please refer to the</blockquote>
-<blockquote>pgstattuple or pg_freespacemap contrib modules.</blockquote>
-<blockquote>[source](https://wiki.postgresql.org/wiki/Show_database_bloat)</blockquote>
+<blockquote>To obtain more accurate information about database bloat, please refer to the pgstattuple or pg_freespacemap contrib modules. [source](https://wiki.postgresql.org/wiki/Show_database_bloat)</blockquote>
 <h2>Example</h2>
 <pre><code class="language-sql">CREATE DATABASE bloat_test;
 
@@ -199,10 +197,7 @@ SELECT * FROM bloated WHERE val > 1000 and val < 40000;
 -- Planning Time: 0.324 ms
 -- Execution Time: 28.723 ms
 </code></pre><p>Note from the Postgres documentation:</p>
-<blockquote>The table_len will always be greater than the sum of the tuple_len,</blockquote>
-<blockquote>dead_tuple_len and free_space. The difference is accounted for by fixed page</blockquote>
-<blockquote>overhead, the per-page table of pointers to tuples, and padding to ensure</blockquote>
-<blockquote>that tuples are correctly aligned.</blockquote>
+<blockquote>The table_len will always be greater than the sum of the tuple_len, dead_tuple_len and free_space. The difference is accounted for by fixed page overhead, the per-page table of pointers to tuples, and padding to ensure that tuples are correctly aligned.</blockquote>
 <p>We can define table bloat as:</p>
 <pre><code class="language-">table_bloat = (bloat_size / table_size) * 100
 </code></pre><p>Where</p>

@@ -267,11 +267,7 @@ lea rdx, [rdx*2+rdx] ; multiplies rdx by 3
 l1:
 <loop body>
 loop l1
-</code></pre><blockquote>Looking at the "8086/8088 User's Manual: Programmer's and Hardware Reference"</blockquote>
-<blockquote>(Intel 1989) confirms that LOOP is marginally faster than the combination DEC</blockquote>
-<blockquote>CX; JNZ. DEC takes 3 clock cycles, JNZ takes 4 (not taken) or 16 (taken)</blockquote>
-<blockquote>cycles. So the combination requires 7 or 19 cycles. LOOP on the other hand</blockquote>
-<blockquote>requires 5 cycles (not taken) or 17 cycles (taken), for a saving of 2 cycles.</blockquote>
+</code></pre><blockquote>Looking at the "8086/8088 User's Manual: Programmer's and Hardware Reference" (Intel 1989) confirms that LOOP is marginally faster than the combination DEC CX; JNZ. DEC takes 3 clock cycles, JNZ takes 4 (not taken) or 16 (taken) cycles. So the combination requires 7 or 19 cycles. LOOP on the other hand requires 5 cycles (not taken) or 17 cycles (taken), for a saving of 2 cycles.</blockquote>
 <p>Flags affected (none): <pre><code class="language-">| AF  | CF  | DF  | IF  | OF  | PF  | SF  | TF  | ZF  |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|
 |     |     |     |     |     |     |     |     |     |</p>
@@ -769,8 +765,7 @@ ret
 <p>Why are prologs and epilogs important?</p>
 <p>A new requirement in x64 is that the stack must be aligned on a 16 byte boundary.</p>
 <p>What this means is that when you return from a function (like <code>main:</code>), the stack pointer must be pointing at an address evenly divisible by 16.</p>
-<blockquote>*TIP*: Aligned to 16 bytes means that the stack pointer is dividable by 16.</blockquote>
-<blockquote>If you read it in hexadecimal, it means that the last digit is a zero.</blockquote>
+<blockquote>*TIP*: Aligned to 16 bytes means that the stack pointer is dividable by 16. If you read it in hexadecimal, it means that the last digit is a zero.</blockquote>
 <p>Why is this an issue?</p>
 <p>When a procedure is called, the caller pushes the return address onto the stack. A return address is 8 bytes in size (64 bits). But if you access the stack after adding 8 bytes to it (rather than 16 bytes), bad things may happen. Keeping the stack aligned on 16-byte boundaries at all times makes code simpler for a number of things, including the use of SSE vectors when they are stored on the stack.</p>
 <p>When the prolog pushes RBP onto the stack, we now have the return address with 8 bytes, and the content of RBP, 8 bytes totalling 16 bytes.</p>

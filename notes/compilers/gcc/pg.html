@@ -348,39 +348,11 @@ long mul(long a, long b) {
   ret
 </code></pre><h2>What the docs say</h2>
 <p>According to the <code>gprof</code> <a href="https://ftp.gnu.org/old-gnu/Manuals/gprof-2.9.1/html_node/gprof_25.html">manual</a></p>
-<blockquote>The mcount routine, included in the profiling library, is responsible for</blockquote>
-<blockquote>recording in an in-memory call graph table both its parent routine (the</blockquote>
-<blockquote>child) and its parent's parent. This is typically done by examining the stack</blockquote>
-<blockquote>frame to find both the address of the child, and the return address in the</blockquote>
-<blockquote>original parent. Since this is a very machine-dependant operation, mcount</blockquote>
-<blockquote>itself is typically a short assembly-language stub routine that extracts the</blockquote>
-<blockquote>required information, and then calls __mcount_internal (a normal C function)</blockquote>
-<blockquote>with two arguments - frompc and selfpc. __mcount_internal is responsible for</blockquote>
-<blockquote>maintaining the in-memory call graph, which records frompc, selfpc, and the</blockquote>
-<blockquote>number of times each of these call arcs was transversed.</blockquote>
+<blockquote>The mcount routine, included in the profiling library, is responsible for recording in an in-memory call graph table both its parent routine (the child) and its parent's parent. This is typically done by examining the stack frame to find both the address of the child, and the return address in the original parent. Since this is a very machine-dependant operation, mcount itself is typically a short assembly-language stub routine that extracts the required information, and then calls __mcount_internal (a normal C function) with two arguments - frompc and selfpc. __mcount_internal is responsible for maintaining the in-memory call graph, which records frompc, selfpc, and the number of times each of these call arcs was transversed.</blockquote>
 <p>So <code>mcount</code> only records the call count. How do we have the time estimation for each function?</p>
-<blockquote>Profiling also involves watching your program as it runs, and keeping a</blockquote>
-<blockquote>histogram of where the program counter happens to be every now and then.</blockquote>
-<blockquote>Typically the program counter is looked at around 100 times per second of run</blockquote>
-<blockquote>time, but the exact frequency may vary from system to system.</blockquote>
-<blockquote>This is done is one of two ways. Most UNIX-like operating systems provide a</blockquote>
-<blockquote>profil() system call, which registers a memory array with the kernel, along</blockquote>
-<blockquote>with a scale factor that determines how the program's address space maps into</blockquote>
-<blockquote>the array. Typical scaling values cause every 2 to 8 bytes of address space</blockquote>
-<blockquote>to map into a single array slot. On every tick of the system clock (assuming</blockquote>
-<blockquote>the profiled program is running), the value of the program counter is</blockquote>
-<blockquote>examined and the corresponding slot in the memory array is incremented. Since</blockquote>
-<blockquote>this is done in the kernel, which had to interrupt the process anyway to</blockquote>
-<blockquote>handle the clock interrupt, very little additional system overhead is</blockquote>
-<blockquote>required.</blockquote>
-<blockquote>A special startup routine allocates memory for the histogram and either calls</blockquote>
-<blockquote>profil() or sets up a clock signal handler. This routine (monstartup) can be</blockquote>
-<blockquote>invoked in several ways. On Linux systems, a special profiling startup file</blockquote>
-<blockquote>gcrt0.o, which invokes monstartup before main, is used instead of the default</blockquote>
-<blockquote>crt0.o. Use of this special startup file is one of the effects of using `gcc</blockquote>
-<blockquote>... -pg' to link. On SPARC systems, no special startup files are used.</blockquote>
-<blockquote>Rather, the mcount routine, when it is invoked for the first time (typically</blockquote>
-<blockquote>when main is called), calls monstartup. </blockquote>
+<blockquote>Profiling also involves watching your program as it runs, and keeping a histogram of where the program counter happens to be every now and then. Typically the program counter is looked at around 100 times per second of run time, but the exact frequency may vary from system to system.</blockquote>
+<blockquote>This is done is one of two ways. Most UNIX-like operating systems provide a profil() system call, which registers a memory array with the kernel, along with a scale factor that determines how the program's address space maps into the array. Typical scaling values cause every 2 to 8 bytes of address space to map into a single array slot. On every tick of the system clock (assuming the profiled program is running), the value of the program counter is examined and the corresponding slot in the memory array is incremented. Since this is done in the kernel, which had to interrupt the process anyway to handle the clock interrupt, very little additional system overhead is required.</blockquote>
+<blockquote>A special startup routine allocates memory for the histogram and either calls profil() or sets up a clock signal handler. This routine (monstartup) can be invoked in several ways. On Linux systems, a special profiling startup file gcrt0.o, which invokes monstartup before main, is used instead of the default crt0.o. Use of this special startup file is one of the effects of using `gcc ... -pg' to link. On SPARC systems, no special startup files are used. Rather, the mcount routine, when it is invoked for the first time (typically when main is called), calls monstartup. </blockquote>
 <p>This is why we see the _init section of the disassemblied file calling gmon_start</p>
 <pre><code class="language-asm">Disassembly of section .init:
 
@@ -393,21 +365,9 @@ long mul(long a, long b) {
     1014:	ff d0                	call   *%rax
     1016:	48 83 c4 08          	add    $0x8,%rsp
     101a:	c3                   	ret
-</code></pre><blockquote>The profiling library also includes a function (mcleanup) which is typically</blockquote>
-<blockquote>registered using atexit() to be called as the program exits, and is</blockquote>
-<blockquote>responsible for writing the file `gmon.out'. Profiling is turned off, various</blockquote>
-<blockquote>headers are output, and the histogram is written, followed by the call-graph</blockquote>
-<blockquote>arcs and the basic-block counts.</blockquote>
+</code></pre><blockquote>The profiling library also includes a function (mcleanup) which is typically registered using atexit() to be called as the program exits, and is responsible for writing the file `gmon.out'. Profiling is turned off, various headers are output, and the histogram is written, followed by the call-graph arcs and the basic-block counts.</blockquote>
 <p>We will see this mcleanup call when we dissect the code in a section below.</p>
-<blockquote>The output from gprof gives no indication of parts of your program that are</blockquote>
-<blockquote>limited by I/O or swapping bandwidth. This is because samples of the program</blockquote>
-<blockquote>counter are taken at fixed intervals of the program's run time. Therefore,</blockquote>
-<blockquote>the time measurements in gprof output say nothing about time that your</blockquote>
-<blockquote>program was not running. For example, a part of the program that creates so</blockquote>
-<blockquote>much data that it cannot all fit in physical memory at once may run very</blockquote>
-<blockquote>slowly due to thrashing, but gprof will say it uses little time. On the other</blockquote>
-<blockquote>hand, sampling by run time has the advantage that the amount of load due to</blockquote>
-<blockquote>other users won't directly affect the output you get. </blockquote>
+<blockquote>The output from gprof gives no indication of parts of your program that are limited by I/O or swapping bandwidth. This is because samples of the program counter are taken at fixed intervals of the program's run time. Therefore, the time measurements in gprof output say nothing about time that your program was not running. For example, a part of the program that creates so much data that it cannot all fit in physical memory at once may run very slowly due to thrashing, but gprof will say it uses little time. On the other hand, sampling by run time has the advantage that the amount of load due to other users won't directly affect the output you get. </blockquote>
 <h2>What does profil do?</h2>
 <p>The profil is used to create a buffer, that can store how many times a IP address was observed. This will give an estimate on the % of the program spent on that IP.</p>
 <h2>Checking mcount code</h2>
@@ -471,31 +431,13 @@ long mul(long a, long b) {
   11d63f:	90                   	nop
 </code></pre><p>... More code!</p>
 <p>Remember from the documentation what mcleanup does:</p>
-<blockquote>The profiling library also includes a function (mcleanup) which is typically</blockquote>
-<blockquote>registered using atexit() to be called as the program exits, and is</blockquote>
-<blockquote>responsible for writing the file `gmon.out'. Profiling is turned off, various</blockquote>
-<blockquote>headers are output, and the histogram is written, followed by the call-graph</blockquote>
-<blockquote>arcs and the basic-block counts.</blockquote>
+<blockquote>The profiling library also includes a function (mcleanup) which is typically registered using atexit() to be called as the program exits, and is responsible for writing the file `gmon.out'. Profiling is turned off, various headers are output, and the histogram is written, followed by the call-graph arcs and the basic-block counts.</blockquote>
 <h2>Outro</h2>
 <p>Accoridng to IBM <a href="https://www.ibm.com/docs/en/aix/7.1?topic=command-implementation-gprof">docs</a>:</p>
-<blockquote>The compiler inserts a call to the mcount() function into the object code</blockquote>
-<blockquote>generated for each recompiled function of your program. The mcount() function</blockquote>
-<blockquote>counts each time a parent calls a child function. Also, the monitor()</blockquote>
-<blockquote>function is enabled to estimate the time spent in each routine.</blockquote>
+<blockquote>The compiler inserts a call to the mcount() function into the object code generated for each recompiled function of your program. The mcount() function counts each time a parent calls a child function. Also, the monitor() function is enabled to estimate the time spent in each routine.</blockquote>
 <p>What is the <code>monitor</code> function? <a href="<a href="https://man.cx/monitor3">source</a>)</p>
-<blockquote>The monitor() function is an interface to the profil(2) function and is</blockquote>
-<blockquote>called automatically with default parameters by any program created by the</blockquote>
-<blockquote>cc(1B) utility with the -p option specified. Except to establish further</blockquote>
-<blockquote>control over profiling activity, it is not necessary to explicitly call</blockquote>
-<blockquote>monitor().</blockquote>
-<blockquote>When used, monitor() is called at least at the beginning and the end of a</blockquote>
-<blockquote>program. The first call to monitor() initiates the recording of two different</blockquote>
-<blockquote>kinds of execution-profile information: execution-time distribution and</blockquote>
-<blockquote>function call count. Execution-time distribution data is generated by</blockquote>
-<blockquote>profil() and the function call counts are generated by code supplied to the</blockquote>
-<blockquote>object file (or files) by cc(1B) -p. Both types of information are collected</blockquote>
-<blockquote>as a program executes. The last call to monitor() writes this collected data</blockquote>
-<blockquote>to the output file mon.out.</blockquote>
+<blockquote>The monitor() function is an interface to the profil(2) function and is called automatically with default parameters by any program created by the cc(1B) utility with the -p option specified. Except to establish further control over profiling activity, it is not necessary to explicitly call monitor().</blockquote>
+<blockquote>When used, monitor() is called at least at the beginning and the end of a program. The first call to monitor() initiates the recording of two different kinds of execution-profile information: execution-time distribution and function call count. Execution-time distribution data is generated by profil() and the function call counts are generated by code supplied to the object file (or files) by cc(1B) -p. Both types of information are collected as a program executes. The last call to monitor() writes this collected data to the output file mon.out.</blockquote>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

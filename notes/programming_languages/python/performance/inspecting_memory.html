@@ -62,10 +62,7 @@
 <p>February 28th, 2024</p>
 <p><code>pympler</code> is a library that displays the size of a python object in bytes. It is able to recursevily analyse child-objects linked through pointers and grab their sizes too.</p>
 <h2>asizeof</h2>
-<blockquote>pympler.asizeof can be used to investigate how much memory certain Python</blockquote>
-<blockquote>objects consume. In contrast to sys.getsizeof, asizeof sizes objects</blockquote>
-<blockquote>recursively. You can use one of the asizeof functions to get the size of</blockquote>
-<blockquote>these objects and all associated referents:</blockquote>
+<blockquote>pympler.asizeof can be used to investigate how much memory certain Python objects consume. In contrast to sys.getsizeof, asizeof sizes objects recursively. You can use one of the asizeof functions to get the size of these objects and all associated referents:</blockquote>
 <p><a href="http://web.archive.org/web/20231217210011/https://pympler.readthedocs.io/en/latest/intro.html">Source</a></p>
 <pre><code class="language-">>>> from pympler import asizeof
 >>> obj = [1, 2, (3, 4), 'text']
@@ -78,10 +75,7 @@
     1 size=16 flat=16
     2 size=16 flat=16
 </code></pre><h2>clastracker</h2>
-<blockquote>The basic tools of the ClassTracker are tracking objects or classes, taking</blockquote>
-<blockquote>snapshots, and printing or dumping statistics. The first step is to decide</blockquote>
-<blockquote>what to track. Then spots of interest for snapshot creation have to be</blockquote>
-<blockquote>identified. Finally, the gathered data can be printed or saved:</blockquote>
+<blockquote>The basic tools of the ClassTracker are tracking objects or classes, taking snapshots, and printing or dumping statistics. The first step is to decide what to track. Then spots of interest for snapshot creation have to be identified. Finally, the gathered data can be printed or saved:</blockquote>
 <p>The below doesn't work quite well with Django querysets, go to the next section on <code>muppy</code> for an alternative.</p>
 <pre><code class="language-python">from pympler.classtracker import ClassTracker
 tracker = ClassTracker()

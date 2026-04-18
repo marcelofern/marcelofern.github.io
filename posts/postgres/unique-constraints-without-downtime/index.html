@@ -71,8 +71,7 @@ UNIQUE ("foo");
 <p>If you are adding a unique constraint to a large table, the amount of time spent to create the constraint might be prohibitive.</p>
 <h2>How To Safely Add a Unique Constraint Without Downtime</h2>
 <p>From the Postgres documentation:</p>
-<blockquote>PostgreSQL automatically creates a unique index when a unique constraint or</blockquote>
-<blockquote>primary key is defined for a table.</blockquote>
+<blockquote>PostgreSQL automatically creates a unique index when a unique constraint or primary key is defined for a table.</blockquote>
 <p>Creating this index on the background while holding an <code>ACCESS EXCLUSIVE</code> is the problem we are trying to avoid.</p>
 <p>What we want to do is <b>create the index first</b>, and <b>CONCURRENTLY</b>, so that when we add the constraint to the table, the table can use the already existing index. This will make the subsequent <code>ALTER TABLE</code> much faster to run.</p>
 <p>If you have the following table:</p>
@@ -87,9 +86,7 @@ CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS unique_int_field_idx
 ON example_table (int_field);
 </code></pre><p>Side Note 1: If you are using any value of <code>lock_timeout</code> that is not zero, you have to set it to zero before you create the index. This will prevent leaving an invalid index behind if the operation fails due to a time out.</p>
 <p>Side Note 2: You cannot use a partial index here. Postgres allows the creation of partial unique indexes, but it does not allow the creation of partial unique constraint. The documentation states <a href="https://web.archive.org/web/20240928225017/https://www.postgresql.org/docs/current/ddl-constraints.html">source</a>:</p>
-<blockquote> A uniqueness restriction covering only some rows cannot be written as a</blockquote>
-<blockquote> unique constraint, but it is possible to enforce such a restriction by</blockquote>
-<blockquote> creating a unique partial index.</blockquote>
+<blockquote> A uniqueness restriction covering only some rows cannot be written as a  unique constraint, but it is possible to enforce such a restriction by  creating a unique partial index.</blockquote>
 <p>If you try to use a partial index to create a unique constraint, Postgres will raise the following error: <pre><code class="language-">ERROR:  "unique_int_field_idx" is a partial index
 </code></pre></p>
 <p>Therefore, if you need a partial unique restriction, just keep your index. It will be enough.</p>
@@ -103,12 +100,7 @@ ADD CONSTRAINT unique_int_field UNIQUE USING INDEX unique_int_field_idx;
 <h2>Why not just use the index for constraint validation?</h2>
 <p>Both the unique index and constraint raise the same error when an insert attempt fails: "duplicate key value violates unique constraint."</p>
 <p>So why would one bother even creating the constraint if the index suffice?</p>
-<p>From an old (v9.4) Postgres documentation:  <blockquote>NNoottee::  TThhee  pprreeffeerrrreedd  wwaayy  ttoo  aadddd  aa  uunniiqquuee  ccoonnssttrraaiinntt  ttoo  aa  ttaabbllee  iiss  AALLTTEERR  TTAABBLLEE</blockquote>
-<blockquote>......  AADDDD  CCOONNSSTTRRAAIINNTT..  TThhee  uussee  ooff  iinnddeexxeess  ttoo  eennffoorrccee  uunniiqquuee  ccoonnssttrraaiinnttss  ccoouulldd  bbee</blockquote>
-<blockquote>ccoonnssiiddeerreedd  aann  iimmpplleemmeennttaattiioonn  ddeettaaiill  tthhaatt  sshhoouulldd  nnoott  bbee  aacccceesssseedd  ddiirreeccttllyy..  OOnnee</blockquote>
-<blockquote>sshhoouulldd,,  hhoowweevveerr,,  bbee  aawwaarree  tthhaatt  tthheerree''ss  nnoo  nneeeedd  ttoo  mmaannuuaallllyy  ccrreeaattee  iinnddeexxeess  oonn</blockquote>
-<blockquote>uunniiqquuee  ccoolluummnnss;;  ddooiinngg  ssoo  wwoouulldd  jjuusstt  dduupplliiccaattee  tthhee  aauuttoommaattiiccaallllyy--ccrreeaatteedd</blockquote>
-<blockquote>iinnddeexx..</p>
+<p>From an old (v9.4) Postgres documentation:  <blockquote>NNoottee::  TThhee  pprreeffeerrrreedd  wwaayy  ttoo  aadddd  aa  uunniiqquuee  ccoonnssttrraaiinntt  ttoo  aa  ttaabbllee  iiss  AALLTTEERR  TTAABBLLEE  ......  AADDDD  CCOONNSSTTRRAAIINNTT..  TThhee  uussee  ooff  iinnddeexxeess  ttoo  eennffoorrccee  uunniiqquuee  ccoonnssttrraaiinnttss  ccoouulldd  bbee  ccoonnssiiddeerreedd  aann  iimmpplleemmeennttaattiioonn  ddeettaaiill  tthhaatt  sshhoouulldd  nnoott  bbee  aacccceesssseedd  ddiirreeccttllyy..  OOnnee  sshhoouulldd,,  hhoowweevveerr,,  bbee  aawwaarree  tthhaatt  tthheerree''ss  nnoo  nneeeedd  ttoo  mmaannuuaallllyy  ccrreeaattee  iinnddeexxeess  oonn  uunniiqquuee  ccoolluummnnss;;  ddooiinngg  ssoo  wwoouulldd  jjuusstt  dduupplliiccaattee  tthhee  aauuttoommaattiiccaallllyy--ccrreeaatteedd  iinnddeexx..</p>
 </blockquote>
 <p><a href="https://www.postgresql.org/docs/9.4/indexes-unique.html">source</a></p>
 <p>This note has since been removed from Postgres since version 9.5. The commit that removed the note (<a href="https://github.com/postgres/postgres/commit/049a7799dfc">049a7799dfc</a>) says:</p>

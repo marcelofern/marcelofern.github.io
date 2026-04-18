@@ -72,14 +72,7 @@ CREATE VIEW foo AS SELECT * FROM new_foo;
 
 COMMIT;
 </code></pre><h2>Note 1: This works for both reads and writes</h2>
-<blockquote>Simple views are automatically updatable: the system will allow INSERT,</blockquote>
-<blockquote>UPDATE and DELETE statements to be used on the view in the same way as on a</blockquote>
-<blockquote>regular table. A view is automatically updatable if it satisfies all of the</blockquote>
-<blockquote>following conditions:</blockquote>
-<blockquote>(...)</blockquote>
-<blockquote>- All columns in the view's select list must be simple references to columns</blockquote>
-<blockquote>  of the underlying relation. They cannot be expressions, literals or</blockquote>
-<blockquote>  functions. System columns cannot be referenced, either.</blockquote>
+<blockquote>Simple views are automatically updatable: the system will allow INSERT, UPDATE and DELETE statements to be used on the view in the same way as on a regular table. A view is automatically updatable if it satisfies all of the following conditions: (...) - All columns in the view's select list must be simple references to columns   of the underlying relation. They cannot be expressions, literals or   functions. System columns cannot be referenced, either.</blockquote>
 <p>It doesn't matter if the table:</p>
 <ul><li>has a trigger</li><li>has a constraint</li></ul>
 <p>The view will work properly. For example:</p>

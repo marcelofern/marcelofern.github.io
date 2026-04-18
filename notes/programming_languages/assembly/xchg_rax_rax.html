@@ -82,21 +82,14 @@ pop rbp
     xadd rax, rdx
     loop .loop
 </code></pre><p>Note that <code>xadd</code> (Exchange and add) means:</p>
-<blockquote>Exchanges the first operand (destination operand) with the second operand</blockquote>
-<blockquote>(source operand), then loads the sum of the two values into the destination</blockquote>
-<blockquote>operand. The destination operand can be a register or a memory location; the</blockquote>
-<blockquote>source operand is a register.</blockquote>
+<blockquote>Exchanges the first operand (destination operand) with the second operand (source operand), then loads the sum of the two values into the destination operand. The destination operand can be a register or a memory location; the source operand is a register.</blockquote>
 <h2>0x02</h2>
 <p>Returns 0 if rax is 0, returns 1 otherwise. Perhaps a boolean check. The resulting value is stored in rax itself.</p>
 <pre><code class="language-asm">neg rax
 sbb rax, rax
 neg rax
 </code></pre><p>Note that <code>sbb</code> (Subtraction with borrow) means:</p>
-<blockquote>Adds the source operand (second operand) and the carry (CF) flag, and</blockquote>
-<blockquote>subtracts the result from the destination operand (first operand). The result</blockquote>
-<blockquote>of the subtraction is stored in the destination operand. The destination</blockquote>
-<blockquote>operand can be a register or a memory location; the source operand can be an</blockquote>
-<blockquote>immediate, a register, or a memory location.</blockquote>
+<blockquote>Adds the source operand (second operand) and the carry (CF) flag, and subtracts the result from the destination operand (first operand). The result of the subtraction is stored in the destination operand. The destination operand can be a register or a memory location; the source operand can be an immediate, a register, or a memory location.</blockquote>
 <p>And <code>neg</code> is a two's complement negation.</p>
 <h2>0x03</h2>
 <p>This returns the least of two numbers (rax or rdx):</p>
@@ -110,18 +103,13 @@ add rax, rcx
 else:
   return rdx
 </code></pre><p>Note that <code>sbb</code> (Subtraction with borrow) means:</p>
-<blockquote>Adds the source operand (second operand) and the carry (CF) flag, and</blockquote>
-<blockquote>subtracts the result from the destination operand (first operand). The result</blockquote>
-<blockquote>of the subtraction is stored in the destination operand. The destination</blockquote>
-<blockquote>operand can be a register or a memory location; the source operand can be an</blockquote>
-<blockquote>immediate, a register, or a memory location.</blockquote>
+<blockquote>Adds the source operand (second operand) and the carry (CF) flag, and subtracts the result from the destination operand (first operand). The result of the subtraction is stored in the destination operand. The destination operand can be a register or a memory location; the source operand can be an immediate, a register, or a memory location.</blockquote>
 <h2>0x04</h2>
 <p>Toggles the case of a char (upper/lower)</p>
 <pre><code class="language-asm">xor al, 0x20
 </code></pre><h2>0x05</h2>
 <p>I had to look this one up online:</p>
-<blockquote>Allows to branch depending on whether rax is in range [5,9] using only one</blockquote>
-<blockquote>jbe jump.</blockquote>
+<blockquote>Allows to branch depending on whether rax is in range [5,9] using only one jbe jump.</blockquote>
 <pre><code class="language-asm">sub rax, 5
 cmp rax, 4
 </code></pre><h2>0x06</h2>
@@ -163,8 +151,7 @@ adc rax, 0
     loop .loop
 </code></pre><h2>0x0b</h2>
 <p>My solution was: Negate <code>rdx</code> if <code>rax</code> == 0, do a <code>not</code> otherwise.</p>
-<blockquote>Computes the negation of the 128-bit integer stored in the RDX:RAX registers</blockquote>
-<blockquote>(thanks Aviya Erenfeld!).</blockquote>
+<blockquote>Computes the negation of the 128-bit integer stored in the RDX:RAX registers (thanks Aviya Erenfeld!).</blockquote>
 <pre><code class="language-asm">not rdx
 neg rax
 sbb rdx, -1

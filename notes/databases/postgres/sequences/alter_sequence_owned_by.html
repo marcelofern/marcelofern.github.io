@@ -88,15 +88,9 @@ CREATE TABLE tablename (
 );
 ALTER SEQUENCE tablename_colname_seq OWNED BY tablename.colname;
 </code></pre><p>The <a href="https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-SERIAL">docs</a> says:</p>
-<blockquote>Lastly, the sequence is marked as “owned by” the column, so that it will be</blockquote>
-<blockquote>dropped if the column or table is dropped.</blockquote>
+<blockquote>Lastly, the sequence is marked as “owned by” the column, so that it will be dropped if the column or table is dropped.</blockquote>
 <h2>Gotcha of SERIAL columns</h2>
-<blockquote>Because smallserial, serial and bigserial are implemented using sequences,</blockquote>
-<blockquote>there may be "holes" or gaps in the sequence of values which appears in the</blockquote>
-<blockquote>column, even if no rows are ever deleted. A value allocated from the sequence</blockquote>
-<blockquote>is still "used up" even if a row containing that value is never successfully</blockquote>
-<blockquote>inserted into the table column. This may happen, for example, if the</blockquote>
-<blockquote>inserting transaction rolls back. See nextval() in Section 9.17 for details.</blockquote>
+<blockquote>Because smallserial, serial and bigserial are implemented using sequences, there may be "holes" or gaps in the sequence of values which appears in the column, even if no rows are ever deleted. A value allocated from the sequence is still "used up" even if a row containing that value is never successfully inserted into the table column. This may happen, for example, if the inserting transaction rolls back. See nextval() in Section 9.17 for details.</blockquote>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
 </html>

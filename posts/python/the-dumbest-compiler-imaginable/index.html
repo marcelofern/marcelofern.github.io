@@ -61,9 +61,7 @@
 <body>
 <h1>The Dumbest Compiler Imaginable</h1>
 <pre><code class="language-">Created at: 2024-08-20
-</code></pre><blockquote>Python is about having the simplest, dumbest compiler imaginable, and the</blockquote>
-<blockquote>official runtime semantics actively discourage cleverness in the compiler</blockquote>
-<blockquote>like parallelizing loops or turning recursions into loops.</blockquote>
+</code></pre><blockquote>Python is about having the simplest, dumbest compiler imaginable, and the official runtime semantics actively discourage cleverness in the compiler like parallelizing loops or turning recursions into loops.</blockquote>
 <p>− Guido van Rossum (creator of Python). <a href="https://books.google.co.nz/books?id=bIxWAgAAQBAJ&pg=PA26&lpg=PA26&dq=%22Python+is+about+having+the+simplest,+dumbest+compiler+imaginable.%22&source=bl&ots=2OfDoWX321&sig=ACfU3U32jKZBE3VkJ0gvkKbxRRgD0bnoRg&hl=en&sa=X&redir_esc=y#v=onepage&q=%22Python%20is%20about%20having%20the%20simplest%2C%20dumbest%20compiler%20imaginable.%22&f=false">source</a></p>
 <hr><p>This might be a shocking statement to read for someone used to languages that compile to machine code directly like C, C++, Zig, Rust, etc.</p>
 <p>The compiler is, usually, a major source of optimisation for human-written code, being capable of lexically analysing code and removing unnecessary computation.</p>
@@ -232,11 +230,7 @@ False
 <bound method Foo.bar of <__main__.Foo object at 0x7646b49e8320>>
 </code></pre><p>Note how the addresses of <code>obj_1.bar</code> and <code>obj_2.bar</code> are different. CPython will create instances of those bound methods for each object before it can call the bounded <code>.bar</code> function (allocation on demand). However, Pypy will use the stack to cache the unbounded method, and call it with the "self" object that is stored in the stack already, so that there is no overhead of allocation and creation of bounded methods when an object function needs to be called. It operates similarly to <code>Foo.bar(self=obj, x=1, y=2)</code>.</p>
 <p>This strategy provides a considerable performance improvement for heavily OOP programs. According to Pypy:</p>
-<blockquote>Another optimization, or rather set of optimizations, that has a uniformly</blockquote>
-<blockquote>good effect are the two ‘method optimizations’, i.e. the method cache and the</blockquote>
-<blockquote>LOOKUP_METHOD and CALL_METHOD opcodes. On a heavily object-oriented benchmark</blockquote>
-<blockquote>(richards) they combine to give a speed-up of nearly 50%, and even on the</blockquote>
-<blockquote>extremely un-object-oriented pystone benchmark, the improvement is over 20%.</blockquote>
+<blockquote>Another optimization, or rather set of optimizations, that has a uniformly good effect are the two ‘method optimizations’, i.e. the method cache and the LOOKUP_METHOD and CALL_METHOD opcodes. On a heavily object-oriented benchmark (richards) they combine to give a speed-up of nearly 50%, and even on the extremely un-object-oriented pystone benchmark, the improvement is over 20%.</blockquote>
 <p><a href="http://web.archive.org/web/20240222082516/https://doc.pypy.org/en/latest/interpreter-optimizations.html">source</a></p>
 <h2>Outro</h2>
 <p>It is important to note that there have been many attempts to make Python faster, many of which have failed <a href="https://peps.python.org/pep-3146/">1</a>] <a href="https://github.com/pyston/pyston">2</a>].</p>

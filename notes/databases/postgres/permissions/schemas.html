@@ -116,9 +116,7 @@
 <pre><code class="language-sql">SET ROLE sweet_user;
 -- test stuff here
 SET ROLE "marcelo.fernandes";
-</code></pre><blockquote>In databases upgraded from PostgreSQL 14 or earlier, everyone has that</blockquote>
-<blockquote>privilege on the schema public. Some usage patterns call for revoking that</blockquote>
-<blockquote>privilege:</blockquote>
+</code></pre><blockquote>In databases upgraded from PostgreSQL 14 or earlier, everyone has that privilege on the schema public. Some usage patterns call for revoking that privilege:</blockquote>
 <pre><code class="language-sql">REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 </code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>

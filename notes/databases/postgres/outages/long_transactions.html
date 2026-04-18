@@ -61,15 +61,7 @@
 <body>
 <h1>Long Transactions</h1>
 <h2>Definition</h2>
-<blockquote>"Long-running" is a relative term, and, of course, its meaning depends on</blockquote>
-<blockquote>particular situation. Usually, in heavily-loaded systems – say ~10^5 TPS</blockquote>
-<blockquote>including RO queries and ~10^3 of XID-consuming TPS (writes) – we consider</blockquote>
-<blockquote>transactions running longer than 30-60 seconds to be long. This can be</blockquote>
-<blockquote>translated to 30-60k dead tuples accumulated in a table in the worst case –</blockquote>
-<blockquote>in the case when all transactions during that time frame produced 1 dead</blockquote>
-<blockquote>tuple. Of course, this is a very, very rough assumption, but this can give an</blockquote>
-<blockquote>idea about the scale and helps define "threshold" to support the meaning of</blockquote>
-<blockquote>the "long-running transaction" term. [source](https://github.com/postgres-ai/postgres-howtos/blob/main/0030_how_to_deal_with_long-running_transactions_oltp.md)</blockquote>
+<blockquote>"Long-running" is a relative term, and, of course, its meaning depends on particular situation. Usually, in heavily-loaded systems – say ~10^5 TPS including RO queries and ~10^3 of XID-consuming TPS (writes) – we consider transactions running longer than 30-60 seconds to be long. This can be translated to 30-60k dead tuples accumulated in a table in the worst case – in the case when all transactions during that time frame produced 1 dead tuple. Of course, this is a very, very rough assumption, but this can give an idea about the scale and helps define "threshold" to support the meaning of the "long-running transaction" term. [source](https://github.com/postgres-ai/postgres-howtos/blob/main/0030_how_to_deal_with_long-running_transactions_oltp.md)</blockquote>
 <h2>Why are they bad</h2>
 <p>In the context of a web application, long-running transactions can be dangerous for two reasons:</p>
 <ul><li>Blocking: A lock acquired during a transaction will only be released when the transaction finishes. This can be dangerous even in cases where the lock acquired is the weakest one possible: AccessShareLock. This is the case when a DDL is blocked by this lock, and in turn blocks other queries that need to run.</li><li>Autovacuum: Dead tuples that have been created after the long-running transaction started cannot be reclaimed by autovacuum. A high number of dead tuples in a table can seriously affect the performance of queries against that table.</li></ul>

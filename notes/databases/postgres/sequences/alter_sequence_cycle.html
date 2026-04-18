@@ -62,10 +62,7 @@
 <h1>ALTER SEQUENCE ... CYCLE</h1>
 <pre><code class="language-">Created at: 2025-08-19
 </code></pre><p>The CYCLE keyword means:</p>
-<blockquote>The optional CYCLE key word can be used to enable the sequence to wrap around</blockquote>
-<blockquote>when the maxvalue or minvalue has been reached by an ascending or descending</blockquote>
-<blockquote>sequence respectively. If the limit is reached, the next number generated</blockquote>
-<blockquote>will be the minvalue or maxvalue, respectively.</blockquote>
+<blockquote>The optional CYCLE key word can be used to enable the sequence to wrap around when the maxvalue or minvalue has been reached by an ascending or descending sequence respectively. If the limit is reached, the next number generated will be the minvalue or maxvalue, respectively.</blockquote>
 <p>Setting this value will update the <code>seqcycle</code> column in the <code>pg_sequence</code> catalog table.</p>
 <h2>Example</h2>
 <pre><code class="language-sql">DROP TABLE IF EXISTS foo CASCADE;

@@ -93,19 +93,14 @@ class Migration(migrations.Migration):
 </code></pre><p>This looks all normal:</p>
 <ol><li>If the CREATE INDEX CONCURRENTLY instruction waits for longer than 10s to acquire a lock, it times out.</li><li>If the CREATE INDEX CONCURRENTLY query itself takes longer than 20s to complete, it times out.</li></ol>
 <p>However:</p>
-<blockquote>If a statement must be executed outside a transaction (such as CREATE</blockquote>
-<blockquote>DATABASE), it cannot be executed in batch with other statements, even if the</blockquote>
-<blockquote>connection is in autocommit mode:</blockquote>
+<blockquote>If a statement must be executed outside a transaction (such as CREATE DATABASE), it cannot be executed in batch with other statements, even if the connection is in autocommit mode:</blockquote>
 <pre><code class="language-python">>>> conn.autocommit = True
 >>> conn.execute("CREATE DATABASE foo; SELECT 1")
 
 Traceback (most recent call last):
 ...
 psycopg.errors.ActiveSqlTransaction: CREATE DATABASE cannot run inside a transaction block
-</code></pre><blockquote>This happens because PostgreSQL itself will wrap multiple statements in a</blockquote>
-<blockquote>transaction. Note that you will experience a different behaviour in psql</blockquote>
-<blockquote>(psql will split the queries on semicolons and send them to the server</blockquote>
-<blockquote>separately).</blockquote>
+</code></pre><blockquote>This happens because PostgreSQL itself will wrap multiple statements in a transaction. Note that you will experience a different behaviour in psql (psql will split the queries on semicolons and send them to the server separately).</blockquote>
 <p>The problem is the same for CREATE INDEX CONCURRENTLY.</p>
 <pre><code class="language-">CREATE INDEX CONCURRENTLY cannot run inside a transaction block
 </code></pre><p>Source: <a href="https://www.psycopg.org/psycopg3/docs/basic/from_pg2.html#multiple-statements-in-the-same-query">psycopg</a></p>

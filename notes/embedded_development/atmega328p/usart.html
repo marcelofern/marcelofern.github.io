@@ -120,15 +120,7 @@ UBRR0L = (unsigned char)(ubrr);
 }
 </code></pre><h2>Sending data to the terminal</h2>
 <p>From section 19.6.1 in the datasheet:</p>
-<blockquote>A data transmission is initiated by loading the transmit buffer with the data</blockquote>
-<blockquote>to be transmitted. The CPU can load the transmit buffer by writing to the</blockquote>
-<blockquote>UDRn I/O location. The buffered data in the transmit buffer will be moved to</blockquote>
-<blockquote>the shift register when the shift register is ready to send a new frame. The</blockquote>
-<blockquote>shift register is loaded with new data if it is in idle state (no ongoing</blockquote>
-<blockquote>transmission) or immediately after the last stop bit of the previous frame is</blockquote>
-<blockquote>transmitted. When the shift register is loaded with new data, it will</blockquote>
-<blockquote>transfer one complete frame at the rate given by the baud register, U2Xn bit</blockquote>
-<blockquote>or by XCKn depending on mode of operation.</blockquote>
+<blockquote>A data transmission is initiated by loading the transmit buffer with the data to be transmitted. The CPU can load the transmit buffer by writing to the UDRn I/O location. The buffered data in the transmit buffer will be moved to the shift register when the shift register is ready to send a new frame. The shift register is loaded with new data if it is in idle state (no ongoing transmission) or immediately after the last stop bit of the previous frame is transmitted. When the shift register is loaded with new data, it will transfer one complete frame at the rate given by the baud register, U2Xn bit or by XCKn depending on mode of operation.</blockquote>
 <p>The following C code example is provided:</p>
 <pre><code class="language-c">void USART_Transmit(unsigned char data)
 {

@@ -18,11 +18,12 @@ Reading list resources:
 ## Fiction
 - The Da Vinci Code - Dan Brown
 - The Eye of Osiris - R. Austin Freeman
+- Blood Meridian - Cormac McCarthy
 
 ## Nonfiction
 
-- The Soul of a New Machine - Tracy Kidder (Pulitzer Prize for General Nonfiction)
 - How Big Things Get Done (The financial times - best books of 2023)
+- Show Stopper!: The Breakneck Race to Create Windows NT and the Next Generation at Microsoft
 
 ## Digital Circuits
 
@@ -53,6 +54,7 @@ Reading list resources:
 - C Interfaces and Implementations: Techniques for Creating Reusable Software.
 - Fluent C: Principles, Practices, and Patterns
 - Secure Coding in C and C++ (SEI Series in Software Engineering (Paperback))
+- Seven Languages in Seven Weeks - Bruce A. Tate
 
 ## C
 

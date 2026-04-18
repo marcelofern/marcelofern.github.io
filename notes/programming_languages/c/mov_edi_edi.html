@@ -103,10 +103,7 @@ my_table.0:
 </code></pre><p>I went on a spiral of research, and I found many links pointing to this instruction being necessary in Microsoft Windows, so that the OS could operate hot-patching. <a href="http://web.archive.org/web/20240610022212/https://devblogs.microsoft.com/oldnewthing/20110921-00/?p=9583">source</a></p>
 <p>However, I compiled this on Linux. This should not be relevant to me. Here is the catch; that <code>mov edi, edi</code> operation is used for zero'ing the most significant 32 bits of the <code>rdi</code> register.</p>
 <p>It does not seem obvious, but the answer can be found in the x86 tour of Intel manuals <a href="http://web.archive.org/web/20240610022212/http://web.archive.org/web/20240415061928/http://x86asm.net/articles/x86-64-tour-of-intel-manuals/">source</a></p>
-<blockquote>General-purpose Registers (...)</blockquote>
-<blockquote></blockquote>
-<blockquote>  32-bit operands generate a 32-bit result, zero-extended to a 64-bit result</blockquote>
-<blockquote>  in the destination general-purpose register. (...)</blockquote>
+<blockquote>General-purpose Registers (...)    32-bit operands generate a 32-bit result, zero-extended to a 64-bit result   in the destination general-purpose register. (...)</blockquote>
 <p>UPDATE: In case it wasn't clear from the quote above, the zero-extension only works for 32 bit operands. If you run <code>mov di, di</code> (di is 16 bits long), the zero-extension <b>will not happen</b>.</p>
 <hr><p>The zero-extension is indeed what happens when I try to run the following mock assembly code below:</p>
 <pre><code class="language-asm">main:

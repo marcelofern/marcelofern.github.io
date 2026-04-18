@@ -66,16 +66,7 @@
 <p>Here is what it is capable of doing:</p>
 <ul><li>CLUSTER without exclusive lock (ordered by cluster index).</li><li>Ordered by specified columns.</li><li>VACUUM FULL without exclusive lock (packing rows only).</li><li>Rebuild or relocate only the indexes of a table.</li></ul>
 <h2>Why rebuild a table (and/or indexes)?</h2>
-<blockquote>VACUUM is one of the key maintenance operations in PostgreSQL, responsible</blockquote>
-<blockquote>for cleaning up dead tuples from the table pages, thereby freeing up space.</blockquote>
-<blockquote>This space can either be re-used for future insertions and updates or remain</blockquote>
-<blockquote>unused and lead to fragmentation. With massive data purge operations</blockquote>
-<blockquote>involving deletion of a significant percentage of data from a table, the</blockquote>
-<blockquote>amount of fragmentation may be significantly larger. Eventually, these</blockquote>
-<blockquote>fragmented pages increase the size of the table and utilize more disk space</blockquote>
-<blockquote>than required. Such fragmentation might distribute tuples across an</blockquote>
-<blockquote>unnecessarily large number of pages, creating performance bottlenecks.</blockquote>
-<blockquote>[source](https://hexacluster.ai/postgresql/rebuilding-tables-online-using-pg_repack-in-postgresql/)</blockquote>
+<blockquote>VACUUM is one of the key maintenance operations in PostgreSQL, responsible for cleaning up dead tuples from the table pages, thereby freeing up space. This space can either be re-used for future insertions and updates or remain unused and lead to fragmentation. With massive data purge operations involving deletion of a significant percentage of data from a table, the amount of fragmentation may be significantly larger. Eventually, these fragmented pages increase the size of the table and utilize more disk space than required. Such fragmentation might distribute tuples across an unnecessarily large number of pages, creating performance bottlenecks. [source](https://hexacluster.ai/postgresql/rebuilding-tables-online-using-pg_repack-in-postgresql/)</blockquote>
 <p>The problem with VACUUM FULL is that it blocks reads and writes.</p>
 <p>An article worth reading is Amazon's "Reducing bloat in tables and indexes with pg_repack <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.pg_repack.html">source</a></p>
 <h2>Requirements</h2>

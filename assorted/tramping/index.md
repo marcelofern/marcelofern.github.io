@@ -17,3 +17,14 @@
 #### Wellington
 
 - [Windmill to Kilbirnie (21km)](assorted/tramping/windmill_to_kilbirnie/index.md)
+
+### Wish list
+- [Honeycomb Rock](https://www.youtube.com/watch?v=_12en2vnHxA)
+
+## Basic facts for running
+
+Per hour (bare minimum):
+- 60g of carbohydrates
+- 5g of protein
+- 250mg of sodium
+- 450ml of water

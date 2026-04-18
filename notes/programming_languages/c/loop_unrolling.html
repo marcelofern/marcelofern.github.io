@@ -60,11 +60,7 @@
 </head>
 <body>
 <h1>Loop unrolling</h1>
-<blockquote>Loop unrolling, also known as loop unwinding, is a loop transformation</blockquote>
-<blockquote>technique that attempts to optimize a program's execution speed at the</blockquote>
-<blockquote>expense of its binary size (...) On modern processors, loop unrolling is</blockquote>
-<blockquote>often counterproductive, as the increased code size can cause more cache</blockquote>
-<blockquote>misses</blockquote>
+<blockquote>Loop unrolling, also known as loop unwinding, is a loop transformation technique that attempts to optimize a program's execution speed at the expense of its binary size (...) On modern processors, loop unrolling is often counterproductive, as the increased code size can cause more cache misses</blockquote>
 <p><a href="https://web.archive.org/web/20240229083121/https://en.wikipedia.org/wiki/Loop_unrolling">source</a></p>
 <p>I wanted to make a note about this technique after watching the "Instructions Per Clock" lecture on the Performance-Aware Programming Series by Casey Muratori.</p>
 <h2>Listing 1</h2>
@@ -143,11 +139,7 @@ int main() {
 /tmp/a.out  2.44s user 0.00s system 99% cpu 2.450 total
 </code></pre><h2>Listing 2</h2>
 <p>The CPU can actually do more than one addition at a time. From Casey's course, we can quote:</p>
-<blockquote>Each CPU has some number of instructions per clock it could be doing at peak,</blockquote>
-<blockquote>and the closer we get to executing that many instructions on our workload,</blockquote>
-<blockquote>the closer we get to maximizing the potential of that CPU. If a CPU can do</blockquote>
-<blockquote>four instructions per clock, but we are only doing two instructions per clock</blockquote>
-<blockquote>on our workload, then there's an extra 2x headroom there.</blockquote>
+<blockquote>Each CPU has some number of instructions per clock it could be doing at peak, and the closer we get to executing that many instructions on our workload, the closer we get to maximizing the potential of that CPU. If a CPU can do four instructions per clock, but we are only doing two instructions per clock on our workload, then there's an extra 2x headroom there.</blockquote>
 <pre><code class="language-c">int sum(unsigned int *input, unsigned int size) {
   int sum = 0;
 

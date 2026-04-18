@@ -133,8 +133,7 @@ WHERE oid = indrelid AND indisunique;
 	                    Buffers: shared hit=10 read=4
 </code></pre><p>There are many other logs that were triggered as a result of the variables above, but I'll skip them here for brevity. You should explore which ones you find most valuable for your case.</p>
 <p>You must have realised that earlier on I've said:</p>
-<blockquote>**Generally** speaking, the plan with the lowest "cost" is the one picked by</blockquote>
-<blockquote>the planner.</blockquote>
+<blockquote>**Generally** speaking, the plan with the lowest "cost" is the one picked by the planner.</blockquote>
 <p>Why generally and not <b>always</b>? One exception occurs when the query has numerous joins. In such cases the number of possible plans grows exponentially and the planner cannot take all of them into account in a timely manner. Instead, the planner uses a selection algorithm that tries to find a good compromise that yields a tolerable solution.</p>
 <h2>Reading the Planner Output</h2>
 <p>Given this query:</p>
@@ -159,32 +158,14 @@ ORDER BY tablename;
  Execution Time: 0.456 ms
 </code></pre><p>On the first row, we have the entry <code>cost=22.28..22.30</code>. The first number (22.28) represents the start-up cost to prepare the process for execution, i.e., before the first row can be returned,  whereas (22.30) is the total cost of retrieving all rows.</p>
 <p>But what unit does "cost" represent? According to Postgres 15 documentation:</p>
-<blockquote>The most critical part of the display is the estimated statement execution</blockquote>
-<blockquote>cost, which is the planner's guess at how long it will take to run the</blockquote>
-<blockquote>statement (measured in cost units that are arbitrary, but conventionally mean</blockquote>
-<blockquote>disk page fetches)</blockquote>
+<blockquote>The most critical part of the display is the estimated statement execution cost, which is the planner's guess at how long it will take to run the statement (measured in cost units that are arbitrary, but conventionally mean disk page fetches)</blockquote>
 <p>Since the query was triggered with the <code>ANALYSE</code> keyword, the query fetched the results for real, and the runtime statics were also added.</p>
 <p>The entry <code>actual time=0.164..0.168</code> represents the start-up time and the total time in milliseconds. It also gives us the number of rows returned (68).</p>
 <p>Note that since there are two costs (start-up and total), the planner might decide to optimise for one over another. For example, when a query is tagged with <code>LIMIT 1</code> or <code>EXISTS</code>, it only needs to fetch one row, and it makes more sense to optimise by start-up cost than total cost.</p>
 <h2>Buffers</h2>
 <p>Another useful parameter to <code>EXPLAIN</code> is <code>BUFFERS</code>.</p>
 <p>A buffer is a virtual representation of data that is stored in disk. According to the docs, <code>BUFFERS</code> will:</p>
-<blockquote>Include information on buffer usage. Specifically, include the number of</blockquote>
-<blockquote>shared blocks hit, read, dirtied, and written, the number of local blocks</blockquote>
-<blockquote>hit, read, dirtied, and written, the number of temp blocks read and written,</blockquote>
-<blockquote>and the time spent reading and writing data file blocks, local blocks and</blockquote>
-<blockquote>temporary file blocks (in milliseconds) if track_io_timing is enabled. A hit</blockquote>
-<blockquote>means that a read was avoided because the block was found already in cache</blockquote>
-<blockquote>when needed. Shared blocks contain data from regular tables and indexes;</blockquote>
-<blockquote>local blocks contain data from temporary tables and indexes; while temporary</blockquote>
-<blockquote>blocks contain short-term working data used in sorts, hashes, Materialize</blockquote>
-<blockquote>plan nodes, and similar cases. The number of blocks dirtied indicates the</blockquote>
-<blockquote>number of previously unmodified blocks that were changed by this query; while</blockquote>
-<blockquote>the number of blocks written indicates the number of previously-dirtied</blockquote>
-<blockquote>blocks evicted from cache by this backend during query processing. The number</blockquote>
-<blockquote>of blocks shown for an upper-level node includes those used by all its child</blockquote>
-<blockquote>nodes. In text format, only non-zero values are printed. This parameter</blockquote>
-<blockquote>defaults to FALSE.</blockquote>
+<blockquote>Include information on buffer usage. Specifically, include the number of shared blocks hit, read, dirtied, and written, the number of local blocks hit, read, dirtied, and written, the number of temp blocks read and written, and the time spent reading and writing data file blocks, local blocks and temporary file blocks (in milliseconds) if track_io_timing is enabled. A hit means that a read was avoided because the block was found already in cache when needed. Shared blocks contain data from regular tables and indexes; local blocks contain data from temporary tables and indexes; while temporary blocks contain short-term working data used in sorts, hashes, Materialize plan nodes, and similar cases. The number of blocks dirtied indicates the number of previously unmodified blocks that were changed by this query; while the number of blocks written indicates the number of previously-dirtied blocks evicted from cache by this backend during query processing. The number of blocks shown for an upper-level node includes those used by all its child nodes. In text format, only non-zero values are printed. This parameter defaults to FALSE.</blockquote>
 <p>This parameter will allows us to have an idea of how much IO work Postgres will do. Each buffers has, usually, 8KiB of data.</p>
 <p><a href="http://web.archive.org/web/20240229223746/https://postgres.ai/blog/20220106-explain-analyze-needs-buffers-to-improve-the-postgres-query-optimization-process">Here's</a> a good post about the BUFFERS option</p>
 <h2>Caveats</h2>

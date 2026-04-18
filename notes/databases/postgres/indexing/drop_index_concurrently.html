@@ -63,14 +63,9 @@
 <p>The drop index concurrently happens on stages.</p>
 <p><a href="http://web.archive.org/web/20240822023238/https://postgrespro.com/list/thread-id/1788181">The original suggestion for implementation</a> raised the following:</p>
 <blockquote>1) set an index as "invalid", to ensure no backend will use it in planning.</blockquote>
-<blockquote>2) wait for the xmin horizon to advance to ensure no open snapshots that may</blockquote>
-<blockquote>not see the invalidation of the index are gone (is there a way to tighten</blockquote>
-<blockquote>that up? although even this conservative version would be 80-90% of the value</blockquote>
-<blockquote>for us...).</blockquote>
-<blockquote>3) then use performDeletions without taking a lock on the parent table,</blockquote>
-<blockquote>similar to what's in tablecmds.c already.</blockquote>
-<blockquote>A DROP INDEX CONCURRENTLY may leave an invalid index if aborted instead of</blockquote>
-<blockquote>waiting for statement confirmation, just like CREATE INDEX CONCURRENTLY.</blockquote>
+<blockquote>2) wait for the xmin horizon to advance to ensure no open snapshots that may not see the invalidation of the index are gone (is there a way to tighten that up? although even this conservative version would be 80-90% of the value for us...).</blockquote>
+<blockquote>3) then use performDeletions without taking a lock on the parent table, similar to what's in tablecmds.c already.</blockquote>
+<blockquote>A DROP INDEX CONCURRENTLY may leave an invalid index if aborted instead of waiting for statement confirmation, just like CREATE INDEX CONCURRENTLY.</blockquote>
 <p>The following is a sandbox that will touch on the final note above regarding leaving the index as INVALID when the DROP INDEX operation is aborted.</p>
 <pre><code class="language-sql">-- 1. Create a Test Database and Connect
 CREATE DATABASE test_db;

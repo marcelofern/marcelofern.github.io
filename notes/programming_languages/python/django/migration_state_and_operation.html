@@ -73,12 +73,8 @@ CREATE INDEX "app_table_field_9878d9_idx_like" ON "app_table" ("field", varchar_
 </code></pre><p>The second index is almost always <b>not</b> what you want. Specially if the CharField is a choice field. But also, this kind of index only works for prefixed anchored search (<code>LIKE 'pre%'</code>), it does not work for postfixed anchored search (<code>LIKE '%post'</code>) as it will do a table scan.</p>
 <p>If your changes are already in production, you now have to create a new migration that has state changes and operations split up. You can do so by using <code>SeparateDatabaseAndState</code>.</p>
 <p>From the docs:</p>
-<blockquote>A highly specialized operation that lets you mix and match the database</blockquote>
-<blockquote>(schema-changing) and state (autodetector-powering) aspects of operations.</blockquote>
-<blockquote>It accepts two lists of operations. When asked to apply state, it will use</blockquote>
-<blockquote>the `state_operations` list (this is a generalized version of RunSQL’s</blockquote>
-<blockquote>`state_operations` argument). When asked to apply changes to the database, it</blockquote>
-<blockquote>will use the `database_operations` list.</blockquote>
+<blockquote>A highly specialized operation that lets you mix and match the database (schema-changing) and state (autodetector-powering) aspects of operations.</blockquote>
+<blockquote>It accepts two lists of operations. When asked to apply state, it will use the `state_operations` list (this is a generalized version of RunSQL’s `state_operations` argument). When asked to apply changes to the database, it will use the `database_operations` list.</blockquote>
 <p>To create a migration that removes that index, for example, start with an empty canvas:</p>
 <pre><code class="language-sh">./manage.py makemigrations --empty myapp --name remove_my_sweet_index
 </code></pre><p>You will get this:</p>

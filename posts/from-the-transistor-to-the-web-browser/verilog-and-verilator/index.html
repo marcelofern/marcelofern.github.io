@@ -64,9 +64,7 @@
 <p>Verilog is a hardware description language (HDL) used in the design and verification of digital circuits. Verilog has been merged into the SystemVerilog standard in 2009, and is now part of the SystemVerilog language.</p>
 <h2>SystemVerilog</h2>
 <p>This is the actual language we'll be using. A source points out the following benefits of SystemVerilog:</p>
-<blockquote>SystemVerilog is better than Verilog because of its ability to perform</blockquote>
-<blockquote>constrained random stimuli, use OOP features in testbench construction,</blockquote>
-<blockquote>functional coverage, assertions, etc.</blockquote>
+<blockquote>SystemVerilog is better than Verilog because of its ability to perform constrained random stimuli, use OOP features in testbench construction, functional coverage, assertions, etc.</blockquote>
 <h3>Data Types</h3>
 <p>SystemVerilog has the following data types:</p>
 <ul><li><b>reg</b>: Represent data storage elements (not necessarily physical registers). They retain their value until the next value is sent to them. Can only be driven in procedural blocks like <code>always</code> and <code>initial</code>.</li><li><b>wire</b> : Used for connecting different elements. They can be treated as physical wires. Can only be driven in <code>assign</code> statements.</li><li><b>integer</b></li><li><b>real</b> : Like a <code>double</code> in C.</li><li><b>time</b></li><li><b>realtime</b> : Also a <code>double</code>.</li><li><b>logic</b> : A 4-state data type. Can be driven by both procedural blocks and continuous <code>assign</code> statements.</li><li><b>bit</b></li><li><b>byte</b></li><li><b>shortint</b> (16 bits)</li><li><b>int</b> (32 bits)</li><li><b>longint</b> (64 bits)</li><li><b>shortreal</b> (float)</li></ul>

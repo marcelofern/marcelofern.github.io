@@ -116,13 +116,7 @@ NOT VALID;
  */
 </code></pre><p>Note: - DEFERRED INITIALLY DEFERRED means the constraint won't be checked until the end of the transaction. If necessary, This behaviour can be changed on an transaction-per-transaction basis (via <code>SET CONSTRAINTS</code>).</p>
 <p>Note: <code>ON DELETE RESTRICT</code> can be used here, otherwise <code>NO ACTION</code> is the default.</p>
-<blockquote>Restricting and cascading deletes are the two most common options. RESTRICT</blockquote>
-<blockquote>prevents deletion of a referenced row. NO ACTION means that if any</blockquote>
-<blockquote>referencing rows still exist when the constraint is checked, an error is</blockquote>
-<blockquote>raised; this is the default behavior if you do not specify anything. (The</blockquote>
-<blockquote>essential difference between these two choices is that NO ACTION allows the</blockquote>
-<blockquote>check to be deferred until later in the transaction, whereas RESTRICT does</blockquote>
-<blockquote>not.)</blockquote>
+<blockquote>Restricting and cascading deletes are the two most common options. RESTRICT prevents deletion of a referenced row. NO ACTION means that if any referencing rows still exist when the constraint is checked, an error is raised; this is the default behavior if you do not specify anything. (The essential difference between these two choices is that NO ACTION allows the check to be deferred until later in the transaction, whereas RESTRICT does not.)</blockquote>
 <p>That means if you do this:</p>
 <pre><code class="language-sql">INSERT INTO foo (int_field, bar_id) values (1, 42);
 DELETE FROM bar WHERE id = 42;

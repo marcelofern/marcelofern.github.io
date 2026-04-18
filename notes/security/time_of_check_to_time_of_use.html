@@ -60,40 +60,18 @@
 </head>
 <body>
 <p>March, 11th 2024</p>
-<blockquote>In software development, time-of-check to time-of-use (TOCTOU, TOCTTOU or</blockquote>
-<blockquote>TOC/TOU) is a class of software bugs caused by a race condition involving the</blockquote>
-<blockquote>checking of the state of a part of a system (such as a security credential)</blockquote>
-<blockquote>and the use of the results of that check.</blockquote>
-<blockquote>TOCTOU race conditions are common in Unix between operations on the file</blockquote>
-<blockquote>system, but can occur in other contexts, including local sockets and improper</blockquote>
-<blockquote>use of database transactions.</blockquote>
+<blockquote>In software development, time-of-check to time-of-use (TOCTOU, TOCTTOU or TOC/TOU) is a class of software bugs caused by a race condition involving the checking of the state of a part of a system (such as a security credential) and the use of the results of that check.</blockquote>
+<blockquote>TOCTOU race conditions are common in Unix between operations on the file system, but can occur in other contexts, including local sockets and improper use of database transactions.</blockquote>
 <p><a href="https://web.archive.org/web/20240128022038/https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use">source</a></p>
 <p>This vulnerability is mentioned in the book "Advanced Programming in the Unix Environment" when the book introduces the <code>open</code> and <code>open_at</code> unix functions.</p>
 <p>It says that:</p>
-<blockquote>The basic idea behind TOCTTOU errors is that a program is vulnerable if it</blockquote>
-<blockquote>makes two file-based function calls where the second call depends on the</blockquote>
-<blockquote>results of the first call. Because the two calls are not atomic, the file can</blockquote>
-<blockquote>change between the two calls, thereby invalidating the results of the first</blockquote>
-<blockquote>call (...)</blockquote>
-<blockquote>(...) TOCTTOU errors in the file system namespace generally deal with</blockquote>
-<blockquote>attempts to subvert file system permissions by tricking a privileged program</blockquote>
-<blockquote>into either reducing permissions on a privileged file or modifying a</blockquote>
-<blockquote>privileged file to open up a security hole.</blockquote>
+<blockquote>The basic idea behind TOCTTOU errors is that a program is vulnerable if it makes two file-based function calls where the second call depends on the results of the first call. Because the two calls are not atomic, the file can change between the two calls, thereby invalidating the results of the first call (...)</blockquote>
+<blockquote>(...) TOCTTOU errors in the file system namespace generally deal with attempts to subvert file system permissions by tricking a privileged program into either reducing permissions on a privileged file or modifying a privileged file to open up a security hole.</blockquote>
 <p>The book also mentions the work by Wei and Pu, referenced in the following source, which we use in the example section below.</p>
 <p><a href="https://web.archive.org/web/20230516115534/https://www.usenix.org/legacy/event/fast05/tech/full_papers/wei/wei.pdf">source</a></p>
 <h2>Example</h2>
 <p>This example is taken from the article above:</p>
-<blockquote>First, a vulnerable program checks for a file status. Second, the program</blockquote>
-<blockquote>operates on the file assuming the original file status remained invariant</blockquote>
-<blockquote>during execution. For example, `sendmail` may check for a specific attribute</blockquote>
-<blockquote>of a mailbox (e.g., it is not a symbolic link) in step one and then append</blockquote>
-<blockquote>new messages (as root) in step two. Because the two steps are not executed</blockquote>
-<blockquote>atomically, a local attacker (mailbox owner) can exploit the window of</blockquote>
-<blockquote>vulnerability between the two steps by deleting his/her mailbox and replacing</blockquote>
-<blockquote>it with a symbolic link to /etc/passwd. If the replacement is completed</blockquote>
-<blockquote>within the window and the new messages happen to be syntactically correct</blockquote>
-<blockquote>/etc/passwd entries with root access, then sendmail may unintentionally give</blockquote>
-<blockquote>unauthorized root access to a normal user (the attacker).</blockquote>
+<blockquote>First, a vulnerable program checks for a file status. Second, the program operates on the file assuming the original file status remained invariant during execution. For example, `sendmail` may check for a specific attribute of a mailbox (e.g., it is not a symbolic link) in step one and then append new messages (as root) in step two. Because the two steps are not executed atomically, a local attacker (mailbox owner) can exploit the window of vulnerability between the two steps by deleting his/her mailbox and replacing it with a symbolic link to /etc/passwd. If the replacement is completed within the window and the new messages happen to be syntactically correct /etc/passwd entries with root access, then sendmail may unintentionally give unauthorized root access to a normal user (the attacker).</blockquote>
 <p>This example might not explain thoroughly what the consequences are.</p>
 <p>First, the <code>etc/passwd</code> file stores information about users. Each line in the file represents a user, with various fields separated by colons. One of these fields is the user privilege to the system, represented by a numerical value. For example, a value of 0 indicates the highest privilege, that of the root user.</p>
 <p>Example <code>/etc/passwd</code> file:</p>

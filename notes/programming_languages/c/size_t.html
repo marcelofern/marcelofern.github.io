@@ -60,11 +60,7 @@
 </head>
 <body>
 <p>According to P.J. Plauger</p>
-<blockquote>Its origins lie in the old `<std.h>` header we developed at Whitesmiths, Ltd.</blockquote>
-<blockquote>in the late 1970s. We used the typedef BYTES as the type of sizeof, to be</blockquote>
-<blockquote>sure we could count all the bytes in the largest declarable (or allocatable)</blockquote>
-<blockquote>object. X3J11 chose `size_t` to follow the `*_t` convention that had begun to</blockquote>
-<blockquote>creep up in Posix.</blockquote>
+<blockquote>Its origins lie in the old `<std.h>` header we developed at Whitesmiths, Ltd. in the late 1970s. We used the typedef BYTES as the type of sizeof, to be sure we could count all the bytes in the largest declarable (or allocatable) object. X3J11 chose `size_t` to follow the `*_t` convention that had begun to creep up in Posix.</blockquote>
 <p><a href="http://web.archive.org/web/20220818070526/https://bytes.com/topic/c/answers/221996-origin-size_t-curious">source</a></p>
 <p>Essentially, C needed a portable way to represent the sizes of objects in memory. Before the <code>size_t</code> came about, it was common practice to use <code>unsigned int</code> instead. K&R C book has a reference to <code>size_t</code> on the Appendix A (page 204).</p>
 <p>From the man page, <code>size_t</code> is defined as:</p>

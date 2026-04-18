@@ -62,26 +62,9 @@
 <h1>Advisory Lock</h1>
 <pre><code class="language-">Created at: 2024-12-05
 </code></pre><p>From the docs:</p>
-<blockquote>PostgreSQL provides a means for creating locks that have application-defined</blockquote>
-<blockquote>meanings. These are called advisory locks, because the system does not</blockquote>
-<blockquote>enforce their use — it is up to the application to use them correctly.</blockquote>
-<blockquote>Advisory locks can be useful for locking strategies that are an awkward fit</blockquote>
-<blockquote>for the MVCC model.</blockquote>
-<blockquote>For example, a common use of advisory locks is to emulate pessimistic locking</blockquote>
-<blockquote>strategies typical of so-called “flat file” data management systems. While a</blockquote>
-<blockquote>flag stored in a table could be used for the same purpose, advisory locks are</blockquote>
-<blockquote>faster, avoid table bloat, and are automatically cleaned up by the server at</blockquote>
-<blockquote>the end of the session.</blockquote>
-<blockquote>There are two ways to acquire an advisory lock in PostgreSQL: at session</blockquote>
-<blockquote>level or at transaction level. Unlike standard lock requests, session-level</blockquote>
-<blockquote>advisory lock requests do not honor transaction semantics: a lock acquired</blockquote>
-<blockquote>during a transaction that is later rolled back will still be held following</blockquote>
-<blockquote>the rollback. Transaction-level lock requests, on the other hand, behave more</blockquote>
-<blockquote>like regular lock requests: they are automatically released at the end of the</blockquote>
-<blockquote>transaction, and there is no explicit unlock operation. This behavior is</blockquote>
-<blockquote>often more convenient than the session-level behavior for short-term usage of</blockquote>
-<blockquote>an advisory lock. Session-level and transaction-level lock requests for the</blockquote>
-<blockquote>same advisory lock identifier will block each other in the expected way</blockquote>
+<blockquote>PostgreSQL provides a means for creating locks that have application-defined meanings. These are called advisory locks, because the system does not enforce their use — it is up to the application to use them correctly. Advisory locks can be useful for locking strategies that are an awkward fit for the MVCC model.</blockquote>
+<blockquote>For example, a common use of advisory locks is to emulate pessimistic locking strategies typical of so-called “flat file” data management systems. While a flag stored in a table could be used for the same purpose, advisory locks are faster, avoid table bloat, and are automatically cleaned up by the server at the end of the session.</blockquote>
+<blockquote>There are two ways to acquire an advisory lock in PostgreSQL: at session level or at transaction level. Unlike standard lock requests, session-level advisory lock requests do not honor transaction semantics: a lock acquired during a transaction that is later rolled back will still be held following the rollback. Transaction-level lock requests, on the other hand, behave more like regular lock requests: they are automatically released at the end of the transaction, and there is no explicit unlock operation. This behavior is often more convenient than the session-level behavior for short-term usage of an advisory lock. Session-level and transaction-level lock requests for the same advisory lock identifier will block each other in the expected way</blockquote>
 <h2>Gotchas</h2>
 <pre><code class="language-sql">SELECT pg_advisory_lock(id) FROM foo WHERE id = 12345; -- ok
 SELECT pg_advisory_lock(id) FROM foo WHERE id > 12345 LIMIT 100; -- danger!

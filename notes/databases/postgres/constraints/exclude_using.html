@@ -62,15 +62,7 @@
 <h1>EXCLUDE USING</h1>
 <pre><code class="language-">Created at: 2024-10-27
 </code></pre><h2>Definition</h2>
-<blockquote>The EXCLUDE clause defines an exclusion constraint, which guarantees that if</blockquote>
-<blockquote>any two rows are compared on the specified column(s) or expression(s) using</blockquote>
-<blockquote>the specified operator(s), not all of these comparisons will return TRUE. If</blockquote>
-<blockquote>all of the specified operators test for equality, this is equivalent to a</blockquote>
-<blockquote>UNIQUE constraint, although an ordinary unique constraint will be faster.</blockquote>
-<blockquote>However, exclusion constraints can specify constraints that are more general</blockquote>
-<blockquote>than simple equality. For example, you can specify a constraint that no two</blockquote>
-<blockquote>rows in the table contain overlapping circles (see Section 8.8) by using the</blockquote>
-<blockquote>&& operator. The operator(s) are required to be commutative.</blockquote>
+<blockquote>The EXCLUDE clause defines an exclusion constraint, which guarantees that if any two rows are compared on the specified column(s) or expression(s) using the specified operator(s), not all of these comparisons will return TRUE. If all of the specified operators test for equality, this is equivalent to a UNIQUE constraint, although an ordinary unique constraint will be faster. However, exclusion constraints can specify constraints that are more general than simple equality. For example, you can specify a constraint that no two rows in the table contain overlapping circles (see Section 8.8) by using the && operator. The operator(s) are required to be commutative.</blockquote>
 <pre><code class="language-sql">CREATE TABLE circles (
     c circle,
     EXCLUDE USING gist (c WITH &&)

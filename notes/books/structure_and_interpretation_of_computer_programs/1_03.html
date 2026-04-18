@@ -64,8 +64,7 @@
 <p>A procedure can be defined in Scheme like this:</p>
 <pre><code class="language-scm">(define (cube x) (* x x x))
 </code></pre><h2>The problem</h2>
-<blockquote>Define a procedure that takes three numbers as arguments and returns the sum</blockquote>
-<blockquote>of the squares of the two larger numbers.</blockquote>
+<blockquote>Define a procedure that takes three numbers as arguments and returns the sum of the squares of the two larger numbers.</blockquote>
 <pre><code class="language-scm">(define (squared_sum_of_two_largest x y z)
         (define (squared x) (* x x))
         (define (sum_of_squares x y) (+ (squared x) (squared y)))

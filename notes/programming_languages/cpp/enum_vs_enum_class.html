@@ -78,19 +78,7 @@ int main() {
   int circle = Shape::CIRCLE; // error: can't initialise type
 }
 </code></pre><p>And here's from Bjarne Stroustrup's C++11 FAQ:</p>
-<blockquote>The enum classes ("new enums", "strong enums") address three problems with</blockquote>
-<blockquote>traditional C++ enumerations:</blockquote>
-<blockquote></blockquote>
-<blockquote>- conventional enums implicitly convert to int, causing errors when someone</blockquote>
-<blockquote>  does not want an enumeration to act as an integer.</blockquote>
-<blockquote>- conventional enums export their enumerators to the surrounding scope, causing</blockquote>
-<blockquote>  name clashes.</blockquote>
-<blockquote>- the underlying type of an enum cannot be specified, causing confusion,</blockquote>
-<blockquote>  compatibility problems, and makes forward declaration impossible.</blockquote>
-<blockquote></blockquote>
-<blockquote>The new enums are "enum class" because they combine aspects of traditional</blockquote>
-<blockquote>enumerations (names values) with aspects of classes (scoped members and absence</blockquote>
-<blockquote>of conversions).</blockquote>
+<blockquote>The enum classes ("new enums", "strong enums") address three problems with traditional C++ enumerations:  - conventional enums implicitly convert to int, causing errors when someone   does not want an enumeration to act as an integer. - conventional enums export their enumerators to the surrounding scope, causing   name clashes. - the underlying type of an enum cannot be specified, causing confusion,   compatibility problems, and makes forward declaration impossible.  The new enums are "enum class" because they combine aspects of traditional enumerations (names values) with aspects of classes (scoped members and absence of conversions).</blockquote>
 <h2>Assembly code</h2>
 <p>It's always interesting to have a look at the generated Assembly code to verify if there's anything else to it.</p>
 <p>For a plain enum we have the following:</p>

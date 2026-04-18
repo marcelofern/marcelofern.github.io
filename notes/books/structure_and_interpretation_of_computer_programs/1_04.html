@@ -65,9 +65,7 @@
 <p>For example <code>(* 5 2)</code> is a compound-expression as the operator (+) operates on the operands 5 and 2.</p>
 <p>Compound expressions are used all the time in LISP. One example of non-compound expression is the evaluation of a literal number like typing <code>421</code> and hitting enter in a REPL.</p>
 <h2>The question</h2>
-<blockquote>Observe that our model of evaluation allows for combinations whose operators</blockquote>
-<blockquote>are compound expressions. Use this observation to describe the behaviour of</blockquote>
-<blockquote>the following procedure:</blockquote>
+<blockquote>Observe that our model of evaluation allows for combinations whose operators are compound expressions. Use this observation to describe the behaviour of the following procedure:</blockquote>
 <pre><code class="language-scm">(define (a-plus-abs-b a b)
         ((if (> b 0) + -)) a b
 )

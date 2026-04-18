@@ -62,11 +62,7 @@
 <h1>Row locks</h1>
 <pre><code class="language-">Created at: 2026-01-14
 </code></pre><p>Despite Postgres documentation having _some_ information on row locks, you usually can't see them in the catalog table <code>pg_locks</code>:</p>
-<blockquote>Although tuples are a lockable type of object, information about row-level</blockquote>
-<blockquote>locks is stored on disk, not in memory, and therefore row-level locks</blockquote>
-<blockquote>normally do not appear in this view. If a process is waiting for a row-level</blockquote>
-<blockquote>lock, it will usually appear in the view as waiting for the permanent</blockquote>
-<blockquote>transaction ID of the current holder of that row lock.</blockquote>
+<blockquote>Although tuples are a lockable type of object, information about row-level locks is stored on disk, not in memory, and therefore row-level locks normally do not appear in this view. If a process is waiting for a row-level lock, it will usually appear in the view as waiting for the permanent transaction ID of the current holder of that row lock.</blockquote>
 <p>As per the above, row-level lock is stored on disk. This information is stored in the xmax field - which serves two purposes:</p>
 <ol><li>Store the transation id (xid) of the transaction that deleted the tuple. I.e., either a delete or an update operation.</li><li>Or store row locks.</li></ol>
 <p>What happens if both need to be stored at the same time? Well, This never happens. A tuple can't be deleted and locked at the same time.</p>
@@ -78,9 +74,7 @@
 | FOR SHARE         |               |           |         X         |      X     |
 | FOR NO KEY UPDATE |               |     X     |         X         |      X     |
 | FOR UPDATE        |       X       |     X     |         X         |      X     |
-</code></pre><blockquote>Row-level locks do not affect data querying; they block only writers and</blockquote>
-<blockquote>lockers to the same row. Row-level locks are released at transaction end or</blockquote>
-<blockquote>during savepoint rollback, just like table-level locks.</blockquote>
+</code></pre><blockquote>Row-level locks do not affect data querying; they block only writers and lockers to the same row. Row-level locks are released at transaction end or during savepoint rollback, just like table-level locks.</blockquote>
 <h2>When to use SELECT ... FOR UPDATE</h2>
 <p>Most people use <code>SELECT ... FOR UPDATE</code> but it can cause problems. This lock should only be taken when you are DELETING the row, or updating a unique key column or a primary key column (basically a column that can be used as FK on another table). In other words, an UPDATE statement that modifies a column that is part of a non-partial non-expression unique index.</p>
 <p>If that is not the case, use <code>SELECT ... FOR NO KEY UPDATE</code>. This ensures you are not blocking inserts into other tables that refer the table being updated. <a href="https://www.cybertec-postgresql.com/en/row-locks-in-postgresql/">More info</a></p>

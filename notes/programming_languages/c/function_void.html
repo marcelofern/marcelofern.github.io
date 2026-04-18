@@ -74,8 +74,7 @@ int f(int a) {
   return a+42;
 }
 </code></pre><p>It will compile in standards < c2x. But you will get the following warning from gcc:</p>
-<blockquote>A function declaration without a prototype is deprecated in all versions of C</blockquote>
-<blockquote>and is not supported in C2x.</blockquote>
+<blockquote>A function declaration without a prototype is deprecated in all versions of C and is not supported in C2x.</blockquote>
 <h2>Examples</h2>
 <p>The main function is a good example, as it is always called with the number of arguments (at least 1) and the arguments themselves (the name of the executable for instance), and it is often defined as <code>int main()</code>.</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>

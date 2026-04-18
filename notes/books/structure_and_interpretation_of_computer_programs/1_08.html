@@ -61,12 +61,9 @@
 <body>
 <h1>Exercise 1.8</h1>
 <h2>Question</h2>
-<blockquote>Newton's method for cube roots is based on the fact that if `y` is an</blockquote>
-<blockquote>approximation to the cube root of `x`, then a better approximation is given</blockquote>
-<blockquote>by the value:</blockquote>
+<blockquote>Newton's method for cube roots is based on the fact that if `y` is an approximation to the cube root of `x`, then a better approximation is given by the value:</blockquote>
 <p><code>((x/(y**2)) + 2*y) / (3)</code></p>
-<blockquote>Use this formula to implement a cube-root procedure analogous to the square</blockquote>
-<blockquote>root procedure.</blockquote>
+<blockquote>Use this formula to implement a cube-root procedure analogous to the square root procedure.</blockquote>
 <h2>Answer</h2>
 <pre><code class="language-scm">(define (improve guess x)
         (/ (+ (/ x (* guess guess) )

@@ -158,9 +158,7 @@ COMMIT;
 
 CREATE INDEX "mymodel_my_field_idx_gin_like" ON "mymodel" USING gin ("my_field" gin_trgm_ops);
 </code></pre><p>From the Postgres documentation:</p>
-<blockquote>The `pg_trgm` module provides functions and operators for determining the</blockquote>
-<blockquote>similarity of alphanumeric text based on trigram matching, as well as index</blockquote>
-<blockquote>operator classes that support fast searching for similar strings.</blockquote>
+<blockquote>The `pg_trgm` module provides functions and operators for determining the similarity of alphanumeric text based on trigram matching, as well as index operator classes that support fast searching for similar strings.</blockquote>
 <p>And what is "trigram matching"?</p>
 <p>Trigram matching is a technique used in text search and pattern matching to find similarities between strings based on sequences of three consecutive characters, known as trigrams. A trigram is a three-character substring extracted from a longer string.</p>
 <p>For example, given the string "hello," the trigrams would be "hel," "ell," and "llo." The idea is to compare these trigrams between two strings to measure their similarity or match.</p>

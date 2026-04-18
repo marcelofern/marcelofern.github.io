@@ -78,31 +78,16 @@
 <p><a href="http://web.archive.org/web/20231208204935/https://docs.arduino.cc/learn/communication/uart">source</a></p>
 <p>The advantage here is that synchronous communication only requires one wire, so this can make your circuit cheaper and easier to manufacture.</p>
 <p>Also consider that the transmitter and the receiver must have the same common ground to be able to interpret LOW/HIGH signals with the right reference.</p>
-<blockquote>The key components of UART include the transmitter, receiver, and baud rate.</blockquote>
-<blockquote>The transmitter collects data from a source, formats it into serial bits, and</blockquote>
-<blockquote>sends it via a TX (Transmit) pin. The receiver receives it via a RX (Receive)</blockquote>
-<blockquote>pin, processes incoming serial data and converts it into parallel data for</blockquote>
-<blockquote>the host system. The baud rate determines the speed of data transmission.</blockquote>
+<blockquote>The key components of UART include the transmitter, receiver, and baud rate. The transmitter collects data from a source, formats it into serial bits, and sends it via a TX (Transmit) pin. The receiver receives it via a RX (Receive) pin, processes incoming serial data and converts it into parallel data for the host system. The baud rate determines the speed of data transmission.</blockquote>
 <p><a href="http://web.archive.org/web/20231208204935/https://docs.arduino.cc/learn/communication/uart">source</a></p>
 <h2>Baud rates</h2>
 <p>Important things to know about baud rates:</p>
 <ul><li>Measured in bits per second.</li><li>Both receivers and transmitters must agree on the value, otherwise communication is out of sync and won't make sense.</li><li>The higher the baud rate, more precision is required to synchronise receiver and transmitter. There are higher risks involved.</li></ul>
 <p>A way to circumvent the problem from the last point is via UART Flow Control</p>
 <h2>UART Flow Control</h2>
-<blockquote>UART Flow Control is a method for slow and fast devices to communicate with</blockquote>
-<blockquote>each other over UART without the risk of losing data. Consider the case where</blockquote>
-<blockquote>two units are communicating over UART. A transmitter T is sending a long</blockquote>
-<blockquote>stream of bytes to a receiver R. R is a slower device than T, and R cannot</blockquote>
-<blockquote>keep up. It needs to either do some processing on the data or empty some</blockquote>
-<blockquote>buffers before it can keep receiving data.</blockquote>
-<blockquote>R needs to tell T to stop transmitting for a while. This is where flow</blockquote>
-<blockquote>control comes in. Flow control provides extra signaling to inform the</blockquote>
-<blockquote>transmitter that it should stop (pause) or start (resume) the transmission.</blockquote>
-<blockquote>Several forms of flow control exist. For example, hardware flow control uses</blockquote>
-<blockquote>extra wires, where the logic level on these wires define whether the</blockquote>
-<blockquote>transmitter should keep sending data or stop. With software flow control,</blockquote>
-<blockquote>special characters are sent over the normal data lines to start or stop the</blockquote>
-<blockquote>transmission.</blockquote>
+<blockquote>UART Flow Control is a method for slow and fast devices to communicate with each other over UART without the risk of losing data. Consider the case where two units are communicating over UART. A transmitter T is sending a long stream of bytes to a receiver R. R is a slower device than T, and R cannot keep up. It needs to either do some processing on the data or empty some buffers before it can keep receiving data.</blockquote>
+<blockquote>R needs to tell T to stop transmitting for a while. This is where flow control comes in. Flow control provides extra signaling to inform the transmitter that it should stop (pause) or start (resume) the transmission.</blockquote>
+<blockquote>Several forms of flow control exist. For example, hardware flow control uses extra wires, where the logic level on these wires define whether the transmitter should keep sending data or stop. With software flow control, special characters are sent over the normal data lines to start or stop the transmission.</blockquote>
 <p><a href="http://web.archive.org/web/20231208204935/https://docs.arduino.cc/learn/communication/uart">source</a></p>
 <h2>Message format</h2>
 <p><img alt="uart_message_format" src="uart_message_format.png"></p>

@@ -62,9 +62,7 @@
 <p>May 31, 2022</p>
 <h1>Review</h1>
 <p>The author's intent:</p>
-<blockquote>My goal with this book is to document the JavaScript language comprehensively</blockquote>
-<blockquote>and definitively and to provide an in-depth introduction to the most important</blockquote>
-<blockquote>client-side and server-side APIs available to JavaScript programs.</blockquote>
+<blockquote>My goal with this book is to document the JavaScript language comprehensively and definitively and to provide an in-depth introduction to the most important client-side and server-side APIs available to JavaScript programs.</blockquote>
 <p>Given that this book is a proper systematic text book, to maximise my content retention I'll conduct this review on a chapter-to-chapter approach.</p>
 <p>Without further do:</p>
 <h2>Contents</h2>
@@ -72,21 +70,13 @@
 <h2>Chapter 1</h2>
 <h3>Introduction to JavaScript</h3>
 <p>The chapter starts with some definitions and history behind JavaScript. Here are the comments that I deemed most relevant to start with:</p>
-<blockquote>JavaScript is a high-level, dynamic, interpreted programming language that is</blockquote>
-<blockquote>well-suited to object-oriented and functional programming styles.</blockquote>
+<blockquote>JavaScript is a high-level, dynamic, interpreted programming language that is well-suited to object-oriented and functional programming styles.</blockquote>
 <p>Regarding ECMAScript vs JavaScript:</p>
-<blockquote>Because of trademark issues, the standardized version of the language was</blockquote>
-<blockquote>stuck with the name ECMAScript (ECMA: European Computer Manufacturer's</blockquote>
-<blockquote>Association) or ES for short.</blockquote>
-<blockquote>Since ES6, the ECMAScript specification has moved to a yearly release.</blockquote>
-<blockquote>I.e: ES2016, ES2017, etc.</blockquote>
+<blockquote>Because of trademark issues, the standardized version of the language was stuck with the name ECMAScript (ECMA: European Computer Manufacturer's Association) or ES for short.</blockquote>
+<blockquote>Since ES6, the ECMAScript specification has moved to a yearly release. I.e: ES2016, ES2017, etc.</blockquote>
 <p>Regarding incompatibility with earlier versions:</p>
-<blockquote>From ES5 and later, programs can opt in to JavaScript's strict mode in which</blockquote>
-<blockquote>a number of language mistakes have been corrected. The mechanism for opting</blockquote>
-<blockquote>in is the "use strict" directive.</blockquote>
-<blockquote>In ES6 and later, the use of new language features often implicitly invokes</blockquote>
-<blockquote>strict mode. For example, if you use the ES6 `class` keyword or create an ES6</blockquote>
-<blockquote>module, then all the code within the class or module is automatically strict.</blockquote>
+<blockquote>From ES5 and later, programs can opt in to JavaScript's strict mode in which a number of language mistakes have been corrected. The mechanism for opting in is the "use strict" directive.</blockquote>
+<blockquote>In ES6 and later, the use of new language features often implicitly invokes strict mode. For example, if you use the ES6 `class` keyword or create an ES6 module, then all the code within the class or module is automatically strict.</blockquote>
 <p>Conditionally accessing properties with <code>?.</code></p>
 <p>Where in Python you would have something like:</p>
 <pre><code class="language-python">book = {"topic": "Python", "edition": 7, "contents": {}}
@@ -97,9 +87,7 @@ chap1_sect1 = book.get("contents", {}).get("ch01", {}).get("sect1", "")
 
 let chap1_sect1 = book.contents?.ch01?.sect1  // undefined.
 </code></pre><p>Regarding the definition of an <b>expression</b>:</p>
-<blockquote>An _expression_ is a phrase of JavaScript that can be _evaluated_ to produce</blockquote>
-<blockquote>a value. For example, the use of `.` and `[]` to refer to the value of an</blockquote>
-<blockquote>object property or array element is an expression.</blockquote>
+<blockquote>An _expression_ is a phrase of JavaScript that can be _evaluated_ to produce a value. For example, the use of `.` and `[]` to refer to the value of an object property or array element is an expression.</blockquote>
 <p>A brief introduction of <b>arrow functions</b> (those remind a lot lambda functions in Python)</p>
 <pre><code class="language-javascript">// Firstly, a normal function:
 function plus1(x) {
@@ -134,8 +122,7 @@ let p = new Point(1, 1);
 </code></pre><h2>Chapter 2</h2>
 <h3>Lexical Structure</h3>
 <p>Definition</p>
-<blockquote>The lexical structure of a programming language is the set of elementary</blockquote>
-<blockquote>rules that specifies how you write programs in that language. I.e., syntax.</blockquote>
+<blockquote>The lexical structure of a programming language is the set of elementary rules that specifies how you write programs in that language. I.e., syntax.</blockquote>
 <p>Comments:</p>
 <pre><code class="language-javascript">// This is a single-line comment
 /* This is also a comment */ // and here is another one.
@@ -157,11 +144,7 @@ caf\u00e9
 // one to six hexadecimal digits enclosed by curly braces.
 caf\u{E9}
 </code></pre><p>Optional semicolons:</p>
-<blockquote>In JavaScript, you can usually omit the semicolon between two statements if</blockquote>
-<blockquote>those statements are written on separate lines. You can also omit a semicolon</blockquote>
-<blockquote>at the end of a program or if the next token in the program is a closing</blockquote>
-<blockquote>curly brace `}`. However, many JS programmers use semicolons to explicitly</blockquote>
-<blockquote>mark the end of statements.</blockquote>
+<blockquote>In JavaScript, you can usually omit the semicolon between two statements if those statements are written on separate lines. You can also omit a semicolon at the end of a program or if the next token in the program is a closing curly brace `}`. However, many JS programmers use semicolons to explicitly mark the end of statements.</blockquote>
 <pre><code class="language-javascript">// in this case the semicolon could've been ommited.
 a = 3;
 b = 4;
@@ -181,10 +164,7 @@ let y = x + f(a+b).toString()
 // a function invocation!
 </code></pre></p>
 <p>And therefore:</p>
-<blockquote>In general, if a statement begins with `(`, `[`, `/`, `+`, `-`, there is a</blockquote>
-<blockquote>chance that it could be interpreted as a continuation of the statement</blockquote>
-<blockquote>before. Statements beginning with /, + and - are quite rare in practice, but</blockquote>
-<blockquote>statements beginning with ( and [ are not uncommon.</blockquote>
+<blockquote>In general, if a statement begins with `(`, `[`, `/`, `+`, `-`, there is a chance that it could be interpreted as a continuation of the statement before. Statements beginning with /, + and - are quite rare in practice, but statements beginning with ( and [ are not uncommon.</blockquote>
 <p>Some programmers use defensive semicolons at the beginning of such statements to avoid a bug if the statement before is modified and the previously terminating semicolon removed.</p>
 <pre><code class="language-javascript">let x = 0
 ;[x, x+1, x+2].forEach(console.log) // defensive ;
@@ -201,23 +181,14 @@ return true;
 // line as the parameter list.
 </code></pre><h2>Chapter 3</h2>
 <h3>Types, Values, And Variables</h3>
-<blockquote>JavaScript types can be divided into two categories _primitive types_ and</blockquote>
-<blockquote>_object types_.</blockquote>
-<blockquote>Primitive types include numbers, strings of text, and Boolean truth values.</blockquote>
-<blockquote>The null and undefined are primitive values, but they are not numbers,</blockquote>
-<blockquote>strings, or Booleans.</blockquote>
-<blockquote>ES6 adds a new special-purpose type, known as Symbol. It enables the</blockquote>
-<blockquote>definition of language extensions without harming backward compatibility.</blockquote>
-<blockquote>(More on that later).</blockquote>
+<blockquote>JavaScript types can be divided into two categories _primitive types_ and _object types_.</blockquote>
+<blockquote>Primitive types include numbers, strings of text, and Boolean truth values. The null and undefined are primitive values, but they are not numbers, strings, or Booleans.</blockquote>
+<blockquote>ES6 adds a new special-purpose type, known as Symbol. It enables the definition of language extensions without harming backward compatibility. (More on that later).</blockquote>
 <p>In JavaScript, most objects are an unordered collection of named values. JS also has a special object, known as array, to represent ordered collections of numbered values. Arrays have some special behaviour that distinguish them from ordinary objects. Refer to chapter 7. Other useful special objects the Map object (keys to value), and the Set object.</p>
-<blockquote>JavaScript differs from more static languages in that functions and classes</blockquote>
-<blockquote>are not just part of the language syntax. They are themselves values that</blockquote>
-<blockquote>can be manipulated by JavaScript programs.</blockquote>
+<blockquote>JavaScript differs from more static languages in that functions and classes are not just part of the language syntax. They are themselves values that can be manipulated by JavaScript programs.</blockquote>
 <p>JavaScript has a garbage collector that is similar to Python's one. When a value isn't reachable any more (i.e. when a program doesn't have a way to use it any more) the interpreter knows it and automatically reclaims the memory.</p>
 <p>Gotcha about methods:</p>
-<blockquote>It's not only JS objects that have methods, but numbers, strings, booleans,</blockquote>
-<blockquote>and symbol values behave as if they have methods. **null** and **undefined**</blockquote>
-<blockquote>are the only values that methods cannot be invoked on.</blockquote>
+<blockquote>It's not only JS objects that have methods, but numbers, strings, booleans, and symbol values behave as if they have methods. **null** and **undefined** are the only values that methods cannot be invoked on.</blockquote>
 <p>Gotcha about strings:</p>
 <pre><code class="language-javascript">// Strings are immutable
 let myString = "abcde";
@@ -246,22 +217,11 @@ null == undefined // > true: These two values are treated equal.
 let billion = 1_000_000_000;
 let bytes = 0x89_AB_CD_EF;
 </code></pre><p>Gotcha about numbers:</p>
-<blockquote>Arithmetic in JavaScript does  not raise errors in cases of overflow,</blockquote>
-<blockquote>underflow, or division by zero. When the result of numeric operations are</blockquote>
-<blockquote>larger than the largest representable number (overflow), the result is</blockquote>
-<blockquote>the special infinity value, Infinity.</blockquote>
-<blockquote>For underflows, i.e., when the result of an operation is closer to zero than</blockquote>
-<blockquote>the smallest representable number, JavaScript returns 0 (or -0!).</blockquote>
-<blockquote>Division by zero isn't an error in JavaScript, it simply returns infinity.</blockquote>
-<blockquote>The only exception is zero divided by zero, in this case JS returns a special</blockquote>
-<blockquote>not-a-number (NaN). Same with square root of negative numbers and dividing</blockquote>
-<blockquote>infinity by infinity.</blockquote>
+<blockquote>Arithmetic in JavaScript does  not raise errors in cases of overflow, underflow, or division by zero. When the result of numeric operations are larger than the largest representable number (overflow), the result is the special infinity value, Infinity.</blockquote>
+<blockquote>For underflows, i.e., when the result of an operation is closer to zero than the smallest representable number, JavaScript returns 0 (or -0!).</blockquote>
+<blockquote>Division by zero isn't an error in JavaScript, it simply returns infinity. The only exception is zero divided by zero, in this case JS returns a special not-a-number (NaN). Same with square root of negative numbers and dividing infinity by infinity.</blockquote>
 <p>Gotcha about NaN:</p>
-<blockquote>In JavaScript NaN doesn't compare equal to any other value, including itself.</blockquote>
-<blockquote>This means that to determine if a value is a NaN, you got to do</blockquote>
-<blockquote>`Number.isNaN(x)` as x === NaN won't work!!!</blockquote>
-<blockquote>Another handy function is `Number.isFinite()`, which returns true if its</blockquote>
-<blockquote>argument is anything except Infinity, -Infinity, or NaN.</blockquote>
+<blockquote>In JavaScript NaN doesn't compare equal to any other value, including itself. This means that to determine if a value is a NaN, you got to do `Number.isNaN(x)` as x === NaN won't work!!! Another handy function is `Number.isFinite()`, which returns true if its argument is anything except Infinity, -Infinity, or NaN.</blockquote>
 <p>On BigInt</p>
 <pre><code class="language-javascript">// In ES2020 you can us BigInt.
 // BigInts can have millions of digits
@@ -328,12 +288,9 @@ NaN
 "" // the empty string.
 // Note: All objects are truthy by definition.
 </code></pre><p>On <code>undefined</code> vs <code>null</code>:</p>
-<blockquote>I consider `undefined` to represent a system-level, unexpected, or error-like</blockquote>
-<blockquote>absence of value and `null` to represent a program-level, normal, or expected</blockquote>
-<blockquote>absence of value.</blockquote>
+<blockquote>I consider `undefined` to represent a system-level, unexpected, or error-like absence of value and `null` to represent a program-level, normal, or expected absence of value.</blockquote>
 <p>On Symbols:</p>
-<blockquote>Property names are typically (and until ES6, exclusively) strings. But in</blockquote>
-<blockquote>ES6 and later, `Symbols` can also serve this purpose:</blockquote>
+<blockquote>Property names are typically (and until ES6, exclusively) strings. But in ES6 and later, `Symbols` can also serve this purpose:</blockquote>
 <pre><code class="language-javascript">let strname = " string name";
 let symname = Symbol("propname");
 typeof strname // > string
@@ -343,15 +300,9 @@ o[strname] = 1;
 o[symname] = 2;
 o[strname] // 1
 o[symname] // 2
-</code></pre><blockquote>To obtain a Symbol, you call the `Symbol()` function. This function never</blockquote>
-<blockquote>returns the same value twice, even when called with the same argument.</blockquote>
-<blockquote>This means that if you call Symbol to obtain a Symbol value, you can safely</blockquote>
-<blockquote>use that value as a property name to add a new property to an object and do</blockquote>
-<blockquote>not need to worry that you might be overwriting an existing property with the</blockquote>
-<blockquote>same name.</blockquote>
-<blockquote>Similarly, if you use symbolic property names and do not share those symbols,</blockquote>
-<blockquote>you can be confident that other modules of code in your program will not</blockquote>
-<blockquote>accidentally overwrite your properties.</blockquote>
+</code></pre><blockquote>To obtain a Symbol, you call the `Symbol()` function. This function never returns the same value twice, even when called with the same argument.</blockquote>
+<blockquote>This means that if you call Symbol to obtain a Symbol value, you can safely use that value as a property name to add a new property to an object and do not need to worry that you might be overwriting an existing property with the same name.</blockquote>
+<blockquote>Similarly, if you use symbolic property names and do not share those symbols, you can be confident that other modules of code in your program will not accidentally overwrite your properties.</blockquote>
 <p>It's worth noting that when wanting to share a Symbol with another module, you can call the method <code>Symbol.for()</code> with a string. This method returns an existent symbol, or creates a new one, with the associated string. This is useful when sharing a Symbol between modules.</p>
 <pre><code class="language-javascript">let s = Symbol.for("shared");
 let t = Symbol.for("shared");
@@ -360,13 +311,9 @@ s === t // > true
 s.toString() // => "Symbol(shared)"
 Symbol.keyFor(t) // => "shared"
 </code></pre><p>Regarding the global object:</p>
-<blockquote>Every time a JavaScript interpreter starts (or a web browser opens a new</blockquote>
-<blockquote>page), it creates a new global object.</blockquote>
-<blockquote>In Node, the global object has a property named `global` whose value is the</blockquote>
-<blockquote>global object itself. In web browsers, the `window` object serves as the</blockquote>
-<blockquote>global object, but it includes extra functionalities specific to web browsers</blockquote>
-<blockquote>ES2020 finally defines `globalThis` as the standard way to refer to the</blockquote>
-<blockquote>global object in any context.</blockquote>
+<blockquote>Every time a JavaScript interpreter starts (or a web browser opens a new page), it creates a new global object.</blockquote>
+<blockquote>In Node, the global object has a property named `global` whose value is the global object itself. In web browsers, the `window` object serves as the global object, but it includes extra functionalities specific to web browsers</blockquote>
+<blockquote>ES2020 finally defines `globalThis` as the standard way to refer to the global object in any context.</blockquote>
 <p>Objects are not compared by value. Two distinct objects are not equal even if all their properties and values are equal.</p>
 <p>Two object values are the same if and only if they refer to the same underlying object.</p>
 <pre><code class="language-javascript">let o = {x:1}, p = {x:1};
@@ -483,37 +430,18 @@ String(point) // > "(1, 2)"
 let d = new Date(2010, 0, 1);
 d.valueOf()  // > 1577790000000
 </code></pre><p>On <code>let</code>.</p>
-<blockquote>It's a good programming practice to assign an initial value to your variables</blockquote>
-<blockquote>when you declare them, when this is possible:</blockquote>
+<blockquote>It's a good programming practice to assign an initial value to your variables when you declare them, when this is possible:</blockquote>
 <pre><code class="language-javascript">let message = "hello";
 
 // You can also declare multiple variables
 let i, sum;
 i // > undefined
 </code></pre><p>On <code>const</code>.</p>
-<blockquote>To declare a constant instead of a variable use const instead of let.</blockquote>
-<blockquote>const works just like let except that you must initialize the constant when</blockquote>
-<blockquote>you declare it.</blockquote>
-<blockquote>Additionally, you can't change the value of a const. Attempting to, will</blockquote>
-<blockquote>raise a TypeError.</blockquote>
-<blockquote>It is a common (but no universal) convention to declare constants using names</blockquote>
-<blockquote>with all capital letters such as H0 or HTTP_NOT_FOUND as a way to</blockquote>
-<blockquote>distinguish them from variables.</blockquote>
+<blockquote>To declare a constant instead of a variable use const instead of let. const works just like let except that you must initialize the constant when you declare it.</blockquote>
+<blockquote>Additionally, you can't change the value of a const. Attempting to, will raise a TypeError.</blockquote>
+<blockquote>It is a common (but no universal) convention to declare constants using names with all capital letters such as H0 or HTTP_NOT_FOUND as a way to distinguish them from variables.</blockquote>
 <p>When to use const:</p>
-<blockquote>There're two schools of thought about the use of the const keyword. One</blockquote>
-<blockquote>approach is to use const only for values that are fundamentally unchaning, like</blockquote>
-<blockquote>physical constants, or program version numbers, or byte sequences used to</blockquote>
-<blockquote>identify file types, for example.</blockquote>
-<blockquote></blockquote>
-<blockquote>Another approach recognizes that many of the so-called variables in our program</blockquote>
-<blockquote>don't actually ever change as our program runs. In this approach, we declare</blockquote>
-<blockquote>everything with const, and then if we find that we do actually want to allow</blockquote>
-<blockquote>the value to vary, we switch the declaration to let. This may help prevent bugs</blockquote>
-<blockquote>by ruling out accidental changes to variables that we did not intend.</blockquote>
-<blockquote></blockquote>
-<blockquote>In one approach, we use const only for values that must not change. In the</blockquote>
-<blockquote>other, we use const for any value that does not happen to change. I prefer the</blockquote>
-<blockquote>former approach in my own code.</blockquote>
+<blockquote>There're two schools of thought about the use of the const keyword. One approach is to use const only for values that are fundamentally unchaning, like physical constants, or program version numbers, or byte sequences used to identify file types, for example.  Another approach recognizes that many of the so-called variables in our program don't actually ever change as our program runs. In this approach, we declare everything with const, and then if we find that we do actually want to allow the value to vary, we switch the declaration to let. This may help prevent bugs by ruling out accidental changes to variables that we did not intend.  In one approach, we use const only for values that must not change. In the other, we use const for any value that does not happen to change. I prefer the former approach in my own code.</blockquote>
 <p>Surprisingly <code>const</code> can be used in the body of loops. In this case, it means that the body of the loop doesn't reassign a new value to that const.</p>
 <pre><code class="language-javascript">for(const datum of data) console.log(datum);
 for(const property in object) console.log(property);
@@ -529,23 +457,10 @@ let x = 3; // SyntaxError. Identifier 'x' has already been declared.
 </code></pre><p>Differences between <code>var</code> and <code>let</code>:</p>
 <ul><li>Variables declared with <code>var</code> do not have block scope. Instead, they are scoped to the body of the containing function no matter how deeply nested they are inside that function.</li><li>If you use <code>var</code> outside of a function body, it declares a global variable. But global variables declared with <code>var</code> differs from globals declared with<code>let</code> in an important way. Globals declared with var are implemented as properties of the global object. The global object can be referenced as globalThis. So if you write <code>var x = 2;</code> outside of a function, it is like you wrote <code>globalThis.x = 2;</code>. Note that the analogy isn't perfect: the properties created with global var declarations cannot be deleted with the delete operator. Global variables and constants declared with let and const are not properties of the global object.</li><li>Unlike variables declared with let, it is legal to declare the same variable multiple times with var. And because var variables have function scope instead of block scope, it is actually common to do this kind of redeclaration. The variable <code>i</code> is frequently used for integer values, and specially as the index variable of <code>for</code> loops. In a function with multiple for loops, it is typical for each one to begin <code>for(var i = 0; ...</code>. Because var does not scope these variables to the loop body, each of these loops is (harmlessly) re-declaring and re-initialising the same variable.</li><li>One of the most unusual features of var declarations is known as <code>hoisting</code>. When a variable is declared with var, the declaration is lifted up (or "hoisted") to the top of the enclosing function. The initialisation of the variable remains where you wrote it, but the definition of the variable moves to the top of the function. So variables declared with var can be used, without error, anywhere in the enclosing function. If the initialisation code has not run yet, then the value of the variable may be undefined, but you won't get an error if you use the variable before it is initialised. This can be a source of bugs and is one important misfeature that let corrects: if you declare a variable with let but attempt to use it before the let statement runs, you will get an actual error instead of just seeing an undefined value).</li></ul>
 <p>Using undeclared variables in strict mode:</p>
-<blockquote>In strict mode, if you attempt to use an undeclared variable, you'll get a</blockquote>
-<blockquote>reference error when you run your code. Outside of strict mode, however, if you</blockquote>
-<blockquote>assign a value to a name that has not been declared with let, const, or var,</blockquote>
-<blockquote>you'll end up creating a new global variable. It will be a global no matter how</blockquote>
-<blockquote>deeply nested within functions and blocks your code is, which is almost</blockquote>
-<blockquote>certainly not what you want, is bug-prone, and is one of the best reasons for</blockquote>
-<blockquote>using strict mode.</blockquote>
-<blockquote>Global variables created in this accidental way are like global variables</blockquote>
-<blockquote>declare with var: they define properties of the global object. But unlike the</blockquote>
-<blockquote>properties defined by proper var declarations, these properties can be delted</blockquote>
-<blockquote>with the delete operator.</blockquote>
+<blockquote>In strict mode, if you attempt to use an undeclared variable, you'll get a reference error when you run your code. Outside of strict mode, however, if you assign a value to a name that has not been declared with let, const, or var, you'll end up creating a new global variable. It will be a global no matter how deeply nested within functions and blocks your code is, which is almost certainly not what you want, is bug-prone, and is one of the best reasons for using strict mode.</blockquote>
+<blockquote>Global variables created in this accidental way are like global variables declare with var: they define properties of the global object. But unlike the properties defined by proper var declarations, these properties can be delted with the delete operator.</blockquote>
 <p>On destructuring assignment</p>
-<blockquote>ES6 implements a compound declaration and assignment syntax know as</blockquote>
-<blockquote>destructuring assignment. In destructuring assignment, the value on the</blockquote>
-<blockquote>righthand side of the equals sign is an array or object (a "structured" value),</blockquote>
-<blockquote>and the lefthand side specifies one or more variable names using a syntax that</blockquote>
-<blockquote>mimics array and object literal syntax.</blockquote>
+<blockquote>ES6 implements a compound declaration and assignment syntax know as destructuring assignment. In destructuring assignment, the value on the righthand side of the equals sign is an array or object (a "structured" value), and the lefthand side specifies one or more variable names using a syntax that mimics array and object literal syntax.</blockquote>
 <pre><code class="language-javascript">let [x,y] = [1,2]; // same as let x=1, y=2;
 [x,y] = [x+1,y+1]; // same as x = x + 1, y = y + 1;
 [x, y] = [y, x]; // swap the value of two variables.
@@ -571,11 +486,7 @@ for(const [key, value] of Object.entries(o)) {
   console.log(key, value);
 }
 </code></pre><p>Gotcha about Destructuring assignments:</p>
-<blockquote>The number of variables on the left of a destructuring assignment does not have</blockquote>
-<blockquote>to match the number of array elements on the right. Extra variables on the left</blockquote>
-<blockquote>are set to undefined, and extra values on the right are ignored. The list of</blockquote>
-<blockquote>variables on the left can include extra commas to skip certain values on the</blockquote>
-<blockquote>right.</blockquote>
+<blockquote>The number of variables on the left of a destructuring assignment does not have to match the number of array elements on the right. Extra variables on the left are set to undefined, and extra values on the right are ignored. The list of variables on the left can include extra commas to skip certain values on the right.</blockquote>
 <pre><code class="language-javascript">let [x,y] = [1] // x == 1, y == undefined
 [x,y] = [1,2,3] // x == 1, y == 2
 [,x,,y] = [1,2,3,4] // x == 2, y == 4
@@ -683,9 +594,7 @@ function square(x, log) {
 // argument expressions within the parenthesis
 // are evaluated.
 </code></pre><p>On <code>==</code> (equality operator) and <code>===</code> (strict equality operator):</p>
-<blockquote>The == operator is a legacy feature of JavaScript and is widely considered to</blockquote>
-<blockquote>be a source of bugs. You should almost always use === instead of ==, and !==</blockquote>
-<blockquote>instead of !=.</blockquote>
+<blockquote>The == operator is a legacy feature of JavaScript and is widely considered to be a source of bugs. You should almost always use === instead of ==, and !== instead of !=.</blockquote>
 <p>The <code>in</code> operator:</p>
 <pre><code class="language-javascript">let point = {x: 1, y:1};
 "x" in point // > true
@@ -787,11 +696,7 @@ for (let [k, v] of Object.entries(o)) {
 }
 // the above is similar to dict.items() in Python.
 </code></pre><p>Looping with <code>for in</code> or <code>for/in</code>.</p>
-<p>Gotchas: <blockquote>EEnnuummeerraabbllee  iinnhheerriitteedd  pprrooppeerrttiieess  aarree  eennuummeerraatteedd  bbyy  tthhee  ffoorr//iinn  lloooopp..  TThhiiss  mmeeaannss</blockquote>
-<blockquote>tthhaatt  iiff  yyoouu  uussee  ffoorr//iinn  llooooppss  aanndd  aallssoo  uussee  ccooddee  tthhaatt  ddeeffiinneess  pprrooppeerrttiieess  tthhaatt  aarree</blockquote>
-<blockquote>iinnhheerriitteedd  bbyy  aallll  oobbjjeeccttss,,  tthheenn  yyoouurr  lloooopp  mmaayy  nnoott  bbeehhaavvee  iinn  tthhee  wwaayy  yyoouu  eexxppeecctt..</blockquote>
-<blockquote>TThhiiss  iiss  tthhee  rreeaassoonn  mmaannyy  pprrooggrraammmmeerrss  pprreeffeerr  ttoo  uussee  aa  ffoorr//ooff  lloooopp  wwiitthh</blockquote>
-<blockquote>OObbjjeecctt..kkeeyyss(())  iinnsstteeaadd  ooff  aa  ffoorr//iinn  lloooopp..</p>
+<p>Gotchas: <blockquote>EEnnuummeerraabbllee  iinnhheerriitteedd  pprrooppeerrttiieess  aarree  eennuummeerraatteedd  bbyy  tthhee  ffoorr//iinn  lloooopp..  TThhiiss  mmeeaannss  tthhaatt  iiff  yyoouu  uussee  ffoorr//iinn  llooooppss  aanndd  aallssoo  uussee  ccooddee  tthhaatt  ddeeffiinneess  pprrooppeerrttiieess  tthhaatt  aarree  iinnhheerriitteedd  bbyy  aallll  oobbjjeeccttss,,  tthheenn  yyoouurr  lloooopp  mmaayy  nnoott  bbeehhaavvee  iinn  tthhee  wwaayy  yyoouu  eexxppeecctt..  TThhiiss  iiss  tthhee  rreeaassoonn  mmaannyy  pprrooggrraammmmeerrss  pprreeffeerr  ttoo  uussee  aa  ffoorr//ooff  lloooopp  wwiitthh  OObbjjeecctt..kkeeyyss(())  iinnsstteeaadd  ooff  aa  ffoorr//iinn  lloooopp..</p>
 </blockquote>
 <pre><code class="language-javascript">// while a for/of requires an iterable,
 // for/in works with any object.
@@ -859,10 +764,7 @@ for (let i in object) {
 <p>Similarly, the interpreter first executes the catch block and then the finally block. If no catch block is there to handle an exception, the interpreter first executes the finally block and then jumps to the nearest containing catch clause.</p>
 <p><b>try and finally</b> can be used without a catch clause. In this case, the finally block is simply clean-up code that is guaranteed to be executed.</p>
 <hr><p>The <code>with</code> statement runs a block of code as if the properties of an object were variables in the scope of that code.</p>
-<blockquote>However, the with statement is forbidden in strict mode, and should be</blockquote>
-<blockquote>considered deprecated in non-strict mode.</blockquote>
-<blockquote>JS code that uses with is difficult to optimise and is likely to run slower</blockquote>
-<blockquote>than the equivalent code without the with statement.</blockquote>
+<blockquote>However, the with statement is forbidden in strict mode, and should be considered deprecated in non-strict mode. JS code that uses with is difficult to optimise and is likely to run slower than the equivalent code without the with statement.</blockquote>
 <pre><code class="language-javascript">with (object)
   statement
 </code></pre><hr><p>The <code>debugger</code> statement is the effective way of adding breakpoints in JS code.</p>
@@ -871,35 +773,21 @@ for (let i in object) {
   ...
 }
 </code></pre><hr><p><code>use strict</code>. The strict mode is a restricted subset of the language that fixes important deficiencies, providing stronger error checking and increased security.</p>
-<blockquote>The purpose of a "use strict" directive is to indicate that the code that</blockquote>
-<blockquote>follows is strict code.</blockquote>
-<blockquote>In addition to code explicitly declared to be strict, any code in a **class**</blockquote>
-<blockquote>body or in an ES6 module is automatically strict code. This means that if all</blockquote>
-<blockquote>of your JS code is written as modules, then it is all automatically strict, and</blockquote>
-<blockquote>you will never need to use an explicit "use strict" directive.</blockquote>
+<blockquote>The purpose of a "use strict" directive is to indicate that the code that follows is strict code.</blockquote>
+<blockquote>In addition to code explicitly declared to be strict, any code in a **class** body or in an ES6 module is automatically strict code. This means that if all of your JS code is written as modules, then it is all automatically strict, and you will never need to use an explicit "use strict" directive.</blockquote>
 <p>Rules:</p>
 <ul><li>The <b>with</b> statement is not allowed.</li><li>All variables must be declared, otherwise ReferenceError is thrown. Remember that in non-strict mode, this implicit variable declares a global variable by adding a new property to the global object.</li><li>Functions invoked as functions (rather than as methods) have a <b>this</b> value of undefined. In non-strict mode, <b>this</b> is the global object. Also, for functions invoked with call() or apply(), <b>this</b> is the value passed as the first argument to these functions. In non strict-mode, null and undefined values are replaced with the global object.</li></ul>
 <p>For more items, refer to section 5.6.3 of the book!</p>
 <hr><p><code>var</code></p>
-<blockquote>Variables declared with var are scoped to the containing function rather than</blockquote>
-<blockquote>the containing block. In modern JS there is really no reason to use var instead</blockquote>
-<blockquote>of let</blockquote>
+<blockquote>Variables declared with var are scoped to the containing function rather than the containing block. In modern JS there is really no reason to use var instead of let</blockquote>
 <h2>Chapter 6</h2>
 <h3>Objects</h3>
-<blockquote>An object is an unordered collection of properties, each of which has a name</blockquote>
-<blockquote>and a value.</blockquote>
-<blockquote>It is sometimes important to be able to distinguish between properties defined</blockquote>
-<blockquote>by the object and properties defined by its prototype. JS uses the term own</blockquote>
-<blockquote>property for the non-inherited properties.</blockquote>
+<blockquote>An object is an unordered collection of properties, each of which has a name and a value.</blockquote>
+<blockquote>It is sometimes important to be able to distinguish between properties defined by the object and properties defined by its prototype. JS uses the term own property for the non-inherited properties.</blockquote>
 <p>In addition to its name and value, each property has three property attributes: 1. The writeable attribute specifies whether the value of a property can be set. 2. The enumerable attribute specifies whether the property name is returned by a for/in loop. 3. The configurable attribute specifies whether the property can be deleted and whether its attributes can be altered.</p>
 <hr><p><code>object literal</code>: The simple JS objects defined by comma-separated key-pair values. Like a Python dictionary.</p>
 <hr><p><code>Object.create()</code></p>
-<blockquote>One use for Object.create() is when you want to guard against unintended (but</blockquote>
-<blockquote>non-malicious) modification of an object by a library function that you don't</blockquote>
-<blockquote>have control over. Instead of passing the object directly to the function, you</blockquote>
-<blockquote>can pass an object that inherits from it. If the function reads properties of</blockquote>
-<blockquote>that object, it will see the inherited values. If it sets properties, however,</blockquote>
-<blockquote>those writes will not affect the original object.</blockquote>
+<blockquote>One use for Object.create() is when you want to guard against unintended (but non-malicious) modification of an object by a library function that you don't have control over. Instead of passing the object directly to the function, you can pass an object that inherits from it. If the function reads properties of that object, it will see the inherited values. If it sets properties, however, those writes will not affect the original object.</blockquote>
 <pre><code class="language-javascript">let o = {x:"don't change this value"};
 library.function(Object.create(o)); // guard against accidental modifications.
 </code></pre><hr><p><code>Object.assign()</code> Extending objects is a common operation.</p>
@@ -996,9 +884,7 @@ for (let [index, letter] of letters.entries()) {
   if (index % 2 === 0) everyother += letter
 }
 </code></pre><hr><p><code>forEach</code></p>
-<blockquote>The difference between forEach and for/of is that the first is aware of</blockquote>
-<blockquote>sparse arrays and does not invoke your function for elements that are not</blockquote>
-<blockquote>there.</blockquote>
+<blockquote>The difference between forEach and for/of is that the first is aware of sparse arrays and does not invoke your function for elements that are not there.</blockquote>
 <pre><code class="language-javascript">let data = [1,2,3,4,5], sum = 0;
 data.forEach(value => {sum += value}); // sum == 15
 
@@ -1024,8 +910,7 @@ a.map(x => x*x) // [1, 4, 9]
 <pre><code class="language-javascript">let a = [5,4,3,2,1];
 a.filter(x => x < 3) // [2, 1]
 </code></pre><hr><p><code>find</code> and <code>findIndex</code></p>
-<blockquote>Like filter() but shortcuts when the first predicade finds an element.</blockquote>
-<blockquote>Returns the element</blockquote>
+<blockquote>Like filter() but shortcuts when the first predicade finds an element. Returns the element</blockquote>
 <pre><code class="language-javascript">let a = [1,2,3,4,5];
 a.find(x => x % 5 === 0) // 5
 a.find(x => x % 7 === 0) // undefined
@@ -1091,12 +976,9 @@ a.indexOf(NaN) // -1 (indexOf can't find NaN)
 <h3>Functions</h3>
 <p>In JavaScript, functions are objects and can be manipulated by programs. JavaScript can assign functions to variables and pass them to other functions.</p>
 <p>Javascript function definitions can be nested within other functions. In this case, they have access to any variables that are in scope where they are defined. This means that JavaScript functions are closures.</p>
-<blockquote>Function declaration statements are "hoisted" to the top of the enclosing</blockquote>
-<blockquote>script, function, or block so that functions defined in this way may be invoked</blockquote>
-<blockquote>from code that appears before the definition.</blockquote>
+<blockquote>Function declaration statements are "hoisted" to the top of the enclosing script, function, or block so that functions defined in this way may be invoked from code that appears before the definition.</blockquote>
 <hr><p>Default function values.</p>
-<blockquote>Parameter default expressions are evaluated when your function is called,</blockquote>
-<blockquote>not when it is defined.</blockquote>
+<blockquote>Parameter default expressions are evaluated when your function is called, not when it is defined.</blockquote>
 <pre><code class="language-javascript">// In ES6 and later you can
 // define default values for
 // your function arguments
@@ -1105,8 +987,7 @@ function getPropertyNames(o, a = []) {
   return a
 }
 </code></pre><hr><p>Rest parameters (like Python's <code>*args</code>, <code>**kwargs</code>)</p>
-<blockquote>Important: within the body of the function, the `rest` argument will ALWAYS</blockquote>
-<blockquote>be an Array.</blockquote>
+<blockquote>Important: within the body of the function, the `rest` argument will ALWAYS be an Array.</blockquote>
 <pre><code class="language-javascript">function max(first=-Infinity, ...rest) {
   let maxValue = first;
   for let (n of rest) {
@@ -1123,15 +1004,9 @@ max(1, 10, 100, 5, 6, 7); // > 100
 // or (note the parenthesis)
 (function() {console.log('hi')})();
 </code></pre><hr><p><code>call</code> and <code>apply</code></p>
-<blockquote>call() and apply() allow you to indirectly invoke a function as if it were a</blockquote>
-<blockquote>method of some other object. The first argument to both functions is the object</blockquote>
-<blockquote>on which the function is to be invoked. This argument is the invocation context</blockquote>
-<blockquote>and becomes the value of the `this` keyword within the body of the function</blockquote>
-<blockquote>Remember that arrow functions inherit the `this` value of the context where</blockquote>
-<blockquote>they are define. Thus, call() and apply() methods don't work with it as the</blockquote>
-<blockquote>first argument is effectively ignored.</blockquote>
-<blockquote>The apply() method is like call(), except that the arguments to call the</blockquote>
-<blockquote>function with are passed as an array</blockquote>
+<blockquote>call() and apply() allow you to indirectly invoke a function as if it were a method of some other object. The first argument to both functions is the object on which the function is to be invoked. This argument is the invocation context and becomes the value of the `this` keyword within the body of the function</blockquote>
+<blockquote>Remember that arrow functions inherit the `this` value of the context where they are define. Thus, call() and apply() methods don't work with it as the first argument is effectively ignored.</blockquote>
+<blockquote>The apply() method is like call(), except that the arguments to call the function with are passed as an array</blockquote>
 <pre><code class="language-javascript">f.call(o);
 f.apply(o);
 
@@ -1146,17 +1021,9 @@ f.call(o, 1, 2); // f(1, 2)
 // apply uses arrays.
 f.apply(o, [1,2]);
 </code></pre><hr><p><code>bind</code></p>
-<blockquote>The primary purpose of bind() is to bind a function to an object. When you</blockquote>
-<blockquote>invoke the bind() method on a function f and pass an object o, the method</blockquote>
-<blockquote>returns a new function. Invoking the new function (as a function) invokes the</blockquote>
-<blockquote>original function f as a method of o.</blockquote>
-<blockquote>Arrow functions inherit their this value from the environment in which they are</blockquote>
-<blockquote>defined, and that value cannot be overridden with bind(), so if the function</blockquote>
-<blockquote>f() in the preceding code was defined as an arrow function, the binding would</blockquote>
-<blockquote>not work.</blockquote>
-<blockquote>The most common use case for calling bind() is to make non-arrow functions</blockquote>
-<blockquote>behave like arrow functions, however, so this limitation on binding arrow</blockquote>
-<blockquote>functions is not a problem in practice.</blockquote>
+<blockquote>The primary purpose of bind() is to bind a function to an object. When you invoke the bind() method on a function f and pass an object o, the method returns a new function. Invoking the new function (as a function) invokes the original function f as a method of o.</blockquote>
+<blockquote>Arrow functions inherit their this value from the environment in which they are defined, and that value cannot be overridden with bind(), so if the function f() in the preceding code was defined as an arrow function, the binding would not work.</blockquote>
+<blockquote>The most common use case for calling bind() is to make non-arrow functions behave like arrow functions, however, so this limitation on binding arrow functions is not a problem in practice.</blockquote>
 <pre><code class="language-javascript">// function that will bound
 function f(y) {return this.x + y}
 let o = { x: 1};
@@ -1167,11 +1034,8 @@ let p = {x: 10, g};
 p.g(2) === 3; // g is still bound to o, not p.
 </code></pre><h2>Chapter 9</h2>
 <h3>Classes</h3>
-<blockquote>In JavaScript, a class is a set of objects that inherit properties from the</blockquote>
-<blockquote>same prototype object. The prototype object, therefore, is the central feature</blockquote>
-<blockquote>of a class.</blockquote>
-<blockquote>If we define a prototype object, and then use `Object.create()` to create</blockquote>
-<blockquote>objects that inherit from it, we have defined a JavaScript class.</blockquote>
+<blockquote>In JavaScript, a class is a set of objects that inherit properties from the same prototype object. The prototype object, therefore, is the central feature of a class.</blockquote>
+<blockquote>If we define a prototype object, and then use `Object.create()` to create objects that inherit from it, we have defined a JavaScript class.</blockquote>
 <p>However, ES6 introduces the reserved word <code>class</code>, making the creation of new instances more straightforward.</p>
 <p>The example below demonstrates an idiomatic way to create classes in versions of JavaScript that do not support the ES6 <code>class</code> keyword. A lot of old cold still uses this class-creation pattern.</p>
 <pre><code class="language-javascript">function Range(from, to) {
@@ -1199,11 +1063,7 @@ r.toString() // (1,...,3)
 typeof r // "object"
 r instanceof Range // true
 </code></pre><p>Note that the above doesn't work well with subclasses. Prior to ES6, JavaScript didn't have a simple way to call the parent class methods as the keyword <code>super</code> does.</p>
-<blockquote>Any regular JS function can be used as a constructor. Constructor invocations</blockquote>
-<blockquote>need a prototype property. Therefore, every regular JS function automatically</blockquote>
-<blockquote>has a prototype property. The value of this property is an object that has a</blockquote>
-<blockquote>single, non-enumerable, constructor property. The value of the constructor</blockquote>
-<blockquote>property is the function object:</blockquote>
+<blockquote>Any regular JS function can be used as a constructor. Constructor invocations need a prototype property. Therefore, every regular JS function automatically has a prototype property. The value of this property is an object that has a single, non-enumerable, constructor property. The value of the constructor property is the function object:</blockquote>
 <pre><code class="language-javascript">let F = function() {}; // "F" is the function object
 let p = f.prototype;
 let c = f.constructor;
@@ -1292,16 +1152,10 @@ class Buffer {
 }
 </code></pre><h2>Chapter 10</h2>
 <h3>Modules</h3>
-<blockquote>As a practical matter, modularity is mostly about encapsulating or hiding</blockquote>
-<blockquote>private implementation details and keeping the global namespace tidy so that</blockquote>
-<blockquote>modules cannot accidentally modify the variables, functions, and classes</blockquote>
-<blockquote>defined by other modules.</blockquote>
-<blockquote>Although `import` and `export` have been part of the language for years, they</blockquote>
-<blockquote>were only implemented by web browsers and Node relatively recently.</blockquote>
+<blockquote>As a practical matter, modularity is mostly about encapsulating or hiding private implementation details and keeping the global namespace tidy so that modules cannot accidentally modify the variables, functions, and classes defined by other modules.</blockquote>
+<blockquote>Although `import` and `export` have been part of the language for years, they were only implemented by web browsers and Node relatively recently.</blockquote>
 <hr><p>Node <code>exports</code>. (Note, you might want to use the ES6 modules feature available in Node 13 instead!)</p>
-<blockquote>Node defines a global `exports` object that is always defined. If you're</blockquote>
-<blockquote>writing a Node module that exports multiple values, you can simply assign them</blockquote>
-<blockquote>to the properties of this object</blockquote>
+<blockquote>Node defines a global `exports` object that is always defined. If you're writing a Node module that exports multiple values, you can simply assign them to the properties of this object</blockquote>
 <pre><code class="language-javascript">const sum = (x, y) => x + y;
 exports.mean = data => data.reduce(sum)/data.length;
 </code></pre><p><code>module.exports</code> is similar to <code>exports</code>, but it's useful when you want to export only a single function or class rather than an object full of functions or classes.</p>

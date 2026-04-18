@@ -112,14 +112,7 @@ except ValueError:
 finally:
     remove_temp_file()
 </code></pre><p>The <code>finally</code> block will run no matter what. However, it has some special properties. According to the documentation:</p>
-<blockquote>If finally is present, it specifies a ‘cleanup’ handler. The try clause is</blockquote>
-<blockquote>executed, including any except and else clauses. If an exception occurs in</blockquote>
-<blockquote>any of the clauses and is not handled, the exception is temporarily saved.</blockquote>
-<blockquote>The finally clause is executed. If there is a saved exception it is re-raised</blockquote>
-<blockquote>at the end of the finally clause. If the finally clause raises another</blockquote>
-<blockquote>exception, the saved exception is set as the context of the new exception. If</blockquote>
-<blockquote>the finally clause executes a return, break or continue statement, the saved</blockquote>
-<blockquote>exception is discarded.</blockquote>
+<blockquote>If finally is present, it specifies a ‘cleanup’ handler. The try clause is executed, including any except and else clauses. If an exception occurs in any of the clauses and is not handled, the exception is temporarily saved. The finally clause is executed. If there is a saved exception it is re-raised at the end of the finally clause. If the finally clause raises another exception, the saved exception is set as the context of the new exception. If the finally clause executes a return, break or continue statement, the saved exception is discarded.</blockquote>
 <p><a href="https://web.archive.org/web/20240216014110/https://docs.python.org/3/reference/compound_stmts.html">Docs</a></p>
 <p>The catch here is that the code block under <code>finally</code>, will run before the <code>raise</code> exception in the <code>except</code> block runs, but after the code inside the <code>except</code> block.</p>
 <p>If we run the code above, we have the following print output:</p>

@@ -112,11 +112,7 @@ SHOW lock_timeout;
 <p>Source: https://www.postgresql.org/docs/16/runtime-config-client.html</p>
 <h2>When used together with <code>ssttaatteemmeenntt__ttiimmeeoouutt`</code></h2>
 <p>Note: If <code>lock_timeout</code> is set to the same value of <code>statement_timeout</code>, the <code>lock_timeout</code> value becomes redundant, as <code>statement_timeout</code> trumps the lock.</p>
-<blockquote>Unlike `statement_timeout`, this timeout can only occur while waiting for</blockquote>
-<blockquote>locks. Note that if `statement_timeout` is nonzero, it is rather pointless to</blockquote>
-<blockquote>set `lock_timeout` to the same or larger value, since the statement timeout</blockquote>
-<blockquote>would always trigger first. If `log_min_error_statement` is set to ERROR or</blockquote>
-<blockquote>lower, the statement that timed out will be logged.</blockquote>
+<blockquote>Unlike `statement_timeout`, this timeout can only occur while waiting for locks. Note that if `statement_timeout` is nonzero, it is rather pointless to set `lock_timeout` to the same or larger value, since the statement timeout would always trigger first. If `log_min_error_statement` is set to ERROR or lower, the statement that timed out will be logged.</blockquote>
 <p>Source: https://www.postgresql.org/docs/16/sql-set.html</p>
 <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>

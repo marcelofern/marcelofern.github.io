@@ -64,11 +64,7 @@
 </code></pre><p>Inside a project created with cargo (Cargo.toml), run:</p>
 <pre><code class="language-sh">cargo build
 </code></pre><p>This will create a binary in <code>target/debug/<bin_name></code>. Also:</p>
-<blockquote>Running cargo build for the first time also causes Cargo to create a new file</blockquote>
-<blockquote>at the top level: Cargo.lock. This file keeps track of the exact versions of</blockquote>
-<blockquote>dependencies in your project. This project doesn’t have dependencies, so the</blockquote>
-<blockquote>file is a bit sparse. You won’t ever need to change this file manually; Cargo</blockquote>
-<blockquote>manages its contents for you.</blockquote>
+<blockquote>Running cargo build for the first time also causes Cargo to create a new file at the top level: Cargo.lock. This file keeps track of the exact versions of dependencies in your project. This project doesn’t have dependencies, so the file is a bit sparse. You won’t ever need to change this file manually; Cargo manages its contents for you.</blockquote>
 <h2>Profile</h2>
 <p>You can change the profile in which you want to generate the binary. For example:</p>
 <pre><code class="language-sh">cargo build --profile=release

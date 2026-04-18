@@ -62,8 +62,7 @@
 <p><code>2024-30-03</code></p>
 <p>The <code>static</code> keyword in C has double meaning. If a variable or a function at the top level of a module is declared <code>static</code>, it means that it is a local variable (or function) instead of a global one, and thus cannot be used in other files.</p>
 <p>Other than that, the <code>static</code> keyword is used to allocate static storage. Those are called "static variables". This use is more nuanced, and is described below with additional details.</p>
-<blockquote>A static variable is a variable that has been allocated "statically", meaning</blockquote>
-<blockquote>that its lifetime (or "extent") is the entire run of the program</blockquote>
+<blockquote>A static variable is a variable that has been allocated "statically", meaning that its lifetime (or "extent") is the entire run of the program</blockquote>
 <p>Those variables are allocated at compiling time. For example:</p>
 <pre><code class="language-c">void func() {
   static int my_var = 0;

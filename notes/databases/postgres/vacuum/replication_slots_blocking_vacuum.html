@@ -62,10 +62,7 @@
 <h1>Replication Slots Blocking VACUUM</h1>
 <pre><code class="language-">Created at: 2025-01-14
 </code></pre><h2>What Are Replication Slots</h2>
-<blockquote>Replication slots provide an automated way to ensure that the master does not</blockquote>
-<blockquote>remove WAL segments until they have been received by all standbys, and that</blockquote>
-<blockquote>the master does not remove rows which could cause a recovery conflict even</blockquote>
-<blockquote>when the standby is disconnected.</blockquote>
+<blockquote>Replication slots provide an automated way to ensure that the master does not remove WAL segments until they have been received by all standbys, and that the master does not remove rows which could cause a recovery conflict even when the standby is disconnected.</blockquote>
 <p><a href="https://www.postgresql.org/docs/9.4/warm-standby.html#STREAMING-REPLICATION-SLOTS">source</a></p>
 <p>In other words, replication slots keep WAL logs even when replicas (standbys) get disconnected from master. This implies the master knows when replicas go offline and holds onto the necessary WAL logs.</p>
 <p>Once the replicas come back online, the WAL files are decoded and sent to the replicas.</p>
@@ -74,12 +71,7 @@
 <blockquote>ERROR: requested WAL segment 005004430000129A00020041 has already been removed</blockquote>
 <h2>Why Can This Affect VACUUM</h2>
 <p>In another part of the documentation, this note is written:</p>
-<blockquote>Note: Replication slots persist across crashes and know nothing about the</blockquote>
-<blockquote>state of their consumer(s). They will prevent removal of required resources</blockquote>
-<blockquote>even when there is no connection using them. This consumes storage because</blockquote>
-<blockquote>neither required WAL nor required rows from the system catalogs can be</blockquote>
-<blockquote>removed by VACUUM as long as they are required by a replication slot. So if a</blockquote>
-<blockquote>slot is no longer required it should be dropped.</blockquote>
+<blockquote>Note: Replication slots persist across crashes and know nothing about the state of their consumer(s). They will prevent removal of required resources even when there is no connection using them. This consumes storage because neither required WAL nor required rows from the system catalogs can be removed by VACUUM as long as they are required by a replication slot. So if a slot is no longer required it should be dropped.</blockquote>
 <p>This means that a replication slot will block vacuums, potentially for a long time.</p>
 <h2>Finding Replication Slots</h2>
 <p>Query the pg_replication_slots table.</p>

@@ -62,15 +62,7 @@
 <h1>About That Postgres Json Field</h1>
 <pre><code class="language-">Created at: 2024-10-10
 </code></pre><p>The json type was introduced in Postgres 9.2. Since then, the json type has gone through multiple enhancements, including the addition of the jsonb type (9.4).</p>
-<blockquote>Because the json type stores an exact copy of the input text, it will</blockquote>
-<blockquote>preserve semantically-insignificant white space between tokens, as well as</blockquote>
-<blockquote>the order of keys within json objects. Also, if a json object within the</blockquote>
-<blockquote>value contains the same key more than once, all the key/value pairs are kept.</blockquote>
-<blockquote>(The processing functions consider the last value as the operative one.) By</blockquote>
-<blockquote>contrast, jsonb does not preserve white space, does not preserve the order of</blockquote>
-<blockquote>object keys, and does not keep duplicate object keys. If duplicate keys are</blockquote>
-<blockquote>specified in the input, only the last value is kept.</blockquote>
-<blockquote>[source](http://web.archive.org/web/20241007081857/https://www.postgresql.org/docs/15/datatype-json.html)</blockquote>
+<blockquote>Because the json type stores an exact copy of the input text, it will preserve semantically-insignificant white space between tokens, as well as the order of keys within json objects. Also, if a json object within the value contains the same key more than once, all the key/value pairs are kept. (The processing functions consider the last value as the operative one.) By contrast, jsonb does not preserve white space, does not preserve the order of object keys, and does not keep duplicate object keys. If duplicate keys are specified in the input, only the last value is kept. [source](http://web.archive.org/web/20241007081857/https://www.postgresql.org/docs/15/datatype-json.html)</blockquote>
 <p>This sounds great, but there are downsides to storing json fields (specially big ones) in Postgres.</p>
 <p>The degradation of some database functions grows linearly as a function of the json size.</p>
 <p>To analyse this behaviour, I set up a sandbox script. The script creates <b>a table with 500,000 rows</b>, <b>with varying sizes of json fields</b> and runs common operations against it.</p>

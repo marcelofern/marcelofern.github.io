@@ -99,22 +99,10 @@ PWM+ (D 6) PD6 12|    |17  PB3 (D 11) PWM
 #define OUTPUT 0x1
 #define INPUT_PULLUP 0x2
 </code></pre><p>One interesting value is INPUT_PULLUP.</p>
-<blockquote>There are 20K pullup resistors built into the Atmega chip that can be</blockquote>
-<blockquote>accessed from software. These built-in pullup resistors are accessed by</blockquote>
-<blockquote>setting the pinMode() as INPUT_PULLUP. This effectively inverts the behavior</blockquote>
-<blockquote>of the INPUT mode, where HIGH means the sensor is off, and LOW means the</blockquote>
-<blockquote>sensor is on.</blockquote>
-<blockquote>The value of this pullup depends on the microcontroller used. On most</blockquote>
-<blockquote>AVR-based boards, the value is guaranteed to be between 20kΩ and 50kΩ. On the</blockquote>
-<blockquote>Arduino Due, it is between 50kΩ and 150kΩ. For the exact value, consult the</blockquote>
-<blockquote>datasheet of the microcontroller on your board.</blockquote>
-<blockquote>When connecting a sensor to a pin configured with INPUT_PULLUP, the other end</blockquote>
-<blockquote>should be connected to ground. In the case of a simple switch, this causes</blockquote>
-<blockquote>the pin to read HIGH when the switch is open, and LOW when the switch is</blockquote>
-<blockquote>pressed.</blockquote>
-<blockquote>The pullup resistors provide enough current to dimly light an LED connected</blockquote>
-<blockquote>to a pin that has been configured as an input. If LEDs in a project seem to</blockquote>
-<blockquote>be working, but very dimly, this is likely what is going on.</blockquote>
+<blockquote>There are 20K pullup resistors built into the Atmega chip that can be accessed from software. These built-in pullup resistors are accessed by setting the pinMode() as INPUT_PULLUP. This effectively inverts the behavior of the INPUT mode, where HIGH means the sensor is off, and LOW means the sensor is on.</blockquote>
+<blockquote>The value of this pullup depends on the microcontroller used. On most AVR-based boards, the value is guaranteed to be between 20kΩ and 50kΩ. On the Arduino Due, it is between 50kΩ and 150kΩ. For the exact value, consult the datasheet of the microcontroller on your board.</blockquote>
+<blockquote>When connecting a sensor to a pin configured with INPUT_PULLUP, the other end should be connected to ground. In the case of a simple switch, this causes the pin to read HIGH when the switch is open, and LOW when the switch is pressed.</blockquote>
+<blockquote>The pullup resistors provide enough current to dimly light an LED connected to a pin that has been configured as an input. If LEDs in a project seem to be working, but very dimly, this is likely what is going on.</blockquote>
 <h2>pinMode function logic</h2>
 <p>This is the function definition in <code>wiring_digital.c</code> <a href="http://web.archive.org/web/20240308164206/https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/wiring_digital.c">source</a></p>
 <pre><code class="language-c">void pinMode(uint8_t pin, uint8_t mode)

@@ -65,16 +65,9 @@
 <p>I recommend reading them before going through the rest of this post:</p>
 <ul><li><a href="http://web.archive.org/web/20241003132241/https://wiki.openstack.org/wiki/GitCommitMessages">Git Commit Good Practice - OpenStack</a></li><li><a href="http://web.archive.org/web/20240930112522/https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">Tim Pope's note about commit messages</a></li></ul>
 <p>Those articles are "old". One is from 2008 and the other is from 2014. This means that the following occasional comment pops up now and then:</p>
-<blockquote>_It's 2024, do we **really** have to restrict ourselves to 72-long commit</blockquote>
-<blockquote>titles? I think it's acceptable to simply:_</blockquote>
+<blockquote>_It's 2024, do we **really** have to restrict ourselves to 72-long commit titles? I think it's acceptable to simply:_</blockquote>
 <pre><code class="language-">git -m "ISSUE:1234X Add date of birth, salary, ethnicity, pronouns, height (in centimetres), salary text fields, and more, to the request loan submit form for Chameleon MVP."
-</code></pre><blockquote>_We also have so many good tools around git that make it easier to see the</blockquote>
-<blockquote>changes and the diffs. We can also link to rich context on JIRA and Asana,</blockquote>
-<blockquote>why are we focusing so much on terminal limitations?_</blockquote>
-<blockquote></blockquote>
-<blockquote>_We are agile and always fix forward. We never have use for the old bits of</blockquote>
-<blockquote>git like git bisect, git revert, or even git log... What do these do</blockquote>
-<blockquote>again?!..._</blockquote>
+</code></pre><blockquote>_We also have so many good tools around git that make it easier to see the changes and the diffs. We can also link to rich context on JIRA and Asana, why are we focusing so much on terminal limitations?_  _We are agile and always fix forward. We never have use for the old bits of git like git bisect, git revert, or even git log... What do these do again?!..._</blockquote>
 <p>Given that I have little to contribute to the excellent content in the articles above, I'll limit my contribution to talking about the reason these posts have aged so well.</p>
 <h2>A Disclaimer</h2>
 <p>Learning a tool like git takes time. To make the most of git, one needs to learn it well. The same way there are programmers who debug exclusively with <code>print()</code>, there are programmers who only use three git commands: <code>pull</code>, <code>commit</code>, and <code>push</code>.</p>
@@ -87,15 +80,7 @@
 <ul><li><b>Do not mix two unrelated functional changes in the same commit</b> : It's hard to catch flaws during review when changes are mixed together. If the commit needs to be reverted, the two changes need to be untangled first. Similarly, it is harder to bisect and find which change created a bug if multiple functional changes are included in a commit.</li><li><b>Do not assume the reviewer uses the same tools as you</b> .</li><li><b>Do not assume the reviewer has access to an external website</b> .</li></ul>
 <p>These provide justification for seemingly arbitrary content on the linked blog posts such as _"commit titles should be no longer than 50 characters and commit bodies no longer than 72 characters"._</p>
 <h2>Do not mix two unrelated functional changes in the same commit</h2>
-<blockquote>So commit messages to me are almost as important as the code change itself.</blockquote>
-<blockquote>Sometimes the code change is so obvious that no message is really required,</blockquote>
-<blockquote>but that is very very rare. And so one of the things I hope developers are</blockquote>
-<blockquote>thinking about, the people who are actually writing code, is not just the</blockquote>
-<blockquote>code itself, but explaining why the code does something, and why some change</blockquote>
-<blockquote>was needed. Because that then in turn helps the managerial side of the</blockquote>
-<blockquote>equation, where if you can explain your code to me, I will trust the code...</blockquote>
-<blockquote></blockquote>
-<blockquote>Linus Torvalds.</blockquote>
+<blockquote>So commit messages to me are almost as important as the code change itself. Sometimes the code change is so obvious that no message is really required, but that is very very rare. And so one of the things I hope developers are thinking about, the people who are actually writing code, is not just the code itself, but explaining why the code does something, and why some change was needed. Because that then in turn helps the managerial side of the equation, where if you can explain your code to me, I will trust the code...  Linus Torvalds.</blockquote>
 <p>Let's start with a <b>bad</b> example:</p>
 <pre><code class="language-">commit e5b18b256c0f4f5d369c62785248632075790867 (HEAD -> master)
 Author: John Doe <john.doe@gmail.com>
@@ -158,24 +143,7 @@ error: could not revert e5b18b2... Revamp customer profile page
 <ul><li><code>git blame</code>: Atomic commits give you the direct answer to: "Why was this change made?"</li><li><code>git rebase</code> : For rebasing, dropping changes, re-editing commit messages, or adding fix-ups.</li><li><code>git cherry-pick</code> : For applying a specific commit from one branch to another.</li><li><code>git diff</code> : For seeing one change at a time.</li></ul>
 <p>It's reasonable to conclude that one commit per functional change is still relevant today.</p>
 <h2>Do not assume the reviewer uses the same tools as you</h2>
-<blockquote>Word-wrapping is a property of the text. And the tool you use to</blockquote>
-<blockquote>visualize things cannot know. End result: you do word-wrapping at the</blockquote>
-<blockquote>only stage where you can do it, namely when writing it. Not when</blockquote>
-<blockquote>showing it.</blockquote>
-<blockquote></blockquote>
-<blockquote>Some things should not be word-wrapped. They may be some kind of</blockquote>
-<blockquote>quoted text - long compiler error messages, oops reports, whatever.</blockquote>
-<blockquote>Things that have a certain specific format.</blockquote>
-<blockquote></blockquote>
-<blockquote>The tool displaying the thing can't know. The person writing the</blockquote>
-<blockquote>commit message can. End result: you'd better do word-wrapping at</blockquote>
-<blockquote>commit time, because that's the only time you know the difference.</blockquote>
-<blockquote></blockquote>
-<blockquote>(And the rule is not 80 characters, because you do want to allow the</blockquote>
-<blockquote>standard indentation from git log, and you do want to leave some room</blockquote>
-<blockquote>for quoting).</blockquote>
-<blockquote></blockquote>
-<blockquote>Linus Torvalds</blockquote>
+<blockquote>Word-wrapping is a property of the text. And the tool you use to visualize things cannot know. End result: you do word-wrapping at the only stage where you can do it, namely when writing it. Not when showing it.  Some things should not be word-wrapped. They may be some kind of quoted text - long compiler error messages, oops reports, whatever. Things that have a certain specific format.  The tool displaying the thing can't know. The person writing the commit message can. End result: you'd better do word-wrapping at commit time, because that's the only time you know the difference.  (And the rule is not 80 characters, because you do want to allow the standard indentation from git log, and you do want to leave some room for quoting).  Linus Torvalds</blockquote>
 <p>This is what a long commit looks like with the default pager (<code>less</code> on most Unix systems).</p>
 <p><img alt="long_commit.png" src="long_commit.png"></p>
 <p>Those white arrows at the right-hand side show where the text was truncated.</p>
@@ -186,10 +154,7 @@ error: could not revert e5b18b2... Revamp customer profile page
 <blockquote>the ``summary`` must be no more than 70-75 characters.</blockquote>
 <p>No text gets wrapped or truncated, and everything is nice and in _good_ style.</p>
 <p>It is true that there is no strong evidence about what the "ideal" line-length <b>for coding</b> is. But we know that number for <b>human-readable text</b>:</p>
-<blockquote> Research has led to recommendations that line length should not exceed about</blockquote>
-<blockquote> 70 characters per line. The reason behind this finding is that both very</blockquote>
-<blockquote> short and very long lines slow down reading by interrupting the normal</blockquote>
-<blockquote> pattern of eye movements and movements throughout the text.</blockquote>
+<blockquote> Research has led to recommendations that line length should not exceed about  70 characters per line. The reason behind this finding is that both very  short and very long lines slow down reading by interrupting the normal  pattern of eye movements and movements throughout the text.</blockquote>
 <p><a href="https://www.researchgate.net/publication/234578707_Optimal_Line_Length_in_Reading--A_Literature_Review">source</a></p>
 <p>Throw no stones! We are talking about <b>human-readable</b>, i.e., text like books, magazines, papers, <b>and git logs!!!</b>.</p>
 <p>As Linus has explained on the quote at the top of this section, the <b>writer</b> is responsible for wrapping the text because the _pager_ tool might not be able to do it for the <b>reader</b>.</p>

@@ -101,14 +101,7 @@ LANGUAGE SQL IMMUTABLE STRICT;
 
 -- omitted ~300 lines
 </code></pre><h2>Gotchas</h2>
-<blockquote>Also, while you can change the definition of an extension member object (for</blockquote>
-<blockquote>example, via CREATE OR REPLACE FUNCTION for a function), bear in mind that</blockquote>
-<blockquote>the modified definition will not be dumped by pg_dump. Such a change is</blockquote>
-<blockquote>usually only sensible if you concurrently make the same change in the</blockquote>
-<blockquote>extension's script file. (But there are special provisions for tables</blockquote>
-<blockquote>containing configuration data; see Section 36.17.3.) In production</blockquote>
-<blockquote>situations, it's generally better to create an extension update script to</blockquote>
-<blockquote>perform changes to extension member objects.</blockquote>
+<blockquote>Also, while you can change the definition of an extension member object (for example, via CREATE OR REPLACE FUNCTION for a function), bear in mind that the modified definition will not be dumped by pg_dump. Such a change is usually only sensible if you concurrently make the same change in the extension's script file. (But there are special provisions for tables containing configuration data; see Section 36.17.3.) In production situations, it's generally better to create an extension update script to perform changes to extension member objects.</blockquote>
 <h2>Resources</h2>
 <ul><li><a href="https://www.postgresql.org/docs/current/extend-extensions.html">https://www.postgresql.org/docs/current/extend-extensions.html</a></li></ul>
 <ul><li><a href="https://www.postgresql.org/docs/current/extend-pgxs.html">https://www.postgresql.org/docs/current/extend-pgxs.html</a></li></ul>

@@ -98,9 +98,7 @@
 </code></pre><h3>Further</h3>
 <p>Lisp uses the applicative-order evaluation because it can avoid multiple evaluation of expressions as in the example above with <code>(+ 5 1)</code> and <code>(* 5 2)</code> and because normal-order is very complicated when procedures can't be modelled by substitution.</p>
 <h2>The question</h2>
-<blockquote>Ben Bitdiddle has invented a test to determine whether the interpreter he is</blockquote>
-<blockquote>faced with is using applicative-order evaluation or normal-order evaluation.</blockquote>
-<blockquote>He defines the following two procedures:</blockquote>
+<blockquote>Ben Bitdiddle has invented a test to determine whether the interpreter he is faced with is using applicative-order evaluation or normal-order evaluation. He defines the following two procedures:</blockquote>
 <pre><code class="language-scm">(define (p) (p))
 
 (define (test x y)
@@ -108,13 +106,7 @@
 )
 </code></pre><blockquote>Then he evaluates the expression:</blockquote>
 <pre><code class="language-scm">(test 0 (p))
-</code></pre><blockquote>What behaviour will Ben observe with an interpreter that uses</blockquote>
-<blockquote>applicative-order evaluation? What behaviour will he observe with an</blockquote>
-<blockquote>interpreter that uses normal-order evaluation? Explain your answer. (Assume</blockquote>
-<blockquote>that the evaluation rule for the special form `if` is the same whether the</blockquote>
-<blockquote>interpreter is using normal or applicative order. The predicate expression is</blockquote>
-<blockquote>evaluated first, and the result determines whether to evaluate the consequent</blockquote>
-<blockquote>or the alternative expression).</blockquote>
+</code></pre><blockquote>What behaviour will Ben observe with an interpreter that uses applicative-order evaluation? What behaviour will he observe with an interpreter that uses normal-order evaluation? Explain your answer. (Assume that the evaluation rule for the special form `if` is the same whether the interpreter is using normal or applicative order. The predicate expression is evaluated first, and the result determines whether to evaluate the consequent or the alternative expression).</blockquote>
 <h2>Answer</h2>
 <p>Using applicative-order evaluation, we have the following reductions:</p>
 <pre><code class="language-scm">; p is evaluated and returns itself.

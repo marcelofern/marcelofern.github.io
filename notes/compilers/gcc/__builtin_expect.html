@@ -65,14 +65,8 @@
 <p>It has the following declaration:</p>
 <pre><code class="language-c">long __builtin_expect (long exp, long c)
 </code></pre><p>From the documentation:</p>
-<blockquote>You may use __builtin_expect to provide the compiler with branch prediction</blockquote>
-<blockquote>information. In general, you should prefer to use actual profile feedback for</blockquote>
-<blockquote>this (-fprofile-arcs), as programmers are notoriously bad at predicting how</blockquote>
-<blockquote>their programs actually perform. However, there are applications in which</blockquote>
-<blockquote>this data is hard to collect.</blockquote>
-<blockquote>The return value is the value of exp, which should be an integral expression.</blockquote>
-<blockquote>The semantics of the built-in are that it is expected that exp == c. For</blockquote>
-<blockquote>example:</blockquote>
+<blockquote>You may use __builtin_expect to provide the compiler with branch prediction information. In general, you should prefer to use actual profile feedback for this (-fprofile-arcs), as programmers are notoriously bad at predicting how their programs actually perform. However, there are applications in which this data is hard to collect.</blockquote>
+<blockquote>The return value is the value of exp, which should be an integral expression. The semantics of the built-in are that it is expected that exp == c. For example:</blockquote>
 <pre><code class="language-c">if (__builtin_expect (x, 0))
   foo ();
 </code></pre><blockquote>indicates that we do not expect to call foo, since we expect x to be zero.</blockquote>

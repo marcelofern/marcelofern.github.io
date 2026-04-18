@@ -66,8 +66,7 @@
 <p>After evaluating the PEP and the official Python docs, it seems to me that what this code above does is already structural pattern matching. E.g., I am not comparing the exact value (like C switch statements), I am comparing an object type, shape, and value.</p>
 <p>To further strengthen that position, there's this example from "matching objects" in the canonical pep tutorial for <code>switch</code> statements. <a href="https://peps.python.org/pep-0636/#adding-a-ui-matching-objects">Reference</a></p>
 <p>Also, there is a clear example in the tutorial that is an accurate match our situation:</p>
-<blockquote>Patterns may use named constants. These must be dotted names to prevent them</blockquote>
-<blockquote>from being interpreted as capture variable:</blockquote>
+<blockquote>Patterns may use named constants. These must be dotted names to prevent them from being interpreted as capture variable:</blockquote>
 <pre><code class="language-python">from enum import Enum
 class Color(Enum):
     RED = 0

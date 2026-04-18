@@ -72,13 +72,7 @@
 <ul><li>heap_blks_total: Total number of heap blocks in the table. This number is reported as of the beginning of the scan; blocks added later will not be (and need not be) visited by this VACUUM.</li></ul>
 <p><a href="https://www.postgresql.org/docs/current/progress-reporting.html#VACUUM-PHASES">source</a></p>
 <h2>Progress Reporting</h2>
-<blockquote>Whenever VACUUM is running, the pg_stat_progress_vacuum view will contain one</blockquote>
-<blockquote>row for each backend (including autovacuum worker processes) that is</blockquote>
-<blockquote>currently vacuuming. The tables below describe the information that will be</blockquote>
-<blockquote>reported and provide information about how to interpret it. Progress for</blockquote>
-<blockquote>VACUUM FULL commands is reported via pg_stat_progress_cluster because both</blockquote>
-<blockquote>VACUUM FULL and CLUSTER rewrite the table, while regular VACUUM only modifies</blockquote>
-<blockquote>it in place.</blockquote>
+<blockquote>Whenever VACUUM is running, the pg_stat_progress_vacuum view will contain one row for each backend (including autovacuum worker processes) that is currently vacuuming. The tables below describe the information that will be reported and provide information about how to interpret it. Progress for VACUUM FULL commands is reported via pg_stat_progress_cluster because both VACUUM FULL and CLUSTER rewrite the table, while regular VACUUM only modifies it in place.</blockquote>
 <p><code>pg_stat_progress_vacuum</code> View</p>
 <p>pid integer: <blockquote>PPrroocceessss  IIDD  ooff  bbaacckkeenndd..</p>
 </blockquote>
@@ -90,36 +84,23 @@
 </blockquote>
 <p>phase text: <blockquote>CCuurrrreenntt  pprroocceessssiinngg  pphhaassee  ooff  vvaaccuuuumm..  SSeeee  TTaabbllee  2277..4466..</p>
 </blockquote>
-<p>heap_blks_total bigint <blockquote>TToottaall  nnuummbbeerr  ooff  hheeaapp  bblloocckkss  iinn  tthhee  ttaabbllee..  TThhiiss  nnuummbbeerr  iiss  rreeppoorrtteedd  aass  ooff  tthhee</blockquote>
-<blockquote>bbeeggiinnnniinngg  ooff  tthhee  ssccaann;;  bblloocckkss  aaddddeedd  llaatteerr  wwiillll  nnoott  bbee  ((aanndd  nneeeedd  nnoott  bbee))</blockquote>
-<blockquote>vviissiitteedd  bbyy  tthhiiss  VVAACCUUUUMM..</p>
+<p>heap_blks_total bigint <blockquote>TToottaall  nnuummbbeerr  ooff  hheeaapp  bblloocckkss  iinn  tthhee  ttaabbllee..  TThhiiss  nnuummbbeerr  iiss  rreeppoorrtteedd  aass  ooff  tthhee  bbeeggiinnnniinngg  ooff  tthhee  ssccaann;;  bblloocckkss  aaddddeedd  llaatteerr  wwiillll  nnoott  bbee  ((aanndd  nneeeedd  nnoott  bbee))  vviissiitteedd  bbyy  tthhiiss  VVAACCUUUUMM..</p>
 </blockquote>
-<p>heap_blks_scanned bigint: <blockquote>NNuummbbeerr  ooff  hheeaapp  bblloocckkss  ssccaannnneedd..  BBeeccaauussee  tthhee  vviissiibbiilliittyy  mmaapp  iiss  uusseedd  ttoo  ooppttiimmiizzee</blockquote>
-<blockquote>ssccaannss,,  ssoommee  bblloocckkss  wwiillll  bbee  sskkiippppeedd  wwiitthhoouutt  iinnssppeeccttiioonn;;  sskkiippppeedd  bblloocckkss  aarree</blockquote>
-<blockquote>iinncclluuddeedd  iinn  tthhiiss  ttoottaall,,  ssoo  tthhaatt  tthhiiss  nnuummbbeerr  wwiillll  eevveennttuuaallllyy  bbeeccoommee  eeqquuaall  ttoo</blockquote>
-<blockquote>hheeaapp__bbllkkss__ttoottaall  wwhheenn  tthhee  vvaaccuuuumm  iiss  ccoommpplleettee..  TThhiiss  ccoouunntteerr  oonnllyy  aaddvvaanncceess  wwhheenn</blockquote>
-<blockquote>tthhee  pphhaassee  iiss  ssccaannnniinngg  hheeaapp..</p>
+<p>heap_blks_scanned bigint: <blockquote>NNuummbbeerr  ooff  hheeaapp  bblloocckkss  ssccaannnneedd..  BBeeccaauussee  tthhee  vviissiibbiilliittyy  mmaapp  iiss  uusseedd  ttoo  ooppttiimmiizzee  ssccaannss,,  ssoommee  bblloocckkss  wwiillll  bbee  sskkiippppeedd  wwiitthhoouutt  iinnssppeeccttiioonn;;  sskkiippppeedd  bblloocckkss  aarree  iinncclluuddeedd  iinn  tthhiiss  ttoottaall,,  ssoo  tthhaatt  tthhiiss  nnuummbbeerr  wwiillll  eevveennttuuaallllyy  bbeeccoommee  eeqquuaall  ttoo  hheeaapp__bbllkkss__ttoottaall  wwhheenn  tthhee  vvaaccuuuumm  iiss  ccoommpplleettee..  TThhiiss  ccoouunntteerr  oonnllyy  aaddvvaanncceess  wwhheenn  tthhee  pphhaassee  iiss  ssccaannnniinngg  hheeaapp..</p>
 </blockquote>
-<p>heap_blks_vacuumed bigint: <blockquote>NNuummbbeerr  ooff  hheeaapp  bblloocckkss  vvaaccuuuummeedd..  UUnnlleessss  tthhee  ttaabbllee  hhaass  nnoo  iinnddeexxeess,,  tthhiiss  ccoouunntteerr</blockquote>
-<blockquote>oonnllyy  aaddvvaanncceess  wwhheenn  tthhee  pphhaassee  iiss  vvaaccuuuummiinngg  hheeaapp..  BBlloocckkss  tthhaatt  ccoonnttaaiinn  nnoo  ddeeaadd</blockquote>
-<blockquote>ttuupplleess  aarree  sskkiippppeedd,,  ssoo  tthhee  ccoouunntteerr  mmaayy  ssoommeettiimmeess  sskkiipp  ffoorrwwaarrdd  iinn  llaarrggee</blockquote>
-<blockquote>iinnccrreemmeennttss..</p>
+<p>heap_blks_vacuumed bigint: <blockquote>NNuummbbeerr  ooff  hheeaapp  bblloocckkss  vvaaccuuuummeedd..  UUnnlleessss  tthhee  ttaabbllee  hhaass  nnoo  iinnddeexxeess,,  tthhiiss  ccoouunntteerr  oonnllyy  aaddvvaanncceess  wwhheenn  tthhee  pphhaassee  iiss  vvaaccuuuummiinngg  hheeaapp..  BBlloocckkss  tthhaatt  ccoonnttaaiinn  nnoo  ddeeaadd  ttuupplleess  aarree  sskkiippppeedd,,  ssoo  tthhee  ccoouunntteerr  mmaayy  ssoommeettiimmeess  sskkiipp  ffoorrwwaarrdd  iinn  llaarrggee  iinnccrreemmeennttss..</p>
 </blockquote>
 <p>index_vacuum_count bigint: <blockquote>NNuummbbeerr  ooff  ccoommpplleetteedd  iinnddeexx  vvaaccuuuumm  ccyycclleess..</p>
 </blockquote>
-<p>max_dead_tuple_bytes bigint: <blockquote>AAmmoouunntt  ooff  ddeeaadd  ttuuppllee  ddaattaa  tthhaatt  wwee  ccaann  ssttoorree  bbeeffoorree  nneeeeddiinngg  ttoo  ppeerrffoorrmm  aann</blockquote>
-<blockquote>iinnddeexx  vvaaccuuuumm  ccyyccllee,,  bbaasseedd  oonn  mmaaiinntteennaannccee__wwoorrkk__mmeemm..</p>
+<p>max_dead_tuple_bytes bigint: <blockquote>AAmmoouunntt  ooff  ddeeaadd  ttuuppllee  ddaattaa  tthhaatt  wwee  ccaann  ssttoorree  bbeeffoorree  nneeeeddiinngg  ttoo  ppeerrffoorrmm  aann  iinnddeexx  vvaaccuuuumm  ccyyccllee,,  bbaasseedd  oonn  mmaaiinntteennaannccee__wwoorrkk__mmeemm..</p>
 </blockquote>
 <p>dead_tuple_bytes bigint: <blockquote>AAmmoouunntt  ooff  ddeeaadd  ttuuppllee  ddaattaa  ccoolllleecctteedd  ssiinnccee  tthhee  llaasstt  iinnddeexx  vvaaccuuuumm  ccyyccllee..</p>
 </blockquote>
 <p>num_dead_item_ids bigint: <blockquote>NNuummbbeerr  ooff  ddeeaadd  iitteemm  iiddeennttiiffiieerrss  ccoolllleecctteedd  ssiinnccee  tthhee  llaasstt  iinnddeexx  vvaaccuuuumm  ccyyccllee..</p>
 </blockquote>
-<p>indexes_total bigint: <blockquote>TToottaall  nnuummbbeerr  ooff  iinnddeexxeess  tthhaatt  wwiillll  bbee  vvaaccuuuummeedd  oorr  cclleeaanneedd  uupp..  TThhiiss  nnuummbbeerr  iiss</blockquote>
-<blockquote>rreeppoorrtteedd  aatt  tthhee  bbeeggiinnnniinngg  ooff  tthhee  vvaaccuuuummiinngg  iinnddeexxeess  pphhaassee  oorr  tthhee  cclleeaanniinngg  uupp</blockquote>
-<blockquote>iinnddeexxeess  pphhaassee..</p>
+<p>indexes_total bigint: <blockquote>TToottaall  nnuummbbeerr  ooff  iinnddeexxeess  tthhaatt  wwiillll  bbee  vvaaccuuuummeedd  oorr  cclleeaanneedd  uupp..  TThhiiss  nnuummbbeerr  iiss  rreeppoorrtteedd  aatt  tthhee  bbeeggiinnnniinngg  ooff  tthhee  vvaaccuuuummiinngg  iinnddeexxeess  pphhaassee  oorr  tthhee  cclleeaanniinngg  uupp  iinnddeexxeess  pphhaassee..</p>
 </blockquote>
-<p>indexes_processed bigint: <blockquote>NNuummbbeerr  ooff  iinnddeexxeess  pprroocceesssseedd..  TThhiiss  ccoouunntteerr  oonnllyy  aaddvvaanncceess  wwhheenn  tthhee  pphhaassee  iiss</blockquote>
-<blockquote>vvaaccuuuummiinngg  iinnddeexxeess  oorr  cclleeaanniinngg  uupp  iinnddeexxeess..</p>
+<p>indexes_processed bigint: <blockquote>NNuummbbeerr  ooff  iinnddeexxeess  pprroocceesssseedd..  TThhiiss  ccoouunntteerr  oonnllyy  aaddvvaanncceess  wwhheenn  tthhee  pphhaassee  iiss  vvaaccuuuummiinngg  iinnddeexxeess  oorr  cclleeaanniinngg  uupp  iinnddeexxeess..</p>
 </blockquote>
 <h2>Useful Queries</h2>
 <pre><code class="language-sql">SELECT

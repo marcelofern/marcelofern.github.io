@@ -63,36 +63,10 @@
 <pre><code class="language-">Created at: 2025-02-01
 </code></pre><p>The Postgres wiki has a page called <a href="https://wiki.postgresql.org/wiki/Don't_Do_This#Don.27t_use_varchar.28n.29_by_default">"Don't Do This"</a> where general good practices are discussed.</p>
 <p>Amongst them, there is a session titled: <b>"Don't use varchar(n) by default"</b> which is copied verbatim below:</p>
-<blockquote>**Why not?**</blockquote>
-<blockquote>varchar(n) is a variable width text field that will throw an error if you try</blockquote>
-<blockquote>and insert a string longer than n characters (not bytes) into it.</blockquote>
-<blockquote></blockquote>
-<blockquote>varchar (without the (n)) or text are similar, but without the length limit.</blockquote>
-<blockquote>If you insert the same string into the three field types they will take up</blockquote>
-<blockquote>exactly the same amount of space, and you won't be able to measure any</blockquote>
-<blockquote>difference in performance.</blockquote>
-<blockquote></blockquote>
-<blockquote>If what you really need is a text field with an length limit then varchar(n)</blockquote>
-<blockquote>is great, but if you pick an arbitrary length and choose varchar(20) for a</blockquote>
-<blockquote>surname field you're risking production errors in the future when Hubert</blockquote>
-<blockquote>Blaine Wolfe­schlegel­stein­hausen­berger­dorff signs up for service.</blockquote>
-<blockquote></blockquote>
-<blockquote>Some databases don't have a type that can hold arbitrary long text, or if</blockquote>
-<blockquote>they do it's not as convenient or efficient or well-supported as varchar(n).</blockquote>
-<blockquote>Users from those databases will often use something like varchar(255) when</blockquote>
-<blockquote>what they really want is text.</blockquote>
-<blockquote></blockquote>
-<blockquote>If you need to constrain the value in a field you probably need something</blockquote>
-<blockquote>more specific than a maximum length - maybe a minimum length too, or a</blockquote>
-<blockquote>limited set of characters - and a check constraint can do all of those things</blockquote>
-<blockquote>as well as a maximum string length.</blockquote>
+<blockquote>**Why not?** varchar(n) is a variable width text field that will throw an error if you try and insert a string longer than n characters (not bytes) into it.  varchar (without the (n)) or text are similar, but without the length limit. If you insert the same string into the three field types they will take up exactly the same amount of space, and you won't be able to measure any difference in performance.  If what you really need is a text field with an length limit then varchar(n) is great, but if you pick an arbitrary length and choose varchar(20) for a surname field you're risking production errors in the future when Hubert Blaine Wolfe­schlegel­stein­hausen­berger­dorff signs up for service.  Some databases don't have a type that can hold arbitrary long text, or if they do it's not as convenient or efficient or well-supported as varchar(n). Users from those databases will often use something like varchar(255) when what they really want is text.  If you need to constrain the value in a field you probably need something more specific than a maximum length - maybe a minimum length too, or a limited set of characters - and a check constraint can do all of those things as well as a maximum string length.</blockquote>
 <blockquote>**When should you?**</blockquote>
-<blockquote>When you want to, really. If what you want is a text field that will throw an</blockquote>
-<blockquote>error if you insert too long a string into it, and you don't want to use an</blockquote>
-<blockquote>explicit check constraint then varchar(n) is a perfectly good type. Just</blockquote>
-<blockquote>don't use it automatically without thinking about it.</blockquote>
-<blockquote>Also, the varchar type is in the SQL standard, unlike the text type, so it</blockquote>
-<blockquote>might be the best choice for writing super-portable applications.</blockquote>
+<blockquote>When you want to, really. If what you want is a text field that will throw an error if you insert too long a string into it, and you don't want to use an explicit check constraint then varchar(n) is a perfectly good type. Just don't use it automatically without thinking about it.</blockquote>
+<blockquote>Also, the varchar type is in the SQL standard, unlike the text type, so it might be the best choice for writing super-portable applications.</blockquote>
 <p>The reasons for using <code>varchar</code> (without the (n)) are compelling:</p>
 <ol><li>No performance penalties.</li><li>Reduced risk of errors if you misrepresented the size of the data.</li></ol>
 <p>What the wiki doesn't do a good job of, is steelmanning the downsides of the approach it directs towards, namely: <b>using varchar by default</b>.</p>

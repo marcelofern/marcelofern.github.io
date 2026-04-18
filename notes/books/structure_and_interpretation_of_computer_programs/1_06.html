@@ -90,10 +90,7 @@
         (sqrt-iter 1.0 x)
 )
 </code></pre><h2>Question</h2>
-<blockquote>Alyssa P. Hacker doesn't see why `if` needs to be provided as a special form.</blockquote>
-<blockquote>"Why can't I just define it as an ordinary procedure in terms of `cond`?" she</blockquote>
-<blockquote>asks. Alyssa's friend Eva Lu Ator claims this can indeed be done, and she</blockquote>
-<blockquote>defines a new version of `if`:</blockquote>
+<blockquote>Alyssa P. Hacker doesn't see why `if` needs to be provided as a special form. "Why can't I just define it as an ordinary procedure in terms of `cond`?" she asks. Alyssa's friend Eva Lu Ator claims this can indeed be done, and she defines a new version of `if`:</blockquote>
 <pre><code class="language-scm">(define (new-if predicate then-clause else-clause)
         (cond (predicate then-clause) (else else-clause))
 )

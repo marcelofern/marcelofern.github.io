@@ -253,42 +253,22 @@ int main() {
 <p>Treating ISP as a principle can add unnecessary complexity. You should design your code to solve the problem at hand rather than worrying about whether your interface will become too bloated in future when more use cases are added. As you don't know how your codebase will progress in future, you shouldn't make compromises from early on. If an interface grew too much, and <b>now</b> you have legitimate reason to split it into smaller ones, then go and refactor it.</p>
 <p>As all the other principles we have discussed so far, take ISP as a trade-off instead of a principle.</p>
 <p>Here are a few quotes from the Code Complete book that are relevant for the matter:</p>
-<blockquote>If the derived class isn't going to adhere completely to the same interface</blockquote>
-<blockquote>contract defined by the base class, inheritance is not the right</blockquote>
-<blockquote>implementation.</blockquote>
+<blockquote>If the derived class isn't going to adhere completely to the same interface contract defined by the base class, inheritance is not the right implementation.</blockquote>
 <blockquote>Be suspicious of base classes of which there is only one derived class.</blockquote>
 <h2>Single Responsibility Principle (SRP)</h2>
 <p>This principle wasn't included in the original publication I linked above, and more details can be found in this blog post from <a href="http://web.archive.org/web/20240328163818/https://blog.cleancoder.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html">clean coder</a>.</p>
 <p>This principle builds up on the "Separation of Concerns" term that was popularised in a famous article "On the role of scientific thought" by Dijkstra <a href="http://web.archive.org/web/20221104003446/https://www.cs.utexas.edu/~EWD/ewd04xx/EWD447.PDF">source</a></p>
 <p>The principle can be summarised as:</p>
-<blockquote>The Single Responsibility Principle (SRP) states that each software module</blockquote>
-<blockquote>should have one and only one reason to change.</blockquote>
+<blockquote>The Single Responsibility Principle (SRP) states that each software module should have one and only one reason to change.</blockquote>
 <p>The definition lacks specification and my major criticism here is the specification itself. What is a reasonable "reason to change"?</p>
 <p>Martin gives more information on the blog post linked about, saying:</p>
-<blockquote>Imagine you took your car to a mechanic in order to fix a broken electric</blockquote>
-<blockquote>window. He calls you the next day saying it’s all fixed. When you pick up</blockquote>
-<blockquote>your car, you find the window works fine; but the car won’t start. It’s not</blockquote>
-<blockquote>likely you will return to that mechanic because he’s clearly an idiot.</blockquote>
-<blockquote>...</blockquote>
-<blockquote>That’s how customers and managers feel when we break things they care about</blockquote>
-<blockquote>that they did not ask us to change.</blockquote>
-<blockquote>...</blockquote>
-<blockquote>Another wording for the Single Responsibility Principle is:</blockquote>
-<blockquote>Gather together the things that change for the same reasons. Separate those</blockquote>
-<blockquote>things that change for different reasons.</blockquote>
-<blockquote>...</blockquote>
-<blockquote>However, as you think about this principle, remember that the reasons for</blockquote>
-<blockquote>change are people. It is people who request changes. And you don’t want to</blockquote>
-<blockquote>confuse those people, or yourself, by mixing together the code that many</blockquote>
-<blockquote>different people care about for different reasons.</blockquote>
+<blockquote>Imagine you took your car to a mechanic in order to fix a broken electric window. He calls you the next day saying it’s all fixed. When you pick up your car, you find the window works fine; but the car won’t start. It’s not likely you will return to that mechanic because he’s clearly an idiot. ... That’s how customers and managers feel when we break things they care about that they did not ask us to change. ... Another wording for the Single Responsibility Principle is: Gather together the things that change for the same reasons. Separate those things that change for different reasons. ... However, as you think about this principle, remember that the reasons for change are people. It is people who request changes. And you don’t want to confuse those people, or yourself, by mixing together the code that many different people care about for different reasons.</blockquote>
 <p>I agree that mixing code from different teams with different responsibilities isn't ideal. I would call that unnecessary coupling.</p>
 <p>It is obviously bad, for example, for a change in a back-end billing engine of a bank to affect its front-end application and display data in a different format.</p>
 <p>Although I think that the definition isn't ideal, the principle here does sound like the most reasonable in the list.</p>
 <h2>Conclusions</h2>
 <p>In my opinion, those shouldn't be called "principles". The word _principle_ as it is defined below should be reserved for terms that are really hard to debunk:</p>
-<blockquote>Principle: a fundamental truth or proposition that serves as the foundation</blockquote>
-<blockquote>for a system of belief or behaviour or for a chain of reasoning. "the basic</blockquote>
-<blockquote>principles of justice"</blockquote>
+<blockquote>Principle: a fundamental truth or proposition that serves as the foundation for a system of belief or behaviour or for a chain of reasoning. "the basic principles of justice"</blockquote>
 <p>Most of what we have seen here fit within the saying "different horses for different courses". I do appreciate that when those principles were written OOP was all the rage and many people were investing resources in it and many books were written. So I can accept that they were the single truth at the time.</p>
 <p>However, having many decades passed since the inception of those principles, many other things have improved in the industry. I feel like we have moved forward as a whole.</p>
 <p>OOP is not considered <b>the only way</b> of developing any more, though still very popular. Polymorphism, inheritance, and most importantly multi-level inheritance is seen with bad eyes. More and more people have come to appreciate composition over inheritance.</p>

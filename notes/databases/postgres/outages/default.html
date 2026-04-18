@@ -61,17 +61,8 @@
 <body>
 <h1>DEFAULT</h1>
 <p>Since Postgres 11:</p>
-<blockquote>From PostgreSQL 11, adding a column with a constant default value no longer</blockquote>
-<blockquote>means that each row of the table needs to be updated when the ALTER TABLE</blockquote>
-<blockquote>statement is executed. Instead, the default value will be returned the next</blockquote>
-<blockquote>time the row is accessed, and applied when the table is rewritten, making the</blockquote>
-<blockquote>ALTER TABLE very fast even on large tables.</blockquote>
-<blockquote>However, if the default value is volatile (e.g., clock_timestamp()) each row</blockquote>
-<blockquote>will need to be updated with the value calculated at the time ALTER TABLE is</blockquote>
-<blockquote>executed. To avoid a potentially lengthy update operation, particularly if</blockquote>
-<blockquote>you intend to fill the column with mostly nondefault values anyway, it may be</blockquote>
-<blockquote>preferable to add the column with no default, insert the correct values using</blockquote>
-<blockquote>UPDATE, and then add any desired default as described below.</blockquote>
+<blockquote>From PostgreSQL 11, adding a column with a constant default value no longer means that each row of the table needs to be updated when the ALTER TABLE statement is executed. Instead, the default value will be returned the next time the row is accessed, and applied when the table is rewritten, making the ALTER TABLE very fast even on large tables.</blockquote>
+<blockquote>However, if the default value is volatile (e.g., clock_timestamp()) each row will need to be updated with the value calculated at the time ALTER TABLE is executed. To avoid a potentially lengthy update operation, particularly if you intend to fill the column with mostly nondefault values anyway, it may be preferable to add the column with no default, insert the correct values using UPDATE, and then add any desired default as described below.</blockquote>
 <p>No table rewrites are needed for either NOT NULL columns or nullable columns.</p>
 <p>This can be shown by the following script:</p>
 <pre><code class="language-sql">SET client_min_messages=debug1;
@@ -125,19 +116,9 @@ WHERE attrelid = 'foo'::regclass AND attname = 'bar';
 -- ---------------
 --  {default}
 </code></pre><p>From the docs:</p>
-<blockquote>atthasmissing bool</blockquote>
-<blockquote></blockquote>
-<blockquote>This column has a value which is used where the column is entirely missing</blockquote>
-<blockquote>from the row, as happens when a column is added with a non-volatile DEFAULT</blockquote>
-<blockquote>value after the row is created. The actual value used is stored in the</blockquote>
-<blockquote>attmissingval column.</blockquote>
+<blockquote>atthasmissing bool  This column has a value which is used where the column is entirely missing from the row, as happens when a column is added with a non-volatile DEFAULT value after the row is created. The actual value used is stored in the attmissingval column.</blockquote>
 <p>And</p>
-<blockquote>attmissingval anyarray</blockquote>
-<blockquote></blockquote>
-<blockquote>This column has a one element array containing the value used when the column</blockquote>
-<blockquote>is entirely missing from the row, as happens when the column is added with a</blockquote>
-<blockquote>non-volatile DEFAULT value after the row is created. The value is only used</blockquote>
-<blockquote>when atthasmissing is true. If there is no value the column is null.</blockquote>
+<blockquote>attmissingval anyarray  This column has a one element array containing the value used when the column is entirely missing from the row, as happens when the column is added with a non-volatile DEFAULT value after the row is created. The value is only used when atthasmissing is true. If there is no value the column is null.</blockquote>
 <h2>Event Triggers</h2>
 <p>Another way of checking this is by running an event trigger:</p>
 <pre><code class="language-sql">CREATE OR REPLACE FUNCTION log_rewrite() RETURNS event_trigger
@@ -158,10 +139,7 @@ ON table_rewrite EXECUTE PROCEDURE log_rewrite();
 NOTICE:  rewriting table foo for reason 2
 DEBUG:  rewriting table "foo"
 </code></pre><p>The reason code is release dependent. There has been discussion about adding these values recently <a href="https://www.postgresql.org/message-id/CAKAnmmL+Z6j-C8dAx1tVrnBmZJu+BSoc68WSg3sR+CVNjBCqbw@mail.gmail.com">source</a>:</p>
-<blockquote>Returns a code explaining the reason(s) for rewriting. The value is a bitmap</blockquote>
-<blockquote>built from the following values: 1 (the table has changed persistence), 2 (a</blockquote>
-<blockquote>column has changed a default value), 4 (a column has a new data type), and 8</blockquote>
-<blockquote>(the table access method has changed).</blockquote>
+<blockquote>Returns a code explaining the reason(s) for rewriting. The value is a bitmap built from the following values: 1 (the table has changed persistence), 2 (a column has changed a default value), 4 (a column has a new data type), and 8 (the table access method has changed).</blockquote>
 <h2>Sources</h2>
 <ul><li>I have asked <a href="https://www.postgresql.org/message-id/CAM2F1VNAP2bKEtxymaX%3Dj%2BaV3hTfcZjH7p2jyCDGc_329rUiPQ%40mail.gmail.com">this question</a> on the docs mailing list. The replies are a good read.</li></ul><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
