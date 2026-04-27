@@ -22,6 +22,9 @@ Reading list resources:
 
 ## Nonfiction
 
+- Too Much Money How Wealth Disparities Are Unbalancing Aotearoa New Zealand
+- Seeing Like a State: How Certain Schemes to Improve the Human Condition Have Failed
+- The Myth of the Rational Voter
 - How Big Things Get Done (The financial times - best books of 2023)
 - Show Stopper!: The Breakneck Race to Create Windows NT and the Next Generation at Microsoft
 
@@ -129,3 +132,4 @@ Reading list resources:
 - [The law of leaky abstractions](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/)
 - [You can't design software you don't work on](https://www.seangoedecke.com/you-cant-design-software-you-dont-work-on/)
 - [Seeing like a software company](https://www.seangoedecke.com/seeing-like-a-software-company/)
+- [No one can force me to have a secure website!!!](https://tom7.org/httpv/httpv.pdf)

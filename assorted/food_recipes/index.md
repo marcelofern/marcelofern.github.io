@@ -22,6 +22,7 @@
 ## Brazilian
 
 - [moqueca](assorted/food_recipes/brazilian/moqueca.md)
+- [pão de queijo (cheese bread)](assorted/food_recipes/brazilian/pao_de_queijo.md)
 
 # Bread Maker
 
