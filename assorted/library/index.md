@@ -113,6 +113,7 @@ ones in this list to be good enough to be shared with the public.
 - Voss, Chris - Never Split The Difference. ([review](assorted/library/never-split-the-difference/index.md))
 - Fournier, Camille - The Manager's Path. ([review](assorted/library/the-managers-path/index.md))
 - Graeber, David - Bullshit jobs. ([review](assorted/library/bullshit-jobs/index.md))
+- Flyvbjerg, Bent - How Big Things Get Done. ([review](assorted/library/how-big-things-get-done/index.md))
 
 ## Pedagogy
 

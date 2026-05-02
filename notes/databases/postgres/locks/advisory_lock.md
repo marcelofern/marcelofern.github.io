@@ -173,3 +173,46 @@ def run():
 if __name__ == "__main__":
     run()
 ```
+
+## What happens when an advisory lock for a session is acquired in a transaction and that transaction is rolled back?
+
+In a first psql shell:
+
+```sql
+-- Start a transaction
+BEGIN;
+-- Try and acquire a session-level advisory lock.
+SELECT pg_try_advisory_lock(1234);
+```
+
+In a separated psql shell:
+
+```sql
+-- Try to acquire the same session-level advisory lock.
+-- This returns false
+SELECT pg_try_advisory_lock(1234);
+--  pg_try_advisory_lock
+-- ----------------------
+--  f
+```
+
+Now in the first session, abort the transaction:
+
+```sql
+ROLLBACK;
+```
+
+Then try to acquire the log again in the second session (still returns false)
+
+```sql
+SELECT pg_try_advisory_lock(1234);
+--  pg_try_advisory_lock
+-- ----------------------
+--  f
+```
+
+Only after releasing the lock in the first session, the second session can acquire it:
+
+```sql
+SELECT pg_advisory_unlock(1234);
+```

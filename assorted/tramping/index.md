@@ -17,6 +17,7 @@
 #### Wellington
 
 - [Windmill to Kilbirnie (21km)](assorted/tramping/windmill_to_kilbirnie/index.md)
+- [Colonial Knob (10km)](assorted/tramping/colonial_knob/index.md)
 
 ### South Island
 #### Queenstown
