@@ -1,4 +1,4 @@
-# Marcelo Fernandes
+# Marcelo Duarte
 
 - [Posts](posts/index.md)
 - [Notes](notes/index.md)
