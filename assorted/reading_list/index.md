@@ -133,3 +133,7 @@ Reading list resources:
 - [You can't design software you don't work on](https://www.seangoedecke.com/you-cant-design-software-you-dont-work-on/)
 - [Seeing like a software company](https://www.seangoedecke.com/seeing-like-a-software-company/)
 - [No one can force me to have a secure website!!!](https://tom7.org/httpv/httpv.pdf)
+
+## Software Engineering Quotes
+
+> "Any problem in computer science can be solved with another layer of indirection, except of course for the problem of too many layers of indirection." Bjarne Stroustrup

@@ -27,9 +27,10 @@
 - [Tools](hardware_tools/index.md)
 - [House Building](house_building/index.md)
 - [Cameras](cameras/index.md)
-- [e-readers](e_readers/index.md)
-- [cars](cars/index.md)
-- [woodworking](woodworking/index.md)
+- [E-readers](e_readers/index.md)
+- [Cars](cars/index.md)
+- [Woodworking](woodworking/index.md)
+- [Bikes](bikes/index.md)
 
 ## Etc.
 
