@@ -19,6 +19,8 @@
 - [Windmill to Kilbirnie (21km)](assorted/tramping/windmill_to_kilbirnie/index.md)
 - [Colonial Knob (10km)](assorted/tramping/colonial_knob/index.md)
 - [Karori T4 (10km)](assorted/tramping/karori_t4/index.md)
+- [Butterfly Creek (7.5km)](assorted/tramping/butterfly_creek/index.md)
+- [Belmont Trig (10km)](assorted/tramping/belmont_trig/index.md)
 
 ### South Island
 #### Queenstown
