@@ -7,25 +7,20 @@ Reading list resources:
 ## Science Fiction
 - Snow Crash - 	Neal Stephenson.
 - Atlas Shrugged - Ayn Rand.
-- Project Hail Mary - Andy Weir (may be good as an audio book).
 - The Martian - Andy Weir
 - The Expanse (series) - James S. A. Corey
 - Children of Time - Adrian Tchaikovsky
-- We Who Are about To... - Joanna Russ 
 - We Who Are about To... - Joanna Russ
 - The Body Snatchers - Jack Finney
 
 ## Fiction
-- The Da Vinci Code - Dan Brown
-- The Eye of Osiris - R. Austin Freeman
 - Blood Meridian - Cormac McCarthy
+- The Count of Mounte Cristo - Alexandre Dumas
 
 ## Nonfiction
 
 - Too Much Money How Wealth Disparities Are Unbalancing Aotearoa New Zealand
 - Seeing Like a State: How Certain Schemes to Improve the Human Condition Have Failed
-- The Myth of the Rational Voter
-- How Big Things Get Done (The financial times - best books of 2023)
 - Show Stopper!: The Breakneck Race to Create Windows NT and the Next Generation at Microsoft
 
 ## Digital Circuits
@@ -137,3 +132,11 @@ Reading list resources:
 ## Software Engineering Quotes
 
 > "Any problem in computer science can be solved with another layer of indirection, except of course for the problem of too many layers of indirection." Bjarne Stroustrup
+
+## New Zealand economy
+
+- [2025 NZ Household Wealth Statistics](https://www.moneyhub.co.nz/household-wealth-statistics.html)
+
+> The top 10% own 48.5% of everything. The bottom 50% share just 6.7%. The bottom 20% have negative net worth. The Gini coefficient is 66.1 (where total inequality is 100), high by international standards.
+
+> Our View: The data change represents the COVID property boom crystallised. Those who owned homes in 2021 gained ~$300,000 in paper wealth, but those who didn't own homes watched from the sidelines. The slight improvement in inequality metrics is real but modest - the fundamental wealth structure of New Zealand didn't change.

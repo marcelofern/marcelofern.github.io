@@ -1,5 +1,9 @@
 # Woodworking
 
+## Projects
+
+- [Garden box](woodworking/projects/garden_box/index.md)
+
 ## SketchUp
 
 ### Setup
@@ -14,4 +18,14 @@
 
 ### Cuts
 
+- [cutting a retangular object](woodworking/sketchup/cuts/rectangular.md)
 - [cutting a fillet](woodworking/sketchup/cuts/fillet.md)
+
+### Texture
+
+- [adding basic texture](woodworking/sketchup/texture/basic_texture.md)
+
+### Scenes
+
+- [scenes basics](woodworking/sketchup/scenes/basics.md)
+

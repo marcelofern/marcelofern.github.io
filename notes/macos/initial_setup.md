@@ -102,7 +102,9 @@ brew install \
     tmux \
     choose-gui \
     universal-ctags \
-    coreutils
+    coreutils \
+    tree-sitter-cli \
+    shortcat
 
 brew install firefox
 brew install --cask nikitabobko/tap/aerospace
@@ -172,12 +174,16 @@ defaults write NSGlobalDomain NSDisableAutomaticTermination -bool true
 sudo reboot now
 ```
 
-## Download HomeRow
+## Shortcat
 
-Change the shortcuts for:
+Change the shortcuts for cmd+shift+space and make sure to tick the box for
+initialising it on login.
 
-- cmd+shift+o (find link)
-- cmd+shift+j (start scrolling)
+## Download flameshot
+
+There is a very specific multi-step installation instruction for flameshot. It
+is not as easy as just getting it from the homebrew command. Follow their
+website instructions.
 
 ## Adjust mouse speed (if needed)
 

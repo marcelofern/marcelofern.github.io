@@ -72,6 +72,7 @@ ones in this list to be good enough to be shared with the public.
 - Dostoevsky, Fyodor - Crime and Punishment ([review](assorted/library/crime-and-punishment/index.md))
 - Egan, Greg - Permutation City.
 - Fitzgerald, Scott -  The Great Gatsby.
+- Freeman Austin - The Eye of Osiris ([review](assorted/library/the-eye-of-osiris/index.md))
 - Herbert, Frank - Dune.
 - Herbert, Frank - Dune Messiah. ([review](assorted/library/dune-messiah/index.md))
 - Herbert, Frank - Children of Dune.
@@ -92,6 +93,7 @@ ones in this list to be good enough to be shared with the public.
 - Tolkien, J. R. R. - The Hobbit.
 - Tolkien, J. R. R. - The Lord of The Rings Trilogy.
 - Tolstoy, Leo - Anna Karenina ([review](assorted/library/anna-karenina/index.md))
+- Weir Andy - Project Hail Mary ([review](assorted/library/project-hail-mary/index.md))
 
 ## Health
 
@@ -118,6 +120,10 @@ ones in this list to be good enough to be shared with the public.
 ## Pedagogy
 
 - Freire, Paulo - Pedagogy of The Oppressed. ([review](assorted/library/pedagogy-of-the-oppressed/index.md))
+
+## Politics
+
+- Caplan Bryan - The Myth of the Rational Voter. ([review](assorted/library/the-myth-of-the-rational-voter/index.md))
 
 ## Music
 
