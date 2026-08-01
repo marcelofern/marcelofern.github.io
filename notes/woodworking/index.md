@@ -3,6 +3,7 @@
 ## Projects
 
 - [Garden box](woodworking/projects/garden_box/index.md)
+- [Mobile workbench](woodworking/projects/mobile_workbench/index.md)
 
 ## SketchUp
 
