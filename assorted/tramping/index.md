@@ -21,6 +21,7 @@
 - [Karori T4 (10km)](assorted/tramping/karori_t4/index.md)
 - [Butterfly Creek (7.5km)](assorted/tramping/butterfly_creek/index.md)
 - [Belmont Trig (10km)](assorted/tramping/belmont_trig/index.md)
+- [Makara loop (8km)](assorted/tramping/makara_loop/index.md)
 
 ### South Island
 #### Queenstown
