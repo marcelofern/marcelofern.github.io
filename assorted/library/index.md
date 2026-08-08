@@ -70,6 +70,7 @@ ones in this list to be good enough to be shared with the public.
 - Coelho, Paulo - The Alchemist ([review](assorted/library/the-alchemist/index.md))
 - Dostoevsky, Fyodor - Brothers Karamazov ([review](assorted/library/brothers-karamazov/index.md))
 - Dostoevsky, Fyodor - Crime and Punishment ([review](assorted/library/crime-and-punishment/index.md))
+- Dumas, Alexandre - The Count of Monte Cristo ([review](assorted/library/the-count-of-monte-cristo/index.md))
 - Egan, Greg - Permutation City.
 - Fitzgerald, Scott -  The Great Gatsby.
 - Freeman Austin - The Eye of Osiris ([review](assorted/library/the-eye-of-osiris/index.md))
@@ -87,6 +88,7 @@ ones in this list to be good enough to be shared with the public.
 - King, Stephen - Under the dome ([review](assorted/library/under_the_dome/index.md)).
 - Lee, Harper - To Kill a Mockingbird ([review](assorted/library/to-kill-a-mockingbird/index.md))
 - Lee, Harper - Go Set a Watchman ([review](assorted/library/go-set-a-watchman/index.md))
+- McCarthy, Cormac - The Road ([review](assorted/library/the-road/index.md))
 - Marquez, Gabriel Garcia - One Hundred Years of Solitude ([review](assorted/library/one-hundred-years-of-solitude/index.md))
 - Orwell, George - 1984 ([review](assorted/library/1984/index.md))
 - Shusterman, Neal - Arc of a Scythe Series ([review](assorted/library/arc-of-a-scythe/index.md))
