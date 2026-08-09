@@ -17,6 +17,7 @@ ones in this list to be good enough to be shared with the public.
 - Martin, C. Robert - Clean Architecture.
 - Martin, C. Robert - Clean Code.
 - Martin, C. Robert - Clean Coder.
+- Michaelson, Greg - An Introduction to Functional Programming Through Lambda Calculus. ([review](assorted/library/an-introduction-to-functional-programming-through-lambda-calculus/index.md))
 - Neil, Drew - Practical Vim
 - Percival, Harry and Gregory Bob - Architecture Patterns with Python
 - Petzold, Charles - Code. ([review](assorted/library/code/index.md))
