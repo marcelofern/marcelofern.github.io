@@ -32,3 +32,11 @@ Here is what it looks like in real life:
    destroyed a few of them and had to use pliers to get them out, which wasn't
    a pleasent experience. I much preferred nails for this job - just make sure
    to wear ear muffers.
+
+## Further Improvements
+
+I noticed that the table was "wabbly" when horizontal force was applied at the
+top.
+
+I applied these horizontal 45-degree braces to the back of the table, and it is
+now much more stable.

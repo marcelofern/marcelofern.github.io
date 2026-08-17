@@ -30,6 +30,7 @@ ones in this list to be good enough to be shared with the public.
 ## Mathematics
 
 - Hodel, Richard - An Introduction to Mathematical Logic
+- Stewart, James - Calculus: Early Transcendentals. ([review](assorted/library/calculus-early-transcendentals/index.md))
 
 ## Philosophy
 

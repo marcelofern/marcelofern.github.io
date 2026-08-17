@@ -14,13 +14,15 @@ Reading list resources:
 - The Body Snatchers - Jack Finney
 
 ## Fiction
-- Blood Meridian - Cormac McCarthy
-- The Count of Mounte Cristo - Alexandre Dumas
+- The Death of Ivan Ilyich, Leo Tolstoy
+- White Nights, Fyodor Dostoevsky
+- ~Blood Meridian - Cormac McCarthy~
+- ~The Count of Mounte Cristo - Alexandre Dumas~
 
 ## Nonfiction
 
-- Too Much Money How Wealth Disparities Are Unbalancing Aotearoa New Zealand
-- Seeing Like a State: How Certain Schemes to Improve the Human Condition Have Failed
+- Too Much Money: How Wealth Disparities Are Unbalancing Aotearoa New Zealand
+- ~Seeing Like a State: How Certain Schemes to Improve the Human Condition Have Failed~
 - Show Stopper!: The Breakneck Race to Create Windows NT and the Next Generation at Microsoft
 
 ## Digital Circuits
