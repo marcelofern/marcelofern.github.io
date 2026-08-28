@@ -1,4 +1,4 @@
 
 ## RabbitMQ
 
-- [Best practices](message_brokers/rabbitmq_best_practices.md)
+- [Best practices](notes/message_brokers/rabbitmq_best_practices.md)

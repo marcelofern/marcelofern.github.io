@@ -23,17 +23,17 @@ solve the exercises without going too much into the detail. The book itself
 should be the primary source, but having read it, the basic explanations should
 be enough to remember the subject.
 
-- [1.1](books/structure_and_interpretation_of_computer_programs/1_01.md)
-- [1.2](books/structure_and_interpretation_of_computer_programs/1_02.md)
-- [1.3](books/structure_and_interpretation_of_computer_programs/1_03.md)
-- [1.4](books/structure_and_interpretation_of_computer_programs/1_04.md)
-- [1.5](books/structure_and_interpretation_of_computer_programs/1_05.md)
-- [1.6](books/structure_and_interpretation_of_computer_programs/1_06.md)
-- [1.7](books/structure_and_interpretation_of_computer_programs/1_07.md)
-- [1.8](books/structure_and_interpretation_of_computer_programs/1_08.md)
-- [1.9](books/structure_and_interpretation_of_computer_programs/1_09.md)
-- [1.10](books/structure_and_interpretation_of_computer_programs/1_10.md)
-- [1.34](books/structure_and_interpretation_of_computer_programs/1_34.md)
+- [1.1](assorted/library/structure_and_interpretation_of_computer_programs/1_01.md)
+- [1.2](assorted/library/structure_and_interpretation_of_computer_programs/1_02.md)
+- [1.3](assorted/library/structure_and_interpretation_of_computer_programs/1_03.md)
+- [1.4](assorted/library/structure_and_interpretation_of_computer_programs/1_04.md)
+- [1.5](assorted/library/structure_and_interpretation_of_computer_programs/1_05.md)
+- [1.6](assorted/library/structure_and_interpretation_of_computer_programs/1_06.md)
+- [1.7](assorted/library/structure_and_interpretation_of_computer_programs/1_07.md)
+- [1.8](assorted/library/structure_and_interpretation_of_computer_programs/1_08.md)
+- [1.9](assorted/library/structure_and_interpretation_of_computer_programs/1_09.md)
+- [1.10](assorted/library/structure_and_interpretation_of_computer_programs/1_10.md)
+- [1.34](assorted/library/structure_and_interpretation_of_computer_programs/1_34.md)
 
 Other solutions:
 

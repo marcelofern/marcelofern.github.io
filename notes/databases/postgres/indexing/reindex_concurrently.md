@@ -4,7 +4,7 @@
 Created at: 2024-12-20
 ```
 
-Reindexing is a good strategy to address [index bloat](databases/postgres/performance/table_bloat.md).
+Reindexing is a good strategy to address [index bloat](notes/databases/postgres/performance/table_bloat.md).
 
 This operation will create a fresh new index from scratch.
 

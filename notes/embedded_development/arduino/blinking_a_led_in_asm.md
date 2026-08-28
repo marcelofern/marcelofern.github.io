@@ -1,10 +1,10 @@
 2024-04-20
 
 Information about AVR assembly is in my notes:
-- [avr instruction set](programming_languages/assembly/avr_instruction_set.md)
+- [avr instruction set](notes/programming_languages/assembly/avr_instruction_set.md)
 
 And information about the delay routine and how it works is in:
-- [avr_sandbox](programming_languages/assembly/avr_sandbox.md)
+- [avr_sandbox](notes/programming_languages/assembly/avr_sandbox.md)
 
 
 ```asm

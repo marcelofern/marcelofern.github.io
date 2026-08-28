@@ -1,2 +1,2 @@
 
-- [syntax basics](programming_languages/scheme/syntax_basics.md)
+- [syntax basics](notes/programming_languages/scheme/syntax_basics.md)

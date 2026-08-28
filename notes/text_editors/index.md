@@ -2,8 +2,8 @@
 
 ## Writing
 
-[Digraphs](text_editors/neovim/digraphs.md)
+[Digraphs](notes/text_editors/neovim/digraphs.md)
 
 ## Diffing
 
-[diffthis](text_editors/neovim/diffthis.md)
+[diffthis](notes/text_editors/neovim/diffthis.md)

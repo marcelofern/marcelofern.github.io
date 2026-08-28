@@ -198,7 +198,7 @@ the protocol.
 
 The following script can be compiled using the script in my other note:
 
-- [ATMega328P on vim](embedded_development/atmega328p/atmega328p_on_vim.md)
+- [ATMega328P on vim](notes/embedded_development/atmega328p/atmega328p_on_vim.md)
 
 ```c
 #include <avr/io.h>

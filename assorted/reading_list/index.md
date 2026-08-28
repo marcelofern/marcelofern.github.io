@@ -23,6 +23,11 @@ Reading list resources:
 
 - Too Much Money: How Wealth Disparities Are Unbalancing Aotearoa New Zealand
 - ~Seeing Like a State: How Certain Schemes to Improve the Human Condition Have Failed~
+- The Valley, Asher Emanuel
+- Too Much Money How Wealth Disparities Are Unbalancing Aotearoa New Zealand
+- Seeing Like a State: How Certain Schemes to Improve the Human Condition Have Failed
+- The Myth of the Rational Voter
+- How Big Things Get Done (The financial times - best books of 2023)
 - Show Stopper!: The Breakneck Race to Create Windows NT and the Next Generation at Microsoft
 
 ## Digital Circuits

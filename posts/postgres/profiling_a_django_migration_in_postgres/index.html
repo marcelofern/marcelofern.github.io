@@ -81,7 +81,7 @@ CREATE TABLE foo (id SERIAL PRIMARY KEY);
 -- Insert 100_000 rows.
 INSERT INTO foo (id) SELECT generate_series(1, 100000);
 </code></pre><p>Next, we want to know what Postgres is doing internally. For that, we'll need to profile what happens when the <code>ALTER TABLE</code> command is running.</p>
-<p>Note: As I am writing this post on a Mac, I will use "Instruments" to profile Postgres, but if you are on a Linux machine you can use <code>perf</code> instead. I wrote a guide <a href="https://marcelofern.com/notes/databases/postgres/internals/profiling_postgres_on_linux.html">here</a> for the Linux users.</p>
+<p>Note: As I am writing this post on a Mac, I will use "Instruments" to profile Postgres, but if you are on a Linux machine you can use <code>perf</code> instead. I wrote a guide <a href="../../../notes/databases/postgres/internals/profiling_postgres_on_linux.html">here</a> for the Linux users.</p>
 <p>The first step is to grab the process id of the <code>psql</code> shell we are going to use for profiling:</p>
 <pre><code class="language-sql">SELECT pg_backend_pid();
 </code></pre><p>Then, open the "Time Profiler" tool on Instruments.</p>

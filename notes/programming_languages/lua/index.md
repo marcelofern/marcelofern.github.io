@@ -2,4 +2,4 @@
 
 ## Strings
 
-[gsub](programming_languages/lua/strings/gsub.md)
+[gsub](notes/programming_languages/lua/strings/gsub.md)

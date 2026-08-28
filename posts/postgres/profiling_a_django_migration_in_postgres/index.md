@@ -63,7 +63,7 @@ to profile what happens when the `ALTER TABLE` command is running.
 Note: As I am writing this post on a Mac, I will use "Instruments" to profile
 Postgres, but if you are on a Linux machine you can use `perf` instead. I wrote
 a guide
-[here](https://marcelofern.com/notes/databases/postgres/internals/profiling_postgres_on_linux.html)
+[here](notes/databases/postgres/internals/profiling_postgres_on_linux.md)
 for the Linux users.
 
 The first step is to grab the process id of the `psql` shell we are going to

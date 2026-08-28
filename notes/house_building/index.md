@@ -1,4 +1,4 @@
 ## Painting
 
-- [Deck Painting](house_building/painting/deck.md)
-- [Inside Walls](house_building/painting/inside_walls.md)
+- [Deck Painting](notes/house_building/painting/deck.md)
+- [Inside Walls](notes/house_building/painting/inside_walls.md)

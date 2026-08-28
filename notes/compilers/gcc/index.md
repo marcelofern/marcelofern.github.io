@@ -2,16 +2,16 @@
 
 ## Debugging
 
-- [-0g](compilers/gcc/0g.md)
+- [-0g](notes/compilers/gcc/0g.md)
 
 ## Compiling
 
-- [-c for skipping the linker](compilers/gcc/c_flag.md)
+- [-c for skipping the linker](notes/compilers/gcc/c_flag.md)
 
 ## Profiling
 
-- [-pg](compilers/gcc/pg.md)
+- [-pg](notes/compilers/gcc/pg.md)
 
 ## Optimisations
 
-- [__builtin_expect](compilers/gcc/__builtin_expect.md)
+- [__builtin_expect](notes/compilers/gcc/__builtin_expect.md)

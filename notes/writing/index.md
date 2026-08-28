@@ -1,3 +1,3 @@
 
-- [Using Vale to Write Prose](writing/vale.md)
-- [LIX readability test](writing/lix_readibility_test.md)
+- [Using Vale to Write Prose](notes/writing/vale.md)
+- [LIX readability test](notes/writing/lix_readibility_test.md)

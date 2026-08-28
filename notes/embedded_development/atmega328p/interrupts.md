@@ -60,7 +60,7 @@ int main() {
 
 The script below prints "I have been pressed!", every time the button has been
 pressed. It can print to usart and picocom if you're using the usart script
-from my previous note: [usart](embedded_development/atmega328p/usart.md)
+from my previous note: [usart](notes/embedded_development/atmega328p/usart.md)
 
 ```c
 #include <avr/interrupt.h>

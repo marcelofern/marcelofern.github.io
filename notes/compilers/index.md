@@ -1,3 +1,3 @@
 ## Compilers
 
-- [gcc](compilers/gcc/index.md)
+- [gcc](notes/compilers/gcc/index.md)

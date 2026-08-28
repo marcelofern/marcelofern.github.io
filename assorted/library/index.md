@@ -5,6 +5,8 @@ ones in this list to be good enough to be shared with the public.
 
 ## Computing
 
+- Abelson, Harold and Sussman, Gerald Jay - Structure and Interpretation of Computer Programs. ([notes](assorted/library/structure_and_interpretation_of_computer_programs/index.md))
+- Bryant, Randal and O'Hallaron, David - Computer Systems: A Programmer's Perspective. ([notes](assorted/library/computer_systems_a_programmers_perspective/index.md))
 - Burkov, Andriy - The Hundred Page Machine Learning Book
 - Duntemann, Jeff - x64 Assembly Language Step-by-step. ([notes](assorted/library/x64-assembly-language/index.md))
 - Evans, Eric - Domain Driven Design. ([notes](assorted/library/domain-driven-design/index.md))
@@ -91,6 +93,7 @@ ones in this list to be good enough to be shared with the public.
 - Lee, Harper - To Kill a Mockingbird ([review](assorted/library/to-kill-a-mockingbird/index.md))
 - Lee, Harper - Go Set a Watchman ([review](assorted/library/go-set-a-watchman/index.md))
 - McCarthy, Cormac - The Road ([review](assorted/library/the-road/index.md))
+- McMurtry, Larry - Dead Man's Walk ([review](assorted/library/dead-mans-walk/index.md))
 - Marquez, Gabriel Garcia - One Hundred Years of Solitude ([review](assorted/library/one-hundred-years-of-solitude/index.md))
 - Orwell, George - 1984 ([review](assorted/library/1984/index.md))
 - Shusterman, Neal - Arc of a Scythe Series ([review](assorted/library/arc-of-a-scythe/index.md))
@@ -106,6 +109,7 @@ ones in this list to be good enough to be shared with the public.
 
 ## General Technology
 
+- Horowitz, Paul and Hill, Winfield - The Art of Electronics. ([notes](assorted/library/the_art_of_electronics/index.md))
 - Kider, Tracy - The Sould of a New Machine. ([review](assorted/library/the-soul-of-a-new-machine/index.md))
 - Monteiro, Mike - Ruined By Design ([review](assorted/library/ruined-by-design/index.md))
 - Newport, Cal - Digital Minimalism ([review](assorted/library/digital-minimalism/index.md))

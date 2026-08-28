@@ -1,40 +1,39 @@
 ## High-level computing
 
-- [Databases](databases/index.md)
-- [Programming languages](programming_languages/index.md)
-- [Security](security/index.md)
-- [Linux](linux/index.md)
-- [MacOs](macos/index.md)
-- [Version Control](version_control/index.md)
-- [Text Editors](text_editors/index.md)
-- [Terminal Multiplexers](terminal_multiplexers/index.md)
-- [Message brokers](message_brokers/index.md)
+- [Databases](notes/databases/index.md)
+- [Programming languages](notes/programming_languages/index.md)
+- [Security](notes/security/index.md)
+- [Linux](notes/linux/index.md)
+- [MacOs](notes/macos/index.md)
+- [Version Control](notes/version_control/index.md)
+- [Text Editors](notes/text_editors/index.md)
+- [Terminal Multiplexers](notes/terminal_multiplexers/index.md)
+- [Message brokers](notes/message_brokers/index.md)
 
 ## Low-level computing
 
-- [Compilers](compilers/index.md)
-- [Debuggers](debuggers/index.md)
-- [Computer architecture](computer_architecture/index.md)
-- [Embedded development](embedded_development/index.md)
-- [Electronics](electronics/index.md)
+- [Compilers](notes/compilers/index.md)
+- [Debuggers](notes/debuggers/index.md)
+- [Computer architecture](notes/computer_architecture/index.md)
+- [Embedded development](notes/embedded_development/index.md)
+- [Electronics](notes/electronics/index.md)
 
 ## Even lower level computing
 
-- [Mathematics](mathematics/index.md)
+- [Mathematics](notes/mathematics/index.md)
 
 ## Hardware & Machines
 
-- [Tools](hardware_tools/index.md)
-- [House Building](house_building/index.md)
-- [Cameras](cameras/index.md)
-- [E-readers](e_readers/index.md)
-- [Cars](cars/index.md)
-- [Woodworking](woodworking/index.md)
-- [Bikes](bikes/index.md)
+- [Tools](notes/hardware_tools/index.md)
+- [House Building](notes/house_building/index.md)
+- [Cameras](notes/cameras/index.md)
+- [E-readers](notes/e_readers/index.md)
+- [Cars](notes/cars/index.md)
+- [Woodworking](notes/woodworking/index.md)
+- [Bikes](notes/bikes/index.md)
 
 ## Etc.
 
-- [Notes on books](books/index.md)
-- [Notes on writing](writing/index.md)
-- [Transcriptions](transcriptions/index.md)
-- [Business](business/index.md)
+- [Notes on writing](notes/writing/index.md)
+- [Transcriptions](notes/transcriptions/index.md)
+- [Business](notes/business/index.md)

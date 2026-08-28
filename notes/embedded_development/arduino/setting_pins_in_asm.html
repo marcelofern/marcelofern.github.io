@@ -78,8 +78,8 @@ PWM+ (D 6) PD6 12|    |17  PB3 (D 11) PWM
      (D 8) PB0 14|    |15  PB1 (D 9) PWM
                  +----+
 </code></pre><p>The below is how you'd set the pin 19 using asm.</p>
-<p>For more detailed information about setting atmega328p pins see: - <a href="notes/embedded_development/atmega328p/io_pins.html">io pins</a></p>
-<p>For a refresher of AVR assembly language see: - <a href="notes/programming_languages/assembly/avr_instruction_set.html">avr instructions</a></p>
+<p>For more detailed information about setting atmega328p pins see: - <a href="../atmega328p/io_pins.html">io pins</a></p>
+<p>For a refresher of AVR assembly language see: - <a href="../../programming_languages/assembly/avr_instruction_set.html">avr instructions</a></p>
 <p>The example below is similar to the one in the I/O ports documentation in the ATMega328p datasheet.</p>
 <pre><code class="language-asm">ldi r16, (1<<PB5)
 out _SFR_IO_ADDR (DDRB), r16

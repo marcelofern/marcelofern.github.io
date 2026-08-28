@@ -3,7 +3,7 @@
 This example blinks the LED in the arduino UNO board that uses ATMega328p.
 It can be compiled using the script in my other notes:
 
-- [ATMega328P on vim](embedded_development/atmega328p/atmega328p_on_vim.md)
+- [ATMega328P on vim](notes/embedded_development/atmega328p/atmega328p_on_vim.md)
 
 ```c
 #include <avr/io.h>

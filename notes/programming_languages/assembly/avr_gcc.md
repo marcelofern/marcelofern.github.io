@@ -51,4 +51,4 @@ The avr-gcc compiler also includes the following tools:
 
 For more info about compiling from avr-gcc straight to arduino see:
 
-[from_asm_to_arduino](embedded_development/arduino/from_asm_to_arduino.md)
+[from_asm_to_arduino](notes/embedded_development/arduino/from_asm_to_arduino.md)

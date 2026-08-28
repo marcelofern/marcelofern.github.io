@@ -1,7 +1,7 @@
 ## LED
 
-- [Resistor for LED](electronics/components/resistor_for_led.md)
+- [Resistor for LED](notes/electronics/components/resistor_for_led.md)
 
 ## Diodes
 
-- [Zener Diode](electronics/components/zener_diode.md)
+- [Zener Diode](notes/electronics/components/zener_diode.md)
