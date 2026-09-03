@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Build It From Source</h1>
+<pre><code class="language-">Created at: 2026-09-03
+</code></pre><p>I am slowly migrating away from having software that is packaged by a third party onto building it from source myself. Not manually, but in an automated way.</p>
+<p>I think this has been possible recently due to two main reasons:</p>
+<ul><li>Most of the popular software programs have stable building systems. You don't have to rely on someone else's arcane knowledge of what combination of flags to pass to the <code>make</code> command any more. In many cases running the following simply works:<code>./configure && make && make install</code> .</li><li>I have done the hard work upfront to minimise the number of dependencies on my system. That makes this more achievable. I used to run an arch linux machine with <a href="../postgres/about-that-postgres-json-field/index.html">1270 packages</a>, and now I am running 538. Out of those, I only explicitly installed 40. The rest comes with a basic arch install (linux kernel, firmwares, grub, etc.). I don't mind them too much, but I'd be happy to see them go so that I could get faster system updates.</li></ul>
+<p>I didn't go down this track just for fun. I had a real issue that I wanted to solve, and it started with Python.</p>
+<p>Python fame over the years hasn't been great on the subject of binary distributions. If you used Linux in the past 5-10 years, you have possibly had a <code>python</code> and a <code>python3</code> binary. Along with a <code>pip</code> and a <code>pip3</code> Python package manager.</p>
+<p>Beyond that, if you wanted to use Python 3.1 and your distribution had Python 3.2 you had to build your own binaries or use some auxiliary tool to do that for you. It was not a good idea to overwrite the OS <code>/usr/bin/python3</code> because you didn't know which other dependencies required a specific version of Python that were pointing to that binary. On top of that, your distribution might also update the Python version at any time.</p>
+<p>There were some ways to manage multiple Python versions on the same environment. For a while, <code>pyenv</code> was the go to for software developers, and <code>conda</code> was very popular amongst the scientific community. People who wanted a version-manager ecosystem would go with something like <code>asdf</code>. Nowadays <code>uv</code> has taken the scene in the world of Python tooling.</p>
+<p>What do these tools have to offer though? They have nice commands. You still have to memorise them, though. But they are nice one liners. But compare that to the script that I have that allows me to install Python binaries on my system:</p>
+<pre><code class="language-">install_python_version() {
+  # call this function with a version of Python
+  # like `install_python_version 3.11.9`.
+
+  # Clean up first
+  rm -rf /tmp/python-install
+
+  # This is where the different Python executables will be installed.
+  DIR=$HOME/.python_bin/python-$1
+  mkdir -p $DIR
+
+  # This is where temporary installation files will be available.
+  mkdir -p /tmp/python-install && cd /tmp/python-install
+
+  # Download the python version
+  curl -O https://www.python.org/ftp/python/$1/Python-$1.tgz
+
+  tar -xzf Python-$1.tgz && cd /tmp/python-install/Python-$1
+  ./configure --prefix=$DIR && make && make install
+
+  echo "Now you can install your virtualenv:"
+  echo "$HOME/.python_bin/python-$1/bin/python3 -m venv <env_name>"
+}
+</code></pre><p>For example if I am working on a codebase called <code>black_fish</code> that uses Python 3.14.0, I perform the following commands:</p>
+<pre><code class="language-sh">install_python_version 3.14.0
+
+# Go to the repo directory and install the env
+cd ~/workspace/black_fish
+$HOME/.python_bin/python-3.14.0/bin/python3 -m venv .env
+
+# On my bashrc I have the following:
+alias black_fish="source ~/workspace/black_fish/.env/bin/activate && cd ~/workspace/black_fish/"
+</code></pre><p>From now on every time I type <code>black_fish</code> on on my terminal I go to the <code>black_fish</code> repository with its own Python 3.14.0 that will never conflict with anything else.</p>
+<p>I am often working on 3-4 Python codebases simultaneously. Not having to go through the process of remembering which tool I am using, what version the project wants, and what activation commands to run is much convenient.</p>
+<p>But this doesn't stop at Python. I also have to run several Postgres versions on my machine. Sometimes simultaneously. Many Postgres environment managers don't allow you to do this. Typically Postgres uses the port 5432, and once that port is busy you are stuck with running a single Postgres instance at a time.</p>
+<p>If one project uses Postgres 15, and the other Postgres 16, and you are doing some debugging across these two different projects at the same time, how do you reconcile that?</p>
+<p>In my setup I run multiple versions of Postgres in different ports. So if I am running Postgres 15, I will run it on port 54<b>15</b>. If I am running version 16, I will run on port 54<b>16</b>. This allows me to always know which version I am using based on the port my project is connecting to.</p>
+<p>To make my life easier, I also set the default db names to <code>postgres${VERSION}</code>.</p>
+<p>On top of that, I have a very specific use case. I want to be able to profile Postgres now and then. This requires me to build Postgres with some very specific flags. Over the years I also learned about some very helpful Postgres configuration settings that I wanted to propagate to my future use cases. Flags like <code>"log_statement = 'all'"</code>, <code>"log_duration = on"</code>, etc. that are very helpful for local debugging. So I chucked it all into my script so that I don't have keep them on my mind when moving onto a new machine.</p>
+<p>The basic flow is like this:</p>
+<p>Go to Postgres' <a href="https://www.postgresql.org/ftp/source/">ftp server in this link </a> and grab the version of Postgres you are interested in. I didn't bother to make a <code>curl</code> script for that. Then:</p>
+<pre><code class="language-sh">VERSION=15
+PORT="54${VERSION}"
+DBNAME=postgres${VERSION}
+
+tar xf postgresql-${VERSION}.tar.bz2
+
+cd postgresql-${VERSION}/
+
+PREFIX="$(pwd)/build"
+
+./configure \
+    CC='gcc' \
+    CFLAGS="-fno-omit-frame-pointer -ggdb" \
+    --prefix=${PREFIX} \
+    --with-pgport=54${VERSION} \
+    --enable-debug \
+    --without-icu
+
+# Remove existing file if it exists.
+rm -f src/compile_commands.json build
+
+# `make` will take a bit of time to finish.
+bear --output src/compile_commands.json -- make
+make install
+
+# This will initialise configuration for the database.
+build/bin/initdb -D build/data
+
+# Add our specific port to the configuration file.
+# The step above doesn't do that.
+echo "port = 54${VERSION}" >> build/data/postgresql.conf
+echo "max_locks_per_transaction=1000" >> build/data/postgresql.conf
+echo "log_statement = 'all'" >> build/data/postgresql.conf
+echo "log_duration = on" >> build/data/postgresql.conf
+echo "log_line_prefix = '%t [%p]: [%l-1] %q%u@%d '" >> build/data/postgresql.conf
+echo "session_preload_libraries = 'auto_explain'" >> build/data/postgresql.conf
+echo "auto_explain.log_nested_statements = true" >> build/data/postgresql.conf
+echo "auto_explain.log_min_duration = 200" >> build/data/postgresql.conf
+
+# This initialises the database server. All the queries will be stored in the
+# file named `logfile` at the base directory.
+build/bin/pg_ctl -D build/data -l logfile start
+
+# Create the default db "postgres${VERSION}".
+build/bin/createdb --port=${PORT} ${DBNAME}
+
+# Add handy scripts so that I don't have to rememeber these
+# commands from the top of my head.
+echo "rm -f logfile && build/bin/pg_ctl -D build/data -l logfile start" > server_start.sh
+echo "build/bin/pg_ctl -D build/data stop" > server_stop.sh
+echo "build/bin/psql -e --port=${PORT} --dbname=${DBNAME} \"\$@\"" > psql.sh
+echo "./server_stop.sh && ./server_start.sh" > server_restart.sh
+
+chmod +x server_start.sh
+chmod +x server_stop.sh
+chmod +x server_restart.sh
+chmod +x psql.sh
+
+# I often find it a good idea to initialise a git repository. If I need to
+# alter the code, I can track my changes if I need to revert or submit a patch.
+git init
+
+cat <<EOF > .gitignore
+build/
+src/.cache/
+logfile
+perf.data
+perf.data.old
+EOF
+
+git add .
+git commit -m "Initial Commit"
+</code></pre><p>I usually install my packages in <code>~/workspace/</code>. So I will have a <code>~/workspace/postgres15/</code> folder for example. With that, I can start the server with the script created during the step above:</p>
+<pre><code class="language-sh">cd ~/workspace/postgres15/
+
+./server_start.sh
+
+# later...
+./server_stop.sh
+</code></pre><p>That is it, even though I would consider Postgres a "complex" case of software to build as it involves more configuration than Python. I did want to use it as an example because I believe it is one of the finicky ones. But as an outcome I have full control of the Postgres server. I am not digging into weird places to see where the log is. My logs are always stored at <code>~/workspace/postgres15/logfile</code>. I am also free of having to rely on systemd's goodwill to turn my Postgres service on and keep track of its life cycle.</p>
+<p>I use this script on both my MacOs for work, and on my personal Linux laptop. This is another great benefit of building it from source - it generally just works on both platforms.</p>
+<h2>Conclusions</h2>
+<p>In the process of building scripts and notes for installing software from source I actually learned a lot about how software is packaged.</p>
+<p>The more I learned the more I understood what value the package managers and environment management systems gave to me, and what value was missing.</p>
+<p>As you can tell from the above, I am still using <code>pacman</code>. That is still necessary for things that I haven't come across to porting to scripts yet or for things that are not possible at present or that I don't see the value in it. Most of these are libraries that just came as default on the arch linux installation, or that will never have competing versions in my system running simultaneously (mostly nondevelopment packages).</p>
+<p>Finally, note that these are only a couple of examples. Managing your builds for the software you use is especially easy in the era of LLMs if you are so inclined, and I urge you to at least give it a go to see what you can build at home.</p>
+<p>You hear about package maintainers heroes all the time, and their job looks pretty tough and intimidating. But don't let that put you off. You have to consider that such jobs are packaging a heap of different packages for a generic audience that might need any combination of them. But you have your own use case - and you can easily optimise for that.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

@@ -146,7 +146,6 @@ echo "session_preload_libraries = 'auto_explain'" >> build/data/postgresql.conf
 echo "auto_explain.log_nested_statements = true" >> build/data/postgresql.conf
 echo "auto_explain.log_min_duration = 200" >> build/data/postgresql.conf
 
-
 # This initialises the database server. All the queries will be stored in the
 # file named `logfile` at the base directory.
 build/bin/pg_ctl -D build/data -l logfile start
