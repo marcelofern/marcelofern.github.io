@@ -4,6 +4,7 @@ Also available via [RSS feed](https://marcelofern.com/feed).
 
 ---
 
+- 2026-09-14 [Taking a look at RDTSC](posts/taking-a-look-at-rdtsc/index.md)
 - 2026-09-03 [Build it from source](posts/build_it_from_source/index.md)
 - 2025-02-17 [Profiling a Django Migration in Postgres](posts/postgres/profiling_a_django_migration_in_postgres/index.md)
 - 2025-02-01 [Should you not use Postgres varchar(n) by default?](posts/postgres/should_you_not_use_varchar_n/index.md)

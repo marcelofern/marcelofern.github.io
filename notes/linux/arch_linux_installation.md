@@ -67,9 +67,16 @@ If your computer is running windows you can also:
 
 ## Installing the OS
 
-You'll need internet connection. If using wifi, run:
 
-```sh
+This is now optional. The `archinstall` script already has an wifi option.
+The below is just for historical purposes or for when you see an error
+in the archlinux installation script:
+
+```
+# Shortcut
+iwctl --passphrase $PASSWORD station wlan0 connect $WIFI_NAME
+
+# Iterative:
 iwctl
 
 # list device names

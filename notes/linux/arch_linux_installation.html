@@ -86,8 +86,12 @@ sudo dd bs=4M if=path/to/archlinux-version-x86_64.iso of=/dev/disk/by-id/usb-My_
 <p>If your computer is running windows you can also:</p>
 <ol><li>Go to the <code>Settings</code> app, and search for <code>Windows Update</code>.</li><li>Click on <code>Advanced Options</code>.</li><li>Click on <code>Recovery</code>.</li><li>Click on <code>Advanced startup</code> and then <code>Restart now</code>.</li><li>The options menu will pop up, click on <code>Troubleshoot</code>.</li><li>Select <code>Advanced options</code>.</li><li>Select <code>UEFI Firmware Settings</code> and click <code>Restart</code>.</li><li>Press the necessary key to enter the BIOS (enter) followed by the option in the menu.</li></ol>
 <h2>Installing the OS</h2>
-<p>You'll need internet connection. If using wifi, run:</p>
-<pre><code class="language-sh">iwctl
+<p>This is now optional. The <code>archinstall</code> script already has an wifi option. The below is just for historical purposes or for when you see an error in the archlinux installation script:</p>
+<pre><code class="language-"># Shortcut
+iwctl --passphrase $PASSWORD station wlan0 connect $WIFI_NAME
+
+# Iterative:
+iwctl
 
 # list device names
 [iwd] device list

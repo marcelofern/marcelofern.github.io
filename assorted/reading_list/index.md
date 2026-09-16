@@ -5,6 +5,7 @@ Reading list resources:
  - [https://standardebooks.org](https://standardebooks.org)
 
 ## Science Fiction
+- Manifold: Time - Stephen Baxter
 - Snow Crash - 	Neal Stephenson.
 - Atlas Shrugged - Ayn Rand.
 - The Martian - Andy Weir
@@ -14,6 +15,7 @@ Reading list resources:
 - The Body Snatchers - Jack Finney
 
 ## Fiction
+- Pride and Prejudice, Jane Austen
 - The Death of Ivan Ilyich, Leo Tolstoy
 - White Nights, Fyodor Dostoevsky
 - ~Blood Meridian - Cormac McCarthy~
@@ -43,6 +45,7 @@ Reading list resources:
 
 ## Computer Systems
 
+- Hacker's Delight by Henry Warren
 - The Unix Haters Handbook - Simson Garfinkel
 - Computer System a Programmer's Approach - Bryant O'Hallaron
 - The UNIX programming environment - Brian K. & Rob Pike
