@@ -23,7 +23,11 @@ Reading list resources:
 
 ## Nonfiction
 
+- Miracles and Wonder: The Historical Mystery of Jesus 
+- How Migration Really Works: The Facts About the Most Divisive Issue in Politics 
+- Do Not Go Gentle: The Case Against Assisted Death 
 - Too Much Money: How Wealth Disparities Are Unbalancing Aotearoa New Zealand
+- Edsger Wybe Dijkstra: His Life,Work, and Legacy
 - ~Seeing Like a State: How Certain Schemes to Improve the Human Condition Have Failed~
 - The Valley, Asher Emanuel
 - Too Much Money How Wealth Disparities Are Unbalancing Aotearoa New Zealand
@@ -45,6 +49,8 @@ Reading list resources:
 
 ## Computer Systems
 
+- [Optimising software in C++](https://www.agner.org/optimize/optimizing_cpp.pdf)
+- [Software optimization resources](https://www.agner.org/optimize/)
 - Hacker's Delight by Henry Warren
 - The Unix Haters Handbook - Simson Garfinkel
 - Computer System a Programmer's Approach - Bryant O'Hallaron
