@@ -94,6 +94,7 @@ Reading list resources:
 
 ## Mathematics
 
+- From Kant to Hilbert Volume 1/2: A Source Book in the Foundations of Mathematics 
 - Godel, Escher, Bach: An Eternal Golden Braid - Douglas Hofstadter
 - Lockhart, Paul - Measurement
 
@@ -135,6 +136,10 @@ Reading list resources:
 ## Blog Posts
 
 - https://cloud.google.com/blog/products/databases/deep-dive-into-postgresql-vacuum-garbage-collector
+
+## Optmisation (software)
+
+- [https://www.agner.org/optimize/](https://www.agner.org/optimize/)
 
 ## Great software engineering blog posts
 

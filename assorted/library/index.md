@@ -133,6 +133,7 @@ ones in this list to be good enough to be shared with the public.
 ## Politics
 
 - Caplan Bryan - The Myth of the Rational Voter. ([review](assorted/library/the-myth-of-the-rational-voter/index.md))
+- Hager, Nicky - Dirty work: The Taxpayers' Union and New Zealand's Hard Right ([review](assorted/library/dirty-work/index.md))
 
 ## Music
 
