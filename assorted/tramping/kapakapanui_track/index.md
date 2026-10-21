@@ -6,7 +6,7 @@ Created at: 2026-10-21
 
 ![img1.png](img1.png)
 
-This is a 15km loop track with ~1100m of elevation that starts at 395 Ngatiawa
+This is a 11km loop track with ~1100m of elevation that starts at 395 Ngatiawa
 Road, Reikorangi. I have done it anti-clockwise, because the steepest part is
 at the beginning and you get to see the view of the beach on your way down.
 

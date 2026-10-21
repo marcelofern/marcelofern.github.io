@@ -105,3 +105,5 @@ Notes:
 3. Do not create a separate partition for `/home`.
 4. Make sure to copy wifi config to installation.
 5. Repeat a few times if the installation failed (yeah...)
+6. Firefox filepicker doesn't work until you set
+   `widget.use-xdg-desktop-portal.file-picker` to 0 on the `about:config` page.

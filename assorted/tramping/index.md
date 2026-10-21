@@ -9,7 +9,7 @@
 
 #### Kapiti Coast
 
-- [Kapakapanui Track (15km)](assorted/tramping/kapakapanui_track/index.md)
+- [Kapakapanui Track (11km)](assorted/tramping/kapakapanui_track/index.md)
 
 #### Paekakariki
 

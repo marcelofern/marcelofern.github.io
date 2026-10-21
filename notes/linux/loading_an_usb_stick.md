@@ -10,7 +10,7 @@ sudo mkdir /mnt/usb
 sudo fdisk -l
 
 # mount the disk [in this case /dev/sda]
-sudo mount /dev/sda /mnt/usb
+sudo mount /dev/sda1 /mnt/usb
 
 # access the files via
 cd /mnt/usb
