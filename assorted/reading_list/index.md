@@ -133,6 +133,14 @@ Reading list resources:
 - The 21 Former Doctor Secrets.
 - Bad Therapy: Why Kids aren't growing up.
 
+## Music
+
+- Complete Vocal Technique, by Cathrine Sadolin (CVT book)
+- Practical Vocal Acoustics, by Kenneth Bozeman
+- Richard Miller - The structure of singing
+- https://vocalpedagogy.com/recommended-resources/
+- Discover your voice  -Oren L Brown
+
 ## Blog Posts
 
 - https://cloud.google.com/blog/products/databases/deep-dive-into-postgresql-vacuum-garbage-collector

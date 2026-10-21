@@ -6,6 +6,11 @@
 ## New Zealand
 
 ### North Island
+
+#### Kapiti Coast
+
+- [Kapakapanui Track (15km)](assorted/tramping/kapakapanui_track/index.md)
+
 #### Paekakariki
 
 - [Escarpment Track (10km)](assorted/tramping/escarpment_track/index.md)
