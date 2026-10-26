@@ -9,7 +9,7 @@
 
 #### Kapiti Coast
 
-- [Kapakapanui Track (15km)](assorted/tramping/kapakapanui_track/index.md)
+- [Kapakapanui Track (11km)](assorted/tramping/kapakapanui_track/index.md)
 
 #### Paekakariki
 
@@ -27,6 +27,7 @@
 - [Butterfly Creek (7.5km)](assorted/tramping/butterfly_creek/index.md)
 - [Belmont Trig (10km)](assorted/tramping/belmont_trig/index.md)
 - [Makara loop (8km)](assorted/tramping/makara_loop/index.md)
+- [Matiu/Somes Island (3.3km)](assorted/tramping/matiu_somes_island/index.md)
 
 ### South Island
 #### Queenstown

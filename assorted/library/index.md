@@ -95,6 +95,7 @@ ones in this list to be good enough to be shared with the public.
 - McCarthy, Cormac - The Road ([review](assorted/library/the-road/index.md))
 - McMurtry, Larry - Dead Man's Walk ([review](assorted/library/dead-mans-walk/index.md))
 - McMurtry, Larry - Comanche Moon ([review](assorted/library/comanche-moon/index.md))
+- McMurtry, Larry - Lonesome Dove ([review](assorted/library/lonesome-dove/index.md))
 - Marquez, Gabriel Garcia - One Hundred Years of Solitude ([review](assorted/library/one-hundred-years-of-solitude/index.md))
 - Orwell, George - 1984 ([review](assorted/library/1984/index.md))
 - Shusterman, Neal - Arc of a Scythe Series ([review](assorted/library/arc-of-a-scythe/index.md))
