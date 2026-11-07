@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Circuit Analysis</h1>
+<h2>Basic</h2>
+<ul><li><a href="basic/dc_circuits.html">Basic DC circuits (node/supernode and mesh/supermesh)</a></li><li><a href="basic/linearity_and_superposition.html">Linearity and Superposition</a></li><li><a href="basic/source_transformations.html">Source transformations</a></li><li><a href="basic/thevenin_and_norton_equivalent_circuits.html">Thevenin and norton equivalent circuits</a></li><li><a href="basic/maximum_power_transfer.html">Maximum power transfer</a></li><li><a href="basic/delta_wye_conversion.html">Δ-Y Conversion</a></li></ul>
+<h2>Operational Amplifiers (Op Amp)</h2>
+<ul><li><a href="operational_amplifiers/the_ideal_op_amp.html">The ideal operational amplifier</a></li><li><a href="operational_amplifiers/negative_feedback_vs_positive_feedback.html">Negative Feedback vs Positive Feedback</a></li><li><a href="operational_amplifiers/practical_op_amp.html">The practical operational amplifier</a></li><li><a href="operational_amplifiers/powering_op_amps.html">Powering Op Amps</a></li><li><a href="operational_amplifiers/common_mode_rejection.html">Common-mode Rejection</a></li><li><a href="operational_amplifiers/comparators.html">Comparators</a></li></ul>
+<h2>Capacitors</h2>
+<ul><li><a href="capacitors/basics.html">Capacitor basics</a></li></ul>
+<h2>Inductors</h2>
+<ul><li><a href="inductors/basics.html">Inductor basics</a></li></ul>
+<h2>Cheatsheet</h2>
+<ul><li>Is the circuit very basic? Use node/mesh analysis</li><li>Do you need to find the value for a source for your circuit? Use superposition.</li></ul>
+<h2>TODO</h2>
+<ul><li>Write a page for an noninverting single supply op amp for AC signals (practical electronics for inventors page 650)</li></ul><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

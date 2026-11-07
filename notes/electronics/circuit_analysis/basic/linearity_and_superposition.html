@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Linearity and Superposition</h1>
+<pre><code class="language-">Created at: 2025-11-15
+</code></pre><p>Linear circuits can be analysed with a technique called "Superposition". A linear circuit is a circuit composed by independent sources, linear elements, and linear dependent sources. Those are all components that have a linear voltage-current relationship.</p>
+<p>The superposition principe states that the response in a linear circuit having more than one independent source can be obtained by adding the responses caused by the separate independent sources acting alone.</p>
+<p>Tips: 1. Independent voltage sources become short circuits. I.e., when you "turn off" (0V) a voltage source, it becomes a short circuit. 2. Independent current sources become open circuits. I.e., when you "turn off" (0A) a current source, it becomes an open circuit. 3. Multiplying all independent sources by K results in all the current and voltage responses being multiplied by the same factor "K". 4. This type of analysis might end up generating little circuits, but it strengths come from identifying the significance of various parts of a more complex circuit. This is often done in transistor and phasor analysis. 5. The most common analysis (power) is not subject to superposition.</p>
+<h2>Examples</h2>
+<p><img alt="justaposition_circuit_1.png" src="justaposition_circuit_1.png"> <img alt="justaposition_circuit_2.png" src="justaposition_circuit_2.png"> <img alt="justaposition_circuit_3.png" src="justaposition_circuit_3.png"></p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

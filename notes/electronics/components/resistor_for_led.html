@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Resistor for LED</h1>
+<pre><code class="language-">Created at: 2024-04-29
+</code></pre><p>From a LED's datasheet, you will find two attributes:</p>
+<ul><li>Forward voltage <code>Vf</code>. Typically 2V-3V.</li><li>Forward current <code>If</code>. Typically 10mA - 30mA.</li></ul>
+<ul><li><a href="http://web.archive.org/web/20231001211621/https://www.lumex.com/datasheet/SSL-LX5093ID">example datasheet</a></li></ul>
+<p>You want to avoid any current above the value of <code>If</code> to make sure your LED does not burn. For that, you will need a resistor connected <b>in series</b>.</p>
+<p>In terms of minimum current to pass through the LED for indoor use, high-efficiency LEDs can light up with as little as 1 mA.</p>
+<p>So the equation to find a resistor is basically:</p>
+<blockquote>R = (Vin - Vf) / (If)</blockquote>
+<p>For common values of <code>Vin</code> = 5V, <code>Vf</code> = 2V, and <code>If</code> = 20mA:</p>
+<blockquote>R = (5 - 2) / (0.02) R = 150 Ohms</blockquote>
+<p>With lower voltages you will need less resistance, and with higher voltages you will need higher resistances.</p>
+<h2>Reading resources</h2>
+<ul><li><a href="http://web.archive.org/web/20240422070418/https://en.wikipedia.org/wiki/LED_circuit">parallel LEDs?</a></li></ul><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

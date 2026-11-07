@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p>August 31, 2020</p>
+<h1>VIM (for software engineers)</h1>
+<p>I came across vim for the first time when I needed to edit a file on a remote server. The first Google result pointed me towards two tools: Vim and Nano. I tried vim first. As I began typing, the most insane things started to happen: words being deleted, the cursor going up and down, a nightmare. I freaked out and forcefully killed the terminal because I didn't know how to close vim. I then tried Nano. After that prior experience, I was happy to press and hold the arrow key down to the line I needed to delete, and then proceeded to hold the delete key for all its 100 characters or so.</p>
+<p>It wasn't until later that I would understand what I just missed. During a few code-pairing sections I witnessed my ex-colleague at work <a href="https://github.com/ramonsaraiva">ramonsaraiva</a> working with vim. I was sold after I asked him a few questions about his environment. That was a triggering point that ended up on my own customised vim workflow.</p>
+<h2>Should I learn vim?</h2>
+<p>If you only poke around files occasionally, customising vim is probably not worth the effort. But if you work as a software engineer you probably spend a lot of time browsing and editing text files. Having knowledge of an advanced text editor becomes an asset.</p>
+<p>One thing preventing people of using vim is the use of movement commands. Although they can look intimidating at first, there is logic to them. Once they are familiar, you will edit text faster than in other editors. If you spend a long enough time, you will be able to start "guessing" new movement commands because you know what the fundamentals are. But be aware that to learn vim you will need to dedicate some time to it. But it will be worth it.</p>
+<h2>My setup</h2>
+<p>This is what my setup looks like</p>
+<p><img alt="setup" src="setup.png"></p>
+<h2>Main Plugins</h2>
+<p>The ones I can't live without include:</p>
+<ul><li>Gruvbox (theme)</li><li>Telescope (fuzzy finder)</li><li>Easymotion</li><li>Fugitive and Gitgutter</li></ul><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

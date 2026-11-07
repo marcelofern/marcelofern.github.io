@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Connecting to an iphone</h1>
+<pre><code class="language-">Created at: 2025-09-15
+</code></pre><pre><code class="language-sh"># Install the libimobiledevice, usbmuxd, and ifuse packages.
+yay libimobiledevice
+yay usbmuxd
+yay ifuse
+
+# Unplug and plug your iphone device. It should now ask you: Trust this device?
+# You can verify the status of your service - it should be active.
+systemctl status usbmuxd.service
+
+# Create a mounting point:
+mkdir /tmp/iphone
+
+# Mount the iphone media system
+ifuse /tmp/iphone
+
+# You should now have a DCIM folder
+cd /tmp/iphone/DCIM
+
+# After you're done, unmount the filesystem:
+fusermount -u /tmp/iphone
+</code></pre><h2>Troubleshooting</h2>
+<pre><code class="language-sh"># If you do not see the popup, you can start the pairing process manually.
+# Connect the device, unlock the screen and run:
+idevicepair pair
+
+# You can verify the pairing has succeeded by running:
+idevicepair validate
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

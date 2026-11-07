@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Building From Source</h1>
+<pre><code class="language-">Created at: 2025-02-26
+</code></pre><h2>0. Get cargo and rustc</h2>
+<p>The unfortunate thing about Rust is that Rust requirest Rust to install Rust. Does that make sense? So you will need to have some version of Rust installed so that you can compile the project.</p>
+<h2>1. Find the correct tar ball</h2>
+<p>I'll usually go for the "stable" version you can find <a href="https://forge.rust-lang.org/infra/other-installation-methods.html">here</a>.</p>
+<p>Or simply extend the script below:</p>
+<pre><code class="language-sh">VERSION=1.85.0
+DIR=$HOME/.rust_bin/rust-$VERSION
+rm -rf $DIR
+mkdir -p $DIR
+cd $DIR
+curl -O https://static.rust-lang.org/dist/rustc-$VERSION-src.tar.xz
+tar -xvf rustc-$VERSION-src.tar.xz
+cd rustc-$VERSION-src
+</code></pre><h2>2. Configure the build</h2>
+<p>Rust uses a .toml file to configure the build. A full config file is located at the root folder in the source code.</p>
+<p>I use this config:</p>
+<pre><code class="language-sh">echo "[llvm]
+download-ci-llvm = true
+ninja = false
+
+[build]
+cargo = \"$(which cargo)\"
+rustc = \"$(which rustc)\"
+docs = true
+jobs = 4
+extended = true  # Enables building Cargo, Rustfmt, Clippy, etc.
+" > config.toml
+</code></pre><h2>3. Build</h2>
+<pre><code class="language-sh">./x.py build
+</code></pre><p>That's it! Building rust takes a <b>long</b> time. My <code>build</code> directory ended up being 5.8GB for rust 1.85.0.</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

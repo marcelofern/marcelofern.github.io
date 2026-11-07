@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Exercise 1.1</h1>
+<blockquote>Below is a sequence of expressions. What is the result printed by the interpreter in response to each expression? Assume that the sequence is to be evaluated in the order in which it is presented.</blockquote>
+<p>The answers are included below each listing using a comment <code>;</code> character.</p>
+<pre><code class="language-scm">10
+; 10
+
+(+ 5 3 4)
+; 12
+
+(- 9 1)
+; 8
+
+(/ 6 2)
+; 3
+
+(+ (* 2 4) (- 4 6))
+; (+ (8) (-2))
+; 6
+
+(define a 3)
+; a = 3
+
+(define b (+ a 1))
+; b = 4
+
+(+ a b (* a b))
+; (+ 3 4 (* 3 4))
+; (+ 7 (12))
+; 19
+
+(= a b)
+; #f (false, a is not equal to b)
+
+(if (and (> b a) (< b (* a b))) b a)
+; (if (and (> 4 3) (< 4 (* 3 4))) 4 3)
+; (if (and (#t) (#t)) 4 3)
+; 4
+
+(cond
+    ((= a 4) 6)
+    ((= b 4) (+ 6 7 a))
+    (else 25)
+)
+; 16
+
+(+ 2 (if (> b a) b a))
+; 6
+
+
+(* (cond
+        ((> a b) a)
+        ((< a b) b)
+        (else -1)
+    )
+    (+ a 1)
+)
+; 16
+</code></pre><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

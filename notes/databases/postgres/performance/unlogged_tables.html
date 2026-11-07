@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Unlogged Tables</h1>
+<pre><code class="language-">Created at: 2025-04-22
+</code></pre><p>An unlogged table can be created with the UNLOGGED keyword:</p>
+<pre><code class="language-sql">CREATE UNLOGGED TABLE foo (id int);
+</code></pre><p>You can also change existing tables to unlogged</p>
+<pre><code class="language-sql">-- This can run very quickly!
+ALTER TABLE foo SET UNLOGGED;
+
+-- This can run very slowly!
+-- All the table records will be written to the WAL.
+ALTER TABLE foo SET LOGGED;
+</code></pre><h2>Why use unlogged tables?</h2>
+<ol><li>More speed of writes per second, since unlogged table changes aren't written to the WAL.</li><li>Less vacuum impact as vacuum are also writes that are logged in the WAL.</li><li>General benefits from having a smaller WAL (smaller backups for example).</li></ol>
+<p>But, it comes with a price:</p>
+<ol><li>Tables are truncated (all data is deleted) when a crash happens.</li><li>Such tables can only be accessed on primaries and not on replicas.</li><li>Unlogged tables can't be used in logical replication or physical backups.</li></ol>
+<h2>Resources</h2>
+<ul><li>https://www.crunchydata.com/blog/postgresl-unlogged-tables</li></ul><script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>

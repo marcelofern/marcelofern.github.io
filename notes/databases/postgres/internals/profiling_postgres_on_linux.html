@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <style rel="stylesheet">
+    body{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin:40px auto;
+      max-width:750px;
+      font-size:18px;
+      padding:0 10px;
+      color: #333;
+    }
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #000;
+      color: #777;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      max-width: 100%;
+      overflow: auto;
+      padding: 1em 1.5em;
+      display: block;
+      word-wrap: break-word;
+    }
+    a {
+      color: #1976d2;
+      text-decoration: none;
+      border-bottom: 1px solid;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1 {
+      text-align: left;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+    :not(pre) > code {
+      background-color: #f4f4f4;
+      padding-right: 0.2em;
+      padding-left: 0.2em;
+      border-radius: 3px;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1>Profiling Postgres On Linux</h1>
+<pre><code class="language-">Created at: 2024-10-24
+</code></pre><p>This post is about profiling Postgres <b>on Linux</b>. The profiling tools used here are not OS agnostic. Alternatives for BSD and MacOs may exist. I have written a separated note for Mac, so check that out if you are interested.</p>
+<p>The main goal is to check what happens when a Postgres query is triggered.</p>
+<h2>Building Postgres From Source</h2>
+<p>Follow my note called "Building From Source".</p>
+<h2>Profiling with perf</h2>
+<p>This is my summarised version of two much completer pages: - <a href="https://wiki.postgresql.org/wiki/Profiling_with_perf">Postgres wiki</a> - <a href="https://web.archive.org/web/20220814090539/https://www.2ndquadrant.com/en/blog/tracing-postgresql-perf/">blog post</a>.</p>
+<p><code>perf record</code> runs a command and records its profile into <code>perf.data</code>.</p>
+<p>Flags:</p>
+<ul><li><code>-a</code>: System-wide collection from all CPUs (this is the default).</li><li><code>-g</code> : Records both kernel space and user space call-graph.</li><li><code>-s</code> : Records per-thread event counts.</li><li><code>-p</code> : Records events on existing process ID.</li><li><code>--call-graph</code> : using the <code>dwarf</code> option instead of <code>fp</code> (frame pointer) means we don't have to worry about <code>--fomit-frame-pointer</code>.</li></ul>
+<pre><code class="language-sh"># Allow use of almost all events by all users.
+# This will be reset if you reboot your computer.
+sudo sysctl -w kernel.perf_event_paranoid=-1
+
+# Run psql to grab the process id.
+# Use this query:
+# select pg_backend_pid();
+./psql.sh
+
+# You now must run this in another shell!
+PID=220177
+perf record -a -g -s --call-graph dwarf -p ${PID}
+
+# Then print the report. This will look at perf.data in the current directory.
+# You can use + to expand the stack trace.
+perf report -n
+</code></pre><h2>Example</h2>
+<p>What happens when we are dropping a unique constraint in Postgres?</p>
+<pre><code class="language-sql">-- Table with a single integer field.
+DROP TABLE IF EXISTS example_table;
+CREATE TABLE example_table (
+    id SERIAL PRIMARY KEY,
+    int_field INTEGER
+);
+
+-- Add the constraint with a name of our choice.
+ALTER TABLE example_table
+ADD CONSTRAINT unique_int_field UNIQUE (int_field);
+
+-- Insert 20,000,000 rows.
+INSERT INTO example_table (int_field)
+SELECT generate_series(1, 20000000);
+
+VACUUM FULL;
+VACUUM ANALYZE;
+
+-- Insert an extra 900,000 rows that will be made into dead tuples.
+INSERT INTO example_table (int_field)
+SELECT generate_series(20000001, 20900000);
+
+-- Make the dead tuples
+UPDATE example_table
+SET int_field = int_field + 10000000
+WHERE int_field > 20000000;
+
+-- Check number of dead rows, it should be about 900,000
+SELECT n_dead_tup FROM pg_stat_user_tables WHERE relname = 'example_table';
+
+-- Print the process id.
+select pg_backend_pid();
+</code></pre><p>Note, if you already have something running on that psql shell, another way of grabbing that pid is to open a new shell and run:</p>
+<pre><code class="language-sql">select pid, query from pg_stat_activity
+where application_name = 'psql' and pid != pg_backend_pid();
+</code></pre><p>Now open a new terminal, and start the profiler:</p>
+<pre><code class="language-sh">PID=110540
+perf record -a -s --call-graph dwarf -p ${PID}
+</code></pre><p>Back on the psql shell, drop the constraint and then close the psql process to stop profiling:</p>
+<pre><code class="language-sql">ALTER TABLE example_table
+DROP CONSTRAINT unique_int_field;
+</code></pre><p>Open the report for quick inspection:</p>
+<pre><code class="language-sh">perf report -n
+</code></pre><p><img alt="perf_drop_constraint.png" src="perf_drop_constraint.png"></p>
+<p>Another way of seeing the profile is via flamegraph.</p>
+<pre><code class="language-sh">git clone --depth 1 https://github.com/brendangregg/FlameGraph
+mv FlameGraph build
+FLAME="build/FlameGraph"
+
+mkdir ${FLAME}/out
+perf script --header > ${FLAME}/out.stacks
+
+${FLAME}/stackcollapse-perf.pl < ${FLAME}/out.stacks > ${FLAME}/collapsed.txt
+${FLAME}/flamegraph.pl --hash ${FLAME}/collapsed.txt > ${FLAME}/out.svg
+
+$BROWSER ${FLAME}/out.svg
+</code></pre><p><img alt="perf_drop_constraint_flame.png" src="perf_drop_constraint_flame.png"></p>
+<h2>Analysis</h2>
+<p>Dropping the constraint itself is very quick. It only involves updating the catalogue. However, the place that takes a lot of time is in committing the transaction.</p>
+<p>The <code>mdunlink</code> function is a function that helps manage relations that reside on magnetic disk. In this case, the constraint is backed by an index, and this index needs to be deleted. Ultimately this function will call truncate(1) with zero (removing it).</p>
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>
